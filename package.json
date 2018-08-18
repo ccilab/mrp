@@ -1,0 +1,27 @@
+{
+  "name": "mrp",
+  "version": "1.0.0",
+  "description": "mrp ",
+  "main": "index.js",
+  "dependencies": {
+    "create-react-app": "^1.5.2"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "create-react-app": "create-react-app"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ccilab/mrp.git"
+  },
+  "keywords": [
+    "mrp"
+  ],
+  "author": "cz@cci_lab",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/ccilab/mrp/issues"
+  },
+  "homepage": "https://github.com/ccilab/mrp#readme"
+}
