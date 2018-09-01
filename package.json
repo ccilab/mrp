@@ -4,6 +4,7 @@
   "description": "mrp ",
   "main": "index.js",
   "dependencies": {
+    "@types/react": "^16.4.11",
     "create-react-app": "^1.5.2"
   },
   "devDependencies": {},
