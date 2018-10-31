@@ -3,19 +3,15 @@ import "./../../css/CCiLabComponent.css";
 
 
 class CCiLabComponent extends Component {
-    constructor(props) {
-        super(props);
-        this.state = {
+        state = {
             greeting: "Hello",
             changing: "Frenchify"
         };
+        parents = this.props.parentIds;
+        siblings = this.props.siblingIds;
+        imgName = '/images/'+this.props.imgName;
+        progressStatus = this.props.status;
 
-        console.log('CCiLabComponent: props.name: ', this.props.name);
-      
-        this.frenchify = this.frenchify.bind(this);
-        this.removeGreeting = this.removeGreeting.bind(this);
-    }
-    
     frenchify = () => {
         if (this.state.greeting === "Hello") this.setState({ greeting: "Bonjour" });
         else this.setState({ greeting: "Hello" });
@@ -23,20 +19,23 @@ class CCiLabComponent extends Component {
         if (this.state.changing === "Frenchify")
             this.setState({ changing: "Englisify" });
         else this.setState({ changing: "Frenchify" });
- 
-       
     };
 
     removeGreeting = () => {
-        this.props.removeGreeting(this.props.name);
+        this.props.removeGreeting(this.imgName);
     };
 
 
     render() {
-      console.log('CCiLabComponent::render() props.name: ', this.props.name);
+      console.log('CCiLabComponent::render() props.name: ', this.imgName);
+      let lclassName='AlarmButton'
+      if( this.progressStatus === 'warning') lclassName = "WarningButton";
+      if( this.progressStatus === 'no_issue') lclassName = "GreenButton";
+      if( this.progressStatus === 'alarm') lclassName = "AlarmButton";
+
         return (
-          <button className="ComponentButton" onClick={ this.frenchify }>
-            <img className="ComponentImg" src={this.props.name} alt="edit"></img>
+          <button className={lclassName} onClick={ this.frenchify }>
+            <img className="ComponentImg" src={this.imgName} alt={this.imgName} ></img>
             </button>
         )
       }
