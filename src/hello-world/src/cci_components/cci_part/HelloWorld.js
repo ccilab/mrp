@@ -5,16 +5,17 @@ import "./../../css/CCiLabComponent.css";
 class CCiLabComponent extends Component {
         state = {
             greeting: "Hello",
-            changing: "Frenchify"
+            changing: "Frenchify",
+            expended:  true
         };
         parents = this.props.parentIds;
         siblings = this.props.siblingIds;
         imgName = '/images/'+this.props.imgName;
         progressStatus = this.props.status;
 
-    frenchify = () => {
-        if (this.state.greeting === "Hello") this.setState({ greeting: "Bonjour" });
-        else this.setState({ greeting: "Hello" });
+    expending = () => {
+        if (this.state.expended === true) this.setState({ expended: false });
+        else this.setState({ expended: true });
 
         if (this.state.changing === "Frenchify")
             this.setState({ changing: "Englisify" });
@@ -29,14 +30,18 @@ class CCiLabComponent extends Component {
     render() {
       console.log('CCiLabComponent::render() props.name: ', this.imgName);
       let lclassName='AlarmButton'
+      let lSiblings = this.siblings.length
       if( this.progressStatus === 'warning') lclassName = "WarningButton";
       if( this.progressStatus === 'no_issue') lclassName = "GreenButton";
       if( this.progressStatus === 'alarm') lclassName = "AlarmButton";
+      if( this.state.expended === false ) lSiblings = 0
+
 
         return (
-          <button className={lclassName} onClick={ this.frenchify }>
+          <button className={lclassName} onClick={ this.expending }>
             <img className="ComponentImg" src={this.imgName} alt={this.imgName} ></img>
-            </button>
+            <span className='badge badge-light'>{lSiblings}</span>  
+          </button>
         )
       }
 }

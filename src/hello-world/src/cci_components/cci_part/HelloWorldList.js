@@ -5,9 +5,9 @@ import AddGreeter from "./AddGreeter";
 
 
 class HelloWorldList extends Component {
-    state = { greetings: [ {status: "warning", imgName: "edit_32.png", parentIds: ['p1', 'p2'], siblingIds: ['s1','s2'] }, 
-                                {status: "no_issue", imgName: "edit.svg", parentIds: ['p3', 'p4'], siblingIds: ['s3','s24'] }, 
-                                {status: "alarm", imgName: "table.png", parentIds: ['p5', 'p6'], siblingIds: ['s5','s6'] }]}
+    state = { greetings: [ {status: "warning", imgName: "edit_32.png", parentIds: ['p1', 'p2'], siblingIds: ['s11','s12','s13','s14'] }, 
+                                {status: "no_issue", imgName: "edit.svg", parentIds: ['p3', 'p4'], siblingIds: ['s21','s22'] }, 
+                                {status: "alarm", imgName: "table.png", parentIds: ['p5', 'p6'], siblingIds: ['s31','s32','s33'] }]}
     
   
     addGreeting = (newName) =>{
