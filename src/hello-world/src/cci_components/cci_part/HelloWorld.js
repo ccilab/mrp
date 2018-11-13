@@ -14,8 +14,10 @@ class CCiLabComponent extends Component {
         progressStatus = this.props.status;
 
     expending = () => {
-        if (this.state.expended === true) this.setState({ expended: false });
-        else this.setState({ expended: true });
+        if (this.state.expended === true) 
+          this.setState({ expended: false });
+        else 
+          this.setState({ expended: true });
 
         if (this.state.changing === "Frenchify")
             this.setState({ changing: "Englisify" });
@@ -29,30 +31,49 @@ class CCiLabComponent extends Component {
 
     render() {
       console.log('CCiLabComponent::render() props.name: ', this.imgName);
-      let lclassName='AlarmButton'
+      let lclassName='btn '
       let lSiblings = this.siblings.length
-      if( this.progressStatus === 'warning') lclassName = "WarningButton";
-      if( this.progressStatus === 'no_issue') lclassName = "GreenButton";
-      if( this.progressStatus === 'alarm') lclassName = "AlarmButton";
-      if( this.state.expended === false ) lSiblings = 0
+      if( this.parents.length === 0 && this.siblings.length === 0 )
+        lSiblings = '+';
+      if( this.progressStatus === 'warning') 
+        lclassName +='WarningButton';
+      if( this.progressStatus === 'no_issue') 
+        lclassName +='GreenButton';
+      if( this.progressStatus === 'alarm') 
+        lclassName +='AlarmButton';
+      if( this.state.expended === false ) 
+      {
+        if( lSiblings !== 0 && lSiblings !== '+' )
+          lSiblings = '-';
+          
+      }
+        
 
 
         return (
           <button className={lclassName} onClick={ this.expending }>
-            <img className="ComponentImg" src={this.imgName} alt={this.imgName} ></img>
-            <span className='badge badge-light'>{lSiblings}</span>  
+             
+            <span className='d-flex flex-row justify-content-between'>
+              <img className="ComponentImg rounded-circle" src={this.imgName} alt={this.imgName} ></img>
+              <span className='badge-pill badge-info align-self-center font-weight-bold'>{lSiblings}</span>
+            </span>
+              
+            <span className='d-flex flex-row justify-content-center'>
+               <span className='badge-pill align-bottom text-gray-dark'>30%</span>   
+            </span>
           </button>
         )
       }
 }
 
- /* {{ this.state.greeting } { this.props.name }! http://www.rachelgallen.com/images/purpleflowers.jpg}
+ /*{{ this.state.greeting } { this.props.name }! http://www.rachelgallen.com/images/purpleflowers.jpg}
  import images from "./images";  
  src={this.props.name} 
  src={require('../../images/edit_32.png')} 
   <img className="ComponentImg" src={images.edit_32_png} alt="edit"></img>*/
     
  /*
+ <span className='badge badge-info align-bottom flex-grow-1 '>30%</span> 
  function Comment(props) {
   return (
     <div className="Comment">

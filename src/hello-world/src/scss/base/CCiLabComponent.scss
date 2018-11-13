@@ -7,10 +7,13 @@ $circle:#5befa7;
 $traffic_light_green: #33a532;
 $traffic_light_red: #cc0605;
 $traffic_light_amber: #ffbf00;// #fad201;
+$cci-info-blue: #40c4ff;
+$cci-shadow-dark: black;
 
-//$brand-danger: $traffic_light_red;
-//$brand-warning: $traffic_light_amber;
-//$brand-success: $traffic_light_green;
+$brand-danger: $traffic_light_red;
+$brand-warning: $traffic_light_amber;
+$brand-success: $traffic_light_green;
+$badge-info-bg: $cci-info-blue;
 
 $component_bg_color: #3e4444;
 $component_select_color: rgb(95, 95, 95);
@@ -28,50 +31,55 @@ $card-img-overlay-padding: 0%;
     cursor: pointer;
     margin: $card-columns-margin; //20px;
     padding: $card-img-overlay-padding; //0%;
-    box-shadow: 2px 6px 10px 0 rgba(0,0,0,0.3);
-    z-index: 2;
+    box-shadow: 2px 6px 10px 0 rgba($cci-shadow-dark,0.3);
+    z-index: 1;
+  /*   background: -webkit-gradient(linear, left top, left bottom, rgba(204,6,5, 1),rgba(204,6,5,0)); // Saf4+, Chrome 
+    background: -webkit-linear-gradient(to right,rgba(204,6,5, 1),rgba(204,6,5,0)); // Chrome 10+, Saf5.1+ 
+    background: -moz-linear-gradient(to right,rgba(204,6,5, 1),rgba(204,6,5,0)); // FF3.6+ 
+    background: -ms-linear-gradient(to right,rgba(204,6,5, 1),rgba(204,6,5,0)); // IE10 
+    background: -o-linear-gradient(to right,rgba(204,6,5, 1),rgba(204,6,5,0)); // Opera 11.10+  
+   background: linear-gradient(to right,rgba(204,6,5, 1),rgba(204,6,5,0)); // W3C */
  
     &:focus {
-      //cursor: pointer;
-      box-shadow: 4px 10px 15px 0 rgba(0,0,0,0.5),
+      box-shadow: 4px 10px 15px 0 rgba($cci-shadow-dark,0.5),
                 0px 0px 4px 3px $border_color,
                 0px 0px 4px 1.5px $border_color !important; 
     }
+
     &:active {
       transform: scale(0.85);
-      box-shadow: 4px 2px 15px 0 rgba(0,0,0,0.3);
+      box-shadow: 4px 2px 15px 0 rgba($cci-shadow-dark,0.3);
     }
     &:hover  {
-      //cursor: pointer;
-      box-shadow: 4px 10px 15px 0 rgba(0,0,0,0.5);
+      box-shadow: 4px 10px 15px 0 rgba($cci-shadow-dark,0.5);
     }
  }
   
  .AlarmButton{
     @extend .ComponentButton;
     @extend .btn-danger;
-    //background-color: $traffic_light_red; 
+    background: linear-gradient(to right,rgba($brand-danger, 1) 10%, rgba($brand-danger, 0)); // W3C 
   }
 
   .WarningButton{
     @extend .ComponentButton;
     @extend .btn-warning;
-    //background-color: $traffic_light_amber;
+    background: linear-gradient(to right,rgba($brand-warning, 1) 50%,rgba($brand-warning,0)); // W3C 
   }
 
   .GreenButton{
     @extend .ComponentButton;
     @extend .btn-success;
-    //background-color: $traffic_light_green;
+    background: linear-gradient(to right,rgba($brand-success, 1) 90%,rgba($brand-success,0)); // W3C 
   }
 
   .ComponentImg{
     height: $component_img_hight;
-    width: $component_img_width;
+    width: $component_img_width;      
     object-fit: auto;
-    border-radius: $component_img_radius;
     filter:opacity(80%);
     -ms-filter: opacity(80%);
+    //border-radius: $component_img_radius;
     //background-blend-mode: multiply;
     //background-color: green;
   }
