@@ -31,16 +31,16 @@ class CCiLabComponent extends Component {
 
     render() {
       console.log('CCiLabComponent::render() props.name: ', this.imgName);
-      let lclassName='btn '
+      let lclassName='btn cci-component-btn '
       let lSiblings = this.siblings.length
       if( this.parents.length === 0 && this.siblings.length === 0 )
         lSiblings = '+';
       if( this.progressStatus === 'warning') 
-        lclassName +='WarningButton';
+        lclassName +='btn-warning cci-component-btn_warning';
       if( this.progressStatus === 'no_issue') 
-        lclassName +='GreenButton';
+        lclassName +='btn-success cci-component-btn_green';
       if( this.progressStatus === 'alarm') 
-        lclassName +='AlarmButton';
+        lclassName +='btn-danger cci-component-btn_alarm';
       if( this.state.expended === false ) 
       {
         if( lSiblings !== 0 && lSiblings !== '+' )
@@ -54,7 +54,7 @@ class CCiLabComponent extends Component {
           <button className={lclassName} onClick={ this.expending }>
              
             <span className='d-flex flex-row justify-content-between'>
-              <img className="ComponentImg rounded-circle" src={this.imgName} alt={this.imgName} ></img>
+              <img className="cci-component-btn__img rounded-circle" src={this.imgName} alt={this.imgName} ></img>
               <span className='badge-pill badge-info align-self-center font-weight-bold'>{lSiblings}</span>
             </span>
               

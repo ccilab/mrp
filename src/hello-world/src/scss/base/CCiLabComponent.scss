@@ -26,19 +26,12 @@ $card-img-overlay-padding: 0%;
 // end customization
 
 @import "../bootstrap-4.0.0-alpha.6/scss/bootstrap";
-.ComponentButton {
-    @extend .btn;
+.cci-component-btn {
     cursor: pointer;
     margin: $card-columns-margin; //20px;
     padding: $card-img-overlay-padding; //0%;
     box-shadow: 2px 6px 10px 0 rgba($cci-shadow-dark,0.3);
     z-index: 1;
-  /*   background: -webkit-gradient(linear, left top, left bottom, rgba(204,6,5, 1),rgba(204,6,5,0)); // Saf4+, Chrome 
-    background: -webkit-linear-gradient(to right,rgba(204,6,5, 1),rgba(204,6,5,0)); // Chrome 10+, Saf5.1+ 
-    background: -moz-linear-gradient(to right,rgba(204,6,5, 1),rgba(204,6,5,0)); // FF3.6+ 
-    background: -ms-linear-gradient(to right,rgba(204,6,5, 1),rgba(204,6,5,0)); // IE10 
-    background: -o-linear-gradient(to right,rgba(204,6,5, 1),rgba(204,6,5,0)); // Opera 11.10+  
-   background: linear-gradient(to right,rgba(204,6,5, 1),rgba(204,6,5,0)); // W3C */
  
     &:focus {
       box-shadow: 4px 10px 15px 0 rgba($cci-shadow-dark,0.5),
@@ -55,33 +48,24 @@ $card-img-overlay-padding: 0%;
     }
  }
   
- .AlarmButton{
-    @extend .ComponentButton;
-    @extend .btn-danger;
+ .cci-component-btn_alarm{
     background: linear-gradient(to right,rgba($brand-danger, 1) 10%, rgba($brand-danger, 0)); // W3C 
   }
 
-  .WarningButton{
-    @extend .ComponentButton;
-    @extend .btn-warning;
+  .cci-component-btn_warning{
     background: linear-gradient(to right,rgba($brand-warning, 1) 50%,rgba($brand-warning,0)); // W3C 
   }
 
-  .GreenButton{
-    @extend .ComponentButton;
-    @extend .btn-success;
+  .cci-component-btn_green{
     background: linear-gradient(to right,rgba($brand-success, 1) 90%,rgba($brand-success,0)); // W3C 
   }
 
-  .ComponentImg{
+  .cci-component-btn__img{
     height: $component_img_hight;
     width: $component_img_width;      
-    object-fit: auto;
+    object-fit: fill;
     filter:opacity(80%);
     -ms-filter: opacity(80%);
-    //border-radius: $component_img_radius;
-    //background-blend-mode: multiply;
-    //background-color: green;
   }
 
   .component_opacity{
