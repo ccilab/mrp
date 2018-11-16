@@ -5,13 +5,13 @@ import AddGreeter from "./AddGreeter";
 
 
 class HelloWorldList extends Component {
-    state = { greetings: [ {status: "warning", imgName: "edit_32.png", parentIds: [], siblingIds: [] }, 
-                                {status: "no_issue", imgName: "edit.svg", parentIds: ['p3', 'p4'], siblingIds: ['s21','s22'] }, 
-                                {status: "alarm", imgName: "table.png", parentIds: ['p5', 'p6'], siblingIds: ['s31','s32','s33'] }]}
+    state = { greetings: [ {progressPercent: 40, status: "warning", imgName: "edit_32.png", parentIds: [], siblingIds: [] }, 
+                           {progressPercent: 20, status: "no_issue", imgName: "edit.svg", parentIds: ['p3', 'p4'], siblingIds: ['s21','s22'] }, 
+                           {progressPercent: 90, status: "alarm", imgName: "table.png", parentIds: ['p5', 'p6'], siblingIds: ['s31','s32','s33'] }]}
     
   
     addGreeting = (newName) =>{
-      this.setState({ greetings: [...this.state.greetings, {status: "alarm", imgName: newName, parentIds: ['p5', 'p6'], siblingIds: ['s5','s6'] }] });
+      this.setState({ greetings: [...this.state.greetings, {progressPercent: 10, status: "alarm", imgName: newName, parentIds: ['p5', 'p6'], siblingIds: ['s5','s6'] }] });
     }
 
     renderGreetings = () => {

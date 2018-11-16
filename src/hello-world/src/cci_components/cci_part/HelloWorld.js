@@ -12,6 +12,7 @@ class CCiLabComponent extends Component {
         siblings = this.props.siblingIds;
         imgName = '/images/'+this.props.imgName;
         progressStatus = this.props.status;
+        progressValue = this.props.progressPercent;
 
     expending = () => {
         if (this.state.expended === true) 
