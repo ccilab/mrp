@@ -11,7 +11,8 @@ class HelloWorldList extends Component {
     
   
     addGreeting = (newName) =>{
-      this.setState({ greetings: [...this.state.greetings, {progressPercent: 10, status: "alarm", imgName: newName, parentIds: ['p5', 'p6'], siblingIds: ['s5','s6'] }] });
+      this.setState({ greetings: [...this.state.greetings, 
+                                  {progressPercent: 10, status: "alarm", imgName: newName, parentIds: ['p5', 'p6'], siblingIds: ['s5','s6'] }] });
     }
 
     renderGreetings = () => {

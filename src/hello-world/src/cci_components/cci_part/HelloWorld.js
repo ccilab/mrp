@@ -37,11 +37,13 @@ class CCiLabComponent extends Component {
       if( this.parents.length === 0 && this.siblings.length === 0 )
         lSiblings = '+';
       if( this.progressStatus === 'warning') 
-        lclassName +='btn-warning cci-component-btn_warning';
+      {
+        lclassName +='btn-warning cci-component-btn_warning_'+ this.progressValue;
+       }
       if( this.progressStatus === 'no_issue') 
-        lclassName +='btn-success cci-component-btn_green';
+        lclassName +='btn-success cci-component-btn_green_'+ this.progressValue;
       if( this.progressStatus === 'alarm') 
-        lclassName +='btn-danger cci-component-btn_alarm';
+        lclassName +='btn-danger cci-component-btn_alarm_'+ this.progressValue;
       if( this.state.expended === false ) 
       {
         if( lSiblings !== 0 && lSiblings !== '+' )
@@ -60,7 +62,7 @@ class CCiLabComponent extends Component {
             </span>
               
             <span className='d-flex flex-row justify-content-center'>
-               <span className='badge-pill align-bottom text-gray-dark'>30%</span>   
+               <span className='badge-pill align-bottom text-gray-dark'>{this.progressValue}%</span>   
             </span>
           </button>
         )
@@ -72,6 +74,9 @@ class CCiLabComponent extends Component {
  src={this.props.name} 
  src={require('../../images/edit_32.png')} 
   <img className="ComponentImg" src={images.edit_32_png} alt="edit"></img>*/
+  /*
+  document.getElementsByClassName('cci-component-btn_warning')[0].style.setProperty('background','linear-gradient(to right,rgba(#ffbf00, 1) 20%,rgba(#ffbf00,0))');
+  */
     
  /*
  <span className='badge badge-info align-bottom flex-grow-1 '>30%</span> 
