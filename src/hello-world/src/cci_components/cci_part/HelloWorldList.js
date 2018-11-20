@@ -10,9 +10,9 @@ class HelloWorldList extends Component {
                            {progressPercent: 90, status: "alarm", imgName: "table.png", parentIds: ['p5', 'p6'], siblingIds: ['s31','s32','s33'] }]}
     
   
-    addGreeting = (newName) =>{
+    addGreeting = (newName, progressValue) =>{
       this.setState({ greetings: [...this.state.greetings, 
-                                  {progressPercent: 10, status: "alarm", imgName: newName, parentIds: ['p5', 'p6'], siblingIds: ['s5','s6'] }] });
+                                  {progressPercent: progressValue, status: "alarm", imgName: newName, parentIds: ['p5', 'p6'], siblingIds: ['s5','s6'] }] });
     }
 
     renderGreetings = () => {
