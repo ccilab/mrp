@@ -2,34 +2,35 @@ import React, { Component } from "react";
 import "./AddGreeter.css";
 
 class AddGreeter extends Component {
-  constructor(props) {
-    super(props);
-    this.state = { greetingName: "" };
-    this.handleUpdate = this.handleUpdate.bind(this);
-    this.addGreeting = this.addGreeting.bind(this);
-  }
-  handleUpdate(event) {
-    this.setState({ greetingName: event.target.value });
-  }
+    state = { greetingName: "" ,
+              progressValue: ""};
 
-  addGreeting() {
-    this.props.addGreeting(this.state.greetingName);
-    this.setState({ greetingName: "" });
-  }
-
-  render = () => {
-    return (
-      <div className="AddGreeter">
-        <input
-          type="text"
-          onChange={this.handleUpdate}
-          value={this.state.greetingName}
-        />
-        &nbsp;&nbsp;
-        <button onClick={this.addGreeting}>Add</button>
-      </div>
-    );
-  };
+    render = () => {
+      return (
+        <div className="AddGreeter">
+          <input
+            type="text"
+            onChange={(event)=>{
+              this.setState({ greetingName: event.target.value })}}
+            value={this.state.greetingName}>
+            </input>
+          
+          <input 
+            type="text"
+            onChange={(event)=>{
+              this.setState({progressValue: event.target.value})}}
+            value={this.state.progressValue} 
+          />
+          &nbsp;&nbsp;
+          <button onClick={ () =>{
+            this.props.addGreeting(this.state.greetingName, this.state.progressValue);
+            this.setState({ greetingName: "", progressValue:"" });
+            } }>
+            Add
+            </button>
+        </div>
+      );
+    };
 }
 
 export default AddGreeter;
