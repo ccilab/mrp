@@ -26,6 +26,11 @@ $card-img-overlay-padding: 0%;
 // end customization
 
 @import "../bootstrap-4.0.0-alpha.6/scss/bootstrap";
+@mixin bg-linear-gradient($bg-primary-color, $start-location-percentage){
+  //background: $bg-primary-color;
+  background: linear-gradient(to right,rgba($bg-primary-color, 0.8) $start-location-percentage, rgba($bg-primary-color, 0.1)); // W3C 
+}
+
 .cci-component-btn {
     cursor: pointer;
     margin: $card-columns-margin; //20px;
@@ -48,27 +53,147 @@ $card-img-overlay-padding: 0%;
     }
  }
   
- .cci-component-btn_alarm{
-    background: linear-gradient(to right,rgba($brand-danger, 1) 10%, rgba($brand-danger, 0)); // W3C 
-  }
+.cci-component-btn_alarm_0{
+@include bg-linear-gradient($brand-danger, 0)
+}
 
-  .cci-component-btn_warning{
-    background: linear-gradient(to right,rgba($brand-warning, 1) 50%,rgba($brand-warning,0)); // W3C 
-  }
+.cci-component-btn_alarm_10{
+  @include bg-linear-gradient($brand-danger, 10%)
+}
 
-  .cci-component-btn_green{
-    background: linear-gradient(to right,rgba($brand-success, 1) 90%,rgba($brand-success,0)); // W3C 
-  }
+.cci-component-btn_alarm_20{
+  @include bg-linear-gradient($brand-danger, 20%);
+}
 
-  .cci-component-btn__img{
-    height: $component_img_hight;
-    width: $component_img_width;      
-    object-fit: fill;
-    filter:opacity(80%);
-    -ms-filter: opacity(80%);
-  }
+.cci-component-btn_alarm_30{
+  @include bg-linear-gradient($brand-danger, 30%)
+}
 
-  .component_opacity{
-    filter:opacity(10%)
-  }
-  
+.cci-component-btn_alarm_40{
+  @include bg-linear-gradient($brand-danger, 40%)
+}
+
+.cci-component-btn_alarm_50{
+  @include bg-linear-gradient($brand-danger, 50%)
+}
+
+.cci-component-btn_alarm_60{
+  @include bg-linear-gradient($brand-danger, 60%)
+}
+
+.cci-component-btn_alarm_70{
+  @include bg-linear-gradient($brand-danger, 70%)
+}
+
+.cci-component-btn_alarm_80{
+  @include bg-linear-gradient($brand-danger, 80%)
+}
+
+.cci-component-btn_alarm_90{
+  @include bg-linear-gradient($brand-danger, 90%)
+}
+
+.cci-component-btn_alarm_100{
+  @include bg-linear-gradient($brand-danger, 100%)
+}
+
+.cci-component-btn_warning_0{
+  @include bg-linear-gradient($brand-warning, 0)
+}
+
+.cci-component-btn_warning_10{
+  @include bg-linear-gradient($brand-warning, 10%)
+}
+
+.cci-component-btn_warning_20{
+  @include bg-linear-gradient($brand-warning, 20%)
+}
+
+.cci-component-btn_warning_30{
+  @include bg-linear-gradient($brand-warning, 30%)
+}
+
+.cci-component-btn_warning_40{
+  @include bg-linear-gradient($brand-warning, 40%)
+}
+
+.cci-component-btn_warning_50{
+  @include bg-linear-gradient($brand-warning, 50%)
+}
+
+.cci-component-btn_warning_60{
+  @include bg-linear-gradient($brand-warning, 60%)
+}
+.cci-component-btn_warning_70{
+  @include bg-linear-gradient($brand-warning, 70%)
+}
+
+.cci-component-btn_warning_80{
+  @include bg-linear-gradient($brand-warning, 80%)
+}
+
+.cci-component-btn_warning_90{
+  @include bg-linear-gradient($brand-warning, 90%)
+}
+
+.cci-component-btn_warning_100{
+  @include bg-linear-gradient($brand-warning, 100%)
+}
+
+.cci-component-btn_green_0{
+  @include bg-linear-gradient($brand-success, 0%)
+}
+
+.cci-component-btn_green_10{
+  @include bg-linear-gradient($brand-success, 10%)
+}
+
+.cci-component-btn_green_20{
+  @include bg-linear-gradient($brand-success, 20%)
+}
+
+.cci-component-btn_green_30{
+  @include bg-linear-gradient($brand-success, 30%)
+}
+
+.cci-component-btn_green_40{
+  @include bg-linear-gradient($brand-success, 40%)
+}
+
+.cci-component-btn_green_50{
+  @include bg-linear-gradient($brand-success, 50%)
+}
+
+.cci-component-btn_green_60{
+  @include bg-linear-gradient($brand-success, 60%)
+}
+
+.cci-component-btn_green_70{
+  @include bg-linear-gradient($brand-success, 70%)
+}
+
+.cci-component-btn_green_80{
+  @include bg-linear-gradient($brand-success, 80%)
+}
+
+.cci-component-btn_green_90{
+  @include bg-linear-gradient($brand-success, 90%)
+}
+
+.cci-component-btn_green_100{
+  @include bg-linear-gradient($brand-success, 100%)
+}
+
+
+
+.cci-component-btn__img{
+  height: $component_img_hight;
+  width: $component_img_width;      
+  object-fit: fill;
+  filter:opacity(80%);
+  -ms-filter: opacity(80%);
+}
+
+.component_opacity{
+  filter:opacity(10%)
+}

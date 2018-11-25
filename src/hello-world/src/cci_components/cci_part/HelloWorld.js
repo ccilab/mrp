@@ -8,11 +8,11 @@ class CCiLabComponent extends Component {
             changing: "Frenchify",
             expended:  true
         };
-        parents = this.props.parentIds;
-        siblings = this.props.siblingIds;
-        imgName = '/images/'+this.props.imgName;
-        progressStatus = this.props.status;
-        progressValue = this.props.progressPercent;
+        parents = this.props.component.parentIds;
+        children = this.props.component.childIds;
+        imgName = '/images/'+this.props.component.name+'.'+this.props.component.imgType;
+        progressStatus = this.props.component.status;
+        progressValue = this.props.component.progressPercent;
 
     expending = () => {
         if (this.state.expended === true) 
@@ -26,26 +26,26 @@ class CCiLabComponent extends Component {
     };
 
     removeGreeting = () => {
-        this.props.removeGreeting(this.imgName);
+        this.props.removeGreeting(this.component.imgName);
     };
 
 
     render() {
-        console.log('CCiLabComponent::render() props.name: ', this.imgName);
+        console.log('CCiLabComponent::render() imgName: ', this.imgName);
         let lclassName='btn cci-component-btn '
-        let lSiblings = this.siblings.length
-        if( this.parents.length === 0 && this.siblings.length === 0 )
-          lSiblings = '+';
+        let lchildren = this.children.length
+        if( this.parents.length === 0 && this.children.length === 0 )
+          lchildren = '+';
         if( this.progressStatus === 'warning') 
-          lclassName +='btn-warning cci-component-btn_warning';
+        lclassName +='btn-warning cci-component-btn_warning_'+ this.progressValue;
         if( this.progressStatus === 'no_issue') 
-          lclassName +='btn-success cci-component-btn_green';
+        lclassName +='btn-success cci-component-btn_green_'+ this.progressValue;
         if( this.progressStatus === 'alarm') 
-          lclassName +='btn-danger cci-component-btn_alarm';
+        lclassName +='btn-danger cci-component-btn_alarm_'+ this.progressValue;
         if( this.state.expended === false ) 
         {
-          if( lSiblings !== 0 && lSiblings !== '+' )
-            lSiblings = '-';
+          if( lchildren !== 0 && lchildren !== '+' )
+            lchildren = '-';
             
         }
         
@@ -57,11 +57,11 @@ class CCiLabComponent extends Component {
                
               <span className='d-flex flex-row justify-content-between'>
                 <img className="cci-component-btn__img rounded-circle" src={this.imgName} alt={this.imgName} ></img>
-                <span className='badge-pill badge-info align-self-center font-weight-bold'>{lSiblings}</span>
+                <span className='badge-pill badge-info align-self-center font-weight-bold'>{lchildren}</span>
               </span>
                 
               <span className='d-flex flex-row justify-content-center'>
-                 <span className='badge-pill align-bottom text-gray-dark'>30%</span>   
+                 <span className='badge-pill align-bottom text-gray-dark'>{this.progressValue}%</span>   
               </span>
             </button>
           </span>
