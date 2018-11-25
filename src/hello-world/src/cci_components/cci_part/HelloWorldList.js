@@ -31,11 +31,12 @@ class HelloWorldList extends Component {
       this.setState({ greetings: filteredGreetings });
     };
 
-    /* showChildren = (componentId) =>{
-      this.state.greetings.map( (componentId)=>{
-        if()
+    showChildren = ( updatedComponent ) =>{
+      this.state.greetings.find( (updatedComponent)=>{
+        updatedComponent.showMyself = ture;
+        this.setState( { greetings: })
       })
-    }; */
+    };
 
     //need to update showMyself to true after button is clicked to expend
     //need to update showMyself to false after button is clicked to collaps
