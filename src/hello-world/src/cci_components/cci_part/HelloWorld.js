@@ -4,31 +4,35 @@ import "./../../css/CCiLabComponent.css";
 
 class CCiLabComponent extends Component {
         state = {
-            greeting: "Hello",
-            changing: "Frenchify",
             expended:  true
         };
-        parents = this.props.component.parentIds;
-        children = this.props.component.childIds;
-        imgName = '/images/'+this.props.component.name+'.'+this.props.component.imgType;
-        progressStatus = this.props.component.status;
-        progressValue = this.props.component.progressPercent;
+        currentComponent = this.props.component;
+        parents = this.currentComponent.parentIds;
+        children = this.currentComponent.childIds;
+        imgName = '/images/'+this.currentComponent.name+'.'+this.currentComponent.imgType;
+        progressStatus = this.currentComponent.status;
+        progressValue = this.currentComponent.progressPercent;
 
     expending = () => {
-        if (this.state.expended === true) 
+        if (this.state.expended === true) {
           this.setState({ expended: false });
-        else 
-          this.setState({ expended: true });
-
-        if (this.state.changing === "Frenchify")
-            this.setState({ changing: "Englisify" });
-        else this.setState({ changing: "Frenchify" });
+          this.selectShowChildren(true);
+        }
+        else {
+           this.setState({ expended: true });
+           this.selectShowChildren(false);
+         
+        }
+         
     };
 
     removeGreeting = () => {
         this.props.removeGreeting(this.component.imgName);
     };
 
+    selectShowChildren = (isShow) =>{
+      this.props.showChildren(this.currentComponent, isShow)
+    }
 
     render() {
         console.log('CCiLabComponent::render() imgName: ', this.imgName);
@@ -49,8 +53,6 @@ class CCiLabComponent extends Component {
             
         }
         
-
-
         return (
           <span className='float-left'>
             <button className={lclassName} onClick={ this.expending }>

@@ -31,26 +31,33 @@ class HelloWorldList extends Component {
       this.setState({ greetings: filteredGreetings });
     };
 
-    showChildren = ( updatedComponent ) =>{
-      this.state.greetings.find( (updatedComponent)=>{
-        updatedComponent.showMyself = ture;
-        this.setState( { greetings: })
-      })
+    showChildren = ( showChildrenComponent, showStatus ) =>{
+          let updateAllComponents =this.state.greetings;
+          let idxChildId;
+          let idxComponent;
+          for( idxChildId = 0; idxChildId < showChildrenComponent.childIds.length; idxChildId++) {
+               for( idxComponent = 0;  idxComponent < updateAllComponents.length; idxComponent++ ) {
+                 if( updateAllComponents[idxComponent].id === showChildrenComponent.childIds[idxChildId] ) {
+                    updateAllComponents[idxComponent].showMyself = showStatus;
+                 }
+               }
+          }
+        this.setState( { greetings: updateAllComponents })
     };
 
     //need to update showMyself to true after button is clicked to expend
     //need to update showMyself to false after button is clicked to collaps
-    isShowChildren = ( component )=>{
+    isShowMyself = ( component )=>{
       if( component.parentIds.length === 0)
         component.showMyself = true;
 
       if( component.showMyself === true )
-        return <CCiLabComponent key={component.id} component={component} removeGreeting={this.removeGreeting} /> ;
+        return <CCiLabComponent key={component.id} component={component} removeGreeting={this.removeGreeting} showChildren={this.showChildren}/> ;
     };
 
     renderGreetings = () => {
-      return this.state.greetings.map( (cComponent) => 
-        ( this.isShowChildren(cComponent ) ) );
+      return this.state.greetings.map( (component) => 
+        ( this.isShowMyself(component ) ) );
     };
 
   
