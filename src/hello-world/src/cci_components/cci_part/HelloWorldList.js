@@ -31,11 +31,17 @@ class HelloWorldList extends Component {
       this.setState({ greetings: filteredGreetings });
     };
 
-    showChildren = ( updatedComponent ) =>{
-      this.state.greetings.find( (updatedComponent)=>{
-        updatedComponent.showMyself = ture;
-        this.setState( { greetings: })
-      })
+    showChildren = ( componentId ) =>{
+        this.state.greetings.find( (componentId)=>{
+          this.state.greetings.childIds.map( (childId)=>(
+            const children = this.state.greetings.map( (component)=>(
+              if( component.id === childId )
+                updatedComponent.showMyself = ture;
+            
+              // call render to update component list
+              this.setState( { greetings: children})        
+          ) 
+        };
     };
 
     //need to update showMyself to true after button is clicked to expend
