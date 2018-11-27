@@ -59,7 +59,8 @@ class CCiLabComponent extends Component {
                
               <span className='d-flex flex-row justify-content-between'>
                 <img className="cci-component-btn__img rounded-circle" src={this.imgName} alt={this.imgName} ></img>
-                <span className='badge-pill badge-info align-self-center font-weight-bold'>{lchildren}</span>
+                if( lchildren !== 0 )
+                  <span className='badge-pill badge-info align-self-center font-weight-bold'>{lchildren}</span>
               </span>
                 
               <span className='d-flex flex-row justify-content-center'>
