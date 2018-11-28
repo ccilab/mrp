@@ -86,7 +86,7 @@ class HelloWorldList extends Component {
               {
                   let idxHideAt = updateAllComponents.findIndex(showChildrenComponent=>{return showChildrenComponent.id === showChildrenComponentId});
                   for( let i = 1; i <= showChildrenComponent.insertCnt; i++)
-                    updateAllComponents[idxHideAt+i].showMyself = false;
+                    updateAllComponents[idxHideAt+i].showMyself = showStatus;
               }
             }
         this.setState( { greetings: updateAllComponents })
