@@ -9,7 +9,8 @@ class CCiLabComponent extends Component {
         currentComponent = this.props.component;
         parents = this.currentComponent.parentIds;
         children = this.currentComponent.childIds;
-        imgName = '/images/'+this.currentComponent.name+'.'+this.currentComponent.imgType;
+        componentName = this.currentComponent.name;
+        imgName = '/images/'+this.componentName+'.'+this.currentComponent.imgType;
         progressStatus = this.currentComponent.status;
         progressValue = this.currentComponent.progressPercent;
 
@@ -58,7 +59,7 @@ class CCiLabComponent extends Component {
             <button className={lclassName} onClick={ this.expending }>
                
               <span className='d-flex flex-row justify-content-between'>
-                <img className="cci-component-btn__img rounded-circle" src={this.imgName} alt={this.imgName} ></img>
+                <img className="cci-component-btn__img rounded-circle" src={this.imgName} alt={this.componentName} ></img>
                 { ( lchildren !== 0 ) ?
                   <span className='badge-pill badge-info align-self-center font-weight-bold'>{lchildren}</span> :null
                 }
