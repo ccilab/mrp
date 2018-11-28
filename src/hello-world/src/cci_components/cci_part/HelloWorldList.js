@@ -68,7 +68,20 @@ class HelloWorldList extends Component {
               }
             }
             else 
-            { // hide child components under direct parent component
+            { 
+              for( let idxChildId = 0; idxChildId < showChildrenComponent.childIds.length; idxChildId++) 
+              {
+                // looping through entire component list to find the component included inside child component list
+                for( let idxComponent = 0;  idxComponent < updateAllComponents.length; idxComponent++ ) 
+                {
+                  // find the component that is the child component, and update the show status of this component
+                  if( updateAllComponents[idxComponent].id === showChildrenComponent.childIds[idxChildId] ) 
+                  {
+                      updateAllComponents[idxComponent].showMyself = showStatus;
+                  }
+                }
+              }
+              // hide child components under direct parent component
               if( firstComponent.id !== showChildrenComponentId ) 
               {
                   let idxHideAt = updateAllComponents.findIndex(showChildrenComponent=>{return showChildrenComponent.id === showChildrenComponentId});
