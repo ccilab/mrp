@@ -41,11 +41,11 @@ class CCiLabComponent extends Component {
         if( this.parents.length === 0 && this.children.length === 0 )
           lchildren = '+';
         if( this.progressStatus === 'warning') 
-        lclassName +='btn-warning cci-component-btn_warning_'+ this.progressValue;
+          lclassName +='btn-warning cci-component-btn_warning_'+ this.progressValue;
         if( this.progressStatus === 'no_issue') 
-        lclassName +='btn-success cci-component-btn_green_'+ this.progressValue;
+          lclassName +='btn-success cci-component-btn_green_'+ this.progressValue;
         if( this.progressStatus === 'alarm') 
-        lclassName +='btn-danger cci-component-btn_alarm_'+ this.progressValue;
+          lclassName +='btn-danger cci-component-btn_alarm_'+ this.progressValue;
         if( this.state.expended === false ) 
         {
           if( lchildren !== 0 && lchildren !== '+' )
@@ -59,7 +59,9 @@ class CCiLabComponent extends Component {
                
               <span className='d-flex flex-row justify-content-between'>
                 <img className="cci-component-btn__img rounded-circle" src={this.imgName} alt={this.imgName} ></img>
-                <span className='badge-pill badge-info align-self-center font-weight-bold'>{lchildren}</span>
+                { ( lchildren !== 0 ) ?
+                  <span className='badge-pill badge-info align-self-center font-weight-bold'>{lchildren}</span> :null
+                }
               </span>
                 
               <span className='d-flex flex-row justify-content-center'>

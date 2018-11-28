@@ -12,8 +12,8 @@ const components = [ {id: 0, name: 'table', parentIds:[], childIds:[1,2,3,4,5,6]
                      {id: 2, name:'leg', parentIds:[0], childIds:[5,6], imgType:'jpg', status: 'alarm', progressPercent: 10, showMyself: false},
                      {id: 3, name:'upper_beam', parentIds:[0], childIds:[5,6], imgType:'jpg', status: 'no_issue', progressPercent: 50, showMyself: false},
                      {id: 4, name:'low_beam', parentIds:[0], childIds:[5,6], imgType:'jpg', status: 'warning', progressPercent: 20, showMyself: false},
-                     {id: 5, name:'nail', parentIds:[0], childIds:[], imgType:'', status: 'no_issue', progressPercent: 10, showMyself: false},
-                     {id: 6, name:'glue', parentIds:[0], childIds:[], imgType:'', status: 'no_issue', progressPercent: 10, showMyself: false},
+                     {id: 5, name:'nail', parentIds:[0,1,2,3,4], childIds:[], imgType:'', status: 'no_issue', progressPercent: 10, showMyself: false},
+                     {id: 6, name:'glue', parentIds:[0,1,2,3,4], childIds:[], imgType:'', status: 'no_issue', progressPercent: 10, showMyself: false},
                     ]
 
 class HelloWorldList extends Component {
@@ -33,12 +33,36 @@ class HelloWorldList extends Component {
 
     showChildren = ( showChildrenComponent, showStatus ) =>{
           let updateAllComponents =this.state.greetings;
-          let idxChildId;
-          let idxComponent;
-          for( idxChildId = 0; idxChildId < showChildrenComponent.childIds.length; idxChildId++) {
-               for( idxComponent = 0;  idxComponent < updateAllComponents.length; idxComponent++ ) {
+          let showChildrenComponentId = showChildrenComponent.id;
+        
+        
+          // find the first component 
+          let firstComponent = updateAllComponents.filter(component=>component.parentIds.length === 0)[0]
+
+          // looping through selected component's child component list
+          for( let idxChildId = 0; idxChildId < showChildrenComponent.childIds.length; idxChildId++) {
+               // looping through entire component list to find the component included inside child component list
+               for( let idxComponent = 0;  idxComponent < updateAllComponents.length; idxComponent++ ) {
+                 // find the component that is the child component, and update the show status of this component
                  if( updateAllComponents[idxComponent].id === showChildrenComponent.childIds[idxChildId] ) {
                     updateAllComponents[idxComponent].showMyself = showStatus;
+
+                    // show child components under direct parent component 
+                    if( showStatus === true ) {
+                        //parent not the first component, parent is the selected component show its child components
+                        if( firstComponent.id !== showChildrenComponentId ){
+                            let childComponent = updateAllComponents[idxComponent];
+                            let idxInsertAt = updateAllComponents.findIndex(showChildrenComponent=>{return showChildrenComponent.id === showChildrenComponentId});
+                            updateAllComponents.splice( idxInsertAt+1,0,childComponent);
+                        }
+                    }
+                    // hide child components under direct parent component
+                    else {
+                      if( firstComponent.id !== showChildrenComponentId ) {
+                          let idxDeleteAt = updateAllComponents.findIndex(showChildrenComponent=>{return showChildrenComponent.id === showChildrenComponentId});
+                          updateAllComponents.splice( idxDeleteAt+1,1);
+                      }
+                    }
                  }
                }
           }
