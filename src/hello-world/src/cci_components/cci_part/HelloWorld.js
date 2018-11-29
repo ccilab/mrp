@@ -16,12 +16,14 @@ class CCiLabComponent extends Component {
 
     expending = () => {
         if (this.state.expended === true) {
+          this.currentComponent.toBeExpend = false;
           this.setState({ expended: false });
           this.selectShowChildren(true);
         }
         else {
+           this.currentComponent.toBeExpend = true;
            this.setState({ expended: true });
-           this.selectShowChildren(false);
+          this.selectShowChildren(false);
          
         }
          
@@ -47,7 +49,7 @@ class CCiLabComponent extends Component {
           lclassName +='btn-success cci-component-btn_green_'+ this.progressValue;
         if( this.progressStatus === 'alarm') 
           lclassName +='btn-danger cci-component-btn_alarm_'+ this.progressValue;
-        if( this.state.expended === false ) 
+        if( this.state.expended === false || this.currentComponent.toBeExpend === false ) 
         {
           if( lchildren !== 0 && lchildren !== '+' )
             lchildren = '-';

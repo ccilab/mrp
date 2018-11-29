@@ -7,13 +7,13 @@ import AddGreeter from "./AddGreeter";
 //image file name should be created the same as component name, so we can create imgName dynamically
 //image type is extracted from uploaded image file
 //table includes assembly and paint process
-const components = [ {key: 0, id: 0, name: 'table', parentIds:[], childIds:[1,2,3,4,5,6], imgType: 'png', status: 'no_issue', progressPercent:0, showMyself:false, insertCnt: 0},
-                     {key: 1,id: 1, name:'top', parentIds:[0], childIds:[5,6], imgType:'jpg', status: 'warning', progressPercent: 40, showMyself: false, insertCnt: 0},
-                     {key: 2,id: 2, name:'leg', parentIds:[0], childIds:[5,6], imgType:'jpg', status: 'alarm', progressPercent: 10, showMyself: false, insertCnt: 0},
-                     {key: 3,id: 3, name:'upper_beam', parentIds:[0], childIds:[5,6], imgType:'jpg', status: 'no_issue', progressPercent: 50, showMyself: false, insertCnt: 0},
-                     {key: 4,id: 4, name:'low_beam', parentIds:[0], childIds:[5,6], imgType:'jpg', status: 'warning', progressPercent: 20, showMyself: false, insertCnt: 0},
-                     {key: 5,id: 5, name:'nail', parentIds:[0,1,2,3,4], childIds:[], imgType:'', status: 'no_issue', progressPercent: 10, showMyself: false, insertCnt: 0},
-                     {key: 6,id: 6, name:'glue', parentIds:[0,1,2,3,4], childIds:[], imgType:'', status: 'no_issue', progressPercent: 10, showMyself: false, insertCnt: 0},
+const components = [ {key: 0, id: 0, name: 'table', parentIds:[], childIds:[1,2,3,4,5,6], childKeyIds:[], imgType: 'png', status: 'no_issue', progressPercent:0, showMyself:false, toBeExpend: true, insertCnt: 0},
+                     {key: 1,id: 1, name:'top', parentIds:[0], childIds:[5,6], childKeyIds:[],imgType:'jpg', status: 'warning', progressPercent: 40, showMyself: false, toBeExpend: true, insertCnt: 0},
+                     {key: 2,id: 2, name:'leg', parentIds:[0], childIds:[5,6], childKeyIds:[],imgType:'jpg', status: 'alarm', progressPercent: 10, showMyself: false, toBeExpend: true, insertCnt: 0},
+                     {key: 3,id: 3, name:'upper_beam', parentIds:[0], childIds:[5,6], childKeyIds:[], imgType:'jpg', status: 'no_issue', progressPercent: 50, showMyself: false, toBeExpend: true, insertCnt: 0},
+                     {key: 4,id: 4, name:'low_beam', parentIds:[0], childIds:[5,6], childKeyIds:[], imgType:'jpg', status: 'warning', progressPercent: 20, showMyself: false, toBeExpend: true, insertCnt: 0},
+                     {key: 5,id: 5, name:'nail', parentIds:[0,1,2,3,4], childIds:[], childKeyIds:[], imgType:'', status: 'no_issue', progressPercent: 10, showMyself: false, toBeExpend: false, insertCnt: 0},
+                     {key: 6,id: 6, name:'glue', parentIds:[0,1,2,3,4], childIds:[], childKeyIds:[],imgType:'', status: 'no_issue', progressPercent: 10, showMyself: false, toBeExpend: false, insertCnt: 0},
                     ]
 
 class HelloWorldList extends Component {
@@ -21,7 +21,7 @@ class HelloWorldList extends Component {
   
     addGreeting = (newName, progressValue) =>{
       this.setState({ greetings: [...this.state.greetings, 
-                                  {id: components.length + 1, name: newName, parentIds:[0], childIds:[], imgType:'', status: "alarm", progressPercent: progressValue,  showMyself: true, insertCnt: 0}] });
+                                  {id: components.length + 1, name: newName, parentIds:[0], childIds:[], imgType:'', status: "alarm", progressPercent: progressValue,  showMyself: true, toBeExpend: true, insertCnt: 0}] });
     };
 
     removeGreeting = (removeName) =>{
@@ -99,7 +99,7 @@ class HelloWorldList extends Component {
         this.setState( { greetings: updateAllComponents })
     };
 
-    //need to update showMyself to true after button is clicked to expend
+    //need to update showMyself to true after button is clicked to toBeExpend
     //need to update showMyself to false after button is clicked to collaps
     isShowMyself = ( component )=>{
       if( component.parentIds.length === 0)
