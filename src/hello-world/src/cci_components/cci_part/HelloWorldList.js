@@ -43,37 +43,51 @@ class HelloWorldList extends Component {
           // looping through selected component's child component list
             if( showStatus === true ) 
             {  
-              let displayChildList = showChildrenComponent.childKeyIds.length ? showChildrenComponent.childKeyIds : showChildrenComponent.childIds;
-              // length of childIds and childKeyIds should be same, #todo: need to add check here
-              for( let idxChildId = 0; idxChildId < displayChildList.length; idxChildId++) 
+              // if childKeyIds.length !===0 use childKeyIds to find child component and show it,
+              if( showChildrenComponent.childKeyIds.length !== 0 )
               {
-                // looping through entire component list to find the component included inside child component list
-                for( let idxComponent = 0;  idxComponent < updateAllComponents.length; idxComponent++ ) 
+                for( let idxKeyChildId = 0; idxKeyChildId < showChildrenComponent.childKeyIds.length; idxKeyChildId++) 
                 {
-                  // find the component that is the child component, and update the show status of this component
-                  // if childKeyIds.length !===0 use childKeyIds to find child component and show it,
-                  // if childKeyIds.length ===0, use childIds to find child component, show it, create childKey and insert this new component to component lists
-                  if( updateAllComponents[idxComponent].id === showChildrenComponent.childIds[idxChildId] ) 
+                  for( let idxComponent = 0;  idxComponent < updateAllComponents.length; idxComponent++ ) 
                   {
+                    if( updateAllComponents[idxComponent].key === showChildrenComponent.childKeyIds[idxKeyChildId] ) 
+                    {
                       updateAllComponents[idxComponent].showMyself = showStatus;
+                    }
+                  }
+                }
+              }
+              else
+              { // childKeyIds.length is 0, use childIds to find child component, show it, create childKey and insert this new component to component lists
+                // length of childIds and childKeyIds should be same, #todo: need to add check here
+                for( let idxChildId = 0; idxChildId < showChildrenComponent.childIds.length; idxChildId++) 
+                {
+                  // looping through entire component list to find the component included inside child component list
+                  for( let idxComponent = 0;  idxComponent < updateAllComponents.length; idxComponent++ ) 
+                  {
+                    // find the component that is the child component, and update the show status of this component
+                    if( updateAllComponents[idxComponent].id === showChildrenComponent.childIds[idxChildId] ) 
+                    {
+                        updateAllComponents[idxComponent].showMyself = showStatus;
 
-                      // show child components under direct parent component 
-                      //make sure parent not the first component,  show its child components
-                      // only insert children once, it will stay in the component list forever in current session
-                      if( firstComponent.id !== showChildrenComponentId && showChildrenComponent.insertCnt < showChildrenComponent.childIds.length )
-                      {
-                          // filter returns a reference of original object of array 
-                          let childrenComponentList =  updateAllComponents.filter(component=>component.id === updateAllComponents[idxComponent].id) ;
-                          // create an new object to update so the original object won't be updated 
-                          let cloneComponent = Object.assign({}, childrenComponentList[0]);
-                          cloneComponent.key = updateAllComponents.length+1;
-                          showChildrenComponent.childKeyIds.push( cloneComponent.key );
-                          let idxInsertAt = updateAllComponents.findIndex(showChildrenComponent=>{return showChildrenComponent.id === showChildrenComponentId});
-                          // insert child component under direct parent
-                          updateAllComponents.splice( idxInsertAt+1,0,cloneComponent);
-                          updateAllComponents[idxInsertAt].insertCnt++;
-                      }
-                      break;
+                        // show child components under direct parent component 
+                        //make sure parent not the first component,  show its child components
+                        // only insert children once, it will stay in the component list forever in current session
+                        if( firstComponent.id !== showChildrenComponentId && showChildrenComponent.insertCnt < showChildrenComponent.childIds.length )
+                        {
+                            // filter returns a reference of original object of array 
+                            let childrenComponentList =  updateAllComponents.filter(component=>component.id === updateAllComponents[idxComponent].id) ;
+                            // create an new object to update so the original object won't be updated 
+                            let cloneComponent = Object.assign({}, childrenComponentList[0]);
+                            cloneComponent.key = updateAllComponents.length+1;
+                            showChildrenComponent.childKeyIds.push( cloneComponent.key );
+                            let idxInsertAt = updateAllComponents.findIndex(showChildrenComponent=>{return showChildrenComponent.id === showChildrenComponentId});
+                            // insert child component under direct parent
+                            updateAllComponents.splice( idxInsertAt+1,0,cloneComponent);
+                            updateAllComponents[idxInsertAt].insertCnt++;
+                        }
+                        break;
+                    }
                   }
                 }
               }
