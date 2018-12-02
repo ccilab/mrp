@@ -7,21 +7,21 @@ class CCiLabComponent extends Component {
             expended:  true
         };
         currentComponent = this.props.component;
-        parents = this.currentComponent.parentIds;
-        children = this.currentComponent.childIds;
-        componentName = this.currentComponent.name;
-        imgName = '/images/'+this.componentName+'.'+this.currentComponent.imgType;
+        parents = this.currentComponent.businessItems.parentIds;
+        children = this.currentComponent.businessItems.childIds;
+        componentName = this.currentComponent.businessItems.name;
+        imgName = '/images/'+this.componentName+'.'+this.currentComponent.businessItems.imgType;
         progressStatus = this.currentComponent.status;
-        progressValue = this.currentComponent.progressPercent;
+        progressValue = this.currentComponent.businessItems.progressPercent;
 
     expending = () => {
         if (this.state.expended === true) {
-          this.currentComponent.toBeExpend = false;
+          this.currentComponent.displayItems.toBeExpend = false;
           this.setState({ expended: false });
           this.selectShowChildren(true);
         }
         else {
-           this.currentComponent.toBeExpend = true;
+           this.currentComponent.displayItems.toBeExpend = true;
            this.setState({ expended: true });
           this.selectShowChildren(false);
          
@@ -30,7 +30,7 @@ class CCiLabComponent extends Component {
     };
 
     removeGreeting = () => {
-        this.props.removeGreeting(this.component.imgName);
+        this.props.removeGreeting(this.component.businessItems.imgName);
     };
 
     selectShowChildren = (isShow) =>{
@@ -49,7 +49,7 @@ class CCiLabComponent extends Component {
           lclassName +='btn-success cci-component-btn_green_'+ this.progressValue;
         if( this.progressStatus === 'alarm') 
           lclassName +='btn-danger cci-component-btn_alarm_'+ this.progressValue;
-        if( this.state.expended === false || this.currentComponent.toBeExpend === false ) 
+        if( this.state.expended === false || this.currentComponent.displayItems.toBeExpend === false ) 
         {
           if( lchildren !== 0 && lchildren !== '+' )
             lchildren = '-';

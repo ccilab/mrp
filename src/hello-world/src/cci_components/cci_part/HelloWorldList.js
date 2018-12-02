@@ -7,13 +7,13 @@ import AddGreeter from "./AddGreeter";
 //image file name should be created the same as component name, so we can create imgName dynamically
 //image type is extracted from uploaded image file
 //table includes assembly and paint process
-const components = [ {id: 0, name: 'table', parentIds:[], childIds:[1,2,3,4,5,6],  imgType: 'png', status: 'no_issue', progressPercent:0, key: 0,childKeyIds:[], showMyself:false, toBeExpend: true, insertCnt: 0},
-                     {id: 1, name:'top', parentIds:[0], childIds:[5,6], imgType:'jpg', status: 'warning', progressPercent: 40, key: 1,childKeyIds:[], showMyself: false, toBeExpend: true, insertCnt: 0},
-                     {id: 2, name:'leg', parentIds:[0], childIds:[5,6], imgType:'jpg', status: 'alarm', progressPercent: 10, key: 2, childKeyIds:[],showMyself: false, toBeExpend: true, insertCnt: 0},
-                     {id: 3, name:'upper_beam', parentIds:[0], childIds:[5,6],  imgType:'jpg', status: 'no_issue', progressPercent: 50,key: 3,childKeyIds:[], showMyself: false, toBeExpend: true, insertCnt: 0},
-                     {id: 4, name:'low_beam', parentIds:[0], childIds:[5,6],  imgType:'jpg', status: 'warning', progressPercent: 20,key: 4,childKeyIds:[], showMyself: false, toBeExpend: true, insertCnt: 0},
-                     {id: 5, name:'nail', parentIds:[0,1,2,3,4], childIds:[],  imgType:'', status: 'no_issue', progressPercent: 10,key: 5, childKeyIds:[],showMyself: false, toBeExpend: false, insertCnt: 0},
-                     {id: 6, name:'glue', parentIds:[0,1,2,3,4], childIds:[], imgType:'', status: 'no_issue', progressPercent: 10,key: 6,childKeyIds:[], showMyself: false, toBeExpend: false, insertCnt: 0},
+const components = [ { businessItems: {id: 0, name: 'table', parentIds:[], childIds:[1,2,3,4,5,6],  imgType: 'png', status: 'no_issue', progressPercent:0}, displayItems: { key: 0,childKeyIds:[1,2,3,4,5,6], showMyself:false, toBeExpend: true, insertCnt: 0}},
+                     { businessItems: {id: 1, name:'top', parentIds:[0], childIds:[5,6], imgType:'jpg', status: 'warning', progressPercent: 40}, displayItems: {key: 1,childKeyIds:[], showMyself: false, toBeExpend: true, insertCnt: 0}},
+                     { businessItems: {id: 2, name:'leg', parentIds:[0], childIds:[5,6], imgType:'jpg', status: 'alarm', progressPercent: 10}, displayItems: {key: 2, childKeyIds:[],showMyself: false, toBeExpend: true, insertCnt: 0}},
+                     { businessItems: {id: 3, name:'upper_beam', parentIds:[0], childIds:[5,6],  imgType:'jpg', status: 'no_issue', progressPercent: 50},displayItems: {key: 3,childKeyIds:[], showMyself: false, toBeExpend: true, insertCnt: 0}},
+                     { businessItems: {id: 4, name:'low_beam', parentIds:[0], childIds:[5,6],  imgType:'jpg', status: 'warning', progressPercent: 20},displayItems: {key: 4,childKeyIds:[], showMyself: false, toBeExpend: true, insertCnt: 0}},
+                     { businessItems: {id: 5, name:'nail', parentIds:[0,1,2,3,4], childIds:[],  imgType:'', status: 'no_issue', progressPercent: 10},displayItems: {key: 5, childKeyIds:[],showMyself: false, toBeExpend: false, insertCnt: 0}},
+                     { businessItems: {id: 6, name:'glue', parentIds:[0,1,2,3,4], childIds:[], imgType:'', status: 'no_issue', progressPercent: 10},displayItems: {key: 6,childKeyIds:[], showMyself: false, toBeExpend: false, insertCnt: 0}}
                     ]
 
 class HelloWorldList extends Component {
@@ -21,12 +21,12 @@ class HelloWorldList extends Component {
   
     addGreeting = (newName, progressValue) =>{
       this.setState({ greetings: [...this.state.greetings, 
-                                  {id: components.length + 1, name: newName, parentIds:[0], childIds:[], imgType:'', status: "alarm", progressPercent: progressValue,  showMyself: true, toBeExpend: true, insertCnt: 0}] });
+        { businessItems: {id: components.length + 1, name: newName, parentIds:[0], childIds:[], imgType:'', status: "alarm", progressPercent: progressValue}, displayItems:{key: components.length + 1}, childKeyIds:[], showMyself: true, toBeExpend: true, insertCnt: 0}] });
     };
 
     removeGreeting = (removeName) =>{
-      const filteredGreetings = this.state.greetings.filter(name => {
-        return name !== removeName;
+      const filteredGreetings = this.state.greetings.filter(component => {
+        return component.businessItems.name !== removeName;
       });
       this.setState({ greetings: filteredGreetings });
     };
@@ -34,99 +34,112 @@ class HelloWorldList extends Component {
     //based on selected component and its show Status to show or hide its children
     showChildren = ( showChildrenComponent, showStatus ) =>{
           let updateAllComponents =this.state.greetings;
-          let showChildrenComponentId = showChildrenComponent.id;
+          let showChildrenComponentKey = showChildrenComponent.key;
+          let idxChildKeyId = 0;
+          let idxChildId = 0;
+          let idxComponent = 0;
+          let idx2Component = 0;
+       
         
         
           // find the first component 
           let firstComponent = updateAllComponents.filter(component=>component.parentIds.length === 0)[0]
 
           // looping through selected component's child component list
-            if( showStatus === true ) 
-            {  
-              // if childKeyIds.length !===0 use childKeyIds to find child component and show it,
-              if( showChildrenComponent.childKeyIds.length !== 0 )
-              {
-                for( let idxKeyChildId = 0; idxKeyChildId < showChildrenComponent.childKeyIds.length; idxKeyChildId++) 
+          if( showStatus === true ) 
+          {  
+            // childKeyIds.length is 0, use childIds to find child component, show it, create childKey and insert this new component to component lists
+            // length of childIds and childKeyIds should be same, #todo: need to add check here
+            for( idxChildId = 0; idxChildId < showChildrenComponent.childIds.length; idxChildId++) {
+              // looping through entire component list to find the component included inside child component list
+              for( idxComponent = 0;  idxComponent < updateAllComponents.length; idxComponent++ ) {
+                // // if childKeyIds.length !===0 use childKeyIds to find child component and show it,
+                // if( updateAllComponents[idxComponent].childKeyIds.length !== 0 ) {
+                //   for( idxChildKeyId = 0; idxChildKeyId < updateAllComponents[idxComponent].childKeyIds.length; idxChildKeyId++) {
+                //     for( idx2Component = 0;  idx2Component < updateAllComponents.length; idx2Component++ ) {
+                //       if( updateAllComponents[idx2Component].key === updateAllComponents[idxComponent].childKeyIds[idxChildKeyId] ) {
+                //         updateAllComponents[idx2Component].showMyself = showStatus;
+                //       }
+                //     }
+                //   }
+                // }
+                // find the component that is the child component, and update the show status of this component
+                if( (showChildrenComponent.childKeyIds.length && updateAllComponents[idxComponent].key === showChildrenComponent.childKeyIds[idxChildId] ) ||
+                    (updateAllComponents[idxComponent].id === showChildrenComponent.childIds[idxChildId]))
                 {
-                  for( let idxComponent = 0;  idxComponent < updateAllComponents.length; idxComponent++ ) 
-                  {
-                    if( updateAllComponents[idxComponent].key === showChildrenComponent.childKeyIds[idxKeyChildId] ) 
-                    {
+                    //first compoent needs to show all its direct children 
+                    if( firstComponent.key === showChildrenComponentKey )
                       updateAllComponents[idxComponent].showMyself = showStatus;
-                    }
-                  }
-                }
-              }
-              else
-              { // childKeyIds.length is 0, use childIds to find child component, show it, create childKey and insert this new component to component lists
-                // length of childIds and childKeyIds should be same, #todo: need to add check here
-                for( let idxChildId = 0; idxChildId < showChildrenComponent.childIds.length; idxChildId++) 
-                {
-                  // looping through entire component list to find the component included inside child component list
-                  for( let idxComponent = 0;  idxComponent < updateAllComponents.length; idxComponent++ ) 
-                  {
-                    // find the component that is the child component, and update the show status of this component
-                    if( updateAllComponents[idxComponent].id === showChildrenComponent.childIds[idxChildId] ) 
-                    {
-                        updateAllComponents[idxComponent].showMyself = showStatus;
 
-                        // show child components under direct parent component 
-                        //make sure parent not the first component,  show its child components
-                        // only insert children once, it will stay in the component list forever in current session
-                        if( firstComponent.id !== showChildrenComponentId && showChildrenComponent.insertCnt < showChildrenComponent.childIds.length )
-                        {
-                            // filter returns a reference of original object of array 
-                            let childrenComponentList =  updateAllComponents.filter(component=>component.id === updateAllComponents[idxComponent].id) ;
-                            // create an new object to update so the original object won't be updated 
-                            let cloneComponent = Object.assign({}, childrenComponentList[0]);
-                            cloneComponent.key = updateAllComponents.length+1;
-                            showChildrenComponent.childKeyIds.push( cloneComponent.key );
-                            let idxInsertAt = updateAllComponents.findIndex(showChildrenComponent=>{return showChildrenComponent.id === showChildrenComponentId});
-                            // insert child component under direct parent
-                            updateAllComponents.splice( idxInsertAt+1,0,cloneComponent);
-                            updateAllComponents[idxInsertAt].insertCnt++;
-                        }
-                        break;
+                    // show child components under direct parent component 
+                    //make sure parent not the first component,  show its child components
+                    // only insert children once, it will stay in the component list forever in current session
+                    if( firstComponent.key !== showChildrenComponentKey && showChildrenComponent.insertCnt < showChildrenComponent.childIds.length )
+                    {
+                        // create an new object to update so the original object won't be updated 
+                        let cloneComponent = Object.assign({}, updateAllComponents[idxComponent]);
+                        cloneComponent.key = updateAllComponents.length+1;
+                        cloneComponent.showMyself = showStatus;
+                        showChildrenComponent.childKeyIds.push( cloneComponent.key );
+                        let idxInsertAt = updateAllComponents.findIndex(showChildrenComponent=>{return showChildrenComponent.key === showChildrenComponentKey});
+                        // insert child component under direct parent
+                        updateAllComponents.splice( idxInsertAt+1,0,cloneComponent);
+                        updateAllComponents[idxInsertAt].insertCnt++;
                     }
-                  }
+                    break;
                 }
               }
             }
-            else 
-            { // hide all children for the first component 
-              if( firstComponent.id === showChildrenComponentId ) 
-              {
-                  for( let idxChildId = 0; idxChildId < showChildrenComponent.childIds.length; idxChildId++) 
+          }
+          else 
+          { 
+            // hide all children for the first component, childKeyIds[] should be always 0 for the first component 
+            if( firstComponent.key === showChildrenComponentKey ) 
+            {
+                for( idxChildId = 0; idxChildId < showChildrenComponent.childIds.length; idxChildId++) 
+                {
+                  // looping through entire component list to find the component included inside child component list
+                  for( idxComponent = 0;  idxComponent < updateAllComponents.length; idxComponent++ ) 
                   {
-                    // looping through entire component list to find the component included inside child component list
-                    for( let idxComponent = 0;  idxComponent < updateAllComponents.length; idxComponent++ ) 
+                    // find the component that is the child component, and update the show status of this component
+                    if( updateAllComponents[idxComponent].key === showChildrenComponent.childIds[idxChildId] ) 
                     {
-                      // find the component that is the child component, and update the show status of this component
-                      if( updateAllComponents[idxComponent].id === showChildrenComponent.childIds[idxChildId] ) 
+                      updateAllComponents[idxComponent].showMyself = showStatus;
+                      //turn off childKeyIds[] too
+                      if( updateAllComponents[idxComponent].childKeyIds.length !==0 ) 
                       {
-                          updateAllComponents[idxComponent].showMyself = showStatus;
+                        for( idxChildKeyId = 0; idxChildKeyId < updateAllComponents[idxComponent].childKeyIds.length; idxChildKeyId++)
+                        {
+                          for( idx2Component = 0;  idx2Component < updateAllComponents.length; idx2Component++ ) 
+                          {
+                            if( updateAllComponents[idx2Component].key === updateAllComponents[idxComponent].childKeyIds[idxChildKeyId] ) 
+                              updateAllComponents[idx2Component].showMyself = showStatus;
+                          }
+                        }
                       }
                     }
                   }
-              }
-              else // deleted inserted child components under direct parent component
-              {
-                  let idxHideAt = updateAllComponents.findIndex(showChildrenComponent=>{return showChildrenComponent.id === showChildrenComponentId});
-                  updateAllComponents.splice( idxHideAt+1, showChildrenComponent.insertCnt);
-                  updateAllComponents[idxHideAt].insertCnt = 0;
-              }
+                }
             }
-        this.setState( { greetings: updateAllComponents })
+            else // deleted inserted child components under direct parent component
+            {
+                let idxHideAt = updateAllComponents.findIndex(showChildrenComponent=>{return showChildrenComponent.key === showChildrenComponentKey});
+                updateAllComponents.splice( idxHideAt+1, showChildrenComponent.insertCnt);
+                updateAllComponents[idxHideAt].insertCnt = 0;
+                updateAllComponents[idxHideAt].childKeyIds.length=0;
+            }
+          }
+          this.setState( { greetings: updateAllComponents })
     };
 
     //need to update showMyself to true after button is clicked to toBeExpend
     //need to update showMyself to false after button is clicked to collaps
     isShowMyself = ( component )=>{
-      if( component.parentIds.length === 0)
-        component.showMyself = true;
+      if( component.businessItems.parentIds.length === 0)
+        component.displayItems.showMyself = true;
 
-      if( component.showMyself === true )
-        return <CCiLabComponent key={component.key} component={component} removeGreeting={this.removeGreeting} showChildren={this.showChildren}/> ;
+      if( component.displayItems.showMyself === true )
+        return <CCiLabComponent key={component.displayItems.key} component={component} removeGreeting={this.removeGreeting} showChildren={this.showChildren}/> ;
     };
 
     renderGreetings = () => {
