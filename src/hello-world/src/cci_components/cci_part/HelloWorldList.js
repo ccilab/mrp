@@ -17,7 +17,11 @@ const components = [ { businessLogic: {id: 0, name: 'table', parentIds:[], child
                     ]
 
 class HelloWorldList extends Component {
-    state = { greetings: [...components] };
+    state = { greetings: undefined };
+
+    componentWillMount=(components)=>{
+
+    }
   
     addGreeting = (newName, progressValue) =>{
       this.setState({ greetings: [...this.state.greetings, 
