@@ -43,14 +43,14 @@ class HelloWorldList extends Component {
         
         
           // find the first component 
-          let firstComponent = updateAllComponents.filter(component=>component.parentIds.length === 0)[0]
+          let firstComponent = updateAllComponents.filter(component=>component.businessLogic.parentIds.length === 0)[0]
 
           // looping through selected component's child component list
           if( showStatus === true ) 
           {  
             // childKeyIds.length is 0, use childIds to find child component, show it, create childKey and insert this new component to component lists
             // length of childIds and childKeyIds should be same, #todo: need to add check here
-            for( idxChildId = 0; idxChildId < showChildrenComponent.childIds.length; idxChildId++) {
+            for( idxChildId = 0; idxChildId < showChildrenComponent.businessLogic.childIds.length; idxChildId++) {
               // looping through entire component list to find the component included inside child component list
               for( idxComponent = 0;  idxComponent < updateAllComponents.length; idxComponent++ ) {
                 // // if childKeyIds.length !===0 use childKeyIds to find child component and show it,
@@ -64,27 +64,27 @@ class HelloWorldList extends Component {
                 //   }
                 // }
                 // find the component that is the child component, and update the show status of this component
-                if( (showChildrenComponent.childKeyIds.length && updateAllComponents[idxComponent].key === showChildrenComponent.childKeyIds[idxChildId] ) ||
-                    (updateAllComponents[idxComponent].id === showChildrenComponent.childIds[idxChildId]))
+                if( (showChildrenComponent.displayLogic.childKeyIds.length && updateAllComponents[idxComponent].displayLogic.key === showChildrenComponent.displayLogic.childKeyIds[idxChildId] ) ||
+                    (updateAllComponents[idxComponent].businessLogic.id === showChildrenComponent.businessLogic.childIds[idxChildId]))
                 {
                     //first compoent needs to show all its direct children 
                     if( firstComponent.key === showChildrenComponentKey )
-                      updateAllComponents[idxComponent].showMyself = showStatus;
+                      updateAllComponents[idxComponent].displayLogic.showMyself = showStatus;
 
                     // show child components under direct parent component 
                     //make sure parent not the first component,  show its child components
                     // only insert children once, it will stay in the component list forever in current session
-                    if( firstComponent.key !== showChildrenComponentKey && showChildrenComponent.insertCnt < showChildrenComponent.childIds.length )
+                    if( firstComponent.key !== showChildrenComponentKey && showChildrenComponent.displayLogic.insertCnt < showChildrenComponent.businessLogic.childIds.length )
                     {
                         // create an new object to update so the original object won't be updated 
                         let cloneComponent = Object.assign({}, updateAllComponents[idxComponent]);
-                        cloneComponent.key = updateAllComponents.length+1;
-                        cloneComponent.showMyself = showStatus;
-                        showChildrenComponent.childKeyIds.push( cloneComponent.key );
-                        let idxInsertAt = updateAllComponents.findIndex(showChildrenComponent=>{return showChildrenComponent.key === showChildrenComponentKey});
+                        cloneComponent.displayLogic.key = updateAllComponents.length+1;
+                        cloneComponent.displayLogic.showMyself = showStatus;
+                        showChildrenComponent.displayLogic.childKeyIds.push( cloneComponent.key );
+                        let idxInsertAt = updateAllComponents.findIndex(showChildrenComponent=>{return showChildrenComponent.displayLogic.key === showChildrenComponentKey});
                         // insert child component under direct parent
                         updateAllComponents.splice( idxInsertAt+1,0,cloneComponent);
-                        updateAllComponents[idxInsertAt].insertCnt++;
+                        updateAllComponents[idxInsertAt].displayLogic.insertCnt++;
                     }
                     break;
                 }
@@ -94,26 +94,26 @@ class HelloWorldList extends Component {
           else 
           { 
             // hide all children for the first component, childKeyIds[] should be always 0 for the first component 
-            if( firstComponent.key === showChildrenComponentKey ) 
+            if( firstComponent.displayLogic.key === showChildrenComponentKey ) 
             {
-                for( idxChildId = 0; idxChildId < showChildrenComponent.childIds.length; idxChildId++) 
+                for( idxChildId = 0; idxChildId < showChildrenComponent.displayLogic.childKeyIds.length; idxChildId++) 
                 {
                   // looping through entire component list to find the component included inside child component list
                   for( idxComponent = 0;  idxComponent < updateAllComponents.length; idxComponent++ ) 
                   {
                     // find the component that is the child component, and update the show status of this component
-                    if( updateAllComponents[idxComponent].key === showChildrenComponent.childIds[idxChildId] ) 
+                    if( updateAllComponents[idxComponent].displayLogic.key === showChildrenComponent.displayLogic.childKeyIds[idxChildId] ) 
                     {
-                      updateAllComponents[idxComponent].showMyself = showStatus;
+                      updateAllComponents[idxComponent].displayLogic.showMyself = showStatus;
                       //turn off childKeyIds[] too
-                      if( updateAllComponents[idxComponent].childKeyIds.length !==0 ) 
+                      if( updateAllComponents[idxComponent].displayLogic.childKeyIds.length !==0 ) 
                       {
-                        for( idxChildKeyId = 0; idxChildKeyId < updateAllComponents[idxComponent].childKeyIds.length; idxChildKeyId++)
+                        for( idxChildKeyId = 0; idxChildKeyId < updateAllComponents[idxComponent].displayLogic.childKeyIds.length; idxChildKeyId++)
                         {
                           for( idx2Component = 0;  idx2Component < updateAllComponents.length; idx2Component++ ) 
                           {
-                            if( updateAllComponents[idx2Component].key === updateAllComponents[idxComponent].childKeyIds[idxChildKeyId] ) 
-                              updateAllComponents[idx2Component].showMyself = showStatus;
+                            if( updateAllComponents[idx2Component].displayLogic.key === updateAllComponents[idxComponent].displayLogic.childKeyIds[idxChildKeyId] ) 
+                              updateAllComponents[idx2Component].displayLogic.showMyself = showStatus;
                           }
                         }
                       }
@@ -123,10 +123,10 @@ class HelloWorldList extends Component {
             }
             else // deleted inserted child components under direct parent component
             {
-                let idxHideAt = updateAllComponents.findIndex(showChildrenComponent=>{return showChildrenComponent.key === showChildrenComponentKey});
-                updateAllComponents.splice( idxHideAt+1, showChildrenComponent.insertCnt);
-                updateAllComponents[idxHideAt].insertCnt = 0;
-                updateAllComponents[idxHideAt].childKeyIds.length=0;
+                let idxHideAt = updateAllComponents.findIndex(showChildrenComponent=>{return showChildrenComponent.displayLogic.key === showChildrenComponentKey});
+                updateAllComponents.splice( idxHideAt+1, showChildrenComponent.displayLogic.insertCnt);
+                updateAllComponents[idxHideAt].displayLogic.insertCnt = 0;
+                updateAllComponents[idxHideAt].displayLogic.childKeyIds.length=0;
             }
           }
           this.setState( { greetings: updateAllComponents })
