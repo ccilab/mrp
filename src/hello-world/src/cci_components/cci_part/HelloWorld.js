@@ -7,21 +7,21 @@ class CCiLabComponent extends Component {
             expended:  true
         };
         currentComponent = this.props.component;
-        parents = this.currentComponent.businessItems.parentIds;
-        children = this.currentComponent.businessItems.childIds;
-        componentName = this.currentComponent.businessItems.name;
-        imgName = '/images/'+this.componentName+'.'+this.currentComponent.businessItems.imgType;
-        progressStatus = this.currentComponent.status;
-        progressValue = this.currentComponent.businessItems.progressPercent;
+        parents = this.currentComponent.businessLogic.parentIds;
+        children = this.currentComponent.businessLogic.childIds;
+        componentName = this.currentComponent.businessLogic.name;
+        imgName = '/images/'+this.componentName+'.'+this.currentComponent.businessLogic.imgType;
+        progressStatus = this.currentComponent.businessLogic.status;
+        progressValue = this.currentComponent.businessLogic.progressPercent;
 
     expending = () => {
         if (this.state.expended === true) {
-          this.currentComponent.displayItems.toBeExpend = false;
+          this.currentComponent.displayLogic.toBeExpend = false;
           this.setState({ expended: false });
           this.selectShowChildren(true);
         }
         else {
-           this.currentComponent.displayItems.toBeExpend = true;
+           this.currentComponent.displayLogic.toBeExpend = true;
            this.setState({ expended: true });
           this.selectShowChildren(false);
          
@@ -30,7 +30,7 @@ class CCiLabComponent extends Component {
     };
 
     removeGreeting = () => {
-        this.props.removeGreeting(this.component.businessItems.imgName);
+        this.props.removeGreeting(this.component.businessLogic.imgName);
     };
 
     selectShowChildren = (isShow) =>{
@@ -49,7 +49,7 @@ class CCiLabComponent extends Component {
           lclassName +='btn-success cci-component-btn_green_'+ this.progressValue;
         if( this.progressStatus === 'alarm') 
           lclassName +='btn-danger cci-component-btn_alarm_'+ this.progressValue;
-        if( this.state.expended === false || this.currentComponent.displayItems.toBeExpend === false ) 
+        if( this.state.expended === false || this.currentComponent.displayLogic.toBeExpend === false ) 
         {
           if( lchildren !== 0 && lchildren !== '+' )
             lchildren = '-';
