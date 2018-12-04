@@ -7,20 +7,56 @@ import AddGreeter from "./AddGreeter";
 //image file name should be created the same as component name, so we can create imgName dynamically
 //image type is extracted from uploaded image file
 //table includes assembly and paint process
-const components = [ { businessLogic: {id: 0, name: 'table', parentIds:[], childIds:[1,2,3,4,5,6],  imgType: 'png', status: 'no_issue', progressPercent:0}, displayLogic: { key: 0,childKeyIds:[1,2,3,4,5,6], showMyself:false, toBeExpend: true, insertCnt: 0}},
-                     { businessLogic: {id: 1, name:'top', parentIds:[0], childIds:[5,6], imgType:'jpg', status: 'warning', progressPercent: 40}, displayLogic: {key: 1,childKeyIds:[], showMyself: false, toBeExpend: true, insertCnt: 0}},
-                     { businessLogic: {id: 2, name:'leg', parentIds:[0], childIds:[5,6], imgType:'jpg', status: 'alarm', progressPercent: 10}, displayLogic: {key: 2, childKeyIds:[],showMyself: false, toBeExpend: true, insertCnt: 0}},
-                     { businessLogic: {id: 3, name:'upper_beam', parentIds:[0], childIds:[5,6],  imgType:'jpg', status: 'no_issue', progressPercent: 50},displayLogic: {key: 3,childKeyIds:[], showMyself: false, toBeExpend: true, insertCnt: 0}},
-                     { businessLogic: {id: 4, name:'low_beam', parentIds:[0], childIds:[5,6],  imgType:'jpg', status: 'warning', progressPercent: 20},displayLogic: {key: 4,childKeyIds:[], showMyself: false, toBeExpend: true, insertCnt: 0}},
+const components = [ { businessLogic: {id: 0, name: 'table', parentIds:[], childIds:[1,2,3,4,5,6],  imgType: 'png', status: 'no_issue', progressPercent:0}, displayLogic: { key: 0,childKeyIds:[], showMyself:false, toBeExpend: false, insertCnt: 0}},
+                     { businessLogic: {id: 1, name:'top', parentIds:[0], childIds:[5,6], imgType:'jpg', status: 'warning', progressPercent: 40}, displayLogic: {key: 1,childKeyIds:[], showMyself: false, toBeExpend: false, insertCnt: 0}},
+                     { businessLogic: {id: 2, name:'leg', parentIds:[0], childIds:[5,6], imgType:'jpg', status: 'alarm', progressPercent: 10}, displayLogic: {key: 2, childKeyIds:[],showMyself: false, toBeExpend: false, insertCnt: 0}},
+                     { businessLogic: {id: 3, name:'upper_beam', parentIds:[0], childIds:[5,6],  imgType:'jpg', status: 'no_issue', progressPercent: 50},displayLogic: {key: 3,childKeyIds:[], showMyself: false, toBeExpend: false, insertCnt: 0}},
+                     { businessLogic: {id: 4, name:'low_beam', parentIds:[0], childIds:[5,6],  imgType:'jpg', status: 'warning', progressPercent: 20},displayLogic: {key: 4,childKeyIds:[], showMyself: false, toBeExpend: false, insertCnt: 0}},
                      { businessLogic: {id: 5, name:'nail', parentIds:[0,1,2,3,4], childIds:[],  imgType:'', status: 'no_issue', progressPercent: 10},displayLogic: {key: 5, childKeyIds:[],showMyself: false, toBeExpend: false, insertCnt: 0}},
                      { businessLogic: {id: 6, name:'glue', parentIds:[0,1,2,3,4], childIds:[], imgType:'', status: 'no_issue', progressPercent: 10},displayLogic: {key: 6,childKeyIds:[], showMyself: false, toBeExpend: false, insertCnt: 0}}
                     ]
 
 class HelloWorldList extends Component {
-    state = { greetings: undefined };
+    state = { greetings: components };
 
-    componentWillMount=(components)=>{
+    // initialize first component's childKeyIds, reorder in following order: the first component, alarm status, warning status, no_issue status
+    componentWillMount=()=>{
+      let initialComponents=[];
+      let idx, idx2;
+      let idxChildId;
+      let displayKeyValue = 0;
 
+      // initialize displayLogic items, create unique key value
+      for(idx = 0; idx < components.length; idx++ ) {
+        let element = components[idx];
+        element.displayLogic.key = displayKeyValue++;
+        element.displayLogic.childKeyIds.length = 0;
+        element.displayLogic.insertCnt = 0;
+        element.displayLogic.showMyself = false;
+        element.businessLogic.childIds.length ? element.displayLogic.toBeExpend = true : element.displayLogic.toBeExpend = false;
+      };
+
+      // find the very top component 
+      let firstComponent = components.filter(component=>component.businessLogic.parentIds.length === 0)[0]
+      firstComponent.displayLogic.showMyself = true;
+      initialComponents.push(firstComponent);
+
+      if( firstComponent.businessLogic.childIds.length !== 0 ){
+        firstComponent.displayLogic.toBeExpend = true;
+        for(idxChildId = 0; idxChildId < firstComponent.businessLogic.childIds.length; idxChildId++ ) {
+          for( idx = 0, idx2 = 0; idx < components.length; idx++, idx2++ ) { 
+            if( firstComponent.businessLogic.childIds[idxChildId] === components[idx].businessLogic.id && 
+                ( idx2 >= initialComponents.length || 
+                  firstComponent.businessLogic.childIds[idxChildId] !== initialComponents[idx2].businessLogic.id
+                  )) {
+              firstComponent.displayLogic.childKeyIds.push( components[idx].displayLogic.key )
+              initialComponents.push( components[idx] );
+              break;
+            }
+          }
+        }
+      }
+      this.setState( {greetings: initialComponents} )
     }
   
     addGreeting = (newName, progressValue) =>{
@@ -38,9 +74,7 @@ class HelloWorldList extends Component {
     //based on selected component and its show Status to show or hide its children
     showChildren = ( showChildrenComponent, showStatus ) =>{
           let updateAllComponents =this.state.greetings;
-          let showChildrenComponentKey = showChildrenComponent.displayLogic.key;
-          let idxChildKeyId = 0;
-          let idxChildId = 0;
+          let selectComponentKey = showChildrenComponent.displayLogic.key;
           let idxComponent = 0;
           let idx2Component = 0;
        
@@ -54,80 +88,72 @@ class HelloWorldList extends Component {
           {  
             // childKeyIds.length is 0, use childIds to find child component, show it, create childKey and insert this new component to component lists
             // length of childIds and childKeyIds should be same, #todo: need to add check here
-            for( idxChildId = 0; idxChildId < showChildrenComponent.businessLogic.childIds.length; idxChildId++) {
-              // looping through entire component list to find the component included inside child component list
-              for( idxComponent = 0;  idxComponent < updateAllComponents.length; idxComponent++ ) {
-                // // if childKeyIds.length !===0 use childKeyIds to find child component and show it,
-                // if( updateAllComponents[idxComponent].childKeyIds.length !== 0 ) {
-                //   for( idxChildKeyId = 0; idxChildKeyId < updateAllComponents[idxComponent].childKeyIds.length; idxChildKeyId++) {
-                //     for( idx2Component = 0;  idx2Component < updateAllComponents.length; idx2Component++ ) {
-                //       if( updateAllComponents[idx2Component].key === updateAllComponents[idxComponent].childKeyIds[idxChildKeyId] ) {
-                //         updateAllComponents[idx2Component].showMyself = showStatus;
-                //       }
-                //     }
-                //   }
-                // }
-                // find the component that is the child component, and update the show status of this component
-                if( (showChildrenComponent.displayLogic.childKeyIds.length && updateAllComponents[idxComponent].displayLogic.key === showChildrenComponent.displayLogic.childKeyIds[idxChildId] ) ||
-                    (updateAllComponents[idxComponent].businessLogic.id === showChildrenComponent.businessLogic.childIds[idxChildId]))
-                {
-                    //first compoent needs to show all its direct children 
-                    if( firstComponent.key === showChildrenComponentKey )
-                      updateAllComponents[idxComponent].displayLogic.showMyself = showStatus;
-
-                    // show child components under direct parent component 
-                    //make sure parent not the first component,  show its child components
-                    // only insert children once, it will stay in the component list forever in current session
-                    if( firstComponent.key !== showChildrenComponentKey && showChildrenComponent.displayLogic.insertCnt < showChildrenComponent.businessLogic.childIds.length )
-                    {
-                        // create an new object to update so the original object won't be updated 
-                        let cloneComponent = Object.assign({}, updateAllComponents[idxComponent]);
-                        cloneComponent.displayLogic.key = updateAllComponents.length+1;
-                        cloneComponent.displayLogic.showMyself = showStatus;
-                        showChildrenComponent.displayLogic.childKeyIds.push( cloneComponent.key );
-                        let idxInsertAt = updateAllComponents.findIndex(showChildrenComponent=>{return showChildrenComponent.displayLogic.key === showChildrenComponentKey});
-                        // insert child component under direct parent
-                        updateAllComponents.splice( idxInsertAt+1,0,cloneComponent);
-                        updateAllComponents[idxInsertAt].displayLogic.insertCnt++;
-                    }
-                    break;
-                }
+            let childComponentIds = showChildrenComponent.displayLogic.childKeyIds.length ? showChildrenComponent.displayLogic.childKeyIds : showChildrenComponent.businessLogic.childIds;
+              
+            // looping through entire component list to find the component included inside child component list
+            for( idxComponent = 0;  idxComponent < updateAllComponents.length; idxComponent++ ) {
+              // find the component that is the child component, and update the show status of this component
+              if( (showChildrenComponent.displayLogic.childKeyIds.length && childComponentIds.includes(updateAllComponents[idxComponent].displayLogic.key ) ) ||
+                  (showChildrenComponent.displayLogic.childKeyIds.length === 0 && showChildrenComponent.businessLogic.childIds.includes(updateAllComponents[idxComponent].businessLogic.id)))
+              {
+                  //first compoent needs to show all its direct children 
+                  if( firstComponent.displayLogic.key === selectComponentKey )
+                    updateAllComponents[idxComponent].displayLogic.showMyself = showStatus;
+                  else
+                  {
+                      // show child components under direct parent component 
+                      //make sure parent not the first component,  show its child components
+                      // only insert children once, it will stay in the component list forever in current session
+                      if(  showChildrenComponent.displayLogic.insertCnt < childComponentIds.length )
+                      {
+                          // create an new object to update so the original object won't be updated 
+                          let cloneDisplayLogic = Object.assign({}, updateAllComponents[idxComponent].displayLogic);
+                          cloneDisplayLogic.key = updateAllComponents.length+1;
+                          cloneDisplayLogic.showMyself = showStatus;
+                          updateAllComponents[idxComponent].businessLogic.childIds.length ? cloneDisplayLogic.toBeExpend = true : cloneDisplayLogic.toBeExpend = false;
+                          showChildrenComponent.displayLogic.childKeyIds.push( cloneDisplayLogic.key );
+                          let cloneComponent = Object.assign({}, {businessLogic: updateAllComponents[idxComponent].businessLogic, displayLogic: cloneDisplayLogic});
+                          let idxInsertAt = updateAllComponents.findIndex(showChildrenComponent=>{return showChildrenComponent.displayLogic.key === selectComponentKey});
+                          // insert child component under direct parent
+                          updateAllComponents.splice( idxInsertAt+1,0,cloneComponent);
+                          showChildrenComponent.displayLogic.insertCnt++;
+                      }
+                      else
+                        updateAllComponents[idxComponent].displayLogic.showMyself = showStatus;
+                  }
               }
             }
           }
           else 
           { 
             // hide all children for the first component, childKeyIds[] should be always 0 for the first component 
-            if( firstComponent.displayLogic.key === showChildrenComponentKey ) 
+            if( firstComponent.displayLogic.key === selectComponentKey ) 
             {
-                for( idxChildId = 0; idxChildId < showChildrenComponent.displayLogic.childKeyIds.length; idxChildId++) 
+                // looping through entire component list to find the component included inside child component list
+                for( idxComponent = 0;  idxComponent < updateAllComponents.length; idxComponent++ ) 
                 {
-                  // looping through entire component list to find the component included inside child component list
-                  for( idxComponent = 0;  idxComponent < updateAllComponents.length; idxComponent++ ) 
+                  // skip the first component
+                  if( updateAllComponents[idxComponent].displayLogic.key === selectComponentKey )
+                    continue;
+
+                  // find the component that is the child component, and update the show status of this component
+                  if( showChildrenComponent.displayLogic.childKeyIds.includes(updateAllComponents[idxComponent].displayLogic.key))
+                    updateAllComponents[idxComponent].displayLogic.showMyself = showStatus;
+                    
+                  //turn off childKeyIds[] too
+                  if( updateAllComponents[idxComponent].displayLogic.childKeyIds.length !==0 ) 
                   {
-                    // find the component that is the child component, and update the show status of this component
-                    if( updateAllComponents[idxComponent].displayLogic.key === showChildrenComponent.displayLogic.childKeyIds[idxChildId] ) 
-                    {
-                      updateAllComponents[idxComponent].displayLogic.showMyself = showStatus;
-                      //turn off childKeyIds[] too
-                      if( updateAllComponents[idxComponent].displayLogic.childKeyIds.length !==0 ) 
+                      for( idx2Component = 0;  idx2Component < updateAllComponents.length; idx2Component++ ) 
                       {
-                        for( idxChildKeyId = 0; idxChildKeyId < updateAllComponents[idxComponent].displayLogic.childKeyIds.length; idxChildKeyId++)
-                        {
-                          for( idx2Component = 0;  idx2Component < updateAllComponents.length; idx2Component++ ) 
-                          {
-                            if( updateAllComponents[idx2Component].displayLogic.key === updateAllComponents[idxComponent].displayLogic.childKeyIds[idxChildKeyId] ) 
-                              updateAllComponents[idx2Component].displayLogic.showMyself = showStatus;
-                          }
-                        }
+                        if( updateAllComponents[idxComponent].displayLogic.childKeyIds.includes(updateAllComponents[idx2Component].displayLogic.key))
+                          updateAllComponents[idx2Component].displayLogic.showMyself = showStatus;
                       }
-                    }
                   }
                 }
             }
             else // deleted inserted child components under direct parent component
             {
-                let idxHideAt = updateAllComponents.findIndex(showChildrenComponent=>{return showChildrenComponent.displayLogic.key === showChildrenComponentKey});
+                let idxHideAt = updateAllComponents.findIndex(showChildrenComponent=>{return showChildrenComponent.displayLogic.key === selectComponentKey});
                 updateAllComponents.splice( idxHideAt+1, showChildrenComponent.displayLogic.insertCnt);
                 updateAllComponents[idxHideAt].displayLogic.insertCnt = 0;
                 updateAllComponents[idxHideAt].displayLogic.childKeyIds.length=0;
@@ -139,9 +165,6 @@ class HelloWorldList extends Component {
     //need to update showMyself to true after button is clicked to toBeExpend
     //need to update showMyself to false after button is clicked to collaps
     isShowMyself = ( component )=>{
-      if( component.businessLogic.parentIds.length === 0)
-        component.displayLogic.showMyself = true;
-
       if( component.displayLogic.showMyself === true )
         return <CCiLabComponent key={component.displayLogic.key} component={component} removeGreeting={this.removeGreeting} showChildren={this.showChildren}/> ;
     };
