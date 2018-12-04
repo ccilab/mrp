@@ -98,7 +98,18 @@ class HelloWorldList extends Component {
               {
                   //first compoent needs to show all its direct children 
                   if( firstComponent.displayLogic.key === selectComponentKey )
-                    updateAllComponents[idxComponent].displayLogic.showMyself = showStatus;
+                  {
+                     updateAllComponents[idxComponent].displayLogic.showMyself = showStatus;
+                      //turn off childKeyIds[] too
+                    if( updateAllComponents[idxComponent].displayLogic.childKeyIds.length !==0 ) 
+                    {
+                        for( idx2Component = 0;  idx2Component < updateAllComponents.length; idx2Component++ ) 
+                        {
+                          if( updateAllComponents[idxComponent].displayLogic.childKeyIds.includes(updateAllComponents[idx2Component].displayLogic.key))
+                            updateAllComponents[idx2Component].displayLogic.showMyself = showStatus;
+                        }
+                    }
+                  }
                   else
                   {
                       // show child components under direct parent component 
