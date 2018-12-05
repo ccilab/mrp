@@ -61,7 +61,7 @@ class CCiLabComponent extends Component {
             <button className={lclassName} onClick={ this.expending }>
                
               <span className='d-flex flex-row justify-content-between'>
-                <img className="cci-component-btn__img rounded-circle" src={this.imgName} alt={this.componentName} ></img>
+                <img className="cci-component-btn__img rounded-circle" src={this.imgName} ></img>
                 { ( lchildren !== 0 ) ?
                   <span className='badge-pill badge-info align-self-center font-weight-bold'>{lchildren}</span> :null
                 }
@@ -71,6 +71,7 @@ class CCiLabComponent extends Component {
                  <span className='badge-pill align-bottom text-gray-dark'>{this.progressValue}%</span>   
               </span>
             </button>
+            <span className="d-inline-block text-truncate">{this.componentName}</span>
           </span>
         )
       }
@@ -83,27 +84,16 @@ class CCiLabComponent extends Component {
   <img className="ComponentImg" src={images.edit_32_png} alt="edit"></img>*/
     
  /*
- <span className='badge badge-info align-bottom flex-grow-1 '>30%</span> 
- function Comment(props) {
-  return (
-    <div className="Comment">
-      <div className="UserInfo">
-        <img className="Avatar"
-          src={props.author.avatarUrl}
-          alt={props.author.name}
-        />
-        <div className="UserInfo-name">
-          {props.author.name}
-        </div>
-      </div>
-      <div className="Comment-text">
-        {props.text}
-      </div>
-      <div className="Comment-date">
-        {formatDate(props.date)}
-      </div>
-    </div>
-  );
-}
+<!-- Block level -->
+<div class="row">
+  <div class="col-2 text-truncate">
+    Praeterea iter est quasdam res quas ex communi.
+  </div>
+</div>
+
+<!-- Inline level -->
+<span class="d-inline-block text-truncate" style="max-width: 150px;">
+  Praeterea iter est quasdam res quas ex communi.
+</span>
 */
 export default CCiLabComponent;

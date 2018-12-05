@@ -92,15 +92,15 @@ class HelloWorldList extends Component {
               
             // looping through entire component list to find the component included inside child component list
             for( idxComponent = 0;  idxComponent < updateAllComponents.length; idxComponent++ ) {
-              // find the component that is the child component, and update the show status of this component
+              // find the component that has the child component, and update the show status of this component
               if( (showChildrenComponent.displayLogic.childKeyIds.length && childComponentIds.includes(updateAllComponents[idxComponent].displayLogic.key ) ) ||
-                  (showChildrenComponent.displayLogic.childKeyIds.length === 0 && showChildrenComponent.businessLogic.childIds.includes(updateAllComponents[idxComponent].businessLogic.id)))
+                  (showChildrenComponent.displayLogic.childKeyIds.length === 0 && childComponentIds.includes(updateAllComponents[idxComponent].businessLogic.id)))
               {
                   //first compoent needs to show all its direct children 
                   if( firstComponent.displayLogic.key === selectComponentKey )
                   {
                      updateAllComponents[idxComponent].displayLogic.showMyself = showStatus;
-                      //turn off childKeyIds[] too
+                      //turn on childKeyIds[] too
                     if( updateAllComponents[idxComponent].displayLogic.childKeyIds.length !==0 ) 
                     {
                         for( idx2Component = 0;  idx2Component < updateAllComponents.length; idx2Component++ ) 
