@@ -28,7 +28,7 @@ $card-img-overlay-padding: 0%;
 @import "../bootstrap-4.0.0-alpha.6/scss/bootstrap";
 @mixin bg-linear-gradient($bg-primary-color, $start-location-percentage){
   //background: $bg-primary-color;
-  background: linear-gradient(to right,rgba($bg-primary-color, 0.8) $start-location-percentage, rgba($bg-primary-color, 0.1)); // W3C 
+  background: linear-gradient(to right,rgba($bg-primary-color, 0.8) $start-location-percentage, rgba($bg-primary-color, 0.2)); // W3C 
 }
 
 .cci-component-btn {

@@ -7,21 +7,20 @@ import AddGreeter from "./AddGreeter";
 //image file name should be created the same as component name, so we can create imgName dynamically
 //image type is extracted from uploaded image file
 //table includes assembly and paint process
-const components = [ { businessLogic: {id: 0, name: 'table', parentIds:[], childIds:[1,2,3,4,5,6],  imgType: 'png', status: 'no_issue', progressPercent:0}, displayLogic: { key: 0,childKeyIds:[], showMyself:false, toBeExpend: false, insertCnt: 0}},
-                     { businessLogic: {id: 1, name:'top', parentIds:[0], childIds:[5,6], imgType:'jpg', status: 'warning', progressPercent: 40}, displayLogic: {key: 1,childKeyIds:[], showMyself: false, toBeExpend: false, insertCnt: 0}},
-                     { businessLogic: {id: 2, name:'leg', parentIds:[0], childIds:[5,6], imgType:'jpg', status: 'alarm', progressPercent: 10}, displayLogic: {key: 2, childKeyIds:[],showMyself: false, toBeExpend: false, insertCnt: 0}},
-                     { businessLogic: {id: 3, name:'upper_beam', parentIds:[0], childIds:[5,6],  imgType:'jpg', status: 'no_issue', progressPercent: 50},displayLogic: {key: 3,childKeyIds:[], showMyself: false, toBeExpend: false, insertCnt: 0}},
-                     { businessLogic: {id: 4, name:'low_beam', parentIds:[0], childIds:[5,6],  imgType:'jpg', status: 'warning', progressPercent: 20},displayLogic: {key: 4,childKeyIds:[], showMyself: false, toBeExpend: false, insertCnt: 0}},
-                     { businessLogic: {id: 5, name:'nail', parentIds:[0,1,2,3,4], childIds:[],  imgType:'', status: 'no_issue', progressPercent: 10},displayLogic: {key: 5, childKeyIds:[],showMyself: false, toBeExpend: false, insertCnt: 0}},
-                     { businessLogic: {id: 6, name:'glue', parentIds:[0,1,2,3,4], childIds:[], imgType:'', status: 'no_issue', progressPercent: 10},displayLogic: {key: 6,childKeyIds:[], showMyself: false, toBeExpend: false, insertCnt: 0}}
+const components = [ { businessLogic: {id: 0, name: 'table', parentIds:[], childIds:[1,5,6],  imgType: 'png', status: 'no_issue', progressPercent:0}, displayLogic: { key: undefined,childKeyIds:[], showMyself:false, toBeExpend: false, insertCnt: 0}},
+                     { businessLogic: {id: 1, name:'top', parentIds:[0], childIds:[2,3], imgType:'jpg', status: 'warning', progressPercent: 40}, displayLogic: {key: undefined,childKeyIds:[], showMyself: false, toBeExpend: false, insertCnt: 0}},
+                     { businessLogic: {id: 2, name:'leg', parentIds:[1], childIds:[4], imgType:'jpg', status: 'alarm', progressPercent: 10}, displayLogic: {key: undefined, childKeyIds:[],showMyself: false, toBeExpend: false, insertCnt: 0}},
+                     { businessLogic: {id: 3, name:'upper_beam', parentIds:[1], childIds:[5,6],  imgType:'jpg', status: 'no_issue', progressPercent: 50},displayLogic: {key: undefined,childKeyIds:[], showMyself: false, toBeExpend: false, insertCnt: 0}},
+                     { businessLogic: {id: 4, name:'low_beam', parentIds:[2], childIds:[5,6],  imgType:'jpg', status: 'warning', progressPercent: 20},displayLogic: {key: undefined,childKeyIds:[], showMyself: false, toBeExpend: false, insertCnt: 0}},
+                     { businessLogic: {id: 5, name:'nail', parentIds:[0,1,2,3,4], childIds:[],  imgType:'', status: 'no_issue', progressPercent: 10},displayLogic: {key: undefined, childKeyIds:[],showMyself: false, toBeExpend: false, insertCnt: 0}},
+                     { businessLogic: {id: 6, name:'glue', parentIds:[0,1,2,3,4], childIds:[], imgType:'', status: 'no_issue', progressPercent: 10},displayLogic: {key: undefined,childKeyIds:[], showMyself: false, toBeExpend: false, insertCnt: 0}}
                     ]
 
 class HelloWorldList extends Component {
-    state = { greetings: components };
+    state = { greetings: undefined };
 
     // initialize first component's childKeyIds, reorder in following order: the first component, alarm status, warning status, no_issue status
     componentWillMount=()=>{
-      let initialComponents=[];
       let idx, idx2;
       let idxChildId;
       let displayKeyValue = 0;
@@ -37,6 +36,7 @@ class HelloWorldList extends Component {
       };
 
       // find the very top component 
+      let initialComponents=[];
       let firstComponent = components.filter(component=>component.businessLogic.parentIds.length === 0)[0]
       firstComponent.displayLogic.showMyself = true;
       initialComponents.push(firstComponent);
@@ -73,7 +73,7 @@ class HelloWorldList extends Component {
 
     //based on selected component and its show Status to show or hide its children
     showChildren = ( showChildrenComponent, showStatus ) =>{
-          let updateAllComponents =this.state.greetings;
+          let updateAllComponents = components; //this.state.greetings;
           let selectComponentKey = showChildrenComponent.displayLogic.key;
           let idxComponent = 0;
           let idx2Component = 0;
@@ -113,8 +113,9 @@ class HelloWorldList extends Component {
                   else
                   {
                       // show child components under direct parent component 
-                      //make sure parent not the first component,  show its child components
-                      // only insert children once, it will stay in the component list forever in current session
+
+                      // if the same childId referenced in other component's childIds[],
+                      // create a new key for this childId. Only insert children once, it will stay in the component list forever in current session
                       if(  showChildrenComponent.displayLogic.insertCnt < childComponentIds.length )
                       {
                           // create an new object to update so the original object won't be updated 
@@ -194,10 +195,10 @@ class HelloWorldList extends Component {
           <AddGreeter addGreeting={this.addGreeting} />
           <div className='container-fluid'>
             <div className='row'>
-              <div className='col-sm-3'>
+              <div className='col-sm-1  bg-info'>
                 {this.renderGreetings()}
               </div>
-              <div className='col-sm-9'>
+              <div className='col-sm-11 bg-primary'>
                 'this is place holder for component configuration table'
               </div>
             </div>
