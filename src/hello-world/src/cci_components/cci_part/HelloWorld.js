@@ -14,6 +14,10 @@ class CCiLabComponent extends Component {
         progressStatus = this.currentComponent.businessLogic.status;
         progressValue = this.currentComponent.businessLogic.progressPercent;
 
+    componentWillMount=()=>{
+      this.setState({expended: this.props.component.displayLogic.toBeExpend});
+    }
+
     expending = () => {
         if (this.state.expended === true) {
           this.currentComponent.displayLogic.toBeExpend = false;
@@ -61,7 +65,7 @@ class CCiLabComponent extends Component {
             <button className={lclassName} onClick={ this.expending }>
                
               <span className='d-flex flex-row justify-content-between'>
-                <img className="cci-component-btn__img rounded-circle" src={this.imgName} ></img>
+                <img className="cci-component-btn__img rounded-circle" src={this.imgName} alt=""></img>
                 { ( lchildren !== 0 ) ?
                   <span className='badge-pill badge-info align-self-center font-weight-bold'>{lchildren}</span> :null
                 }
