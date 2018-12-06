@@ -113,10 +113,19 @@ class HelloWorldList extends Component {
                   else
                   {
                       // show child components under direct parent component 
-
+                      let insertCnt = 0;
+                      // if selected component's children isn't already in other component's childKeyIds, use selected component's children's Id in its childKeyIds[] 
+                      for( idx2Component = 0;  idx2Component < updateAllComponents.length; idx2Component++ ) {
+                        if( updateAllComponents[idx2Component].displayLogic.childKeyIds.length !== 0 && 
+                            updateAllComponents[idx2Component].displayLogic.childKeyIds.includes(updateAllComponents[idxComponent].displayLogic.key))
+                        {
+                          insertCnt++;
+                          break;
+                        }
+                      }
                       // if the same childId referenced in other component's childIds[],
                       // create a new key for this childId. Only insert children once, it will stay in the component list forever in current session
-                      if(  showChildrenComponent.displayLogic.insertCnt < childComponentIds.length )
+                      if( insertCnt !== 0 )
                       {
                           // create an new object to update so the original object won't be updated 
                           let cloneDisplayLogic = Object.assign({}, updateAllComponents[idxComponent].displayLogic);
@@ -131,7 +140,11 @@ class HelloWorldList extends Component {
                           showChildrenComponent.displayLogic.insertCnt++;
                       }
                       else
+                      { // no childKey is used in any other component's childKeyIds[], there is no need to create new key,
+                        showChildrenComponent.displayLogic.childKeyIds.push( updateAllComponents[idxComponent].displayLogic.key );
                         updateAllComponents[idxComponent].displayLogic.showMyself = showStatus;
+                      }
+                        
                   }
               }
             }
