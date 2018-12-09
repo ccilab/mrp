@@ -9,12 +9,14 @@ import AddGreeter from "./AddGreeter";
 //table includes assembly and paint process
 const components = [ { businessLogic: {id: 0, name: 'table', parentIds:[], childIds:[1,5,6],  imgType: 'png', status: 'no_issue', progressPercent:0}, displayLogic: { key: undefined,childKeyIds:[], showMyself:false, toBeExpend: false, insertCnt: 0}},
                      { businessLogic: {id: 1, name:'top', parentIds:[0], childIds:[2,3], imgType:'jpg', status: 'warning', progressPercent: 40}, displayLogic: {key: undefined,childKeyIds:[], showMyself: false, toBeExpend: false, insertCnt: 0}},
-                     { businessLogic: {id: 2, name:'leg', parentIds:[1], childIds:[4], imgType:'jpg', status: 'alarm', progressPercent: 10}, displayLogic: {key: undefined, childKeyIds:[],showMyself: false, toBeExpend: false, insertCnt: 0}},
-                     { businessLogic: {id: 3, name:'upper_beam', parentIds:[1], childIds:[5,6],  imgType:'jpg', status: 'no_issue', progressPercent: 50},displayLogic: {key: undefined,childKeyIds:[], showMyself: false, toBeExpend: false, insertCnt: 0}},
-                     { businessLogic: {id: 4, name:'low_beam', parentIds:[2], childIds:[5,6],  imgType:'jpg', status: 'warning', progressPercent: 20},displayLogic: {key: undefined,childKeyIds:[], showMyself: false, toBeExpend: false, insertCnt: 0}},
                      { businessLogic: {id: 5, name:'nail', parentIds:[0,1,2,3,4], childIds:[],  imgType:'', status: 'no_issue', progressPercent: 10},displayLogic: {key: undefined, childKeyIds:[],showMyself: false, toBeExpend: false, insertCnt: 0}},
                      { businessLogic: {id: 6, name:'glue', parentIds:[0,1,2,3,4], childIds:[], imgType:'', status: 'no_issue', progressPercent: 10},displayLogic: {key: undefined,childKeyIds:[], showMyself: false, toBeExpend: false, insertCnt: 0}}
                     ]
+const componets = [
+                    { businessLogic: {id: 2, name:'leg', parentIds:[1], childIds:[4], imgType:'jpg', status: 'alarm', progressPercent: 10}, displayLogic: {key: undefined, childKeyIds:[],showMyself: false, toBeExpend: false, insertCnt: 0}},
+                     { businessLogic: {id: 3, name:'upper_beam', parentIds:[1], childIds:[5,6],  imgType:'jpg', status: 'no_issue', progressPercent: 50},displayLogic: {key: undefined,childKeyIds:[], showMyself: false, toBeExpend: false, insertCnt: 0}},
+                     { businessLogic: {id: 4, name:'low_beam', parentIds:[2], childIds:[5,6],  imgType:'jpg', status: 'warning', progressPercent: 20},displayLogic: {key: undefined,childKeyIds:[], showMyself: false, toBeExpend: false, insertCnt: 0}},
+                  ]
 
 class HelloWorldList extends Component {
     state = { greetings: undefined };
@@ -32,7 +34,7 @@ class HelloWorldList extends Component {
         element.displayLogic.childKeyIds.length = 0;
         element.displayLogic.insertCnt = 0;
         element.displayLogic.showMyself = false;
-        element.businessLogic.childIds.length ? element.displayLogic.toBeExpend = true : element.displayLogic.toBeExpend = false;
+        element.businessLogic.childIds.length !== 0 ? element.displayLogic.toBeExpend = true : element.displayLogic.toBeExpend = false;
       };
 
       // find the very top component 
