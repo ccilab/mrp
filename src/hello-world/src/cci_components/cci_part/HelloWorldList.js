@@ -12,24 +12,23 @@ const components = [ { businessLogic: {id: 0, name: 'table', parentIds:[], child
                      { businessLogic: {id: 5, name:'nail', parentIds:[0,1,2,3,4], childIds:[],  imgType:'', status: 'no_issue', progressPercent: 10},displayLogic: {key: undefined, childKeyIds:[],showMyself: false, toBeExpend: false, insertCnt: 0}},
                      { businessLogic: {id: 6, name:'glue', parentIds:[0,1,2,3,4], childIds:[], imgType:'', status: 'no_issue', progressPercent: 10},displayLogic: {key: undefined,childKeyIds:[], showMyself: false, toBeExpend: false, insertCnt: 0}}
                     ]
-const componets = [
-                    { businessLogic: {id: 2, name:'leg', parentIds:[1], childIds:[4], imgType:'jpg', status: 'alarm', progressPercent: 10}, displayLogic: {key: undefined, childKeyIds:[],showMyself: false, toBeExpend: false, insertCnt: 0}},
-                     { businessLogic: {id: 3, name:'upper_beam', parentIds:[1], childIds:[5,6],  imgType:'jpg', status: 'no_issue', progressPercent: 50},displayLogic: {key: undefined,childKeyIds:[], showMyself: false, toBeExpend: false, insertCnt: 0}},
-                     { businessLogic: {id: 4, name:'low_beam', parentIds:[2], childIds:[5,6],  imgType:'jpg', status: 'warning', progressPercent: 20},displayLogic: {key: undefined,childKeyIds:[], showMyself: false, toBeExpend: false, insertCnt: 0}},
-                  ]
+// const componets = [
+//                     { businessLogic: {id: 2, name:'leg', parentIds:[1], childIds:[4], imgType:'jpg', status: 'alarm', progressPercent: 10}, displayLogic: {key: undefined, childKeyIds:[],showMyself: false, toBeExpend: false, insertCnt: 0}},
+//                      { businessLogic: {id: 3, name:'upper_beam', parentIds:[1], childIds:[5,6],  imgType:'jpg', status: 'no_issue', progressPercent: 50},displayLogic: {key: undefined,childKeyIds:[], showMyself: false, toBeExpend: false, insertCnt: 0}},
+//                      { businessLogic: {id: 4, name:'low_beam', parentIds:[2], childIds:[5,6],  imgType:'jpg', status: 'warning', progressPercent: 20},displayLogic: {key: undefined,childKeyIds:[], showMyself: false, toBeExpend: false, insertCnt: 0}},
+//                   ]
 
 class HelloWorldList extends Component {
     state = { greetings: undefined };
 
     // initialize first component's childKeyIds, reorder in following order: the first component, alarm status, warning status, no_issue status
     componentWillMount=()=>{
-      let idx, idx2;
-      let idxChildId;
+      let idx;
       let displayKeyValue = 0;
       let currentSessionComponents=[];
 
-      if( typeof greetings !== "undefined") {
-        greetings.map( (existingComponent)=>{ currentSessionComponents.push( existingComponent ) } );
+      if( typeof this.state.greetings !== "undefined") {
+        this.state.greetings.forEach( (existingComponent)=>{ currentSessionComponents.push( existingComponent ) } );
         displayKeyValue = currentSessionComponents.length;
       }
 
@@ -50,14 +49,13 @@ class HelloWorldList extends Component {
       // find the very top component 
       let firstComponent = currentSessionComponents.filter(component=>component.businessLogic.parentIds.length === 0)[0]
       firstComponent.displayLogic.showMyself = true;
-      currentSessionComponents.push(firstComponent);
 
       //always show very top component
       if( firstComponent.businessLogic.childIds.length !== 0 ){
         firstComponent.displayLogic.toBeExpend = true;
         // populate very top component's displayLogic.childKeyIds[], if it's not incluced yet
         for( idx = 0; idx < currentSessionComponents.length; idx++ ) { 
-          if( firstComponent.businessLogic.childIds[idxChildId].includes( currentSessionComponents[idx].businessLogic.id ) &&
+          if( firstComponent.businessLogic.childIds.includes( currentSessionComponents[idx].businessLogic.id ) &&
               ( !firstComponent.displayLogic.childKeyIds.includes( currentSessionComponents[idx].displayLogic.key) ) ) {
             firstComponent.displayLogic.childKeyIds.push( currentSessionComponents[idx].displayLogic.key )
           }
