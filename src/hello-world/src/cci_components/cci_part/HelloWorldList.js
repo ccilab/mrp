@@ -26,8 +26,17 @@ class HelloWorldList extends Component {
       let idx, idx2;
       let idxChildId;
       let displayKeyValue = 0;
+      let currentSessionComponents=[];
 
-      // initialize displayLogic items, create unique key value
+      if( typeof greetings !== "undefined") {
+        greetings.map( (existingComponent)=>{ currentSessionComponents.push( existingComponent ) } );
+        displayKeyValue = currentSessionComponents.length;
+      }
+
+      
+      // initialize displayLogic items, create unique key value for latest componets from data layer
+      // this gurrenties that displayLogic.key is unique, newly added componet won't show itself until
+      // user clicks it, except the very top component
       for(idx = 0; idx < components.length; idx++ ) {
         let element = components[idx];
         element.displayLogic.key = displayKeyValue++;
@@ -35,35 +44,31 @@ class HelloWorldList extends Component {
         element.displayLogic.insertCnt = 0;
         element.displayLogic.showMyself = false;
         element.businessLogic.childIds.length !== 0 ? element.displayLogic.toBeExpend = true : element.displayLogic.toBeExpend = false;
+        currentSessionComponents.push(element);
       };
 
       // find the very top component 
-      let initialComponents=[];
-      let firstComponent = components.filter(component=>component.businessLogic.parentIds.length === 0)[0]
+      let firstComponent = currentSessionComponents.filter(component=>component.businessLogic.parentIds.length === 0)[0]
       firstComponent.displayLogic.showMyself = true;
-      initialComponents.push(firstComponent);
+      currentSessionComponents.push(firstComponent);
 
+      //always show very top component
       if( firstComponent.businessLogic.childIds.length !== 0 ){
         firstComponent.displayLogic.toBeExpend = true;
-        for(idxChildId = 0; idxChildId < firstComponent.businessLogic.childIds.length; idxChildId++ ) {
-          for( idx = 0, idx2 = 0; idx < components.length; idx++, idx2++ ) { 
-            if( firstComponent.businessLogic.childIds[idxChildId] === components[idx].businessLogic.id && 
-                ( idx2 >= initialComponents.length || 
-                  firstComponent.businessLogic.childIds[idxChildId] !== initialComponents[idx2].businessLogic.id
-                  )) {
-              firstComponent.displayLogic.childKeyIds.push( components[idx].displayLogic.key )
-              initialComponents.push( components[idx] );
-              break;
-            }
+        // populate very top component's displayLogic.childKeyIds[], if it's not incluced yet
+        for( idx = 0; idx < currentSessionComponents.length; idx++ ) { 
+          if( firstComponent.businessLogic.childIds[idxChildId].includes( currentSessionComponents[idx].businessLogic.id ) &&
+              ( !firstComponent.displayLogic.childKeyIds.includes( currentSessionComponents[idx].displayLogic.key) ) ) {
+            firstComponent.displayLogic.childKeyIds.push( currentSessionComponents[idx].displayLogic.key )
           }
         }
       }
-      this.setState( {greetings: initialComponents} )
+      this.setState( {greetings: currentSessionComponents} )
     }
   
     addGreeting = (newName, progressValue) =>{
       this.setState({ greetings: [...this.state.greetings, 
-        { businessLogic: {id: components.length + 1, name: newName, parentIds:[0], childIds:[], imgType:'', status: "alarm", progressPercent: progressValue}, displayLogic:{key: components.length + 1}, childKeyIds:[], showMyself: true, toBeExpend: true, insertCnt: 0}] });
+        { businessLogic: {id: this.state.greetings.length + 1, name: newName, parentIds:[0], childIds:[], imgType:'', status: "alarm", progressPercent: progressValue}, displayLogic:{key: undefined}, childKeyIds:[], showMyself: false, toBeExpend: false, insertCnt: 0}] });
     };
 
     removeGreeting = (removeName) =>{
@@ -75,7 +80,7 @@ class HelloWorldList extends Component {
 
     //based on selected component and its show Status to show or hide its children
     showChildren = ( showChildrenComponent, showStatus ) =>{
-          let updateAllComponents = components; //this.state.greetings;
+          let updateAllComponents = this.state.greetings; //this.state.greetings;
           let selectComponentKey = showChildrenComponent.displayLogic.key;
           let idxComponent = 0;
           let idx2Component = 0;
