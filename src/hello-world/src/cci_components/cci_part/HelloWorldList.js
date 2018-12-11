@@ -9,10 +9,10 @@ import AddGreeter from "./AddGreeter";
 //table includes assembly and paint process
 // simulate after loaded very top component and its direct  components
 const firstComponents = [ { businessLogic: {id: 0, name: 'table', parentIds:[], childIds:[1,5,6],  imgType: 'png', status: 'no_issue', progressPercent:0}, displayLogic: { key: 0,childKeyIds:[1,2,3], showMyself:false, toBeExpend: true}},
-                     { businessLogic: {id: 1, name:'top', parentIds:[0], childIds:[2,3], imgType:'jpg', status: 'warning', progressPercent: 40}, displayLogic: {key: 1,childKeyIds:[], showMyself: false, toBeExpend: true}},
+                     { businessLogic: {id: 1, name:'top', parentIds:[0], childIds:[2,3], imgType:'jpg', status: 'warning', progressPercent: 40}, displayLogic: {key: 1,childKeyIds:[], showMyself: false, toBeExpend: false}},
                      { businessLogic: {id: 5, name:'nail', parentIds:[0], childIds:[],  imgType:'', status: 'no_issue', progressPercent: 10},displayLogic: {key: 2, childKeyIds:[],showMyself: false, toBeExpend: false}},
-                     { businessLogic: {id: 6, name:'glue', parentIds:[0], childIds:[], imgType:'', status: 'no_issue', progressPercent: 10},displayLogic: {key: 3,childKeyIds:[], showMyself: false, toBeExpend: false}}
-                    ]
+                     { businessLogic: {id: 6, name:'glue', parentIds:[0], childIds:[], imgType:'', status: 'no_issue', progressPercent: 10},displayLogic: {key: 3,childKeyIds:[], showMyself: false, toBeExpend: false}},
+                      ]
 //const components = [];
 
 // simulate load very top component and its direct components
@@ -23,16 +23,16 @@ const firstComponents = [ { businessLogic: {id: 0, name: 'table', parentIds:[], 
 //                     ]
 
 // simulate load children of component id 1 ( top )
-const components = [
+const secondComponents = [
                     { businessLogic: {id: 2, name:'leg', parentIds:[1], childIds:[4], imgType:'jpg', status: 'alarm', progressPercent: 10}, displayLogic: {key: undefined, childKeyIds:[],showMyself: false, toBeExpend: false}},
                      { businessLogic: {id: 3, name:'upper_beam', parentIds:[1], childIds:[5,6],  imgType:'jpg', status: 'no_issue', progressPercent: 50},displayLogic: {key: undefined,childKeyIds:[], showMyself: false, toBeExpend: false}},
                    ]
-
-// const components = [
-//                    { businessLogic: {id: 4, name:'low_beam', parentIds:[2], childIds:[5,6],  imgType:'jpg', status: 'warning', progressPercent: 20},displayLogic: {key: undefined,childKeyIds:[], showMyself: false, toBeExpend: false}},
-//                      { businessLogic: {id: 5, name:'nail', parentIds:[0,1,2,3,4], childIds:[],  imgType:'', status: 'no_issue', progressPercent: 10},displayLogic: {key: undefined, childKeyIds:[],showMyself: false, toBeExpend: false}},
-//                      { businessLogic: {id: 6, name:'glue', parentIds:[0,1,2,3,4], childIds:[], imgType:'', status: 'no_issue', progressPercent: 10},displayLogic: {key: undefined,childKeyIds:[], showMyself: false, toBeExpend: false}}                  
-// ]    
+// simulate load children of component id 4 ( top )
+const thirdComponents = [
+                     { businessLogic: {id: 4, name:'low_beam', parentIds:[2], childIds:[5,6],  imgType:'jpg', status: 'warning', progressPercent: 20},displayLogic: {key: undefined,childKeyIds:[], showMyself: false, toBeExpend: false}},
+                     { businessLogic: {id: 5, name:'nail', parentIds:[4], childIds:[],  imgType:'', status: 'no_issue', progressPercent: 10},displayLogic: {key: undefined, childKeyIds:[],showMyself: false, toBeExpend: false}},
+                     { businessLogic: {id: 6, name:'glue', parentIds:[4], childIds:[], imgType:'', status: 'no_issue', progressPercent: 10},displayLogic: {key: undefined,childKeyIds:[], showMyself: false, toBeExpend: false}}                  
+                  ]    
 
 // utility funtions need move to a saperate js file
 const initializeComponents = ( startComponent, originComponents, incomingComponents, targetComponents)=>{
@@ -62,7 +62,7 @@ const initializeComponents = ( startComponent, originComponents, incomingCompone
       //need populate childKeyIds[] if its not fully populated yet
       if( startComponent.businessLogic.childIds.length !==  startComponent.displayLogic.childKeyIds.length && 
           startComponent.displayLogic.childKeyIds.includes( element.displayLogic.key ) === false ) {
-          let idxInsertAt = targetComponents.findIndex(startComponent=>{return startComponent.displayLogic.key === selectComponentKey});
+          let idxInsertAt = targetComponents.findIndex(startComponent=>{return startComponent.displayLogic.key === startComponentKey});
           // component without childIs[] is always above componets with childIds[] for display/expending purpose
           if( element.businessLogic.childIds.length === 0 )
             targetComponents.splice( idxInsertAt+1,0,element);
@@ -83,21 +83,23 @@ const populateComponentChildIds = (selectedComponent, cachedComponents )=>{
   }
 }
 
+
+
 class HelloWorldList extends Component {
     state = { greetings: undefined };
 
     // initialize first component's childKeyIds, reorder in following order: the first component, alarm status, warning status, no_issue status
     componentWillMount=()=>{
-      let idx;
       let currentSessionComponents=[];
 
       //#todo: need to query server side to find the very top component 
       let firstComponent = firstComponents.filter(component=>component.businessLogic.parentIds.length === 0)[0]
-       //always show very top component
-      firstComponent.displayLogic.showMyself = true;
-     
+       
       initializeComponents(firstComponent, this.state.greetings, firstComponents, currentSessionComponents);
-
+    
+      //always show very top component
+      firstComponent.displayLogic.showMyself = true;
+   
       if( firstComponent.businessLogic.childIds.length !== 0 ){
         firstComponent.displayLogic.toBeExpend = true;
 
@@ -122,39 +124,57 @@ class HelloWorldList extends Component {
 
     //based on selected component and its show Status to show or hide its children
     showChildren = ( selectedComponent, showStatus ) =>{
-          let selectComponentKey = selectedComponent.displayLogic.key;
           let idxComponent = 0;
           let idx2Component = 0;
           let currentSessionComponents=[];
         
 
           // if selected component's childKeyIds[] isn't fully populated we need to request new components from server side first
-          if ( selectedComponent.businessLogic.childIds.length !== selectedComponent.displayLogic.childKeyIds.length )
-            //#todo: need to query server to get a new components
-            initializeComponents(selectedComponent, this.state.greetings, components, currentSessionComponents);
+          if ( selectedComponent.businessLogic.childIds.length !== selectedComponent.displayLogic.childKeyIds.length ) {
+              //#todo: need to query server to get a new components
+              console.log("query server to get child components")
+              
+              let components =[];
+              if( selectedComponent.businessLogic.id === 1 )
+                components= secondComponents;
+                
+              if( selectedComponent.businessLogic.id === 2 )
+                components= thirdComponents;
+              
+              initializeComponents(selectedComponent, this.state.greetings, components, currentSessionComponents);
+          }
+          else {
+            currentSessionComponents = this.state.greetings;
+          }
+           
            
           populateComponentChildIds(selectedComponent, currentSessionComponents, showStatus );
 
+          let firstComponent = firstComponents.filter(component=>component.businessLogic.parentIds.length === 0)[0];
+
           // looping through entire component list to find the component included inside child component list
-          for( idxComponent = 0;  idxComponent < updateAllComponents.length; idxComponent++ ) 
+          for( idxComponent = 0;  idxComponent < currentSessionComponents.length; idxComponent++ ) 
           {
             // skip the first component
-            if( updateAllComponents[idxComponent].displayLogic.key === selectComponentKey )
+            if( currentSessionComponents[idxComponent].displayLogic.key === firstComponent.displayLogic.key )
               continue;
 
-            // find the component that is the child component, and update the show status of this component
-            if( showChildrenComponent.displayLogic.childKeyIds.includes(updateAllComponents[idxComponent].displayLogic.key))
-              updateAllComponents[idxComponent].displayLogic.showMyself = showStatus;
-              
-            //turn off childKeyIds[] too
-            if( updateAllComponents[idxComponent].displayLogic.childKeyIds.length !==0 ) 
-            {
-                for( idx2Component = 0;  idx2Component < updateAllComponents.length; idx2Component++ ) 
+            // find the component that has the child components, and update the show status of this component and its children
+            if( selectedComponent.displayLogic.childKeyIds.includes(currentSessionComponents[idxComponent].displayLogic.key) ) {
+                currentSessionComponents[idxComponent].displayLogic.showMyself = showStatus;
+
+                //turn off childKeyIds[] but we don't want to turn childKeyIds[] unless its direct parent's toBeExpened = false 
+                if( !currentSessionComponents[idxComponent].displayLogic.toBeExpend && 
+                    currentSessionComponents[idxComponent].displayLogic.childKeyIds.length ) 
                 {
-                  if( updateAllComponents[idxComponent].displayLogic.childKeyIds.includes(updateAllComponents[idx2Component].displayLogic.key))
-                    updateAllComponents[idx2Component].displayLogic.showMyself = showStatus;
+                    for( idx2Component = 0;  idx2Component < currentSessionComponents.length; idx2Component++ ) 
+                    {
+                      if( currentSessionComponents[idxComponent].displayLogic.childKeyIds.includes(currentSessionComponents[idx2Component].displayLogic.key) )
+                        currentSessionComponents[idx2Component].displayLogic.showMyself = showStatus;
+                    }
                 }
             }
+              
           }
           
           this.setState( { greetings: currentSessionComponents })
@@ -163,13 +183,14 @@ class HelloWorldList extends Component {
     //need to update showMyself to true after button is clicked to toBeExpend
     //need to update showMyself to false after button is clicked to collaps
     renderGreetings = () => {
-      return (typeof this.state.greetings !== "undefined" ) ? this.state.greetings.map( (component) => {
+      return ( (typeof this.state !== "undefined") && (typeof this.state.greetings !== "undefined" ) )? 
+          this.state.greetings.map( (component) => {
                 if( component.displayLogic.showMyself === true )
-                  return <CCiLabComponent key={component.displayLogic.key} component={component} removeGreeting={this.removeGreeting} showChildren={this.showChildren}/> ;
+                  return <CCiLabComponent component={component} removeGreeting={this.removeGreeting} showChildren={this.showChildren}/> ;
                 else
                 return null;
             }
-        ) : null;
+          ) : null;
     };
 
   
