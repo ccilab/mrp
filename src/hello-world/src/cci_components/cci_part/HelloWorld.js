@@ -10,7 +10,7 @@ class CCiLabComponent extends Component {
         parents = this.currentComponent.businessLogic.parentIds;
         children = this.currentComponent.businessLogic.childIds;
         componentName = this.currentComponent.businessLogic.name;
-        imgName = '/images/'+this.componentName+'.'+this.currentComponent.businessLogic.imgType;
+        imgName = '/images/'+this.currentComponent.businessLogic.imgFile;
         progressStatus = this.currentComponent.businessLogic.status;
         progressValue = this.currentComponent.businessLogic.progressPercent;
 
@@ -42,11 +42,11 @@ class CCiLabComponent extends Component {
     }
 
     render() {
-        console.log('CCiLabComponent::render() imgName: ', this.imgName);
+        console.log('CCiLabComponent::render() imgFile: ', this.imgName);
         let lclassName='btn cci-component-btn '
-        let lchildren = this.children.length
+        let lexpendSymbol = this.children.length ? '>..' : '-';
         if( this.parents.length === 0 && this.children.length === 0 )
-          lchildren = '+';
+        lexpendSymbol = '+';
         if( this.progressStatus === 'warning') 
           lclassName +='btn-warning cci-component-btn_warning_'+ this.progressValue;
         if( this.progressStatus === 'no_issue') 
@@ -55,8 +55,8 @@ class CCiLabComponent extends Component {
           lclassName +='btn-danger cci-component-btn_alarm_'+ this.progressValue;
         if( this.state.expended === false || this.currentComponent.displayLogic.toBeExpend === false ) 
         {
-          if( lchildren !== 0 && lchildren !== '+' )
-            lchildren = '-';
+          if( this.children.length !== 0 && lexpendSymbol !== '+' )
+            lexpendSymbol = 'v';
             
         }
         
@@ -66,8 +66,8 @@ class CCiLabComponent extends Component {
                
               <span className='d-flex flex-row justify-content-between'>
                 <img className="cci-component-btn__img rounded-circle" src={this.imgName} alt=""></img>
-                { ( lchildren !== 0 ) ?
-                  <span className='badge-pill badge-info align-self-center font-weight-bold'>{lchildren}</span> :null
+                { ( this.children.length !== 0 ) ?
+                  <span className='badge-pill badge-info cci-badge-position align-self-center font-weight-bold'>{lexpendSymbol}</span> :null
                 }
               </span>
                 

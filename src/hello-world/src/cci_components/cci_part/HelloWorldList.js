@@ -8,30 +8,30 @@ import AddGreeter from "./AddGreeter";
 //image type is extracted from uploaded image file
 //table includes assembly and paint process
 // simulate after loaded very top component and its direct  components
-const firstComponents = [ { businessLogic: {id: 0, name: 'table', parentIds:[], childIds:[1,5,6],  imgType: 'png', status: 'no_issue', progressPercent:0}, displayLogic: { key: 0,childKeyIds:[1,2,3], showMyself:false, toBeExpend: true}},
-                     { businessLogic: {id: 1, name:'top', parentIds:[0], childIds:[2,3], imgType:'jpg', status: 'warning', progressPercent: 40}, displayLogic: {key: 1,childKeyIds:[], showMyself: false, toBeExpend: false}},
-                     { businessLogic: {id: 5, name:'nail', parentIds:[0], childIds:[],  imgType:'', status: 'no_issue', progressPercent: 10},displayLogic: {key: 2, childKeyIds:[],showMyself: false, toBeExpend: false}},
-                     { businessLogic: {id: 6, name:'glue', parentIds:[0], childIds:[], imgType:'', status: 'no_issue', progressPercent: 10},displayLogic: {key: 3,childKeyIds:[], showMyself: false, toBeExpend: false}},
+const firstComponents = [ { businessLogic: {id: 0, name: 'table', parentIds:[], childIds:[1,5,6],  imgFile: 'table.png', status: 'no_issue', progressPercent:0}, displayLogic: { key: 0,childKeyIds:[1,2,3], showMyself:false, toBeExpend: true}},
+                     { businessLogic: {id: 1, name:'top', parentIds:[0], childIds:[2,3], imgFile:'edit_67.png', status: 'warning', progressPercent: 40}, displayLogic: {key: 1,childKeyIds:[], showMyself: false, toBeExpend: false}},
+                     { businessLogic: {id: 5, name:'nail', parentIds:[0], childIds:[],  imgFile:'edit_67.png', status: 'no_issue', progressPercent: 10},displayLogic: {key: 2, childKeyIds:[],showMyself: false, toBeExpend: false}},
+                     { businessLogic: {id: 6, name:'glue', parentIds:[0], childIds:[], imgFile:'edit_67.png', status: 'no_issue', progressPercent: 10},displayLogic: {key: 3,childKeyIds:[], showMyself: false, toBeExpend: false}},
                       ]
 //const components = [];
 
 // simulate load very top component and its direct components
-// const components = [ { businessLogic: {id: 0, name: 'table', parentIds:[], childIds:[1,5,6],  imgType: 'png', status: 'no_issue', progressPercent:0}, displayLogic: { key: undefined,childKeyIds:[], showMyself:false, toBeExpend: false}},
-//                      { businessLogic: {id: 1, name:'top', parentIds:[0], childIds:[2,3], imgType:'jpg', status: 'warning', progressPercent: 40}, displayLogic: {key: undefined,childKeyIds:[], showMyself: false, toBeExpend: false}},
-//                      { businessLogic: {id: 5, name:'nail', parentIds:[0], childIds:[],  imgType:'', status: 'no_issue', progressPercent: 10},displayLogic: {key: undefined, childKeyIds:[],showMyself: false, toBeExpend: false}},
-//                      { businessLogic: {id: 6, name:'glue', parentIds:[0], childIds:[], imgType:'', status: 'no_issue', progressPercent: 10},displayLogic: {key: undefined,childKeyIds:[], showMyself: false, toBeExpend: false}}
+// const components = [ { businessLogic: {id: 0, name: 'table', parentIds:[], childIds:[1,5,6],  imgFile: 'png', status: 'no_issue', progressPercent:0}, displayLogic: { key: undefined,childKeyIds:[], showMyself:false, toBeExpend: false}},
+//                      { businessLogic: {id: 1, name:'top', parentIds:[0], childIds:[2,3], imgFile:'jpg', status: 'warning', progressPercent: 40}, displayLogic: {key: undefined,childKeyIds:[], showMyself: false, toBeExpend: false}},
+//                      { businessLogic: {id: 5, name:'nail', parentIds:[0], childIds:[],  imgFile:'', status: 'no_issue', progressPercent: 10},displayLogic: {key: undefined, childKeyIds:[],showMyself: false, toBeExpend: false}},
+//                      { businessLogic: {id: 6, name:'glue', parentIds:[0], childIds:[], imgFile:'', status: 'no_issue', progressPercent: 10},displayLogic: {key: undefined,childKeyIds:[], showMyself: false, toBeExpend: false}}
 //                     ]
 
 // simulate load children of component id 1 ( top )
 const secondComponents = [
-                    { businessLogic: {id: 2, name:'leg', parentIds:[1], childIds:[4], imgType:'jpg', status: 'alarm', progressPercent: 10}, displayLogic: {key: undefined, childKeyIds:[],showMyself: false, toBeExpend: false}},
-                     { businessLogic: {id: 3, name:'upper_beam', parentIds:[1], childIds:[5,6],  imgType:'jpg', status: 'no_issue', progressPercent: 50},displayLogic: {key: undefined,childKeyIds:[], showMyself: false, toBeExpend: false}},
+                    { businessLogic: {id: 2, name:'leg', parentIds:[1], childIds:[4], imgFile:'edit_67.png', status: 'alarm', progressPercent: 10}, displayLogic: {key: undefined, childKeyIds:[],showMyself: false, toBeExpend: false}},
+                     { businessLogic: {id: 3, name:'upper_beam', parentIds:[1], childIds:[5,6],  imgFile:'edit_67.png', status: 'no_issue', progressPercent: 50},displayLogic: {key: undefined,childKeyIds:[], showMyself: false, toBeExpend: false}},
                    ]
 // simulate load children of component id 4 ( top )
 const thirdComponents = [
-                     { businessLogic: {id: 4, name:'low_beam', parentIds:[2], childIds:[5,6],  imgType:'jpg', status: 'warning', progressPercent: 20},displayLogic: {key: undefined,childKeyIds:[], showMyself: false, toBeExpend: false}},
-                     { businessLogic: {id: 5, name:'nail', parentIds:[4], childIds:[],  imgType:'', status: 'no_issue', progressPercent: 10},displayLogic: {key: undefined, childKeyIds:[],showMyself: false, toBeExpend: false}},
-                     { businessLogic: {id: 6, name:'glue', parentIds:[4], childIds:[], imgType:'', status: 'no_issue', progressPercent: 10},displayLogic: {key: undefined,childKeyIds:[], showMyself: false, toBeExpend: false}}                  
+                     { businessLogic: {id: 4, name:'low_beam', parentIds:[2], childIds:[5,6],  imgFile:'edit_67.png', status: 'warning', progressPercent: 20},displayLogic: {key: undefined,childKeyIds:[], showMyself: false, toBeExpend: false}},
+                    //  { businessLogic: {id: 5, name:'nail', parentIds:[4], childIds:[],  imgFile:'', status: 'no_issue', progressPercent: 10},displayLogic: {key: undefined, childKeyIds:[],showMyself: false, toBeExpend: false}},
+                    //  { businessLogic: {id: 6, name:'glue', parentIds:[4], childIds:[], imgFile:'', status: 'no_issue', progressPercent: 10},displayLogic: {key: undefined,childKeyIds:[], showMyself: false, toBeExpend: false}}                  
                   ]    
 
 // utility funtions need move to a saperate js file
@@ -92,19 +92,23 @@ class HelloWorldList extends Component {
     componentWillMount=()=>{
       let currentSessionComponents=[];
 
+      //#todo: need to query server to get a new components
+      console.log("query server to get root components")
+      let components = firstComponents;
+
       //#todo: need to query server side to find the very top component 
-      let firstComponent = firstComponents.filter(component=>component.businessLogic.parentIds.length === 0)[0]
+      let rootComponent = components.filter(component=>component.businessLogic.parentIds.length === 0)[0]
        
-      initializeComponents(firstComponent, this.state.greetings, firstComponents, currentSessionComponents);
+      initializeComponents(rootComponent, this.state.greetings, components, currentSessionComponents);
     
       //always show very top component
-      firstComponent.displayLogic.showMyself = true;
+      rootComponent.displayLogic.showMyself = true;
    
-      if( firstComponent.businessLogic.childIds.length !== 0 ){
-        firstComponent.displayLogic.toBeExpend = true;
+      if( rootComponent.businessLogic.childIds.length !== 0 ){
+        rootComponent.displayLogic.toBeExpend = true;
 
         // populate very top component's displayLogic.childKeyIds[], if it's not incluced yet
-        populateComponentChildIds(firstComponent, currentSessionComponents);
+        populateComponentChildIds(rootComponent, currentSessionComponents);
       }
 
       this.setState( {greetings: currentSessionComponents} )
@@ -112,7 +116,7 @@ class HelloWorldList extends Component {
   
     addGreeting = (newName, progressValue) =>{
       this.setState({ greetings: [...this.state.greetings, 
-        { businessLogic: {id: this.state.greetings.length + 1, name: newName, parentIds:[0], childIds:[], imgType:'', status: "alarm", progressPercent: progressValue}, displayLogic:{key: undefined}, childKeyIds:[], showMyself: false, toBeExpend: false}] });
+        { businessLogic: {id: this.state.greetings.length + 1, name: newName, parentIds:[0], childIds:[], imgFile:'', status: "alarm", progressPercent: progressValue}, displayLogic:{key: undefined}, childKeyIds:[], showMyself: false, toBeExpend: false}] });
     };
 
     removeGreeting = (removeName) =>{
@@ -150,13 +154,13 @@ class HelloWorldList extends Component {
            
           populateComponentChildIds(selectedComponent, currentSessionComponents, showStatus );
 
-          let firstComponent = firstComponents.filter(component=>component.businessLogic.parentIds.length === 0)[0];
+          let rootComponent = firstComponents.filter(component=>component.businessLogic.parentIds.length === 0)[0];
 
           // looping through entire component list to find the component included inside child component list
           for( idxComponent = 0;  idxComponent < currentSessionComponents.length; idxComponent++ ) 
           {
             // skip the first component
-            if( currentSessionComponents[idxComponent].displayLogic.key === firstComponent.displayLogic.key )
+            if( currentSessionComponents[idxComponent].displayLogic.key === rootComponent.displayLogic.key )
               continue;
 
             // find the component that has the child components, and update the show status of this component and its children
