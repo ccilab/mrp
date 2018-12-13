@@ -8,7 +8,7 @@ import AddGreeter from "./AddGreeter";
 //image type is extracted from uploaded image file
 //table includes assembly and paint process
 // simulate after loaded very top component and its direct  components
-const firstComponents = [ { businessLogic: {id: 0, name: 'table', parentIds:[], childIds:[1,5,6],  imgFile: 'table.png', status: 'no_issue', progressPercent:0}, displayLogic: { key: 0,childKeyIds:[1,2,3], showMyself:false, toBeExpend: true}},
+const firstComponents = [ { businessLogic: {id: 0, name: 'table', parentIds:[], childIds:[1,5,6],  imgFile: 'edit_67.png', status: 'no_issue', progressPercent:0}, displayLogic: { key: 0,childKeyIds:[1,2,3], showMyself:false, toBeExpend: true}},
                      { businessLogic: {id: 1, name:'top', parentIds:[0], childIds:[2,3], imgFile:'edit_67.png', status: 'warning', progressPercent: 40}, displayLogic: {key: 1,childKeyIds:[], showMyself: false, toBeExpend: false}},
                      { businessLogic: {id: 5, name:'nail', parentIds:[0], childIds:[],  imgFile:'edit_67.png', status: 'no_issue', progressPercent: 10},displayLogic: {key: 2, childKeyIds:[],showMyself: false, toBeExpend: false}},
                      { businessLogic: {id: 6, name:'glue', parentIds:[0], childIds:[], imgFile:'edit_67.png', status: 'no_issue', progressPercent: 10},displayLogic: {key: 3,childKeyIds:[], showMyself: false, toBeExpend: false}},

@@ -24,9 +24,25 @@ $component_img_hight: 50px;
 $component_img_width: 50px;
 $component_img_radius: map-get($sizes, 50 );
 $card-img-overlay-padding: 0%;
+
+//set up font awesome 
+// You probably already know this but we seem to always forget it. 
+// The font path is relative from your compiled CSS directory. 
+// Ensure that you place your webfonts directory in a place relative to where your final CSS will be located.
+@import "../fontawesome-5.6.1/scss/variables";
+$fa-font-path:        "../scss/fontawesome-5.6.1/webfonts";
+
+
 // end customization
 
 @import "../bootstrap-4.0.0-alpha.6/scss/bootstrap";
+
+
+@import "../fontawesome-5.6.1/scss/fontawesome";
+@import "../fontawesome-5.6.1/scss/regular";
+@import "../fontawesome-5.6.1/scss/solid";
+@import "../fontawesome-5.6.1/scss/brands";
+
 @mixin bg-linear-gradient($bg-primary-color, $start-location-percentage){
   //background: $bg-primary-color;
   background: linear-gradient(to right,rgba($bg-primary-color, 0.8) $start-location-percentage, rgba($bg-primary-color, 0.2)); // W3C 
@@ -203,4 +219,5 @@ $card-img-overlay-padding: 0%;
 .cci-badge-position{
   //position: absolute !important;
   left: 80px !important;
+  width: 40px !important;
 }

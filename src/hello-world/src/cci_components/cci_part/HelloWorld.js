@@ -44,9 +44,10 @@ class CCiLabComponent extends Component {
     render() {
         console.log('CCiLabComponent::render() imgFile: ', this.imgName);
         let lclassName='btn cci-component-btn '
-        let lexpendSymbol = this.children.length ? '>..' : '-';
+        let lBadgeIconClassName= this.children.length ? 'fa fa-angle-right':'';
+        let lexpendSymbol = this.children.length ? '...' : '-';
         if( this.parents.length === 0 && this.children.length === 0 )
-        lexpendSymbol = '+';
+        lBadgeIconClassName = '+';
         if( this.progressStatus === 'warning') 
           lclassName +='btn-warning cci-component-btn_warning_'+ this.progressValue;
         if( this.progressStatus === 'no_issue') 
@@ -56,7 +57,11 @@ class CCiLabComponent extends Component {
         if( this.state.expended === false || this.currentComponent.displayLogic.toBeExpend === false ) 
         {
           if( this.children.length !== 0 && lexpendSymbol !== '+' )
-            lexpendSymbol = 'v';
+          {
+            lBadgeIconClassName= 'fa fa-angle-down';
+            lexpendSymbol = '';
+          }
+         
             
         }
         
@@ -64,10 +69,10 @@ class CCiLabComponent extends Component {
           <span className='float-left'>
             <button className={lclassName} onClick={ this.expending }>
                
-              <span className='d-flex flex-row justify-content-between'>
+              <span className='d-flex flex-row'>
                 <img className="cci-component-btn__img rounded-circle" src={this.imgName} alt=""></img>
                 { ( this.children.length !== 0 ) ?
-                  <span className='badge-pill badge-info cci-badge-position align-self-center font-weight-bold'>{lexpendSymbol}</span> :null
+                 <span className='badge-pill badge-info cci-badge-position align-self-center'><i className={lBadgeIconClassName}></i>{lexpendSymbol}</span> :null
                 }
               </span>
                 
