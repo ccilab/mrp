@@ -47,7 +47,11 @@ class CCiLabComponent extends Component {
         let lBadgeIconClassName= this.children.length ? 'fa fa-angle-right':'';
         let lexpendSymbol = this.children.length ? '...' : '-';
         if( this.parents.length === 0 && this.children.length === 0 )
-        lBadgeIconClassName = '+';
+        {
+           lBadgeIconClassName = 'fa fa-plus';
+           lexpendSymbol='+';
+        }
+         
         if( this.progressStatus === 'warning') 
           lclassName +='btn-warning cci-component-btn_warning_'+ this.progressValue;
         if( this.progressStatus === 'no_issue') 
@@ -61,8 +65,6 @@ class CCiLabComponent extends Component {
             lBadgeIconClassName= 'fa fa-angle-down';
             lexpendSymbol = '';
           }
-         
-            
         }
         
         return (
@@ -72,7 +74,7 @@ class CCiLabComponent extends Component {
               <span className='d-flex flex-row'>
                 <img className="cci-component-btn__img rounded-circle" src={this.imgName} alt=""></img>
                 { ( this.children.length !== 0 ) ?
-                 <span className='badge-pill badge-info cci-badge-position align-self-center'><i className={lBadgeIconClassName}></i>{lexpendSymbol}</span> :null
+                 <span  className='badge-pill badge-info cci-badge-position align-self-center'><i className={lBadgeIconClassName}></i>{lexpendSymbol}</span> :null
                 }
               </span>
                 
