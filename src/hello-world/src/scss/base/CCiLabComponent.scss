@@ -51,6 +51,7 @@ $fa-font-path:        "../scss/fontawesome-5.6.1/webfonts";
 .cci-component-btn {
     cursor: pointer;
     width: 80px !important; //fixed width
+    height: 80px !important; //fixed height
     margin: $card-columns-margin; //20px;
     padding: $card-img-overlay-padding; //0%;
     box-shadow: 2px 6px 10px 0 rgba($cci-shadow-dark,0.3);

@@ -46,10 +46,17 @@ class CCiLabComponent extends Component {
         let lclassName='btn cci-component-btn '
         let lBadgeIconClassName= this.children.length ? 'fa fa-angle-right':'';
         let lexpendSymbol = this.children.length ? '...' : '-';
+        let lcomponentClassName ='d-flex flex-column';
         if( this.parents.length === 0 && this.children.length === 0 )
         {
-           lBadgeIconClassName = 'fa fa-plus';
-           lexpendSymbol='+';
+          lclassName +='sticky-top ';
+          lBadgeIconClassName = 'fa fa-plus';
+          lexpendSymbol='+';
+        }
+
+        if( this.parents.length === 0 )
+        {
+          lcomponentClassName +=' sticky-top';
         }
          
         if( this.progressStatus === 'warning') 
@@ -68,21 +75,18 @@ class CCiLabComponent extends Component {
         }
         
         return (
-          <span className='float-left'>
+          <span className={lcomponentClassName} >
             <button className={lclassName} onClick={ this.expending }>
                
-              <span className='d-flex flex-row'>
-                <img className="cci-component-btn__img rounded-circle" src={this.imgName} alt=""></img>
-                { ( this.children.length !== 0 ) ?
-                 <span  className='badge-pill badge-info cci-badge-position align-self-center'><i className={lBadgeIconClassName}></i>{lexpendSymbol}</span> :null
-                }
-              </span>
-                
-              <span className='d-flex flex-row justify-content-center'>
-                 <span className='badge-pill align-bottom text-gray-dark'>{this.progressValue}%</span>   
-              </span>
+              <img className="pt-0 cci-component-btn__img rounded-circle" src={this.imgName} alt=""></img>
+              <span className='mr-5 badge-pill badge-info text-body'>{this.progressValue}%</span>  
+              
+              { ( this.children.length !== 0 ) ?
+                <span  className='float-left mt-1 badge-pill badge-info  '><i className={lBadgeIconClassName}></i>{lexpendSymbol}</span> :null
+              }  
+            
             </button>
-            <span className="d-inline-block text-truncate">{this.componentName}</span>
+            <span className="pl-3 lead text-left font-weight-normal text-info d-inline-block text-truncate">{this.componentName}</span>
           </span>
         )
       }

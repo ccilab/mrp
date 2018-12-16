@@ -204,16 +204,18 @@ class HelloWorldList extends Component {
       return (
         <div className="HelloWorldList">
           <AddGreeter addGreeting={this.addGreeting} />
-          <div className='container-fluid'>
-            <div className='row'>
-              <div className='col-sm-1  bg-info'>
+            <div>
+              <div className='float-left mt-3 b-secondary'>
                 {this.renderGreetings()}
               </div>
-              <div className='col-sm-11 bg-primary'>
-                'this is place holder for component configuration table'
+              <div className='float-left container-fluid mt-5'>
+                <div className='row'></div>
+                  <div className='col-sm-10  bg-info'>
+                    'this is place holder for component configuration table'
+                  </div>
+                </div>
               </div>
             </div>
-          </div>
         </div>
       );
     }
