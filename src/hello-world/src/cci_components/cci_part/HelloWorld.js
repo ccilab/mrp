@@ -15,20 +15,19 @@ class CCiLabComponent extends Component {
         progressValue = this.currentComponent.businessLogic.progressPercent;
 
     componentWillMount=()=>{
-      this.setState({expended: this.props.component.displayLogic.toBeExpend});
+      this.setState({expended: this.props.component.displayLogic.canExpend});
     }
 
     expending = () => {
         if (this.state.expended === true) {
-          this.currentComponent.displayLogic.toBeExpend = false;
+          this.currentComponent.displayLogic.canExpend = false;
           this.setState({ expended: false });
-          this.selectShowChildren(true);
+          this.showOrHideChildren(true);
         }
         else {
-           this.currentComponent.displayLogic.toBeExpend = true;
-           this.setState({ expended: true });
-          this.selectShowChildren(false);
-         
+          this.currentComponent.displayLogic.canExpend = true;
+          this.setState({ expended: true });
+          this.showOrHideChildren(false);
         }
          
     };
@@ -37,8 +36,8 @@ class CCiLabComponent extends Component {
         this.props.removeGreeting(this.component.businessLogic.imgName);
     };
 
-    selectShowChildren = (isShow) =>{
-      this.props.showChildren(this.currentComponent, isShow)
+    showOrHideChildren = (isShow) =>{
+      this.props.showOrHideChildren(this.currentComponent, isShow)
     }
 
     render() {
@@ -65,7 +64,7 @@ class CCiLabComponent extends Component {
           lclassName +='btn-success cci-component-btn_green_'+ this.progressValue;
         if( this.progressStatus === 'alarm') 
           lclassName +='btn-danger cci-component-btn_alarm_'+ this.progressValue;
-        if( this.state.expended === false || this.currentComponent.displayLogic.toBeExpend === false ) 
+        if( this.state.expended === false || this.currentComponent.displayLogic.canExpend === false ) 
         {
           if( this.children.length !== 0 && lexpendSymbol !== '+' )
           {
