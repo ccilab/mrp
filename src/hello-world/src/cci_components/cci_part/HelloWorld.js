@@ -45,7 +45,7 @@ class CCiLabComponent extends Component {
         let lclassName='btn cci-component-btn '
         let lBadgeIconClassName= this.children.length ? 'fa fa-angle-right':'';
         let lexpendSymbol = this.children.length ? '...' : '-';
-        let lcomponentClassName ='d-flex flex-column';
+        let lcomponentClassName ='';
         if( this.parents.length === 0 && this.children.length === 0 )
         {
           lclassName +='sticky-top ';
@@ -78,14 +78,18 @@ class CCiLabComponent extends Component {
             <button className={lclassName} onClick={ this.expending }>
                
               <img className="pt-0 cci-component-btn__img rounded-circle" src={this.imgName} alt=""></img>
-              <span className='mr-5 badge-pill badge-info text-body'>{this.progressValue}%</span>  
               
               { ( this.children.length !== 0 ) ?
-                <span  className='float-left mt-1 badge-pill badge-info  '><i className={lBadgeIconClassName}></i>{lexpendSymbol}</span> :null
-              }  
-            
+                <span  className='badge-pill badge-info  '><i className={lBadgeIconClassName}></i>{lexpendSymbol}</span> :null
+              }                
+                <ul className='list-group'>
+                <span className='badge-pill badge-info text-body'>{this.progressValue}%</span>  
+                
+
+                <span className="lead font-weight-normal align-bottom text-info text-truncate">{this.componentName}</span>
+              </ul>
             </button>
-            <span className="pl-3 lead text-left font-weight-normal text-info d-inline-block text-truncate">{this.componentName}</span>
+           
           </span>
         )
       }

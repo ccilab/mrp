@@ -88,7 +88,7 @@ const populateComponentChildIds = (selectedComponent, cachedComponents )=>{
 const hideChildren = (aComponent, aComponents, aShowStatus)=>{
   if( !aComponent.displayLogic.canExpend && aComponent.displayLogic.childKeyIds.length ) 
   {
-      for( idx2Component = 0;  idx2Component < aComponents.length; idx2Component++ ) 
+      for( let idx2Component = 0;  idx2Component < aComponents.length; idx2Component++ ) 
       {
         if( aComponent.displayLogic.childKeyIds.includes(aComponents[idx2Component].displayLogic.key) )
           aComponents[idx2Component].displayLogic.showMyself = aShowStatus;
@@ -140,7 +140,6 @@ class HelloWorldList extends Component {
     //based on selected component and its show Status to show or hide its children
     showOrHideChildren = ( selectedComponent, showStatus ) =>{
           let idxComponent = 0;
-          let idx2Component = 0;
           let currentSessionComponents=[];
         
 
@@ -208,10 +207,10 @@ class HelloWorldList extends Component {
         <div className="HelloWorldList">
           <AddGreeter addGreeting={this.addGreeting} />
             <div>
-              <div className='float-left mt-3 b-secondary'>
+              <div className='container d-flex flex-column float-left mt-3 b-secondary '>
                 {this.renderGreetings()}
               </div>
-              <div className='float-left mt-5'>
+              <div className='float-right'>
                   <div className='col-sm-10  bg-info'>
                     'this is place holder for component configuration table'
                   </div>
