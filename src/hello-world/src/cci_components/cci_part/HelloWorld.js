@@ -84,8 +84,6 @@ class CCiLabComponent extends Component {
               }                
                 <ul className='list-group'>
                 <span className='badge-pill badge-info text-body'>{this.progressValue}%</span>  
-                
-
                 <span className="lead font-weight-normal align-bottom text-info text-truncate">{this.componentName}</span>
               </ul>
             </button>
