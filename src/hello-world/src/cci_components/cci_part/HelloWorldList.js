@@ -83,18 +83,21 @@ const populateComponentChildIds = (selectedComponent, cachedComponents )=>{
   }
 }
 
-// turn off childKeyIds[] but we don't want to turn off childKeyIds[] unless 
+// turn off childKeyIds[] recursively but we don't want to turn off childKeyIds[] unless 
 // its direct parent's canExpened = false (the parent is expended already
 const hideChildren = (aComponent, aComponents, aShowStatus)=>{
   if( !aComponent.displayLogic.canExpend && aComponent.displayLogic.childKeyIds.length ) 
   {
       for( let idx2Component = 0;  idx2Component < aComponents.length; idx2Component++ ) 
       {
-        if( aComponent.displayLogic.childKeyIds.includes(aComponents[idx2Component].displayLogic.key) )
-          aComponents[idx2Component].displayLogic.showMyself = aShowStatus;
+        if( aComponent.displayLogic.childKeyIds.includes(aComponents[idx2Component].displayLogic.key) ) {
+            aComponents[idx2Component].displayLogic.showMyself = aShowStatus;
+            hideChildren(aComponents[idx2Component], aComponents, aShowStatus)
+        }
       }
   }
 }
+
 
 class HelloWorldList extends Component {
     state = { greetings: undefined };
@@ -173,14 +176,14 @@ class HelloWorldList extends Component {
             if( currentSessionComponents[idxComponent].displayLogic.key === rootComponent.displayLogic.key )
               continue;
 
-            // find the component that has the child components, and update the show status of this component and its children
+            // find the component that has the child components, and show or hide the show status of this component's childKeyIds 
             if( selectedComponent.displayLogic.childKeyIds.includes(currentSessionComponents[idxComponent].displayLogic.key) ) {
                 currentSessionComponents[idxComponent].displayLogic.showMyself = showStatus;
 
-                //turn off childKeyIds[] but we don't want to turn childKeyIds[] unless its direct parent's toBeExpened = false 
+                // recursively hide childKeyIds[] of child component included in childKeyIds[] of current component,
+                // but we don't want to hide child component's childKeyIds[] unless its direct parent's canExpend = false 
                 hideChildren(currentSessionComponents[idxComponent], currentSessionComponents, showStatus);
             }
-              
           }
           
           this.setState( { greetings: currentSessionComponents })
