@@ -11,7 +11,9 @@
 	],
 	"thirdComponents": [
 		{ "businessLogic": {"id": 4, "name":"low_beam", "parentIds":[2], "childIds":[5,6],  "imgFile":"edit_black_background.png", "status": "warning", "progressPercent": 20},"displayLogic": {"key": 0,"childKeyIds":[], "showMyself": false, "canExpend": false}},
-	    { "businessLogic": {"id": 5, "name":"nail", "parentIds":[4], "childIds":[],  "imgFile":"", "status": "no_issue", "progressPercent": 10},"displayLogic": {"key": 0, "childKeyIds":[],"showMyself": false, "canExpend": false}},
+	  ],
+	 "forthComponents": [
+   		{ "businessLogic": {"id": 5, "name":"nail", "parentIds":[4], "childIds":[],  "imgFile":"", "status": "no_issue", "progressPercent": 10},"displayLogic": {"key": 0, "childKeyIds":[],"showMyself": false, "canExpend": false}},
 	    { "businessLogic": {"id": 6, "name":"glue", "parentIds":[4], "childIds":[], "imgFile":"", "status": "no_issue", "progressPercent": 10},"displayLogic": {"key": 0,"childKeyIds":[], "showMyself": false, "canExpend": false}}                  
 	 ]
 }

@@ -14,8 +14,11 @@ const firstComponents = components.firstComponents;
 // simulate load children of component id 1 ( top )
 const secondComponents = components.secondComponents;
 
-// simulate load children of component id 4 ( top )
+// simulate load children of component id 2 ( leg )
 const thirdComponents = components.thirdComponents;
+
+// simulate load children of component id 4 ( low_beam )
+const forthComponents = components.forthComponents;
 
 // utility funtions need move to a saperate js file
 const initializeComponents = ( startComponent, originComponents, incomingComponents, targetComponents)=>{
@@ -141,6 +144,8 @@ class HelloWorldList extends Component {
               if( selectedComponent.businessLogic.id === 2 )
                 components= thirdComponents;
               
+              if( selectedComponent.businessLogic.id === 4 )
+                components= forthComponents;
               initializeComponents(selectedComponent, this.state.greetings, components, currentSessionComponents);
           }
           else {
