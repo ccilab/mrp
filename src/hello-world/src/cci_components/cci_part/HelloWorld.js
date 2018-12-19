@@ -93,6 +93,8 @@ class CCiLabComponent extends Component {
       }
 }
 
+export default CCiLabComponent;
+
  /*{{ this.state.greeting } { this.props.name }! http://www.rachelgallen.com/images/purpleflowers.jpg}
  import images from "./images";  
  src={this.props.name} 
@@ -112,4 +114,3 @@ class CCiLabComponent extends Component {
   Praeterea iter est quasdam res quas ex communi.
 </span>
 */
-export default CCiLabComponent;

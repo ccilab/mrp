@@ -63,7 +63,8 @@ const populateComponentChildIds = (selectedComponent, cachedComponents )=>{
   if( selectedComponent.businessLogic.childIds.length !== selectedComponent.displayLogic.childKeyIds.length ) {
       for( let idx = 0; idx < cachedComponents.length; idx++ ) { 
         if( selectedComponent.businessLogic.childIds.includes( cachedComponents[idx].businessLogic.id ) &&
-            ( !selectedComponent.displayLogic.childKeyIds.includes( cachedComponents[idx].displayLogic.key) ) ) 
+            cachedComponents[idx].businessLogic.parentIds.includes(selectedComponent.businessLogic.id )  && 
+            !selectedComponent.displayLogic.childKeyIds.includes( cachedComponents[idx].displayLogic.key) ) 
             selectedComponent.displayLogic.childKeyIds.push( cachedComponents[idx].displayLogic.key )
       }
   }
