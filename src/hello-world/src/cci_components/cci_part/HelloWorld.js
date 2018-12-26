@@ -44,7 +44,7 @@ class CCiLabComponent extends Component {
         console.log('CCiLabComponent::render() imgFile: ', this.imgName);
         let lclassName='btn cci-component-btn '
         let lBadgeIconClassName= this.children.length ? 'fa fa-angle-right':'';
-        let lexpendSymbol = this.children.length ? '...' : '-';
+        let lexpendSymbol = this.children.length ? '' : '-';
         let lcomponentClassName ='';
         if( this.parents.length === 0 && this.children.length === 0 )
         {
@@ -74,14 +74,20 @@ class CCiLabComponent extends Component {
         }
         
         return (
-          <span className={lcomponentClassName} >
-            <button className={lclassName} onClick={ this.expending }>
+          <span className={lcomponentClassName} > 
+          
+          { ( this.children.length !== 0 ) ?
+                <button  className='cci-btn_transparent' onClick={ this.expending }>
+                  <i className={lBadgeIconClassName}></i>
+                    {lexpendSymbol}
+                </button> :null
+          }  
+            
+            <button className={lclassName}  >
                
-              <img className="pt-0 cci-component-btn__img rounded-circle" src={this.imgName} alt=""></img>
+              <img className="cci-component-btn__img rounded-circle" src={this.imgName} alt=""></img>
               
-              { ( this.children.length !== 0 ) ?
-                <span  className='badge-pill badge-info  '><i className={lBadgeIconClassName}></i>{lexpendSymbol}</span> :null
-              }                
+                           
                 <ul className='list-group'>
                 <span className='badge-pill badge-info text-body'>{this.progressValue}%</span>  
                 <span className="lead font-weight-normal align-bottom text-info text-truncate">{this.componentName}</span>

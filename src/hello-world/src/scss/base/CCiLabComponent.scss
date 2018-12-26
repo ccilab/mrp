@@ -221,3 +221,13 @@ $fa-font-path:        "../scss/fontawesome-5.6.1/webfonts";
   //position: absolute !important;
   left: 80px !important;
 }
+
+
+.cci-btn_transparent{
+  background-image: none;
+  background-color: transparent;
+  border-color: transparent;
+  @include hover-focus-active  {
+    cursor: pointer;
+  }
+}
