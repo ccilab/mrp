@@ -42,50 +42,41 @@ class CCiLabComponent extends Component {
 
     render() {
         console.log('CCiLabComponent::render() imgFile: ', this.imgName);
-        let lclassName='btn cci-component-btn '
+        let Component ='';
+        let ComponentProgressStatus='btn cci-component-btn ml-0'
         let lBadgeIconClassName= this.children.length ? 'fa fa-angle-right':'';
-        let lexpendSymbol = this.children.length ? '' : '-';
-        let lcomponentClassName ='';
-        if( this.parents.length === 0 && this.children.length === 0 )
-        {
-          lclassName +='sticky-top ';
-          lBadgeIconClassName = 'fa fa-plus';
-          lexpendSymbol='+';
-        }
 
         if( this.parents.length === 0 )
         {
-          lcomponentClassName +=' sticky-top';
+          Component +=' sticky-top';
         }
          
         if( this.progressStatus === 'warning') 
-          lclassName +='btn-warning cci-component-btn_warning_'+ this.progressValue;
+          ComponentProgressStatus +='cci-component-lable';
         if( this.progressStatus === 'no_issue') 
-          lclassName +='btn-success cci-component-btn_green_'+ this.progressValue;
+          ComponentProgressStatus +='cci-component-lable';
         if( this.progressStatus === 'alarm') 
-          lclassName +='btn-danger cci-component-btn_alarm_'+ this.progressValue;
+          ComponentProgressStatus +='cci-component-lable';
         if( this.state.expended === false || this.currentComponent.displayLogic.canExpend === false ) 
         {
-          if( this.children.length !== 0 && lexpendSymbol !== '+' )
+          if( this.children.length !== 0  )
           {
             lBadgeIconClassName= 'fa fa-angle-down';
-            lexpendSymbol = '';
           }
         }
         
         return (
-          <span className={lcomponentClassName} > 
+          <span className={Component} > 
           
           { ( this.children.length !== 0 ) ?
-                <button  className='cci-btn_transparent' onClick={ this.expending }>
+                <button  className='cci-btn_transparent mr-0' onClick={ this.expending }>
                   <i className={lBadgeIconClassName}></i>
-                    {lexpendSymbol}
                 </button> :null
           }  
             
-            <button className={lclassName}  >
+            <button className={ComponentProgressStatus}  >
                
-              <img className="cci-component-btn__img rounded-circle" src={this.imgName} alt=""></img>
+              <img className="cci-component__img rounded-circle" src={this.imgName} alt=""></img>
               
                            
                 <ul className='list-group'>

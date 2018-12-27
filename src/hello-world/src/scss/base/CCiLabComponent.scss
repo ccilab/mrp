@@ -18,8 +18,8 @@ $badge-info-bg: $cci-info-blue;
 
 $component_bg_color: #3e4444;
 $component_select_color: rgb(95, 95, 95);
-$component_hight: 60px;
-$component_width: 60px;
+$component_hight: 80px;
+$component_width: 80px;
 $component_img_hight: 50px;
 $component_img_width: 50px;
 $component_img_radius: map-get($sizes, 50 );
@@ -48,10 +48,11 @@ $fa-font-path:        "../scss/fontawesome-5.6.1/webfonts";
   background: linear-gradient(to right,rgba($bg-primary-color, 0.8) $start-location-percentage, rgba($bg-primary-color, 0.2)); // W3C 
 }
 
+// clicable button
 .cci-component-btn {
     cursor: pointer;
-    width: 80px !important; //fixed width
-    height: 80px !important; //fixed height
+    width: $component_width !important; //fixed width
+    height: $component_hight !important; //fixed height
     margin: $card-columns-margin; //20px;
     padding: $card-img-overlay-padding; //0%;
     box-shadow: 2px 6px 10px 0 rgba($cci-shadow-dark,0.3);
@@ -72,140 +73,140 @@ $fa-font-path:        "../scss/fontawesome-5.6.1/webfonts";
     }
  }
   
-.cci-component-btn_alarm_0{
+.cci-component__alarm_0{
 @include bg-linear-gradient($brand-danger, 0)
 }
 
-.cci-component-btn_alarm_10{
+.cci-component__alarm_10{
   @include bg-linear-gradient($brand-danger, 10%)
 }
 
-.cci-component-btn_alarm_20{
+.cci-component__alarm_20{
   @include bg-linear-gradient($brand-danger, 20%);
 }
 
-.cci-component-btn_alarm_30{
+.cci-component__alarm_30{
   @include bg-linear-gradient($brand-danger, 30%)
 }
 
-.cci-component-btn_alarm_40{
+.cci-component__alarm_40{
   @include bg-linear-gradient($brand-danger, 40%)
 }
 
-.cci-component-btn_alarm_50{
+.cci-component__alarm_50{
   @include bg-linear-gradient($brand-danger, 50%)
 }
 
-.cci-component-btn_alarm_60{
+.cci-component__alarm_60{
   @include bg-linear-gradient($brand-danger, 60%)
 }
 
-.cci-component-btn_alarm_70{
+.cci-component__alarm_70{
   @include bg-linear-gradient($brand-danger, 70%)
 }
 
-.cci-component-btn_alarm_80{
+.cci-component__alarm_80{
   @include bg-linear-gradient($brand-danger, 80%)
 }
 
-.cci-component-btn_alarm_90{
+.cci-component__alarm_90{
   @include bg-linear-gradient($brand-danger, 90%)
 }
 
-.cci-component-btn_alarm_100{
+.cci-component__alarm_100{
   @include bg-linear-gradient($brand-danger, 100%)
 }
 
-.cci-component-btn_warning_0{
+.cci-component__warning_0{
   @include bg-linear-gradient($brand-warning, 0)
 }
 
-.cci-component-btn_warning_10{
+.cci-component__warning_10{
   @include bg-linear-gradient($brand-warning, 10%)
 }
 
-.cci-component-btn_warning_20{
+.cci-component__warning_20{
   @include bg-linear-gradient($brand-warning, 20%)
 }
 
-.cci-component-btn_warning_30{
+.cci-component__warning_30{
   @include bg-linear-gradient($brand-warning, 30%)
 }
 
-.cci-component-btn_warning_40{
+.cci-component__warning_40{
   @include bg-linear-gradient($brand-warning, 40%)
 }
 
-.cci-component-btn_warning_50{
+.cci-component__warning_50{
   @include bg-linear-gradient($brand-warning, 50%)
 }
 
-.cci-component-btn_warning_60{
+.cci-component__warning_60{
   @include bg-linear-gradient($brand-warning, 60%)
 }
-.cci-component-btn_warning_70{
+.cci-component__warning_70{
   @include bg-linear-gradient($brand-warning, 70%)
 }
 
-.cci-component-btn_warning_80{
+.cci-component__warning_80{
   @include bg-linear-gradient($brand-warning, 80%)
 }
 
-.cci-component-btn_warning_90{
+.cci-component__warning_90{
   @include bg-linear-gradient($brand-warning, 90%)
 }
 
-.cci-component-btn_warning_100{
+.cci-component__warning_100{
   @include bg-linear-gradient($brand-warning, 100%)
 }
 
-.cci-component-btn_green_0{
+.cci-component__green_0{
   @include bg-linear-gradient($brand-success, 0%)
 }
 
-.cci-component-btn_green_10{
+.cci-component__green_10{
   @include bg-linear-gradient($brand-success, 10%)
 }
 
-.cci-component-btn_green_20{
+.cci-component__green_20{
   @include bg-linear-gradient($brand-success, 20%)
 }
 
-.cci-component-btn_green_30{
+.cci-component__green_30{
   @include bg-linear-gradient($brand-success, 30%)
 }
 
-.cci-component-btn_green_40{
+.cci-component__green_40{
   @include bg-linear-gradient($brand-success, 40%)
 }
 
-.cci-component-btn_green_50{
+.cci-component__green_50{
   @include bg-linear-gradient($brand-success, 50%)
 }
 
-.cci-component-btn_green_60{
+.cci-component__green_60{
   @include bg-linear-gradient($brand-success, 60%)
 }
 
-.cci-component-btn_green_70{
+.cci-component__green_70{
   @include bg-linear-gradient($brand-success, 70%)
 }
 
-.cci-component-btn_green_80{
+.cci-component__green_80{
   @include bg-linear-gradient($brand-success, 80%)
 }
 
-.cci-component-btn_green_90{
+.cci-component__green_90{
   @include bg-linear-gradient($brand-success, 90%)
 }
 
-.cci-component-btn_green_100{
+.cci-component__green_100{
   @include bg-linear-gradient($brand-success, 100%)
 }
 
 
 
-.cci-component-btn__img{
+.cci-component__img{
   height: $component_img_hight;
   width: $component_img_width;      
   object-fit: fill;
@@ -226,8 +227,17 @@ $fa-font-path:        "../scss/fontawesome-5.6.1/webfonts";
 .cci-btn_transparent{
   background-image: none;
   background-color: transparent;
-  border-color: transparent;
+  border-color: none;
   @include hover-focus-active  {
     cursor: pointer;
   }
+}
+
+
+//static lable, is able to load image
+.cci-component-lable{
+  width: $component_width !important; //fixed width
+  height: $component_hight !important; //fixed height
+  background-color: $component_bg_color;
+  z-index: 1;
 }
