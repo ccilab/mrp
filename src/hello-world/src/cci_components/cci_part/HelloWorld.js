@@ -43,49 +43,58 @@ class CCiLabComponent extends Component {
     render() {
         console.log('CCiLabComponent::render() imgFile: ', this.imgName);
         let Component ='container';
-        let ComponentProgressStatus='ml-0 '
+        let ComponentProgressStatus;
         let lBadgeIconClassName= this.children.length ? 'fa fa-angle-right':'';
        
         if( this.parents.length === 0 )
-        {
+        { //top element
           Component +=' sticky-top';
           if( this.currentComponent.displayLogic.canExpend === true )
-            ComponentProgressStatus = 'btn cci-component-btn ml-1'
+            ComponentProgressStatus = 'btn cci-component-btn'
           else
-            ComponentProgressStatus +='btn cci-component-lable';
+            ComponentProgressStatus ='btn cci-component-lable ml-0';
         }
         else
         {
-            ComponentProgressStatus ='btn cci-component-lable ml-4';
-            lBadgeIconClassName += ' pr-0';
+            ComponentProgressStatus ='btn cci-component-lable cci-component-lable_position';
         }
 
         if( this.state.expended === false || this.currentComponent.displayLogic.canExpend === false ) 
         {
           if( this.children.length !== 0  )
-          {
             lBadgeIconClassName= 'fa fa-angle-down';
-
-            if( this.parents.length !== 0 )
-              lBadgeIconClassName += ' pr-0';
-          }
         }
         
-        let linkStyle = {
-          display: 'inline-block',
-          position: 'relative',
-          left: '8px'
+        let linkStyle;
+        if( this.parents.length === 0 )
+        {
+          linkStyle = {
+            margin: '4px'
+          }
         }
+        else 
+        {
+          linkStyle = {
+            left: '16px'
+          }
+        }
+
         return (
           <span className={Component} > 
           
-          { ( (this.children.length !== 0  && this.parents.length !== 0 ) || (this.state.expended === false) )?
-                <a href="#1" style={linkStyle} onClick={ this.expending }>
-                   <span className={lBadgeIconClassName}></span>
-                </a>:null
-          }  
+            {/* show collapse icon 'v' for all expendable components,
+              show expendable icon '>' for those components have children except the top component
+            */}
+            { ( this.children.length !== 0  && ( this.parents.length !== 0  || this.state.expended === false) )?
+                  <a href="#1" className='cci-link_position' style={linkStyle} onClick={ this.expending }>
+                    <span className={lBadgeIconClassName}></span>
+                  </a>:null
+            }  
             
-            <button className={ComponentProgressStatus} onClick={ (this.parents.length === 0) ? this.expending :null } >
+            {/* shift the child components to the right */}
+            <button className={ComponentProgressStatus} 
+              style={ ( this.children.length !== 0  &&  this.parents.length !== 0) ? {left: '20px'} : {left: '30px'}}
+              onClick={ (this.parents.length === 0 && this.currentComponent.displayLogic.canExpend ) ? this.expending :null } >
                
               { (this.imgName.length !== 0 ) ? <img className="cci-component__img rounded-circle" src={this.imgName} alt=""></img>:null}
               

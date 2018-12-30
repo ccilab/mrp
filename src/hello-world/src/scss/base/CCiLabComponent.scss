@@ -242,7 +242,19 @@ $fa-font-path:        "../scss/fontawesome-5.6.1/webfonts";
   height: $component_hight !important; //fixed height
   // background-color: $component_bg_color;
   // border-color: $component_bg_color;
-  margin: $card-columns-margin; //20px;
+  margin-top: $card-columns-margin; //20px;
+  margin-bottom: $card-columns-margin;
+  margin-left: $card-img-overlay-padding; //0%
+  margin-right: $card-img-overlay-padding; //0%
   padding: $card-img-overlay-padding; //0%;
   z-index: 1;
+}
+
+.cci-component-lable_position{
+  position: relative;
+}
+
+.cci-link_position{
+  display: inline-block;
+  position: relative;
 }
