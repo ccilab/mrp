@@ -1,0 +1,19 @@
+{ 
+	"firstComponents": [ 	
+		{ "businessLogic": {"id": 0, "name": "table", "parentIds":[], "childIds":[1,5,6],  "imgFile": "table.png", "status": "no_issue", "progressPercent":0}, "displayLogic": { "key": 0,"childKeyIds":[1,2,3], "showMyself":false, "canExpend": true}},
+		{ "businessLogic": {"id": 1, "name":"top", "parentIds":[0], "childIds":[2,3], "imgFile":"", "status": "warning", "progressPercent": 40}, "displayLogic": {"key": 0,"childKeyIds":[], "showMyself": false, "canExpend": false}},
+		{ "businessLogic": {"id": 5, "name":"nail", "parentIds":[0], "childIds":[],  "imgFile":"", "status": "no_issue", "progressPercent": 10},"displayLogic": {"key": 0, "childKeyIds":[],"showMyself": false, "canExpend": false}},
+		{ "businessLogic": {"id": 6, "name":"glue", "parentIds":[0], "childIds":[], "imgFile":"", "status": "no_issue", "progressPercent": 10},"displayLogic": {"key": 0,"childKeyIds":[], "showMyself": false, "canExpend": false}}
+		],
+	"secondComponents": [
+		{ "businessLogic": {"id": 2, "name":"leg", "parentIds":[1], "childIds":[4], "imgFile":"", "status": "alarm", "progressPercent": 10}, "displayLogic": {"key": 0, "childKeyIds":[],"showMyself": false, "canExpend": false}},
+		{ "businessLogic": {"id": 3, "name":"upper_beam", "parentIds":[1], "childIds":[],  "imgFile":"", "status": "no_issue", "progressPercent": 50},"displayLogic": {"key": 0,"childKeyIds":[], "showMyself": false, "canExpend": false}}
+	],
+	"thirdComponents": [
+		{ "businessLogic": {"id": 4, "name":"low_beam", "parentIds":[2], "childIds":[5,6],  "imgFile":"", "status": "warning", "progressPercent": 20},"displayLogic": {"key": 0,"childKeyIds":[], "showMyself": false, "canExpend": false}}
+	  ],
+	 "forthComponents": [
+   		{ "businessLogic": {"id": 5, "name":"nail", "parentIds":[4], "childIds":[],  "imgFile":"", "status": "no_issue", "progressPercent": 10},"displayLogic": {"key": 0, "childKeyIds":[],"showMyself": false, "canExpend": false}},
+	    { "businessLogic": {"id": 6, "name":"glue", "parentIds":[4], "childIds":[], "imgFile":"", "status": "no_issue", "progressPercent": 10},"displayLogic": {"key": 0,"childKeyIds":[], "showMyself": false, "canExpend": false}}                  
+	 ]
+}
