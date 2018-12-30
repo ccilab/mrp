@@ -10,7 +10,7 @@ class CCiLabComponent extends Component {
         parents = this.currentComponent.businessLogic.parentIds;
         children = this.currentComponent.businessLogic.childIds;
         componentName = this.currentComponent.businessLogic.name;
-        imgName = '/images/'+this.currentComponent.businessLogic.imgFile;
+        imgName =  (this.currentComponent.businessLogic.imgFile.length !==0 ) ? '/images/'+this.currentComponent.businessLogic.imgFile : "";
         progressStatus = this.currentComponent.businessLogic.status;
         progressValue = this.currentComponent.businessLogic.progressPercent;
 
@@ -42,46 +42,57 @@ class CCiLabComponent extends Component {
 
     render() {
         console.log('CCiLabComponent::render() imgFile: ', this.imgName);
-        let Component ='';
-        let ComponentProgressStatus='btn cci-component-btn ml-0'
+        let Component ='container';
+        let ComponentProgressStatus='ml-0 '
         let lBadgeIconClassName= this.children.length ? 'fa fa-angle-right':'';
-
+       
         if( this.parents.length === 0 )
         {
           Component +=' sticky-top';
+          if( this.currentComponent.displayLogic.canExpend === true )
+            ComponentProgressStatus = 'btn cci-component-btn ml-1'
+          else
+            ComponentProgressStatus +='btn cci-component-lable';
         }
-         
-        if( this.progressStatus === 'warning') 
-          ComponentProgressStatus +='cci-component-lable';
-        if( this.progressStatus === 'no_issue') 
-          ComponentProgressStatus +='cci-component-lable';
-        if( this.progressStatus === 'alarm') 
-          ComponentProgressStatus +='cci-component-lable';
+        else
+        {
+            ComponentProgressStatus ='btn cci-component-lable ml-4';
+            lBadgeIconClassName += ' pr-0';
+        }
+
         if( this.state.expended === false || this.currentComponent.displayLogic.canExpend === false ) 
         {
           if( this.children.length !== 0  )
           {
             lBadgeIconClassName= 'fa fa-angle-down';
+
+            if( this.parents.length !== 0 )
+              lBadgeIconClassName += ' pr-0';
           }
         }
         
+        let linkStyle = {
+          display: 'inline-block',
+          position: 'relative',
+          left: '8px'
+        }
         return (
           <span className={Component} > 
           
-          { ( this.children.length !== 0 ) ?
-                <button  className='cci-btn_transparent mr-0' onClick={ this.expending }>
-                  <i className={lBadgeIconClassName}></i>
-                </button> :null
+          { ( (this.children.length !== 0  && this.parents.length !== 0 ) || (this.state.expended === false) )?
+                <a href="#1" style={linkStyle} onClick={ this.expending }>
+                   <span className={lBadgeIconClassName}></span>
+                </a>:null
           }  
             
-            <button className={ComponentProgressStatus}  >
+            <button className={ComponentProgressStatus} onClick={ (this.parents.length === 0) ? this.expending :null } >
                
-              <img className="cci-component__img rounded-circle" src={this.imgName} alt=""></img>
+              { (this.imgName.length !== 0 ) ? <img className="cci-component__img rounded-circle" src={this.imgName} alt=""></img>:null}
               
                            
                 <ul className='list-group'>
-                <span className='badge-pill badge-info text-body'>{this.progressValue}%</span>  
-                <span className="lead font-weight-normal align-bottom text-info text-truncate">{this.componentName}</span>
+                  <span className="lead font-weight-normal align-top text-primary text-truncate">{this.componentName}</span>
+                  <span className='badge-pill badge-info text-body'>{this.progressValue}%</span>  
               </ul>
             </button>
            

@@ -227,7 +227,9 @@ $fa-font-path:        "../scss/fontawesome-5.6.1/webfonts";
 .cci-btn_transparent{
   background-image: none;
   background-color: transparent;
-  border-color: none;
+  border-color: transparent;
+  // margin-right: 0;
+  padding-right: 0; 
   @include hover-focus-active  {
     cursor: pointer;
   }
@@ -238,6 +240,9 @@ $fa-font-path:        "../scss/fontawesome-5.6.1/webfonts";
 .cci-component-lable{
   width: $component_width !important; //fixed width
   height: $component_hight !important; //fixed height
-  background-color: $component_bg_color;
+  // background-color: $component_bg_color;
+  // border-color: $component_bg_color;
+  margin: $card-columns-margin; //20px;
+  padding: $card-img-overlay-padding; //0%;
   z-index: 1;
 }
