@@ -75,6 +75,7 @@ class CCiLabComponent extends Component {
         else 
         {
           linkStyle = {
+            margin: '0',
             left: '16px'
           }
         }
