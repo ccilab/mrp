@@ -10,7 +10,8 @@ class CCiLabComponent extends Component {
         parents = this.currentComponent.businessLogic.parentIds;
         children = this.currentComponent.businessLogic.childIds;
         componentName = this.currentComponent.businessLogic.name;
-        imgName =  (this.currentComponent.businessLogic.imgFile.length !==0 ) ? '/images/'+this.currentComponent.businessLogic.imgFile : "";
+        imgName = (this.currentComponent.businessLogic.imgFile.length !==0 ) ? '/images/'+ this.currentComponent.businessLogic.imgFile : 
+                    (this.children.length !==0) ? '/images/group_gear.png' : '/images/single_gear_piece.png';
         progressStatus = this.currentComponent.businessLogic.status;
         progressValue = this.currentComponent.businessLogic.progressPercent;
 
@@ -75,7 +76,7 @@ class CCiLabComponent extends Component {
         else 
         {
           linkStyle = {
-            margin: '0',
+            // margin: '0', 
             left: '16px'
           }
         }
@@ -98,14 +99,12 @@ class CCiLabComponent extends Component {
               onClick={ (this.parents.length === 0 && this.currentComponent.displayLogic.canExpend ) ? this.expending :null } >
                
               { (this.imgName.length !== 0 ) ? <img className="cci-component__img rounded-circle" src={this.imgName} alt=""></img>:null}
-              
-                           
-                <ul className='list-group'>
+               
+            </button>
+            <ul className='list-group flex-row'>
                   <span className="lead font-weight-normal align-top text-primary text-truncate">{this.componentName}</span>
                   <span className='badge-pill badge-info text-body'>{this.progressValue}%</span>  
               </ul>
-            </button>
-           
           </span>
         )
       }
