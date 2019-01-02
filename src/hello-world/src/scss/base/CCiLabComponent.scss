@@ -19,13 +19,13 @@ $badge-info-bg: $cci-info-blue;
 
 $component_bg_color: #3e4444;
 $component_select_color: rgb(95, 95, 95);
-$component_hight: 50px;
-$component_width: 50px;
+$component_hight: 60px;
+$component_width: 60px;
 $component_img_hight: 50px;
 $component_img_width: 50px;
 $component_img_radius: map-get($sizes, 50 );
 $card-img-overlay-padding: 0%;
-$component_columns_margin: 20px;
+$component_columns_margin: 10px;
 
 
 //set up font awesome 
@@ -33,7 +33,7 @@ $component_columns_margin: 20px;
 // The font path is relative from your compiled CSS directory. 
 // Ensure that you place your webfonts directory in a place relative to where your final CSS will be located.
 @import "../fontawesome-5.6.1/scss/variables";
-$fa-font-path:        "../scss/fontawesome-5.6.1/webfonts";
+$fa-font-path:   "../scss/fontawesome-5.6.1/webfonts";
 
 
 // end customization
@@ -245,10 +245,10 @@ $fa-font-path:        "../scss/fontawesome-5.6.1/webfonts";
   height: $component_hight !important; //fixed height
   background-color: transparent; 
   // border-color: $component_bg_color;
-  //margin-top: $component_columns_margin; 
+  margin-top: $component_columns_margin; 
   margin-bottom: $component_columns_margin; 
   margin-left: $card-img-overlay-padding; //0%
-  margin-right: $card-img-overlay-padding; //0%
+  margin-right: 3*$component_columns_margin; 
   padding: $card-img-overlay-padding; //0%;
   z-index: 1;
 }

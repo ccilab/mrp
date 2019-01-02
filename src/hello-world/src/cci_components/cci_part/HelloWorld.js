@@ -43,7 +43,7 @@ class CCiLabComponent extends Component {
 
     render() {
         console.log('CCiLabComponent::render() imgFile: ', this.imgName);
-        let Component ='container';
+        let Component ='';
         let ComponentProgressStatus;
         let lBadgeIconClassName= this.children.length ? 'fa fa-angle-right':'';
        
@@ -51,7 +51,7 @@ class CCiLabComponent extends Component {
         { //top element
           Component +=' sticky-top';
           if( this.currentComponent.displayLogic.canExpend === true )
-            ComponentProgressStatus = 'btn cci-component-btn'
+            ComponentProgressStatus = 'btn cci-component-btn  float-left'
           else
             ComponentProgressStatus ='btn cci-component-lable ml-0 float-left';
         }
@@ -88,23 +88,24 @@ class CCiLabComponent extends Component {
               show expendable icon '>' for those components have children except the top component
             */}
             { ( this.children.length !== 0  && ( this.parents.length !== 0  || this.state.expended === false) )?
-                  <a href="#1" className='cci-link_position' style={linkStyle} onClick={ this.expending }>
+                  <a href="#1" className='cci-link_position float-left' style={linkStyle} onClick={ this.expending }>
                     <span className={lBadgeIconClassName}></span>
                   </a>:null
             }  
             
-            {/* shift the child components to the right */}
-            <button className={ComponentProgressStatus} 
-              style={ ( this.children.length !== 0  &&  this.parents.length !== 0) ? {left: '20px'} : {left: '30px'}}
-              onClick={ (this.parents.length === 0 && this.currentComponent.displayLogic.canExpend ) ? this.expending :null } >
-               
-              { (this.imgName.length !== 0 ) ? <img className="cci-component__img rounded-circle" src={this.imgName} alt=""></img>:null}
-               
-            </button>
-            <ul className='list-group flex-row'>
-                  <span className="lead font-weight-normal align-top text-primary text-truncate">{this.componentName}</span>
-                  <span className='badge-pill badge-info text-body'>{this.progressValue}%</span>  
-              </ul>
+            {/* shift the child components to the right */}  
+            <ul className='flow-right list-group flex-row'>
+              <button className={ComponentProgressStatus} 
+                style={ ( this.children.length !== 0  &&  this.parents.length !== 0) ? {left: '20px'} : {left: '30px'}}
+                onClick={ (this.parents.length === 0 && this.currentComponent.displayLogic.canExpend ) ? this.expending :null } >
+                
+                { (this.imgName.length !== 0 ) ? <img className="cci-component__img rounded-circle" src={this.imgName} alt=""></img>:null}
+                
+              </button>
+              <span className="lead font-weight-normal text-primary text-truncate" style={{  height: '10%' }}>{this.componentName}</span>
+              <span className='badge-pill badge-info text-body' style={{  height: '10%' }}>{this.progressValue}%</span>  
+           
+            </ul>
           </span>
         )
       }

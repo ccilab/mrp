@@ -198,14 +198,12 @@ class HelloWorldList extends Component {
       return (
         <div className="HelloWorldList">
           <AddGreeter addGreeting={this.addGreeting} />
-            <div>
-              <div className='container d-flex flex-column float-left mt-3 b-secondary '>
+            <div style={{ float: 'left', width: '100%' }}>
+              <div className='d-flex flex-column float-left mt-3 b-secondary' style={{  width: '15%' }}>
                 {this.renderGreetings()}
               </div>
-              <div className='float-right'>
-                  <div className='col-sm-10  bg-info'>
+              <div className='float-right bg-info mt-4' style={{  width: '85%' }}>
                     'this is place holder for component configuration table'
-                  </div>
               </div>
             </div>
         </div>
