@@ -53,11 +53,11 @@ class CCiLabComponent extends Component {
           if( this.currentComponent.displayLogic.canExpend === true )
             ComponentProgressStatus = 'btn cci-component-btn'
           else
-            ComponentProgressStatus ='btn cci-component-lable ml-0';
+            ComponentProgressStatus ='btn cci-component-lable ml-0 float-left';
         }
         else
         {
-            ComponentProgressStatus ='btn cci-component-lable cci-component-lable_position';
+            ComponentProgressStatus ='btn cci-component-lable cci-component-lable_position float-left';
         }
 
         if( this.state.expended === false || this.currentComponent.displayLogic.canExpend === false ) 
