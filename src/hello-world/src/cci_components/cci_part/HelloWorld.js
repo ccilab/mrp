@@ -11,7 +11,7 @@ class CCiLabComponent extends Component {
         children = this.currentComponent.businessLogic.childIds;
         componentName = this.currentComponent.businessLogic.name;
         imgName = (this.currentComponent.businessLogic.imgFile.length !==0 ) ? '/images/'+ this.currentComponent.businessLogic.imgFile : 
-                    (this.children.length !==0) ? '/images/cci_group_block_blue.png' : '/images/cci_single_block_item_blue.png';
+                    (this.children.length !==0) ? '/images/cci_group_block.png' : '/images/cci_single_block_item.png';
         progressStatus = this.currentComponent.businessLogic.status;
         progressValue = this.currentComponent.businessLogic.progressPercent;
 
@@ -70,14 +70,15 @@ class CCiLabComponent extends Component {
         if( this.parents.length === 0 )
         {
           linkStyle = {
-            margin: '4px'
+            margin: '4px',
+            'vertical-align': 'middle'
           }
         }
         else 
         {
           linkStyle = {
-            // margin: '0', 
-            left: '16px'
+            left: '16px',
+            'vertical-align': 'middle'
           }
         }
 
@@ -96,14 +97,14 @@ class CCiLabComponent extends Component {
             {/* shift the child components to the right */}  
             <ul className='flow-right list-group flex-row'>
               <button className={ComponentProgressStatus} 
-                style={ ( this.children.length !== 0  &&  this.parents.length !== 0) ? {left: '20px'} : {left: '30px'}}
+                style={ ( this.children.length !== 0  &&  this.parents.length !== 0) ? {left: '15px'} : {left: '15px'}}
                 onClick={ (this.parents.length === 0 && this.currentComponent.displayLogic.canExpend ) ? this.expending :null } >
                 
                 { (this.imgName.length !== 0 ) ? <img className="cci-component__img rounded-circle" src={this.imgName} alt=""></img>:null}
                 
               </button>
-              <span className="lead font-weight-normal text-primary text-truncate" style={{  height: '10%' }}>{this.componentName}</span>
-              <span className='badge-pill badge-info text-body' style={{  height: '10%' }}>{this.progressValue}%</span>  
+              <span className="lead font-weight-normal text-primary text-truncate align-self-center" style={{ left: '20px',  height: '10%' }}>{this.componentName}</span>
+              <span className='badge-pill badge-info text-body align-self-center' style={{ left: '20px', height: '10%' }}>{this.progressValue}%</span>  
            
             </ul>
           </span>
