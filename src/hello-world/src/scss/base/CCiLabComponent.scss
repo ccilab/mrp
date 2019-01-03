@@ -51,7 +51,7 @@ $fa-font-path:   "../scss/fontawesome-5.6.1/webfonts";
   background: linear-gradient(to right,rgba($bg-primary-color, 0.8) $start-location-percentage, rgba($bg-primary-color, 0.2)); // W3C 
 }
 
-// clicable button
+// clicable button 
 .cci-component-btn {
     cursor: pointer;
     width: $component_width !important; //fixed width
@@ -212,7 +212,7 @@ $fa-font-path:   "../scss/fontawesome-5.6.1/webfonts";
 .cci-component__img{
   height: $component_img_hight;
   width: $component_img_width;      
-  object-fit: fill;
+  object-fit: scale-down;
   filter:opacity(80%);
   -ms-filter: opacity(80%);
 }
@@ -241,14 +241,14 @@ $fa-font-path:   "../scss/fontawesome-5.6.1/webfonts";
 
 //static lable, is able to load image
 .cci-component-lable{
-  width: $component_width !important; //fixed width
-  height: $component_hight !important; //fixed height
+  width: $component_width; 
+  height: $component_hight; 
   background-color: transparent; 
   // border-color: $component_bg_color;
   margin-top: $component_columns_margin; 
   margin-bottom: $component_columns_margin; 
-  margin-left: $card-img-overlay-padding; //0%
-  margin-right: 2*$component_columns_margin; 
+  margin-left: 0; //0%
+  margin-right: 15px; 
   padding: $card-img-overlay-padding; //0%;
   // z-index: 1;
 } 
