@@ -11,7 +11,7 @@ class CCiLabComponent extends Component {
         children = this.currentComponent.businessLogic.childIds;
         componentName = this.currentComponent.businessLogic.name;
         imgName = (this.currentComponent.businessLogic.imgFile.length !==0 ) ? '/images/'+ this.currentComponent.businessLogic.imgFile : 
-                    (this.children.length !==0) ? '/images/group_gear.png' : '/images/single_gear_piece.png';
+                    (this.children.length !==0) ? '/images/cci_group_block_blue.png' : '/images/cci_single_block_item_blue.png';
         progressStatus = this.currentComponent.businessLogic.status;
         progressValue = this.currentComponent.businessLogic.progressPercent;
 
