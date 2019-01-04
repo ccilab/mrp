@@ -73,26 +73,28 @@ class CCiLabComponent extends Component {
         let anchorLeftstyle;
         if( this.parents.length === 0 )
         {
-          leftShiftStyle = {
-            margin: '4px'
-          }
-          anchorLeftstyle = leftShiftStyle;
+          // leftShiftStyle = {
+          //   'margin': '4px'
+          // };
+          // anchorLeftstyle = {
+          //   'margin': '4px',
+          // } 
         }
         else 
         { // expendable component left shift less, to compensate <a> 
           if ( this.children.length !== 0  &&  this.parents.length !== 0 )
           {
             leftShiftStyle = {
-              'left': '5px'
-            }
+              'left': '2px'
+            };
             anchorLeftstyle = {
-              'left': '16px'
+              'left': '14px',
             }
           }
           else{
             leftShiftStyle = {
-              'left': '16px'
-             }
+              'left': '30px'
+             };
           }
          
         }
@@ -104,7 +106,7 @@ class CCiLabComponent extends Component {
               show expendable icon '>' for those components have children except the top component
             */}
             { ( this.children.length !== 0  && ( this.parents.length !== 0  || this.state.expended === false) )?
-                  <a href="#1" className='cci-link_position float-left pt-25' style={anchorLeftstyle} onClick={ this.expending }>
+                  <a href="#1" className='cci-link_position float-left nav-link p-2' style={anchorLeftstyle} onClick={ this.expending }>
                     <span className={lBadgeIconClassName}></span>
                   </a>:null
             }  
