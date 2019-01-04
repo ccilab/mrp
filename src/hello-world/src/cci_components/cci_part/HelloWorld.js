@@ -69,47 +69,60 @@ class CCiLabComponent extends Component {
             lBadgeIconClassName= 'fa fa-angle-down';
         }
         
-        let linkStyle;
+        let leftShiftStyle;
+        let anchorLeftstyle;
         if( this.parents.length === 0 )
         {
-          linkStyle = {
+          leftShiftStyle = {
             margin: '4px'
           }
+          anchorLeftstyle = leftShiftStyle;
         }
         else 
-        {
-          linkStyle = {
-            'left': '16px',
-            'vertical-align': 'middle'
+        { // expendable component left shift less, to compensate <a> 
+          if ( this.children.length !== 0  &&  this.parents.length !== 0 )
+          {
+            leftShiftStyle = {
+              'left': '5px'
+            }
+            anchorLeftstyle = {
+              'left': '16px'
+            }
           }
+          else{
+            leftShiftStyle = {
+              'left': '16px'
+             }
+          }
+         
         }
 
         return (
-          <span className={`${Component} h-5`}  > 
+          <span className={`${Component}`}  > 
           
             {/* show collapse icon 'v' for all expendable components,
               show expendable icon '>' for those components have children except the top component
             */}
             { ( this.children.length !== 0  && ( this.parents.length !== 0  || this.state.expended === false) )?
-                  <a href="#1" className='cci-link_position float-left pt-25' style={linkStyle} onClick={ this.expending }>
+                  <a href="#1" className='cci-link_position float-left pt-25' style={anchorLeftstyle} onClick={ this.expending }>
                     <span className={lBadgeIconClassName}></span>
                   </a>:null
             }  
             
             {/* shift the child components to the right */}  
-            <ul className='flow-right list-group flex-row'>
+            <ul className='flow-right list-group flex-row cci-component-lable_position' style={leftShiftStyle}>
               <button className={ComponentProgressStatus} 
                 style={ ( this.children.length !== 0  &&  this.parents.length !== 0) ? 
-                  {'left': '15px', 'height': this.componentLableHeight, 'width': this.componentLableHeight } : 
-                  {'left': '15px', 'height': this.componentLableHeight, 'width': this.componentLableHeight} }
+                  {'left': '16px', 'height': this.componentLableHeight, 'width': this.componentLableHeight } : 
+                  {'left': '16px', 'height': this.componentLableHeight, 'width': this.componentLableHeight} }
                 onClick={ (this.parents.length === 0 && this.currentComponent.displayLogic.canExpend ) ? this.expending :null } >
                 
                 { (this.imgName.length !== 0 ) ? <img className='cci-component__img rounded-circle' 
                   style={{'height': this.componentLableHeight, 'width': this.componentLableHeight}} src={this.imgName} alt=""></img>:null}
                 
               </button>
-              <span className="lead font-weight-normal text-primary text-truncate align-self-center" style={{ left: '20px',  height: '10%' }}>{this.componentName}</span>
-              <span className='badge-pill badge-info text-body align-self-center' style={{ left: '20px', height: '10%' }}>{this.progressValue}%</span>  
+              <span className="lead font-weight-normal text-primary text-truncate align-self-center" style={{ left: '20px',  'height': '10%' }}>{this.componentName}</span>
+              <span className='badge-pill badge-info text-body align-self-center' style={{ left: '20px', 'height': '10%' }}>{this.progressValue}%</span>  
            
             </ul>
           </span>

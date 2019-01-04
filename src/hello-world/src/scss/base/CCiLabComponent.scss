@@ -54,8 +54,8 @@ $fa-font-path:   "../scss/fontawesome-5.6.1/webfonts";
 // clicable button 
 .cci-component-btn {
     cursor: pointer;
-    width: $component_width !important; //fixed width
-    height: $component_hight !important; //fixed height
+    width: $component_width ; 
+    height: $component_hight; 
     margin: $component_columns_margin; //10px;
     padding: $card-img-overlay-padding; //0%;
     box-shadow: 2px 6px 10px 0 rgba($cci-shadow-dark,0.3);
@@ -241,7 +241,7 @@ $fa-font-path:   "../scss/fontawesome-5.6.1/webfonts";
 
 //static lable, is able to load image
 .cci-component-lable{
-  width: $component_width; 
+  width: $component_width;  
   height: $component_hight; 
   background-color: transparent; 
   // border-color: $component_bg_color;
@@ -258,6 +258,6 @@ $fa-font-path:   "../scss/fontawesome-5.6.1/webfonts";
 }
 
 .cci-link_position{
-  display: inline-block;
+  display: block;
   position: relative;
 }
