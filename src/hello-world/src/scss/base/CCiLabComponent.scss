@@ -19,10 +19,10 @@ $badge-info-bg: $cci-info-blue;
 
 $component_bg_color: #3e4444;
 $component_select_color: rgb(95, 95, 95);
-$component_hight: 50px;
-$component_width: 50px;
-$component_img_hight: 50px;
-$component_img_width: 50px;
+$component_hight: 55px;
+$component_width: 55px;
+$component_img_hight: 48px;
+$component_img_width: 48px;
 $component_img_radius: map-get($sizes, 50 );
 $card-img-overlay-padding: 0%;
 $component_columns_margin: 10px;
@@ -228,14 +228,14 @@ $fa-font-path:   "../scss/fontawesome-5.6.1/webfonts";
 
 
 .cci-btn_transparent{
-  background-image: none;
+  //background-image: none;
   background-color: transparent;
-  border-color: transparent;
+  //border-color: transparent;
   // margin-right: 0;
-  padding-right: 0; 
-  @include hover-focus-active  {
-    cursor: pointer;
-  }
+  // padding-right: 0; 
+  // @include hover-focus-active  {
+  //   cursor: pointer;
+  // }
 }
 
 

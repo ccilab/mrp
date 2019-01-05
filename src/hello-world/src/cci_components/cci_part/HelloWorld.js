@@ -12,7 +12,7 @@ class CCiLabComponent extends Component {
         componentName = this.currentComponent.businessLogic.name;
         imgName = (this.currentComponent.businessLogic.imgFile.length !==0 ) ? '/images/'+ this.currentComponent.businessLogic.imgFile : 
                     (this.children.length !==0) ? '/images/cci_group_block.png' : '/images/cci_single_block_item.png';
-        componentLableHeight = (this.currentComponent.businessLogic.imgFile.length !==0 ) ? '50px' : 
+        componentLableHeight = (this.currentComponent.businessLogic.imgFile.length !==0 ) ? '55px' : 
                               (this.children.length !==0) ? '45px' : '20px';
 
         progressStatus = this.currentComponent.businessLogic.status;
@@ -54,13 +54,17 @@ class CCiLabComponent extends Component {
         { //top element
           Component +=' sticky-top';
           if( this.currentComponent.displayLogic.canExpend === true )
-            ComponentProgressStatus = 'btn cci-component-btn  float-left'
-          else
-            ComponentProgressStatus ='btn cci-component-lable ml-0 float-left';
+            ComponentProgressStatus = 'btn cci-component-btn float-left'
+          else  // top element - expended
+            ComponentProgressStatus ='btn cci-component-lable mx-0 float-left';
         }
         else
         {
-            ComponentProgressStatus ='btn cci-component-lable cci-component-lable_position float-left';
+ 
+            if ( this.children.length !== 0  &&  this.parents.length !== 0 )
+              ComponentProgressStatus ='btn cci-component-lable mx-0 float-left';
+            else
+              ComponentProgressStatus ='btn cci-component-lable mx-0  float-left';
         }
 
         if( this.state.expended === false || this.currentComponent.displayLogic.canExpend === false ) 
@@ -71,29 +75,20 @@ class CCiLabComponent extends Component {
         
         let leftShiftStyle;
         let anchorLeftstyle;
-        if( this.parents.length === 0 )
-        {
-          // leftShiftStyle = {
-          //   'margin': '4px'
-          // };
-          // anchorLeftstyle = {
-          //   'margin': '4px',
-          // } 
-        }
-        else 
+        if( this.parents.length !== 0 )
         { // expendable component left shift less, to compensate <a> 
           if ( this.children.length !== 0  &&  this.parents.length !== 0 )
           {
-            leftShiftStyle = {
-              'left': '2px'
-            };
             anchorLeftstyle = {
-              'left': '14px',
+              'left': '28px',
             }
+            leftShiftStyle = {
+              'left': '15px',
+             };
           }
           else{
             leftShiftStyle = {
-              'left': '30px'
+              'left': '60px',
              };
           }
          
@@ -106,7 +101,7 @@ class CCiLabComponent extends Component {
               show expendable icon '>' for those components have children except the top component
             */}
             { ( this.children.length !== 0  && ( this.parents.length !== 0  || this.state.expended === false) )?
-                  <a href="#1" className='cci-link_position float-left nav-link p-2' style={anchorLeftstyle} onClick={ this.expending }>
+                  <a href="#1" className='cci-link_position float-left nav-link pt-4 align-self-center' style={anchorLeftstyle} onClick={ this.expending }>
                     <span className={lBadgeIconClassName}></span>
                   </a>:null
             }  
@@ -114,17 +109,17 @@ class CCiLabComponent extends Component {
             {/* shift the child components to the right */}  
             <ul className='flow-right list-group flex-row cci-component-lable_position' style={leftShiftStyle}>
               <button className={ComponentProgressStatus} 
-                style={ ( this.children.length !== 0  &&  this.parents.length !== 0) ? 
-                  {'left': '16px', 'height': this.componentLableHeight, 'width': this.componentLableHeight } : 
-                  {'left': '16px', 'height': this.componentLableHeight, 'width': this.componentLableHeight} }
+                style={ { 'height': this.componentLableHeight, 'width': this.componentLableHeight} }
                 onClick={ (this.parents.length === 0 && this.currentComponent.displayLogic.canExpend ) ? this.expending :null } >
                 
-                { (this.imgName.length !== 0 ) ? <img className='cci-component__img rounded-circle' 
-                  style={{'height': this.componentLableHeight, 'width': this.componentLableHeight}} src={this.imgName} alt=""></img>:null}
+                {/* no style for top element so the button can host the image, other elements need style to set image position  */}
+                { (this.imgName.length !== 0 ) ? <img className='cci-component__img rounded-circle'
+                    style={( this.parents.length === 0) ? 
+                      null : { 'height': this.componentLableHeight, 'width': this.componentLableHeight}}  src={this.imgName} alt=""></img>:null}
                 
               </button>
-              <span className="lead font-weight-normal text-primary text-truncate align-self-center" style={{ left: '20px',  'height': '10%' }}>{this.componentName}</span>
-              <span className='badge-pill badge-info text-body align-self-center' style={{ left: '20px', 'height': '10%' }}>{this.progressValue}%</span>  
+              <span className='lead font-weight-normal text-primary text-truncate ml-1 align-self-center' style={{ 'height': '10%' }}>{this.componentName}</span>
+              <span className='badge-pill badge-info text-body align-self-center ml-1' style={{ 'height': '10%' }}>{this.progressValue}%</span>  
            
             </ul>
           </span>
