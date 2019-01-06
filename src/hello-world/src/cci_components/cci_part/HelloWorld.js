@@ -48,8 +48,12 @@ class CCiLabComponent extends Component {
         console.log('CCiLabComponent::render() imgFile: ', this.imgName);
         let Component ='';
         let ComponentProgressStatus;
-        let lBadgeIconClassName= this.children.length ? 'fa fa-angle-right':'';
-       
+        let expendCollapseBadgeIconClassName= this.children.length ? 'fa fa-angle-right':'';
+
+        let statusBadgeIconClassName = this.progressStatus === 'info' ? '':
+            this.progressStatus === 'success' ? 'fa fa-check-circle' :
+            this.progressStatus === 'warning' ? 'fa fa-exclamation-circle' : 'fa fa-exclamation-triangle';
+            
         if( this.parents.length === 0 )
         { //top element
           Component +=' sticky-top';
@@ -70,7 +74,7 @@ class CCiLabComponent extends Component {
         if( this.state.expended === false || this.currentComponent.displayLogic.canExpend === false ) 
         {
           if( this.children.length !== 0  )
-            lBadgeIconClassName= 'fa fa-angle-down';
+            expendCollapseBadgeIconClassName= 'fa fa-angle-down';
         }
         
         let leftShiftStyle;
@@ -102,7 +106,7 @@ class CCiLabComponent extends Component {
             */}
             { ( this.children.length !== 0  && ( this.parents.length !== 0  || this.state.expended === false) )?
                   <a href="#1" className='cci-link_position float-left nav-link pt-4 align-self-center' style={anchorLeftstyle} onClick={ this.expending }>
-                    <span className={lBadgeIconClassName}></span>
+                    <span className={expendCollapseBadgeIconClassName}></span>
                   </a>:null
             }  
             
@@ -119,7 +123,7 @@ class CCiLabComponent extends Component {
                 
               </button>
               <span className='lead font-weight-normal text-primary text-truncate ml-1 align-self-center' style={{ 'height': '10%' }}>{this.componentName}</span>
-              <span className='badge-pill badge-info text-body align-self-center ml-1' style={{ 'height': '10%' }}>{this.progressValue}%</span>  
+              <span className={`badge-pill badge-${this.progressStatus} ${statusBadgeIconClassName} text-body align-self-center ml-1`} style={{ 'height': '10%', 'line-height': '1.5'}}>{this.progressValue}%</span>  
            
             </ul>
           </span>
@@ -147,4 +151,6 @@ export default CCiLabComponent;
 <span class="d-inline-block text-truncate" style="max-width: 150px;">
   Praeterea iter est quasdam res quas ex communi.
 </span>
+
+'font-weight': 'normal',
 */
