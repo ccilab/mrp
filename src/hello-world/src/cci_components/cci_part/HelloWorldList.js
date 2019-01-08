@@ -198,7 +198,8 @@ class HelloWorldList extends Component {
       return (
         <div className="HelloWorldList">
           <AddGreeter addGreeting={this.addGreeting} />
-            <div style={{'width': '100%' }}>
+            {/* <div style={{'width': '100%' }}> */}
+            <div>
               <div className='d-flex flex-column float-left mt-3 bg-secondary w-15' >
                 {this.renderGreetings()}
               </div>
