@@ -50,7 +50,7 @@ class CCiLabComponent extends Component {
         let ComponentProgressStatus;
         let expendCollapseBadgeIconClassName= this.children.length ? 'fa fa-angle-right':'';
 
-        let statusBadgeIconClassName = this.progressStatus === 'info' ? '':
+        let statusBadgeIconClassName = this.progressStatus === 'info' ? 'fa ':
             this.progressStatus === 'success' ? 'fa fa-check-circle' :
             this.progressStatus === 'warning' ? 'fa fa-exclamation-circle' : 'fa fa-exclamation-triangle';
             
@@ -123,8 +123,7 @@ class CCiLabComponent extends Component {
                 
               </button>
               <span className='lead font-weight-normal text-primary text-truncate ml-1 align-self-center' style={{ 'height': '10%' }}>{this.componentName}</span>
-              <span className={`badge-pill badge-${this.progressStatus} ${statusBadgeIconClassName} text-body align-self-center ml-1`} style={{ 'height': '10%', 'line-height': '1.5'}}>{this.progressValue}%</span>  
-           
+              <span className={`badge-pill badge-${this.progressStatus} ${statusBadgeIconClassName} text-body align-self-center ml-1`} style={{ 'height': '10%', 'line-height': '1.5'}}> {this.progressValue}%</span>  
             </ul>
           </span>
         )
