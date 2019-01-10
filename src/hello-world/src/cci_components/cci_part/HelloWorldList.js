@@ -197,7 +197,7 @@ class HelloWorldList extends Component {
     render() {
       return (
         <div className="HelloWorldList">
-          <AddGreeter addGreeting={this.addGreeting} />
+          {/* <AddGreeter addGreeting={this.addGreeting} /> */}
             <div className='d-flex'>
             {/* following d-flex is needed to show collapse icon (v) next to the top component  */}
               <div className='d-flex flex-column float-left mt-3 bg-secondary' >

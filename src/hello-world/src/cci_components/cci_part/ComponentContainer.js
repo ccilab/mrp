@@ -22,9 +22,10 @@ class ComponentContainer extends Component {
   
   render () {
     return (
-      <HelloWorldList handleMouseDown={this.handleMouseDown}
+      <div>      
+        <HelloWorldList handleMouseDown={this.handleMouseDown}
         menuVisibility={this.state.visible}/>
-      <div>
+
         <ul>
           <li>'this is place holder for creating component'</li>
         </ul>
