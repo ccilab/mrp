@@ -203,9 +203,6 @@ class HelloWorldList extends Component {
               <div className='d-flex flex-column float-left mt-3 bg-secondary' >
                 {this.renderGreetings()}
               </div>
-              <div className='float-right bg-info mt-6' >
-                    'this is place holder for component configuration table'
-              </div>
             </div>
         </div>
       );

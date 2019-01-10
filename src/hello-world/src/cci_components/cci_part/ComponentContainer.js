@@ -2,6 +2,7 @@ import 'raf/polyfill'
 import 'core-js/es6/set'
 import 'core-js/es6/map'
 import React, { Component } from "react";
+import HelloWorldList from "./HelloWorldList";
 
 class ComponentContainer extends Component {
   state = {visible: false };
@@ -13,7 +14,7 @@ class ComponentContainer extends Component {
   };
 
   handleMouseDown=(e)=>{
-    this.toggleMenu();
+    this.toggleComponents();
     console.log("clicked");
     e.stopPropagation();
   };
@@ -21,11 +22,13 @@ class ComponentContainer extends Component {
   
   render () {
     return (
-          <div>
-      <ul>
-        <li>'this is place holder for creating component'</li>
-      </ul>
-    </div>
+      <HelloWorldList handleMouseDown={this.handleMouseDown}
+        menuVisibility={this.state.visible}/>
+      <div>
+        <ul>
+          <li>'this is place holder for creating component'</li>
+        </ul>
+      </div>
     );
   }
 }
