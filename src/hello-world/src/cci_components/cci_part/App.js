@@ -2,15 +2,16 @@ import 'raf/polyfill'
 import 'core-js/es6/set'
 import 'core-js/es6/map'
 import React from "react";
-import HelloWorldList from "./HelloWorldList";
-import "./App.css";
 
-const App = () => {
-  return (
-    <div className="App">
-      <HelloWorldList />
+class App extends Component {
+  
+  return () {
+    <div>
+      <ul>
+        <li>'this is place holder for creating component'</li>
+      </ul>
     </div>
-  );
-};
+  }
+}
 
 export default App;

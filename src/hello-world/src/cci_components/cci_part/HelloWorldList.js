@@ -209,7 +209,7 @@ class HelloWorldList extends Component {
             </div>
         </div>
       );
-    }
+    };
 }
 
 export default HelloWorldList;
