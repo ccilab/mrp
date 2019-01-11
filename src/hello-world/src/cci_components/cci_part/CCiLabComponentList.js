@@ -1,7 +1,7 @@
 
 import React, { Component } from "react";
-import "./HelloWorldList.css";
-import CCiLabComponent from "./HelloWorld";
+import "./CCiLabComponentList.css";
+import CCiLabComponent from "./CCiLabComponent";
 import AddGreeter from "./AddGreeter";
 //json-loader load the *.json file
 import components from './../../data/components.json';
@@ -86,7 +86,7 @@ const hideChildren = (aComponent, aComponents, aShowStatus)=>{
 }
 
 
-class HelloWorldList extends Component {
+class CCiLabComponentList extends Component {
     state = { greetings: undefined };
 
     // initialize first component's childKeyIds, reorder in following order: the first component, alarm status, warning status, no_issue status
@@ -196,7 +196,7 @@ class HelloWorldList extends Component {
 
     render() {
       return (
-        <div className="HelloWorldList">
+        <div className="CCiLabComponentList">
           {/* <AddGreeter addGreeting={this.addGreeting} /> */}
             <div className='d-flex'>
             {/* following d-flex is needed to show collapse icon (v) next to the top component  */}
@@ -209,4 +209,4 @@ class HelloWorldList extends Component {
     };
 }
 
-export default HelloWorldList;
+export default CCiLabComponentList;

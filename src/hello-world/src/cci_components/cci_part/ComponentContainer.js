@@ -2,7 +2,7 @@ import 'raf/polyfill'
 import 'core-js/es6/set'
 import 'core-js/es6/map'
 import React, { Component } from "react";
-import HelloWorldList from "./HelloWorldList";
+import CCiLabComponentList from "./CCiLabComponentList";
 
 class ComponentContainer extends Component {
   state = {visible: false };
@@ -23,12 +23,12 @@ class ComponentContainer extends Component {
   render () {
     return (
       <div>      
-        <HelloWorldList handleMouseDown={this.handleMouseDown}
-        menuVisibility={this.state.visible}/>
+        <CCiLabComponentList handleMouseDown={this.handleMouseDown} menuVisibility={this.state.visible}/>
 
         <ul>
           <li>'this is place holder for creating component'</li>
         </ul>
+
       </div>
     );
   }
