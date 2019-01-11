@@ -1,0 +1,22 @@
+@import "../bootstrap-4.0.0-alpha.6/scss/variables";
+
+
+@import "../fontawesome-5.6.1/scss/variables";
+$fa-font-path:   "../scss/fontawesome-5.6.1/webfonts";
+
+
+// end customization
+@import "../bootstrap-4.0.0-alpha.6/scss/bootstrap";
+
+
+@import "../fontawesome-5.6.1/scss/fontawesome";
+@import "../fontawesome-5.6.1/scss/solid";
+
+
+
+#root > .CCiLabComponentList {
+  margin: 20px; 
+  padding: 20px;
+  border: 2px solid #00D8FF !important;
+  background-color: #DDEEFF !important;
+} 

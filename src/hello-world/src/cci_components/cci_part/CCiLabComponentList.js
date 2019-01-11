@@ -1,8 +1,9 @@
 
 import React, { Component } from "react";
-import "./CCiLabComponentList.css";
+// import "./../../css/CCiLabComponent.css";
 import CCiLabComponent from "./CCiLabComponent";
-import AddGreeter from "./AddGreeter";
+// import AddGreeter from "./AddGreeter";
+
 //json-loader load the *.json file
 import components from './../../data/components.json';
 
@@ -196,15 +197,15 @@ class CCiLabComponentList extends Component {
 
     render() {
       return (
-        <div className="CCiLabComponentList">
+        <div style={{'border': '2px solid #00D8FF','background-color': '#DDEEFF' }}>
           {/* <AddGreeter addGreeting={this.addGreeting} /> */}
-            <div className='d-flex'>
+            {/* <div className='d-flex'> */}
             {/* following d-flex is needed to show collapse icon (v) next to the top component  */}
-              <div className='d-flex flex-column float-left mt-3 bg-secondary' >
+              <div className='d-flex flex-column' >
                 {this.renderGreetings()}
               </div>
             </div>
-        </div>
+        // </div>
       );
     };
 }
