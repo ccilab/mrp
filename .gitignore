@@ -143,3 +143,12 @@ typings/
 # Serverless directories
 
 .serverless
+
+#scss out folder
+css/
+
+#vscode folder
+.vscode/
+
+#bak folder
+bak/
