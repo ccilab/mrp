@@ -198,11 +198,13 @@ class CCiLabComponentList extends Component {
     render() {
       let slidingComponentListIconClassName ='fa fa-angle-left'
       return (
-        <div className='d-flex flex-row' style={{'height': '100vh'}}>
+        <div className='d-flex flex-row'>
           {/* <AddGreeter addGreeting={this.addGreeting} /> */}
             {/* <div className='d-flex'> */}
             {/* following d-flex is needed to show collapse icon (>) next to the top component  */}
-              <div className='d-flex flex-column ' style={{'height': '70vh', 'width':'80vw', 'overflow': 'auto', 'border': '2px solid #00D8FF','background-color': '#DDEEFF'}}>
+            {/* https://code.i-harness.com/en/q/27a5171 explains why vertical scroll bar won't appear for flex box and what is the workaroud
+                in our case we don't need to use workaround, let flex box handles height is better*/}
+              <div className='d-flex flex-column ' style={{ 'width':'80vw', 'overflow': 'auto', 'border': '2px solid #00D8FF','background-color': '#DDEEFF'}}>
                 {this.renderGreetings()}
               </div>
               <div>
