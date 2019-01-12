@@ -14,9 +14,29 @@ $fa-font-path:   "../scss/fontawesome-5.6.1/webfonts";
 
 
 
-#root > .CCiLabComponentList {
-  margin: 20px; 
-  padding: 20px;
-  border: 2px solid #00D8FF !important;
-  background-color: #DDEEFF !important;
+#root > .CCiLab-component-container {
+  // margin: 20px; 
+  // padding: 20px;
+  height: 100vh;
 } 
+
+.CCiLab-component-list {
+    height: 90vh;
+}
+
+.CCiLab-scrollbar
+{
+   overflow: auto; /*for horizontal and vertical scroll bars */
+}
+
+.horizontal-scrollbar
+{
+       overflow-x: auto; /*for horizontal scroll bar */
+       overflow-y: hidden; /*for hiding vertical scroll bar */
+}
+
+.CCiLab-vertical-scrollbar
+{
+   overflow-x: hidden; /*for hiding horizontal scroll bar*/
+   overflow-y: auto; /*for vertical scroll bar*/
+}

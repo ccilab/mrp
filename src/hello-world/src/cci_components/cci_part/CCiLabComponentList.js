@@ -196,16 +196,21 @@ class CCiLabComponentList extends Component {
 
 
     render() {
+      let slidingComponentListIconClassName ='fa fa-angle-left'
       return (
-        <div style={{'border': '2px solid #00D8FF','background-color': '#DDEEFF' }}>
+        <div className='d-flex flex-row' style={{'height': '100vh'}}>
           {/* <AddGreeter addGreeting={this.addGreeting} /> */}
             {/* <div className='d-flex'> */}
-            {/* following d-flex is needed to show collapse icon (v) next to the top component  */}
-              <div className='d-flex flex-column' >
+            {/* following d-flex is needed to show collapse icon (>) next to the top component  */}
+              <div className='d-flex flex-column ' style={{'height': '70vh', 'width':'80vw', 'overflow': 'auto', 'border': '2px solid #00D8FF','background-color': '#DDEEFF'}}>
                 {this.renderGreetings()}
               </div>
+              <div>
+                <a href="#1" className='float-right nav-link ' >
+                      <span className={`badge-pill badge-info ${slidingComponentListIconClassName}`}></span>
+                </a>
             </div>
-        // </div>
+        </div>
       );
     };
 }
