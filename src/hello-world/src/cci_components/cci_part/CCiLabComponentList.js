@@ -203,8 +203,8 @@ class CCiLabComponentList extends Component {
             {/* <div className='d-flex'> */}
             {/* following d-flex is needed to show collapse icon (>) next to the top component  */}
             {/* https://code.i-harness.com/en/q/27a5171 explains why vertical scroll bar won't appear for flex box and what is the workaroud
-                in our case we don't need to use workaround, let flex box handles height is better*/}
-              <div className='d-flex flex-column ' style={{ 'width':'80vw', 'overflow': 'auto', 'border': '2px solid #00D8FF','background-color': '#DDEEFF'}}>
+                in our case we should set height:90vh after component list grows out of 100vh #to do*/}
+              <div className='d-flex flex-column ' style={{  'overflow': 'auto', 'border': '2px solid #00D8FF','background-color': '#DDEEFF'}}>
                 {this.renderGreetings()}
               </div>
               <div>
