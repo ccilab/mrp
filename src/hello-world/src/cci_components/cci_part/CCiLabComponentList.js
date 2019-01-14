@@ -90,6 +90,9 @@ const hideChildren = (aComponent, aComponents, aShowStatus)=>{
 class CCiLabComponentList extends Component {
     state = { greetings: undefined };
 
+   
+    visibility = this.props.menuVisibility? "flyoutMenu_show" : "flyoutMenu_hide";
+    
     // initialize first component's childKeyIds, reorder in following order: the first component, alarm status, warning status, no_issue status
     componentWillMount=()=>{
       let currentSessionComponents=[];
@@ -192,23 +195,21 @@ class CCiLabComponentList extends Component {
           ) : null;
     };
 
-  
-
 
     render() {
       let slidingComponentListIconClassName ='fa fa-angle-left'
       return (
-        <div className='d-flex flex-row'>
+        <div onMouseDown={this.props.handleMouseDown} className={`d-flex flex-row`}>
           {/* <AddGreeter addGreeting={this.addGreeting} /> */}
             {/* <div className='d-flex'> */}
             {/* following d-flex is needed to show collapse icon (>) next to the top component  */}
             {/* https://code.i-harness.com/en/q/27a5171 explains why vertical scroll bar won't appear for flex box and what is the workaroud
-                in our case we should set height:90vh after component list grows out of 100vh #to do*/}
-              <div className='d-flex flex-column ' style={{  'overflow': 'auto', 'border': '2px solid #00D8FF','background-color': '#DDEEFF'}}>
+                in our case we should set 'height':'90vh' after component list grows out of 100vh #to do*/}
+              <div className={`d-flex flex-column flyoutMenu ${this.visibility}`} style={{ 'height':'90vh', 'overflow': 'auto', 'border': '2px solid #00D8FF','background': '#DDEEFF', }}>
                 {this.renderGreetings()}
               </div>
               <div>
-                <a href="#1" className='float-right nav-link ' >
+                <a href="#1" className='float-right nav-link ' onMouseDown={this.props.handleMouseDown} >
                       <span className={`badge-pill badge-info ${slidingComponentListIconClassName}`}></span>
                 </a>
             </div>

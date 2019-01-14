@@ -40,3 +40,18 @@ $fa-font-path:   "../scss/fontawesome-5.6.1/webfonts";
    overflow-x: hidden; /*for hiding horizontal scroll bar*/
    overflow-y: auto; /*for vertical scroll bar*/
 }
+
+.flyoutMenu {
+   transition: transform .3s
+      cubic-bezier(0, .52, 0, 1);
+   z-index: 1000;
+ }
+
+ .flyoutMenu_hide {
+   transform: translate3d(-100vw, 0, 0);
+   }
+   
+.flyoutMenu_show {
+   transform: translate3d(0vw, 0, 0);
+   overflow: hidden;
+   }

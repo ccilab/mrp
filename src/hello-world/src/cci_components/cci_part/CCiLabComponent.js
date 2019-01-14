@@ -123,7 +123,7 @@ class CCiLabComponent extends Component {
                 
               </button>
               <span className='lead font-weight-normal text-primary text-truncate ml-1 align-self-center' style={{ 'height': '10%' }}>{this.componentName}</span>
-              <span className={`badge-pill badge-${this.progressStatus} ${statusBadgeIconClassName} text-body text-nowrap align-self-center ml-1`} style={{ 'height': '15% !important', 'line-height': '2 !important'}}> {this.progressValue}%</span>  
+              <span className={`badge-pill badge-${this.progressStatus} ${statusBadgeIconClassName} text-body text-nowrap align-self-center ml-1`} style={{ 'height': '15% !important'}}> {this.progressValue}%</span>  
             </ul>
           </span>
         )
