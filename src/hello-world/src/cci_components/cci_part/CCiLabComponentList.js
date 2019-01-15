@@ -87,11 +87,26 @@ const hideChildren = (aComponent, aComponents, aShowStatus)=>{
 }
 
 
+// check if an element is in viewport
+const isElementInViewport = (rect) => {
+  return (
+      rect.top >= 0 &&
+      rect.left >= 0 &&
+      rect.bottom <= (window.innerHeight || document.documentElement.clientHeight) && /*or $(window).height() */
+      rect.right <= (window.innerWidth || document.documentElement.clientWidth) /*or $(window).width() */
+  );
+}
+
 class CCiLabComponentList extends Component {
-    state = { greetings: undefined };
+    state = { greetings: undefined, componentListVPHeight:'' };
 
    
     visibility = this.props.menuVisibility? "flyoutMenu_show" : "flyoutMenu_hide";
+
+    slidingComponentListIconClassName = this.props.menuVisibility? 'fa fa-angle-double-left' : 'fa fa-angle-double-right';
+
+    // visibilityStyle = this.props.menuVisibility? {'transform': 'translate3d(0vw, 0, 0)', 'overflow': 'hidden'}  :  {'transform': 'translate3d(-100vwvw, 0, 0)'};
+
     
     // initialize first component's childKeyIds, reorder in following order: the first component, alarm status, warning status, no_issue status
     componentWillMount=()=>{
@@ -117,6 +132,13 @@ class CCiLabComponentList extends Component {
       }
 
       this.setState( {greetings: currentSessionComponents} )
+    }
+  
+
+    componentDidMount =()=> {
+      //const height = this.divElement.clientHeight;
+      let height =  isElementInViewport( document.getElementById( 'cciLabComponentListID' ).getBoundingClientRect() ) ? '':'90vh';
+      this.setState({ componentListVPHeight:height });
     }
   
     addGreeting = (newName, progressValue) =>{
@@ -197,20 +219,19 @@ class CCiLabComponentList extends Component {
 
 
     render() {
-      let slidingComponentListIconClassName ='fa fa-angle-left'
       return (
-        <div onMouseDown={this.props.handleMouseDown} className={`d-flex flex-row`}>
+        <div className={`d-flex flex-row`}>
           {/* <AddGreeter addGreeting={this.addGreeting} /> */}
             {/* <div className='d-flex'> */}
             {/* following d-flex is needed to show collapse icon (>) next to the top component  */}
             {/* https://code.i-harness.com/en/q/27a5171 explains why vertical scroll bar won't appear for flex box and what is the workaroud
                 in our case we should set 'height':'90vh' after component list grows out of 100vh #to do*/}
-              <div className={`d-flex flex-column flyoutMenu ${this.visibility}`} style={{ 'height':'90vh', 'overflow': 'auto', 'border': '2px solid #00D8FF','background': '#DDEEFF', }}>
+             <div id='cciLabComponentListID' className={`d-flex flex-column flyoutMenu ${this.visibility}`} style={{'height':`${this.state.componentListVPHeight}`, 'overflow': 'auto', 'border': '2px solid #00D8FF','background': '#DDEEFF', }}>
                 {this.renderGreetings()}
               </div>
               <div>
                 <a href="#1" className='float-right nav-link ' onMouseDown={this.props.handleMouseDown} >
-                      <span className={`badge-pill badge-info ${slidingComponentListIconClassName}`}></span>
+                      <span className={`badge-pill badge-info ${this.slidingComponentListIconClassName}`}></span>
                 </a>
             </div>
         </div>
