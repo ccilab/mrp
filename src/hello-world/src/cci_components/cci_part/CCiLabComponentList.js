@@ -98,10 +98,11 @@ const isElementInViewport = (rect) => {
 }
 
 class CCiLabComponentList extends Component {
-    state = { greetings: undefined, componentListVPHeight:'' };
+    state = { greetings: undefined };
 
-   
-    visibility = this.props.menuVisibility? "flyoutMenu_show" : "flyoutMenu_hide";
+   componentListVPHeight ='';
+
+    visibility = this.props.menuVisibility? "flyout-menu_show" : "flyout-menu_hide";
 
     slidingComponentListIconClassName = this.props.menuVisibility? 'fa fa-angle-double-left' : 'fa fa-angle-double-right';
 
@@ -138,7 +139,7 @@ class CCiLabComponentList extends Component {
     componentDidMount =()=> {
       //const height = this.divElement.clientHeight;
       let height =  isElementInViewport( document.getElementById( 'cciLabComponentListID' ).getBoundingClientRect() ) ? '':'90vh';
-      this.setState({ componentListVPHeight:height });
+      this.componentListVPHeight = height;
     }
   
     addGreeting = (newName, progressValue) =>{
@@ -210,9 +211,9 @@ class CCiLabComponentList extends Component {
       return ( (typeof this.state !== "undefined") && (typeof this.state.greetings !== "undefined" ) )? 
           this.state.greetings.map( (component) => {
                 if( component.displayLogic.showMyself === true )
-                  return <CCiLabComponent component={component} removeGreeting={this.removeGreeting} showOrHideChildren={this.showOrHideChildren}/> ;
+                  return <CCiLabComponent key={component.displayLogic.key} component={component} removeGreeting={this.removeGreeting} showOrHideChildren={this.showOrHideChildren}/> ;
                 else
-                return null;
+                  return null;
             }
           ) : null;
     };
@@ -226,12 +227,12 @@ class CCiLabComponentList extends Component {
             {/* following d-flex is needed to show collapse icon (>) next to the top component  */}
             {/* https://code.i-harness.com/en/q/27a5171 explains why vertical scroll bar won't appear for flex box and what is the workaroud
                 in our case we should set 'height':'90vh' after component list grows out of 100vh #to do*/}
-             <div id='cciLabComponentListID' className={`d-flex flex-column flyoutMenu ${this.visibility}`} style={{'height':`${this.state.componentListVPHeight}`, 'overflow': 'auto', 'border': '2px solid #00D8FF','background': '#DDEEFF', }}>
+             <div id='cciLabComponentListID' className={`d-flex flex-column flyout-menu ${this.visibility}`} style={{'height':`${this.componentListVPHeight}`, 'overflow': 'auto', 'border': '2px solid #00D8FF','background': '#DDEEFF', }}>
                 {this.renderGreetings()}
               </div>
               <div>
                 <a href="#1" className='float-right nav-link ' onMouseDown={this.props.handleMouseDown} >
-                      <span className={`badge-pill badge-info ${this.slidingComponentListIconClassName}`}></span>
+                    <span className={`badge-pill badge-info ${this.slidingComponentListIconClassName}`}></span>
                 </a>
             </div>
         </div>
