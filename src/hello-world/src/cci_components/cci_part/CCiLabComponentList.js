@@ -1,6 +1,6 @@
 
 import React, { Component } from "react";
-// import "./../../css/CCiLabComponent.css";
+import "./../../css/CCiLabComponentList.css";
 import CCiLabComponent from "./CCiLabComponent";
 // import AddGreeter from "./AddGreeter";
 
@@ -260,7 +260,7 @@ class CCiLabComponentList extends Component {
             {/* following d-flex is needed to show collapse icon (>) next to the top component  */}
             {/* https://code.i-harness.com/en/q/27a5171 explains why vertical scroll bar won't appear for flex box and what is the workaroud
                 in our case we should set 'height':'90vh' after component list grows out of 100vh #to do*/}
-             <div id='cciLabComponentListID' className={`d-flex flex-column flyout-menu ${this.visibility}`} style={{'height':`${this.componentListHeight}`, 'overflow': 'auto', 'border': '2px solid #00D8FF','background': '#DDEEFF', }}>
+             <div id='cciLabComponentListID' className='d-flex flex-column flyout-menu' style={{'height':`${this.componentListHeight}`}}>
                 {this.renderGreetings()}
               </div>
               <div>
