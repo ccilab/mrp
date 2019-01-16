@@ -87,6 +87,16 @@ const hideChildren = (aComponent, aComponents, aShowStatus)=>{
 }
 
 
+const estimateComponentListRect = (componentLists)=>{
+  let componentListRect = document.getElementById( 'cciLabComponentListID' ).getBoundingClientRect();
+  let updatedRect = {top: componentListRect.top, left: componentListRect.left, bottom: componentListRect.bottom, right: componentListRect.right };
+  
+  let shownComponents = componentLists.filter(component=>component.displayLogic.showMyself === true)
+  
+  updatedRect.bottom = shownComponents.length * 55; //55px defined in CCiLabComponent.js as max button height
+  return updatedRect;
+}
+
 // check if an element is in viewport
 const isElementInViewport = (rect) => {
   return (
@@ -135,16 +145,30 @@ class CCiLabComponentList extends Component {
       this.setState( {greetings: currentSessionComponents} )
     }
   
+    /**
+   * bind to resize event, Calculate & Update state of new dimensions
+   */
+    updateDimensions=()=>{
+      let updatedRect = estimateComponentListRect(this.state.greetings);
 
-    //called after initial render() is called and element is inserted indo DOM
+      this.componentListHeight = isElementInViewport( updatedRect ) ? '':'90vh';
+
+      this.setState( { greetings: this.state.greetings })
+    }
+
+    /** 
+     * called after initial render() is called and element is inserted indo DOM
+     * Add event listener to show vertical scroll bar if browser window is shorter 
+     * than component list rect height
+     * */ 
     componentDidMount =()=> {
-      this.componentListHeight = isElementInViewport( document.getElementById( 'cciLabComponentListID' ).getBoundingClientRect() ) ? '':'90vh';
+      window.addEventListener("resize", this.updateDimensions);
     }
 
-    //called after render()
-    componentDidUpdate = ()=>{
-      this.componentListHeight = isElementInViewport( document.getElementById( 'cciLabComponentListID' ).getBoundingClientRect() ) ? '':'90vh';
-    }
+    // //called after render()
+    // componentDidUpdate = ()=>{
+    //   this.componentListHeight = isElementInViewport( document.getElementById( 'cciLabComponentListID' ).getBoundingClientRect() ) ? '':'90vh';
+    // }
   
     addGreeting = (newName, progressValue) =>{
       this.setState({ greetings: [...this.state.greetings, 
@@ -207,9 +231,7 @@ class CCiLabComponentList extends Component {
           }
           
           // create vertical scroll bar based on the height of component list dynamically
-          let componentListRect = document.getElementById( 'cciLabComponentListID' ).getBoundingClientRect();
-          let updatedRect = {top: componentListRect.top, left: componentListRect.left, bottom: componentListRect.bottom, right: componentListRect.right };
-          updatedRect.bottom = updatedRect.bottom + currentSessionComponents.length * 55;
+          let updatedRect = estimateComponentListRect(currentSessionComponents);
 
           this.componentListHeight = isElementInViewport( updatedRect ) ? '':'90vh';
 
