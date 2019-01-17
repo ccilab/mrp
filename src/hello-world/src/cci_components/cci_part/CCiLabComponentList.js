@@ -108,16 +108,27 @@ const isElementInViewport = (rect) => {
 }
 
 class CCiLabComponentList extends Component {
-    state = { greetings: undefined,  };
+    state = { greetings: undefined, visible: false };
 
-    visibility = this.props.menuVisibility? "flyout-menu_show" : "flyout-menu_hide";
-
-    slidingComponentListIconClassName = this.props.menuVisibility? 'fa fa-angle-double-left' : 'fa fa-angle-double-right';
-
+    visibility = 'flyout-menu_hide';
+    slidingComponentListIconClassName = 'fa fa-angle-double-right';
     componentListHeight='';
 
-    // visibilityStyle = this.props.menuVisibility? {'transform': 'translate3d(0vw, 0, 0)', 'overflow': 'hidden'}  :  {'transform': 'translate3d(-100vwvw, 0, 0)'};
+    toggleHideShowComponentList = () =>{
+      console.log('container: clicked before: - ', this.state.visible ? 'true' : 'false' );
+      this.setState( { visible: this.state.visible ? false : true } );
+      console.log('container: clicked after: - ', this.state.visible ? 'true' : 'false' );
 
+      this.visibility = this.state.visible? 'flyout-menu_show' : 'flyout-menu_hide';
+
+      this.slidingComponentListIconClassName = this.state.visible? 'fa fa-angle-double-left' : 'fa fa-angle-double-right';
+    }
+
+    // show or hide component list
+    handleMouseDown=(e)=>{
+      this.toggleHideShowComponentList();
+      e.stopPropagation();
+    };
     
     // initialize first component's childKeyIds, reorder in following order: the first component, alarm status, warning status, no_issue status
     componentWillMount=()=>{
@@ -260,11 +271,11 @@ class CCiLabComponentList extends Component {
             {/* following d-flex is needed to show collapse icon (>) next to the top component  */}
             {/* https://code.i-harness.com/en/q/27a5171 explains why vertical scroll bar won't appear for flex box and what is the workaroud
                 in our case we should set 'height':'90vh' after component list grows out of 100vh #to do*/}
-             <div id='cciLabComponentListID' className='d-flex flex-column flyout-menu' style={{'height':`${this.componentListHeight}`}}>
+             <div id='cciLabComponentListID' className={`d-flex flex-column flyout-menu ${this.visibility}`} style={{'height':`${this.componentListHeight}`}}>
                 {this.renderGreetings()}
               </div>
               <div>
-                <a href="#1" className='float-right nav-link ' onMouseDown={this.props.handleMouseDown} >
+                <a href="#1" className='float-right nav-link ' onMouseDown={this.handleMouseDown} >
                     <span className={`badge-pill badge-info ${this.slidingComponentListIconClassName}`}></span>
                 </a>
             </div>

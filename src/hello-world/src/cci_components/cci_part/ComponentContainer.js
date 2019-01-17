@@ -6,25 +6,13 @@ import CCiLabComponentList from "./CCiLabComponentList";
 import "./../../css/CCiLabComponentContainer.css";
 
 class ComponentContainer extends Component {
-  state = {visible: false };
-
-  toggleComponents=()=>{
-    this.setState( {
-       visible: !this.state.visible
-      } );
-  };
-
-  handleMouseDown=(e)=>{
-    this.toggleComponents();
-    console.log("clicked");
-    e.stopPropagation();
-  };
+  
 
   
   render () {
     return (
-      <div className=''>      
-        <CCiLabComponentList handleMouseDown={this.handleMouseDown} menuVisibility={this.state.visible}/>
+      <div >      
+        <CCiLabComponentList />
 
         <ul>
           <li>'this is place holder for creating component'</li>
