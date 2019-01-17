@@ -113,6 +113,8 @@ class CCiLabComponentList extends Component {
     visibility = 'flyout-menu_hide';
     slidingComponentListIconClassName = 'fa fa-angle-double-right';
     componentListHeight='';
+    componentListWidth=90;
+    compnentListTranslateStyle = this.state.visible ? 'translate3d(0vw, 0, 0)': `translate3d(-${this.componentListWidth}vw, 0, 0)`;
 
     toggleHideShowComponentList = () =>{
       console.log('container: clicked before: - ', this.state.visible ? 'true' : 'false' );
@@ -120,6 +122,11 @@ class CCiLabComponentList extends Component {
       console.log('container: clicked after: - ', this.state.visible ? 'true' : 'false' );
 
       this.visibility = this.state.visible? 'flyout-menu_show' : 'flyout-menu_hide';
+      let updatedRect = estimateComponentListRect(this.state.greetings);
+
+      this.componentListWidth = (updatedRect.right - updatedRect.left)*0.80;
+
+      this.compnentListTranslateStyle = this.state.visible ? 'translate3d(0vw, 0, 0)': `translate3d(-${this.componentListWidth}px, 0, 0)`;
 
       this.slidingComponentListIconClassName = this.state.visible? 'fa fa-angle-double-left' : 'fa fa-angle-double-right';
     }
@@ -163,6 +170,9 @@ class CCiLabComponentList extends Component {
       let updatedRect = estimateComponentListRect(this.state.greetings);
 
       this.componentListHeight = isElementInViewport( updatedRect ) ? '':'90vh';
+
+      // this.componentListWidth = updatedRect.right - updatedRect.left;
+      // this.compnentListTranslateStyle = this.state.visible ? 'translate3d(0vw, 0, 0)': `'translate3d(-${this.componentListWidth}px, 0, 0)'`;
 
       this.setState( { greetings: this.state.greetings })
     }
@@ -245,7 +255,7 @@ class CCiLabComponentList extends Component {
           let updatedRect = estimateComponentListRect(currentSessionComponents);
 
           this.componentListHeight = isElementInViewport( updatedRect ) ? '':'90vh';
-
+        
           this.setState( { greetings: currentSessionComponents })
     };
 
@@ -271,7 +281,7 @@ class CCiLabComponentList extends Component {
             {/* following d-flex is needed to show collapse icon (>) next to the top component  */}
             {/* https://code.i-harness.com/en/q/27a5171 explains why vertical scroll bar won't appear for flex box and what is the workaroud
                 in our case we should set 'height':'90vh' after component list grows out of 100vh #to do*/}
-             <div id='cciLabComponentListID' className={`d-flex flex-column flyout-menu ${this.visibility}`} style={{'height':`${this.componentListHeight}`}}>
+             <div id='cciLabComponentListID' className={`d-flex flex-column flyout-menu ${this.visibility}`} style={{'transform': `${this.compnentListTranslateStyle}`, 'height':`${this.componentListHeight}`}}>
                 {this.renderGreetings()}
               </div>
               <div>

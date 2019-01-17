@@ -51,8 +51,8 @@ $fa-font-path:   "../scss/fontawesome-5.6.1/webfonts";
  }
 
  .flyout-menu_hide {
-   -webkit-transform: translate3d(-95%, 0, 0);
-   transform: translate3d(-95%, 0, 0);
+   // -webkit-transform: translate3d(-10vw, 0, 0);
+   // transform: translate3d(-10vw, 0, 0);
    overflow:hidden;
    }
    
