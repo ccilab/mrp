@@ -14,32 +14,32 @@ $fa-font-path:   "../scss/fontawesome-5.6.1/webfonts";
 
 
 
-#root > .CCiLab-component-container {
-  // margin: 20px; 
-  // padding: 20px;
-  height: 100vh;
-} 
+// #root > .CCiLab-component-container {
+//   // margin: 20px; 
+//   // padding: 20px;
+//   height: 100vh;
+// } 
 
-.CCiLab-component-list {
-    height: 90vh;
-}
+// .CCiLab-component-list {
+//     height: 90vh;
+// }
 
-.CCiLab-scrollbar
-{
-   overflow: auto; /*for horizontal and vertical scroll bars */
-}
+// .CCiLab-scrollbar
+// {
+//    overflow: auto; /*for horizontal and vertical scroll bars */
+// }
 
-.horizontal-scrollbar
-{
-       overflow-x: auto; /*for horizontal scroll bar */
-       overflow-y: hidden; /*for hiding vertical scroll bar */
-}
+// .horizontal-scrollbar
+// {
+//        overflow-x: auto; /*for horizontal scroll bar */
+//        overflow-y: hidden; /*for hiding vertical scroll bar */
+// }
 
-.CCiLab-vertical-scrollbar
-{
-   overflow-x: hidden; /*for hiding horizontal scroll bar*/
-   overflow-y: auto; /*for vertical scroll bar*/
-}
+// .CCiLab-vertical-scrollbar
+// {
+//    overflow-x: hidden; /*for hiding horizontal scroll bar*/
+//    overflow-y: auto; /*for vertical scroll bar*/
+// }
 
 .flyout-menu {
    overflow: auto;
@@ -50,13 +50,14 @@ $fa-font-path:   "../scss/fontawesome-5.6.1/webfonts";
    z-index: 1000;
  }
 
- .flyout-menu_hide {
-   // -webkit-transform: translate3d(-10vw, 0, 0);
-   // transform: translate3d(-10vw, 0, 0);
-   overflow:hidden;
-   }
+//// controlled using inline style 
+//  .flyout-menu_hide {
+//    // -webkit-transform: translate3d(-10vw, 0, 0);
+//    // transform: translate3d(-10vw, 0, 0);
+//    //overflow:hidden;
+//    }
    
-.flyout-menu_show {
-   -webkit-transform: translate3d(0vw, 0, 0);
-   transform: translate3d(0vw, 0, 0);
-   }
+// .flyout-menu_show {
+//    -webkit-transform: translate3d(0vw, 0, 0);
+//    transform: translate3d(0vw, 0, 0);
+//    }

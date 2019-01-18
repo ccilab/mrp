@@ -98,20 +98,26 @@ const estimateComponentListRect = (componentLists)=>{
 }
 
 // check if an element is in viewport
-const isElementInViewport = (rect) => {
+// const isElementInViewport = (rect) => {
+//   return (
+//       rect.top >= 0 &&
+//       rect.left >= 0 &&
+//       rect.bottom <= (window.innerHeight || document.documentElement.clientHeight)  && /*or $(window).height() */
+//       rect.right <= (window.innerWidth || document.documentElement.clientWidth) /*or $(window).width() */
+//   );
+// }
+
+const isElementInViewportHeight = (rect) => {
   return (
       rect.top >= 0 &&
-      rect.left >= 0 &&
-      rect.bottom <= (window.innerHeight || document.documentElement.clientHeight)  && /*or $(window).height() */
-      rect.right <= (window.innerWidth || document.documentElement.clientWidth) /*or $(window).width() */
+      rect.bottom <= (window.innerHeight || document.documentElement.clientHeight) 
   );
 }
-
 class CCiLabComponentList extends Component {
-    state = { greetings: undefined, visible: false };
+    state = { greetings: undefined, visible: true };
 
-    visibility = 'flyout-menu_hide';
-    slidingComponentListIconClassName = 'fa fa-angle-double-right';
+    visibility = this.state.visible? 'flyout-menu_show' : 'flyout-menu_hide';
+    slidingComponentListIconClassName = this.state.visible? 'fa fa-angle-double-left' : 'fa fa-angle-double-right';
     componentListHeight='';
     componentListWidth=90;
     compnentListTranslateStyle = this.state.visible ? 'translate3d(0vw, 0, 0)': `translate3d(-${this.componentListWidth}vw, 0, 0)`;
@@ -119,7 +125,7 @@ class CCiLabComponentList extends Component {
     toggleHideShowComponentList = () =>{
       console.log('container: clicked before: - ', this.state.visible ? 'true' : 'false' );
       this.setState( { visible: this.state.visible ? false : true } );
-      console.log('container: clicked after: - ', this.state.visible ? 'true' : 'false' );
+    
 
       this.visibility = this.state.visible? 'flyout-menu_show' : 'flyout-menu_hide';
       let updatedRect = estimateComponentListRect(this.state.greetings);
@@ -129,12 +135,13 @@ class CCiLabComponentList extends Component {
       this.compnentListTranslateStyle = this.state.visible ? 'translate3d(0vw, 0, 0)': `translate3d(-${this.componentListWidth}px, 0, 0)`;
 
       this.slidingComponentListIconClassName = this.state.visible? 'fa fa-angle-double-left' : 'fa fa-angle-double-right';
+      console.log('container: clicked after: - ', this.state.visible ? 'true' : 'false' );
     }
 
     // show or hide component list
-    handleMouseDown=(e)=>{
+    showHideComponentList=()=>{
       this.toggleHideShowComponentList();
-      e.stopPropagation();
+      //e.stopPropagation();
     };
     
     // initialize first component's childKeyIds, reorder in following order: the first component, alarm status, warning status, no_issue status
@@ -160,7 +167,10 @@ class CCiLabComponentList extends Component {
         populateComponentChildIds(rootComponent, currentSessionComponents);
       }
 
-      this.setState( {greetings: currentSessionComponents} )
+      // trick - set default visible=true in constructor, set visible=false in componentWillMount
+      // so when user clicks << component list will sliding back
+      this.setState( {greetings: currentSessionComponents, visible : false } );
+
     }
   
     /**
@@ -169,7 +179,7 @@ class CCiLabComponentList extends Component {
     updateDimensions=()=>{
       let updatedRect = estimateComponentListRect(this.state.greetings);
 
-      this.componentListHeight = isElementInViewport( updatedRect ) ? '':'90vh';
+      this.componentListHeight = isElementInViewportHeight( updatedRect ) ? '':'90vh';
 
       // this.componentListWidth = updatedRect.right - updatedRect.left;
       // this.compnentListTranslateStyle = this.state.visible ? 'translate3d(0vw, 0, 0)': `'translate3d(-${this.componentListWidth}px, 0, 0)'`;
@@ -186,9 +196,9 @@ class CCiLabComponentList extends Component {
       window.addEventListener("resize", this.updateDimensions);
     }
 
-    // //called after render()
+    //called after render()
     // componentDidUpdate = ()=>{
-    //   this.componentListHeight = isElementInViewport( document.getElementById( 'cciLabComponentListID' ).getBoundingClientRect() ) ? '':'90vh';
+    //   this.toggleHideShowComponentList();
     // }
   
     addGreeting = (newName, progressValue) =>{
@@ -254,7 +264,7 @@ class CCiLabComponentList extends Component {
           // create vertical scroll bar based on the height of component list dynamically
           let updatedRect = estimateComponentListRect(currentSessionComponents);
 
-          this.componentListHeight = isElementInViewport( updatedRect ) ? '':'90vh';
+          this.componentListHeight = isElementInViewportHeight( updatedRect ) ? '':'90vh';
         
           this.setState( { greetings: currentSessionComponents })
     };
@@ -285,7 +295,7 @@ class CCiLabComponentList extends Component {
                 {this.renderGreetings()}
               </div>
               <div>
-                <a href="#1" className='float-right nav-link ' onMouseDown={this.handleMouseDown} >
+                <a href="#1" className='float-right nav-link ' onClick={this.showHideComponentList} >
                     <span className={`badge-pill badge-info ${this.slidingComponentListIconClassName}`}></span>
                 </a>
             </div>

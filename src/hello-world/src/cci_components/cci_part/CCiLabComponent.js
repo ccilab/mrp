@@ -66,7 +66,7 @@ class CCiLabComponent extends Component {
         {
  
             if ( this.children.length !== 0  &&  this.parents.length !== 0 )
-              ComponentProgressStatus ='btn cci-component-lable mx-0 float-left';
+              ComponentProgressStatus ='btn cci-component-btn mx-0 float-left';
             else
               ComponentProgressStatus ='btn cci-component-lable mx-0  float-left';
         }
@@ -114,7 +114,7 @@ class CCiLabComponent extends Component {
             <ul className='flow-right list-group flex-row cci-component-lable_position' style={leftShiftStyle}>
               <button className={ComponentProgressStatus} 
                 style={ { 'height': this.componentLableHeight, 'width': this.componentLableHeight} }
-                onClick={ (this.parents.length === 0 && this.currentComponent.displayLogic.canExpend ) ? this.expending :null } >
+                onClick={ ( this.children.length !== 0 ) ? this.expending :null } >
                 
                 {/* no style for top element so the button can host the image, other elements need style to set image position  */}
                 { (this.imgName.length !== 0 ) ? <img className='cci-component__img rounded-circle'
