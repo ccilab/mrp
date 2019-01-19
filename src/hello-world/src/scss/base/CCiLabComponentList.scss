@@ -44,10 +44,14 @@ $fa-font-path:   "../scss/fontawesome-5.6.1/webfonts";
 .flyout-menu {
    overflow: auto;
    border: 2px solid #00D8FF;
-   background-color: #DDEEFF; 
-   -webkit-transition: transform 0.3s cubic-bezier(0, .52, 0, 1);
-   transition: transform 0.3s cubic-bezier(0, .52, 0, 1);
+   background-color: #DDEEFF;   
    z-index: 1000;
+ }
+ 
+
+ .elemnt-transition {
+   -webkit-transition: transform 1s cubic-bezier(0, .52, 0, 1);
+   transition: transform 1s cubic-bezier(0, .52, 0, 1);
  }
 
 //// controlled using inline style 
