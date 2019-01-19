@@ -56,8 +56,9 @@ $fa-font-path:   "../scss/fontawesome-5.6.1/webfonts";
     cursor: pointer;
     width: $component_width ; 
     height: $component_hight; 
+    background-color: transparent !important;
     margin: $component_columns_margin; //10px;
-    padding: $card-img-overlay-padding; //0%;
+    padding: $card-img-overlay-padding !important; //0%;
     box-shadow: 2px 6px 10px 0 rgba($cci-shadow-dark,0.3);
     z-index: 1;
  
@@ -75,7 +76,7 @@ $fa-font-path:   "../scss/fontawesome-5.6.1/webfonts";
       box-shadow: 4px 10px 15px 0 rgba($cci-shadow-dark,0.5);
     }
  }
-  
+
 .cci-component__alarm_0{
 @include bg-linear-gradient($brand-danger, 0)
 }
@@ -84,41 +85,6 @@ $fa-font-path:   "../scss/fontawesome-5.6.1/webfonts";
   @include bg-linear-gradient($brand-danger, 10%)
 }
 
-.cci-component__alarm_20{
-  @include bg-linear-gradient($brand-danger, 20%);
-}
-
-.cci-component__alarm_30{
-  @include bg-linear-gradient($brand-danger, 30%)
-}
-
-.cci-component__alarm_40{
-  @include bg-linear-gradient($brand-danger, 40%)
-}
-
-.cci-component__alarm_50{
-  @include bg-linear-gradient($brand-danger, 50%)
-}
-
-.cci-component__alarm_60{
-  @include bg-linear-gradient($brand-danger, 60%)
-}
-
-.cci-component__alarm_70{
-  @include bg-linear-gradient($brand-danger, 70%)
-}
-
-.cci-component__alarm_80{
-  @include bg-linear-gradient($brand-danger, 80%)
-}
-
-.cci-component__alarm_90{
-  @include bg-linear-gradient($brand-danger, 90%)
-}
-
-.cci-component__alarm_100{
-  @include bg-linear-gradient($brand-danger, 100%)
-}
 
 .cci-component__warning_0{
   @include bg-linear-gradient($brand-warning, 0)
@@ -128,40 +94,6 @@ $fa-font-path:   "../scss/fontawesome-5.6.1/webfonts";
   @include bg-linear-gradient($brand-warning, 10%)
 }
 
-.cci-component__warning_20{
-  @include bg-linear-gradient($brand-warning, 20%)
-}
-
-.cci-component__warning_30{
-  @include bg-linear-gradient($brand-warning, 30%)
-}
-
-.cci-component__warning_40{
-  @include bg-linear-gradient($brand-warning, 40%)
-}
-
-.cci-component__warning_50{
-  @include bg-linear-gradient($brand-warning, 50%)
-}
-
-.cci-component__warning_60{
-  @include bg-linear-gradient($brand-warning, 60%)
-}
-.cci-component__warning_70{
-  @include bg-linear-gradient($brand-warning, 70%)
-}
-
-.cci-component__warning_80{
-  @include bg-linear-gradient($brand-warning, 80%)
-}
-
-.cci-component__warning_90{
-  @include bg-linear-gradient($brand-warning, 90%)
-}
-
-.cci-component__warning_100{
-  @include bg-linear-gradient($brand-warning, 100%)
-}
 
 .cci-component__green_0{
   @include bg-linear-gradient($brand-success, 0%)
@@ -170,43 +102,6 @@ $fa-font-path:   "../scss/fontawesome-5.6.1/webfonts";
 .cci-component__green_10{
   @include bg-linear-gradient($brand-success, 10%)
 }
-
-.cci-component__green_20{
-  @include bg-linear-gradient($brand-success, 20%)
-}
-
-.cci-component__green_30{
-  @include bg-linear-gradient($brand-success, 30%)
-}
-
-.cci-component__green_40{
-  @include bg-linear-gradient($brand-success, 40%)
-}
-
-.cci-component__green_50{
-  @include bg-linear-gradient($brand-success, 50%)
-}
-
-.cci-component__green_60{
-  @include bg-linear-gradient($brand-success, 60%)
-}
-
-.cci-component__green_70{
-  @include bg-linear-gradient($brand-success, 70%)
-}
-
-.cci-component__green_80{
-  @include bg-linear-gradient($brand-success, 80%)
-}
-
-.cci-component__green_90{
-  @include bg-linear-gradient($brand-success, 90%)
-}
-
-.cci-component__green_100{
-  @include bg-linear-gradient($brand-success, 100%)
-}
-
 
 
 .cci-component__img{
@@ -244,12 +139,11 @@ $fa-font-path:   "../scss/fontawesome-5.6.1/webfonts";
   width: $component_width;  
   height: $component_hight; 
   background-color: transparent; 
-  // border-color: $component_bg_color;
   margin-top: $component_columns_margin; 
   margin-bottom: $component_columns_margin; 
   margin-left: 0; //0%
   margin-right: 15px; 
-  padding: $card-img-overlay-padding; //0%;
+  padding: $card-img-overlay-padding !important; //0%;
   // z-index: 1;
 } 
 

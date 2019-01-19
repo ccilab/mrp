@@ -48,7 +48,7 @@ class CCiLabComponent extends Component {
         console.log('CCiLabComponent::render() imgFile: ', this.imgName);
         let Component ='';
         let ComponentProgressStatus;
-        let expendCollapseBadgeIconClassName= this.children.length ? 'fa fa-angle-right':'';
+        let expendCollapseBadgeIconClassName= 'fa fa-angle-right';
 
         let statusBadgeIconClassName = this.progressStatus === 'info' ? 'fa ':
             this.progressStatus === 'success' ? 'fa fa-check-circle' :
@@ -60,7 +60,7 @@ class CCiLabComponent extends Component {
           if( this.currentComponent.displayLogic.canExpend === true )
             ComponentProgressStatus = 'btn cci-component-btn float-left'
           else  // top element - expended
-            ComponentProgressStatus ='btn cci-component-lable mx-0 float-left';
+            ComponentProgressStatus ='btn cci-component-btn mx-0 float-left';
         }
         else
         {
@@ -112,12 +112,12 @@ class CCiLabComponent extends Component {
             
             {/* shift the child components to the right */}  
             <ul className='flow-right list-group flex-row cci-component-lable_position' style={leftShiftStyle}>
-              <button className={ComponentProgressStatus} 
+              <button className={`${ComponentProgressStatus} rounded-circle elemnt-transition`} 
                 style={ { 'height': this.componentLableHeight, 'width': this.componentLableHeight} }
                 onClick={ ( this.children.length !== 0 ) ? this.expending :null } >
                 
                 {/* no style for top element so the button can host the image, other elements need style to set image position  */}
-                { (this.imgName.length !== 0 ) ? <img className='cci-component__img rounded-circle'
+                { (this.imgName.length !== 0 ) ? <img className='cci-component__img rounded-circle float-left'
                     style={( this.parents.length === 0) ? 
                       null : { 'height': this.componentLableHeight, 'width': this.componentLableHeight}}  src={this.imgName} alt=""></img>:null}
                 
