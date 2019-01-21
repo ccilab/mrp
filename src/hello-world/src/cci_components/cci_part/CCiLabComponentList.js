@@ -286,7 +286,7 @@ class CCiLabComponentList extends Component {
             {/* following d-flex is needed to show collapse icon (>) next to the top component  */}
             {/* https://code.i-harness.com/en/q/27a5171 explains why vertical scroll bar won't appear for flex box and what is the workaroud
                  className={`d-flex flex-column flyout-menu ${this.visibility}`*/} 
-             <div id='cciLabComponentListID' className={`d-flex flex-column flyout-menu elemnt-transition`} style={{'transform': `${this.compnentListTranslateStyle}`, 'height':`${this.componentListHeight}`}}>
+              <div id='cciLabComponentListID' className={`d-flex flex-column flyout-menu elemnt-transition`} style={{'transform': `${this.compnentListTranslateStyle}`, 'height':`${this.componentListHeight}`}}>
                 {this.renderGreetings()}
               </div>
               <div>

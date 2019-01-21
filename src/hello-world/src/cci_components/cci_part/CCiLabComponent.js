@@ -58,7 +58,7 @@ class CCiLabComponent extends Component {
         { //top element
           Component +=' sticky-top';
           if( this.currentComponent.displayLogic.canExpend === true )
-            ComponentProgressStatus = 'btn cci-component-btn float-left'
+            ComponentProgressStatus = 'btn cci-component-btn  mx-0 float-left'
           else  // top element - expended
             ComponentProgressStatus ='btn cci-component-btn mx-0 float-left';
         }
@@ -79,24 +79,24 @@ class CCiLabComponent extends Component {
         
         let leftShiftStyle;
         let anchorLeftstyle;
-        if( this.parents.length !== 0 )
-        { // expendable component left shift less, to compensate <a> 
-          if ( this.children.length !== 0  &&  this.parents.length !== 0 )
-          {
-            anchorLeftstyle = {
-              'left': '28px',
-            }
-            leftShiftStyle = {
-              'left': '15px',
-             };
+        
+        // expendable component left shift less, to compensate <a> 
+        if ( this.children.length !== 0 )
+        {
+          anchorLeftstyle = {
+            'left': '0px',
           }
-          else{
-            leftShiftStyle = {
-              'left': '60px',
-             };
-          }
-         
+          leftShiftStyle = {
+            'left': '0px',
+            };
         }
+        else{
+          leftShiftStyle = {
+            'left': '60px',
+            };
+        }
+         
+        
 
         return (
           <span className={`${Component}`}  > 
@@ -104,8 +104,8 @@ class CCiLabComponent extends Component {
             {/* show collapse icon 'v' for all expendable components,
               show expendable icon '>' for those components have children except the top component
             */}
-            { ( this.children.length !== 0  && ( this.parents.length !== 0  || this.state.expended === false) )?
-                  <a href="#1" className='cci-link_position float-left nav-link pt-4 align-self-center' style={anchorLeftstyle} onClick={ this.expending }>
+            { ( this.children.length !== 0  )?
+                  <a href="#1" className='cci-link_position float-left nav-link pt-4 pr-1' style={anchorLeftstyle} onClick={ this.expending }>
                     <span className={expendCollapseBadgeIconClassName}></span>
                   </a>:null
             }  
