@@ -22,6 +22,7 @@ const thirdComponents = components.thirdComponents;
 const forthComponents = components.forthComponents;
 
 // utility funtions need move to a saperate js file
+// merge incomingComponents (new ones) and originComponents (existing components) into targetComponents
 const initializeComponents = ( startComponent, originComponents, incomingComponents, targetComponents)=>{
   let displayKeyValue = 0;
 
@@ -33,7 +34,7 @@ const initializeComponents = ( startComponent, originComponents, incomingCompone
 
   
   // initialize displayLogic items, create unique key value for latest componets from data layer
-  // this gurrenties that displayLogic.key is unique, newly added componet won't show itself until
+  // this guarantees that displayLogic.key is unique, newly added componet won't show itself until
   // user clicks it, except the very top component
   
   for(let idx = 0; idx < incomingComponents.length; idx++ ) {
@@ -60,7 +61,7 @@ const initializeComponents = ( startComponent, originComponents, incomingCompone
   }
 };
 
-const populateComponentChildIds = (selectedComponent, cachedComponents )=>{
+const populateComponentChildKeyIds = (selectedComponent, cachedComponents )=>{
   if( selectedComponent.businessLogic.childIds.length !== selectedComponent.displayLogic.childKeyIds.length ) {
       for( let idx = 0; idx < cachedComponents.length; idx++ ) { 
         if( selectedComponent.businessLogic.childIds.includes( cachedComponents[idx].businessLogic.id ) &&
@@ -70,6 +71,14 @@ const populateComponentChildIds = (selectedComponent, cachedComponents )=>{
       }
   }
 }
+
+// don't need to call this function, 
+// const updateComponentValue = (aComponent, aComponents)=>{
+//   let idx = aComponents.indexOf(aComponent);
+//   if( idx >= 0 )
+//     aComponents[idx].displayLogic.rectLeft = aComponent.displayLogic.rectLeft;
+// }
+
 
 // turn off childKeyIds[] recursively but we don't want to turn off childKeyIds[] unless 
 // its direct parent's canExpened = false (the parent is expended already
@@ -162,7 +171,7 @@ class CCiLabComponentList extends Component {
         rootComponent.displayLogic.canExpend = true;
 
         // populate very top component's displayLogic.childKeyIds[], if it's not incluced yet
-        populateComponentChildIds(rootComponent, currentSessionComponents);
+        populateComponentChildKeyIds(rootComponent, currentSessionComponents);
       }
 
       // trick - set default visible=true in constructor, set visible=false in componentWillMount
@@ -228,14 +237,17 @@ class CCiLabComponentList extends Component {
               
               if( selectedComponent.businessLogic.id === 4 )
                 components= forthComponents;
+
               initializeComponents(selectedComponent, this.state.greetings, components, currentSessionComponents);
           }
           else {
             currentSessionComponents = this.state.greetings;
           }
            
-           
-          populateComponentChildIds(selectedComponent, currentSessionComponents );
+          // don't need to call this function, rectLeft already updated inside component's componentDidMount 
+          // updateComponentValue( selectedComponent, currentSessionComponents );
+
+          populateComponentChildKeyIds(selectedComponent, currentSessionComponents );
 
           let rootComponent = currentSessionComponents.filter(component=>component.businessLogic.parentIds.length === 0)[0];
 
