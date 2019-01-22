@@ -12,7 +12,7 @@ class CCiLabComponent extends Component {
         componentName = this.currentComponent.businessLogic.name;
         imgName = (this.currentComponent.businessLogic.imgFile.length !==0 ) ? '/images/'+ this.currentComponent.businessLogic.imgFile : 
                     (this.children.length !==0) ? '/images/cci_group_block.png' : '/images/cci_single_block_item.png';
-        componentLableHeight = (this.currentComponent.businessLogic.imgFile.length !==0 ) ? '55px' : 
+        componentLableHeight = (this.currentComponent.businessLogic.imgFile.length !==0 ) ? '45px' : 
                               (this.children.length !==0) ? '45px' : '20px';
 
         progressStatus = this.currentComponent.businessLogic.status;
@@ -112,14 +112,17 @@ class CCiLabComponent extends Component {
             
             {/* shift the child components to the right */}  
             <ul className='flow-right list-group flex-row cci-component-lable_position' style={leftShiftStyle}>
-              <button className={`${ComponentProgressStatus} rounded-circle elemnt-transition`} 
+              <button className={`${ComponentProgressStatus} rounded-circle p-0`} 
                 style={ { 'height': this.componentLableHeight, 'width': this.componentLableHeight} }
                 onClick={ ( this.children.length !== 0 ) ? this.expending :null } >
                 
                 {/* no style for top element so the button can host the image, other elements need style to set image position  */}
-                { (this.imgName.length !== 0 ) ? <img className='cci-component__img rounded-circle float-left'
-                    style={( this.parents.length === 0) ? 
-                      null : { 'height': this.componentLableHeight, 'width': this.componentLableHeight}}  src={this.imgName} alt=""></img>:null}
+                { (this.imgName.length !== 0 ) ? 
+                    <img className='cci-component__img rounded-circle float-left' src={this.imgName} alt=""
+                      style={{'height': this.componentLableHeight, 'width': this.componentLableHeight}} >
+                    </img>
+                    :null
+                 }
                 
               </button>
               <span className='lead font-weight-normal text-primary text-truncate ml-1 align-self-center' style={{ 'height': '10%' }}>{this.componentName}</span>
