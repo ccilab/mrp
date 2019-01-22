@@ -12,8 +12,7 @@ class CCiLabComponent extends Component {
         componentName = this.currentComponent.businessLogic.name;
         imgName = (this.currentComponent.businessLogic.imgFile.length !==0 ) ? '/images/'+ this.currentComponent.businessLogic.imgFile : 
                     (this.children.length !==0) ? '/images/cci_group_block.png' : '/images/cci_single_block_item.png';
-        componentLableHeight = (this.currentComponent.businessLogic.imgFile.length !==0 ) ? '45px' : 
-                              (this.children.length !==0) ? '45px' : '20px';
+        componentLableHeight = (this.children.length !==0) ? '45px' : '20px';
 
         progressStatus = this.currentComponent.businessLogic.status;
         progressValue = this.currentComponent.businessLogic.progressPercent;
@@ -21,6 +20,15 @@ class CCiLabComponent extends Component {
     componentWillMount=()=>{
       this.setState({expended: this.props.component.displayLogic.canExpend});
     }
+
+    componentDidMount =()=> {
+      let componentRect = document.getElementById( `${this.currentComponent.displayLogic.key}` ).getBoundingClientRect();
+
+      if( this.children.length !== 0 ) {
+        this.currentComponent.displayLogic.rectLeft = componentRect.left;
+      }
+
+    };
 
     expending = () => {
         if (this.state.expended === true) {
@@ -47,7 +55,8 @@ class CCiLabComponent extends Component {
     render() {
         console.log('CCiLabComponent::render() imgFile: ', this.imgName);
         let Component ='';
-        let ComponentProgressStatus;
+        let ComponentClassNameBase = 'btn mx-0 float-left rounded-circle p-0'
+        let ComponentClassName = ComponentClassNameBase +' cci-component-btn';
         let expendCollapseBadgeIconClassName= 'fa fa-angle-right';
 
         let statusBadgeIconClassName = this.progressStatus === 'info' ? 'fa ':
@@ -57,18 +66,12 @@ class CCiLabComponent extends Component {
         if( this.parents.length === 0 )
         { //top element
           Component +=' sticky-top';
-          if( this.currentComponent.displayLogic.canExpend === true )
-            ComponentProgressStatus = 'btn cci-component-btn  mx-0 float-left'
-          else  // top element - expended
-            ComponentProgressStatus ='btn cci-component-btn mx-0 float-left';
         }
         else
         {
  
-            if ( this.children.length !== 0  &&  this.parents.length !== 0 )
-              ComponentProgressStatus ='btn cci-component-btn mx-0 float-left';
-            else
-              ComponentProgressStatus ='btn cci-component-lable mx-0  float-left';
+            if ( this.children.length === 0   )
+              ComponentClassName =ComponentClassNameBase + ' cci-component-lable';
         }
 
         if( this.state.expended === false || this.currentComponent.displayLogic.canExpend === false ) 
@@ -99,7 +102,7 @@ class CCiLabComponent extends Component {
         
 
         return (
-          <span className={`${Component}`}  > 
+          <span  className={`${Component}`}  > 
           
             {/* show collapse icon 'v' for all expendable components,
               show expendable icon '>' for those components have children except the top component
@@ -111,8 +114,8 @@ class CCiLabComponent extends Component {
             }  
             
             {/* shift the child components to the right */}  
-            <ul className='flow-right list-group flex-row cci-component-lable_position' style={leftShiftStyle}>
-              <button className={`${ComponentProgressStatus} rounded-circle p-0`} 
+            <ul id={`${this.currentComponent.displayLogic.key}`} className='flow-right list-group flex-row cci-component-lable_position' style={leftShiftStyle}>
+              <button className={`${ComponentClassName}`} 
                 style={ { 'height': this.componentLableHeight, 'width': this.componentLableHeight} }
                 onClick={ ( this.children.length !== 0 ) ? this.expending :null } >
                 
@@ -123,7 +126,6 @@ class CCiLabComponent extends Component {
                     </img>
                     :null
                  }
-                
               </button>
               <span className='lead font-weight-normal text-primary text-truncate ml-1 align-self-center' style={{ 'height': '10%' }}>{this.componentName}</span>
               <span className={`badge-pill badge-${this.progressStatus} ${statusBadgeIconClassName} text-body text-nowrap align-self-center ml-1`} style={{ 'height': '15% !important'}}> {this.progressValue}%</span>  

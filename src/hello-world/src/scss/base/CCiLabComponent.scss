@@ -19,10 +19,7 @@ $badge-info-bg: $cci-info-blue;
 
 $component_bg_color: #3e4444;
 $component_select_color: rgb(95, 95, 95);
-$component_hight: 55px;
-$component_width: 55px;
-$component_img_hight: 48px;
-$component_img_width: 48px;
+
 $component_img_radius: map-get($sizes, 50 );
 $card-img-overlay-padding: 0%;
 $component_columns_margin: 10px;
@@ -54,8 +51,6 @@ $fa-font-path:   "../scss/fontawesome-5.6.1/webfonts";
 // clicable button 
 .cci-component-btn {
     cursor: pointer;
-    width: $component_width ; 
-    height: $component_hight; 
     background-color: transparent !important;
     margin: $component_columns_margin; //10px;
     padding: $card-img-overlay-padding !important; //0%;
@@ -136,8 +131,6 @@ $fa-font-path:   "../scss/fontawesome-5.6.1/webfonts";
 
 //static lable, is able to load image
 .cci-component-lable{
-  width: $component_width;  
-  height: $component_hight; 
   background-color: transparent; 
   margin-top: $component_columns_margin; 
   margin-bottom: $component_columns_margin; 

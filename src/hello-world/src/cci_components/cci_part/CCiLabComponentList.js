@@ -235,7 +235,7 @@ class CCiLabComponentList extends Component {
           }
            
            
-          populateComponentChildIds(selectedComponent, currentSessionComponents, showStatus );
+          populateComponentChildIds(selectedComponent, currentSessionComponents );
 
           let rootComponent = currentSessionComponents.filter(component=>component.businessLogic.parentIds.length === 0)[0];
 
