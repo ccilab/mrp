@@ -282,7 +282,24 @@ class CCiLabComponentList extends Component {
       return ( (typeof this.state !== "undefined") && (typeof this.state.greetings !== "undefined" ) )? 
           this.state.greetings.map( (component) => {
                 if( component.displayLogic.showMyself === true )
-                  return <CCiLabComponent key={component.displayLogic.key} component={component} removeGreeting={this.removeGreeting} showOrHideChildren={this.showOrHideChildren}/> ;
+                {
+                  // get parent's rectLeft as left offset of this component
+                  let parentComponent;
+                  for( let idxComponent = 0;  idxComponent < this.state.greetings.length; idxComponent++ )  
+                  {
+                    if( component.businessLogic.parentIds.includes( this.state.greetings[idxComponent].businessLogic.id ) ) 
+                    {
+                      parentComponent = this.state.greetings[idxComponent];
+                      break;
+                    }
+                  }
+                  
+                  let leftOffset = 0;
+                  if( typeof parentComponent !== "undefined")
+                      leftOffset = parentComponent.displayLogic.rectLeft;
+
+                  return <CCiLabComponent key={component.displayLogic.key} component={component} leftOffset={leftOffset} removeGreeting={this.removeGreeting} showOrHideChildren={this.showOrHideChildren}/> ;
+                }
                 else
                   return null;
             }

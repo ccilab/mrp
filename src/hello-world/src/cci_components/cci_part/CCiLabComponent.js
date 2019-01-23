@@ -16,8 +16,10 @@ class CCiLabComponent extends Component {
 
         progressStatus = this.currentComponent.businessLogic.status;
         progressValue = this.currentComponent.businessLogic.progressPercent;
+        leftOffset = this.props.leftOffset;
 
     componentWillMount=()=>{
+      this.leftOffset = this.props.leftOffset;
       this.setState({expended: this.props.component.displayLogic.canExpend});
     }
 
@@ -87,15 +89,16 @@ class CCiLabComponent extends Component {
         if ( this.children.length !== 0 )
         {
           anchorLeftstyle = {
-            'left': '0px',
+            'left': `${this.leftOffset}px`,
           }
           leftShiftStyle = {
-            'left': '0px',
+            'left': `${this.leftOffset}px`,
             };
         }
         else{
+          this.leftOffset += 60;
           leftShiftStyle = {
-            'left': '60px',
+            'left': `${this.leftOffset}px`,
             };
         }
          
