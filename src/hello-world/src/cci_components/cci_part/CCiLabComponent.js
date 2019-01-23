@@ -12,14 +12,14 @@ class CCiLabComponent extends Component {
         componentName = this.currentComponent.businessLogic.name;
         imgName = (this.currentComponent.businessLogic.imgFile.length !==0 ) ? '/images/'+ this.currentComponent.businessLogic.imgFile : 
                     (this.children.length !==0) ? '/images/cci_group_block.png' : '/images/cci_single_block_item.png';
-        componentLableHeight = (this.children.length !==0) ? '45px' : '20px';
+        componentLableHeight =  (this.parents.length === 0 ) ? '45px' : (this.children.length !==0) ? '25px': '25px';
+        expendCollapseBadgePadding =  (this.parents.length === 0 ) ? 'py-3' : 'py-2';
+
 
         progressStatus = this.currentComponent.businessLogic.status;
         progressValue = this.currentComponent.businessLogic.progressPercent;
-        leftOffset = this.props.leftOffset;
 
     componentWillMount=()=>{
-      this.leftOffset = this.props.leftOffset;
       this.setState({expended: this.props.component.displayLogic.canExpend});
     }
 
@@ -57,7 +57,7 @@ class CCiLabComponent extends Component {
     render() {
         console.log('CCiLabComponent::render() imgFile: ', this.imgName);
         let Component ='';
-        let ComponentClassNameBase = 'btn mx-0 float-left rounded-circle p-0'
+        let ComponentClassNameBase = 'btn m-0 float-left rounded-circle p-0'
         let ComponentClassName = ComponentClassNameBase +' cci-component-btn';
         let expendCollapseBadgeIconClassName= 'fa fa-angle-right';
 
@@ -73,7 +73,7 @@ class CCiLabComponent extends Component {
         {
  
             if ( this.children.length === 0   )
-              ComponentClassName =ComponentClassNameBase + ' cci-component-lable';
+              ComponentClassName =ComponentClassNameBase + ' cci-component-btn';
         }
 
         if( this.state.expended === false || this.currentComponent.displayLogic.canExpend === false ) 
@@ -89,16 +89,16 @@ class CCiLabComponent extends Component {
         if ( this.children.length !== 0 )
         {
           anchorLeftstyle = {
-            'left': `${this.leftOffset}px`,
+            'left': `${this.props.leftOffset}px`,
           }
           leftShiftStyle = {
-            'left': `${this.leftOffset}px`,
+            'left': `${this.props.leftOffset}px`,
             };
         }
         else{
-          this.leftOffset += 60;
+          let leftOffset = this.props.leftOffset+39;
           leftShiftStyle = {
-            'left': `${this.leftOffset}px`,
+            'left': `${leftOffset}px`,
             };
         }
          
@@ -111,7 +111,7 @@ class CCiLabComponent extends Component {
               show expendable icon '>' for those components have children except the top component
             */}
             { ( this.children.length !== 0  )?
-                  <a href="#1" className='cci-link_position float-left nav-link pt-4 pr-1' style={anchorLeftstyle} onClick={ this.expending }>
+                  <a href="#1" className={`cci-link_position float-left nav-link ${this.expendCollapseBadgePadding} pl-4 pr-1`} style={anchorLeftstyle} onClick={ this.expending }>
                     <span className={expendCollapseBadgeIconClassName}></span>
                   </a>:null
             }  
@@ -120,7 +120,7 @@ class CCiLabComponent extends Component {
             <ul id={`${this.currentComponent.displayLogic.key}`} className='flow-right list-group flex-row cci-component-lable_position' style={leftShiftStyle}>
               <button className={`${ComponentClassName}`} 
                 style={ { 'height': this.componentLableHeight, 'width': this.componentLableHeight} }
-                onClick={ ( this.children.length !== 0 ) ? this.expending :null } >
+                onClick={ ( this.children.length !== 0 ) ? null :null } >
                 
                 {/* no style for top element so the button can host the image, other elements need style to set image position  */}
                 { (this.imgName.length !== 0 ) ? 

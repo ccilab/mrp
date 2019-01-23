@@ -319,7 +319,7 @@ class CCiLabComponentList extends Component {
                 {this.renderGreetings()}
               </div>
               <div>
-                <a href="#1" className='float-left nav-link pl-0 elemnt-transition' style={{'transform': `${this.compnentListTranslateStyle}`}} onClick={this.showHideComponentList} >
+                <a href="#1" className='float-left nav-link pl-0 py-4 pr-4 elemnt-transition sticky-top' style={{'transform': `${this.compnentListTranslateStyle}`}} onClick={this.showHideComponentList} >
                     <span className={`badge-pill badge-info ${this.slidingComponentListIconClassName}`}></span>
                 </a>
             </div>
