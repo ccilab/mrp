@@ -11,12 +11,15 @@ class ComponentContainer extends Component {
   
   render () {
     return (
-      <div >      
-        <CCiLabComponentList />
+      <div className={`d-flex flex-row`}> 
+        <div>
+            <CCiLabComponentList />
+        </div>     
 
-        <ul>
-          <li>'this is place holder for creating component'</li>
-        </ul>
+
+        <div>
+          'this is place holder for creating component'
+        </div>
 
       </div>
     );
