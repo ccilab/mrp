@@ -13,7 +13,7 @@ class CCiLabComponent extends Component {
         imgName = (this.currentComponent.businessLogic.imgFile.length !==0 ) ? '/images/'+ this.currentComponent.businessLogic.imgFile : 
                     (this.children.length !==0) ? '/images/cci_group_block.png' : '/images/cci_single_block_item.png';
         componentLableHeight =  (this.parents.length === 0 ) ? '45px' : (this.children.length !==0) ? '25px': '25px';
-        expendCollapseBadgePadding =  (this.parents.length === 0 ) ? 'py-3' : 'py-2';
+        expendCollapseBadgePadding =  (this.parents.length === 0 ) ? 'pt-3 pb-0 pl-4 pr-1' : 'pt-2 pb-0 pl-4 pr-1';
 
 
         progressStatus = this.currentComponent.businessLogic.status;
@@ -68,7 +68,7 @@ class CCiLabComponent extends Component {
             
         if( this.parents.length === 0 )
         { //top element
-          Component +=' sticky-top';
+          Component +=' ';//sticky-top'
         }
         else
         {
@@ -109,21 +109,25 @@ class CCiLabComponent extends Component {
           <span  className={`${Component}`}  > 
           
             { this.parents.length === 0 ?
-              <ul className='list-group flex-row justify-content-between' style={{ 'height': '25px' }}>
-                <li className='list-group-item list-group-item-info  border-0 fa text-primary'>Component:</li>
-                <li className='list-group-item list-group-item-info  border-0  text-primary'><span className='fa'>Progress</span> <span className='font-weight-normal text-primary'> (%)</span></li> 
-              </ul> : null
+              <div className='row sticky-top' style={{ 'height': '25px' }}>
+                <div className='col bg-info  border-0 text-primary text-center text-nowrap'><span className='fa text-center'>部件名:</span></div>
+                <div className='col  bg-info border-0  text-primary text-left text-nowrap'><span className='fa'>进度</span> <span className='font-weight-normal text-primary '> (%)</span></div> 
+              </div> : null
             }
   
-            { this.parents.length === 0 && this.props.scrollWidth !== undefined ?
-              <hr className='m-0' style={{'width': `${this.props.scrollWidth}px`}}></hr>:null
+            {/* { this.parents.length === 0 && this.props.scrollWidth !== undefined ?
+              // <hr className='m-0' style={{'width': `${this.props.scrollWidth}px`}}></hr>:null
+              <hr className='m-0' ></hr>:null
+            } */}
+            { this.parents.length === 0?
+              <hr className='m-0' ></hr>:null
             }
 
             {/* show collapse icon 'v' for all expendable components,
               show expendable icon '>' for those components have children except the top component
             */}
             { ( this.children.length !== 0  )?
-                  <a href="#1" className={`cci-link_position float-left nav-link ${this.expendCollapseBadgePadding} pl-4 pr-1`} style={anchorLeftstyle} onClick={ this.expending }>
+                  <a href="#1" className={`cci-link_position float-left nav-link ${this.expendCollapseBadgePadding} `} style={anchorLeftstyle} onClick={ this.expending }>
                     <span className={expendCollapseBadgeIconClassName}></span>
                   </a>:null
             }  

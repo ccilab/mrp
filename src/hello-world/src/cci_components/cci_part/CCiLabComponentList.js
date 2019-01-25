@@ -127,7 +127,7 @@ class CCiLabComponentList extends Component {
 
     slidingComponentListIconClassName = this.state.visible? 'fa fa-angle-double-left' : 'fa fa-angle-double-right';
     componentListHeight='';
-    componentListWidth;
+    componentListWidth=40;
     scrollWidth;
     compnentListTranslateStyle = this.state.visible ? 'translate3d(0vw, 0, 0)': `translate3d(-${this.componentListWidth}vw, 0, 0)`;
 
