@@ -18,6 +18,7 @@ class CCiLabComponent extends Component {
 
         progressStatus = this.currentComponent.businessLogic.status;
         progressValue = this.currentComponent.businessLogic.progressPercent;
+      
 
     componentWillMount=()=>{
       this.setState({expended: this.props.component.displayLogic.canExpend});
@@ -107,6 +108,17 @@ class CCiLabComponent extends Component {
         return (
           <span  className={`${Component}`}  > 
           
+            { this.parents.length === 0 ?
+              <ul className='list-group flex-row justify-content-between' style={{ 'height': '25px' }}>
+                <li className='list-group-item list-group-item-info  border-0 fa text-primary'>Component:</li>
+                <li className='list-group-item list-group-item-info  border-0  text-primary'><span className='fa'>Progress</span> <span className='font-weight-normal text-primary'> (%)</span></li> 
+              </ul> : null
+            }
+  
+            { this.parents.length === 0 && this.props.scrollWidth !== undefined ?
+              <hr className='m-0' style={{'width': `${this.props.scrollWidth}px`}}></hr>:null
+            }
+
             {/* show collapse icon 'v' for all expendable components,
               show expendable icon '>' for those components have children except the top component
             */}
@@ -115,6 +127,8 @@ class CCiLabComponent extends Component {
                     <span className={expendCollapseBadgeIconClassName}></span>
                   </a>:null
             }  
+
+          
             
             {/* shift the child components to the right */}  
             <ul id={`${this.currentComponent.displayLogic.key}`} className='flow-right list-group flex-row cci-component-lable_position' style={leftShiftStyle}>

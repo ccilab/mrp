@@ -127,7 +127,8 @@ class CCiLabComponentList extends Component {
 
     slidingComponentListIconClassName = this.state.visible? 'fa fa-angle-double-left' : 'fa fa-angle-double-right';
     componentListHeight='';
-    componentListWidth=90;
+    componentListWidth;
+    scrollWidth;
     compnentListTranslateStyle = this.state.visible ? 'translate3d(0vw, 0, 0)': `translate3d(-${this.componentListWidth}vw, 0, 0)`;
 
     toggleHideShowComponentList = () =>{
@@ -199,7 +200,7 @@ class CCiLabComponentList extends Component {
      * than component list rect height
      * */ 
     componentDidMount =()=> {
-      window.addEventListener("resize", this.updateDimensions);
+        window.addEventListener("resize", this.updateDimensions);
     }
 
     //called after render()
@@ -274,6 +275,8 @@ class CCiLabComponentList extends Component {
           let updatedRect = estimateComponentListRect(currentSessionComponents);
 
           this.componentListHeight = isElementInViewportHeight( updatedRect ) ? '':'90vh';
+
+          this.scrollWidth = document.getElementById( 'cciLabComponentListID' ).scrollWidth;  
         
           this.setState( { greetings: currentSessionComponents })
     };
@@ -300,7 +303,8 @@ class CCiLabComponentList extends Component {
                   if( typeof parentComponent !== "undefined")
                       leftOffset = parentComponent.displayLogic.rectLeft;
 
-                  return <CCiLabComponent key={component.displayLogic.key} component={component} leftOffset={leftOffset} removeGreeting={this.removeGreeting} showOrHideChildren={this.showOrHideChildren}/> ;
+                  let scrollWidth = this.scrollWidth;
+                  return <CCiLabComponent key={component.displayLogic.key} component={component} leftOffset={leftOffset} scrollWidth={scrollWidth} removeGreeting={this.removeGreeting} showOrHideChildren={this.showOrHideChildren}/> ;
                 }
                 else
                   return null;
@@ -318,12 +322,12 @@ class CCiLabComponentList extends Component {
             {/* https://code.i-harness.com/en/q/27a5171 explains why vertical scroll bar won't appear for flex box and what is the workaroud
                  className={`d-flex flex-column flyout-menu ${this.visibility}`*/} 
               <div id='cciLabComponentListID' className={`d-flex flex-column flyout-menu elemnt-transition`} style={{'transform': `${this.compnentListTranslateStyle}`, 'height':`${this.componentListHeight}`}}>
-                  <ul className='list-group flex-row justify-content-between' style={{ 'height': '25px' }}>
+                  {/* <ul className='list-group flex-row justify-content-between' style={{ 'height': '25px' }}>
                     <li className='list-group-item list-group-item-info  border-0 fa text-primary'>Component:</li>
                     <li className='list-group-item list-group-item-info  border-0  text-primary'><span className='fa'>Progress</span> <span className='font-weight-normal text-primary'> (%)</span></li> 
-                  </ul>
+                  </ul> */}
                   
-                  <hr className='m-0'></hr>
+                  {/* <hr className='m-0'></hr> */}
                   {this.renderGreetings()}
               </div>
               <div>
