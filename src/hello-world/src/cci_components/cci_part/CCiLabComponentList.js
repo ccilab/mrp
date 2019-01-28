@@ -326,6 +326,10 @@ class CCiLabComponentList extends Component {
                     <li className='list-group-item list-group-item-info  border-0 fa text-primary'>Component:</li>
                     <li className='list-group-item list-group-item-info  border-0  text-primary'><span className='fa'>Progress</span> <span className='font-weight-normal text-primary'> (%)</span></li> 
                   </ul> */}
+                  {/* <div className='row bg-info sticky-top ' style={{ 'height': '25px' }}>
+                    <div className='col  border-0 text-primary text-center text-nowrap'><span className='fa text-center'>部件名:</span></div>
+                    <div className='col  border-0  text-primary text-left text-nowrap'><span className='fa'>进度</span> <span className='font-weight-normal text-primary '> (%)</span></div> 
+                  </div> */}
                   
                   {/* <hr className='m-0'></hr> */}
                   {this.renderGreetings()}

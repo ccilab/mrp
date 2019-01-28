@@ -119,9 +119,9 @@ class CCiLabComponent extends Component {
               // <hr className='m-0' style={{'width': `${this.props.scrollWidth}px`}}></hr>:null
               <hr className='m-0' ></hr>:null
             } */}
-            { this.parents.length === 0?
+            {/* { this.parents.length === 0?
               <hr className='m-0' ></hr>:null
-            }
+            } */}
 
             {/* show collapse icon 'v' for all expendable components,
               show expendable icon '>' for those components have children except the top component
