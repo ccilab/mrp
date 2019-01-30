@@ -315,7 +315,7 @@ class CCiLabComponentList extends Component {
 
     render() {
       return (
-        <div className={`d-flex flex-row`}>
+        <div className={`d-flex flex-row`} >
           {/* <AddGreeter addGreeting={this.addGreeting} /> */}
             {/* <div className='d-flex'> */}
             {/* following d-flex is needed to show collapse icon (>) next to the top component  */}
@@ -326,10 +326,10 @@ class CCiLabComponentList extends Component {
                     <li className='list-group-item list-group-item-info  border-0 fa text-primary'>Component:</li>
                     <li className='list-group-item list-group-item-info  border-0  text-primary'><span className='fa'>Progress</span> <span className='font-weight-normal text-primary'> (%)</span></li> 
                   </ul> */}
-                  {/* <div className='row bg-info sticky-top ' style={{ 'height': '25px' }}>
-                    <div className='col  border-0 text-primary text-center text-nowrap'><span className='fa text-center'>部件名:</span></div>
-                    <div className='col  border-0  text-primary text-left text-nowrap'><span className='fa'>进度</span> <span className='font-weight-normal text-primary '> (%)</span></div> 
-                  </div> */}
+                  <div className='flex-row bg-info sticky-top fa' style={{ 'height': '25px' }}>
+                    <span className='border-0 text-primary text-left text-nowrap'>部件名:</span>
+                    <span className='border-0 text-primary text-right text-nowrap'>进度 <span className='font-weight-normal text-primary '> (%)</span></span> 
+                  </div>
                   
                   {/* <hr className='m-0'></hr> */}
                   {this.renderGreetings()}

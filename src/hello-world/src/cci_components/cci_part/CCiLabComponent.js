@@ -108,12 +108,12 @@ class CCiLabComponent extends Component {
         return (
           <span  className={`${Component}`}  > 
           
-            { this.parents.length === 0 ?
-              <div className='row sticky-top' style={{ 'height': '25px' }}>
-                <div className='col bg-info  border-0 text-primary text-center text-nowrap'><span className='fa text-center'>部件名:</span></div>
-                <div className='col  bg-info border-0  text-primary text-left text-nowrap'><span className='fa'>进度</span> <span className='font-weight-normal text-primary '> (%)</span></div> 
+            {/* { this.parents.length === 0 ?
+                <div className='flex-row bg-info sticky-top fa' style={{ 'height': '25px' }}>
+                <span className='border-0 text-primary text-left text-nowrap'>部件名:</span>
+                <span className='border-0 text-primary text-right text-nowrap'>进度 <span className='font-weight-normal text-primary '> (%)</span></span> 
               </div> : null
-            }
+            } */}
   
             {/* { this.parents.length === 0 && this.props.scrollWidth !== undefined ?
               // <hr className='m-0' style={{'width': `${this.props.scrollWidth}px`}}></hr>:null
