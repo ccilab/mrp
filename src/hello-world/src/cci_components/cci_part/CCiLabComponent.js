@@ -107,22 +107,6 @@ class CCiLabComponent extends Component {
 
         return (
           <span  className={`${Component}`}  > 
-          
-            {/* { this.parents.length === 0 ?
-                <div className='flex-row bg-info sticky-top fa' style={{ 'height': '25px' }}>
-                <span className='border-0 text-primary text-left text-nowrap'>部件名:</span>
-                <span className='border-0 text-primary text-right text-nowrap'>进度 <span className='font-weight-normal text-primary '> (%)</span></span> 
-              </div> : null
-            } */}
-  
-            {/* { this.parents.length === 0 && this.props.scrollWidth !== undefined ?
-              // <hr className='m-0' style={{'width': `${this.props.scrollWidth}px`}}></hr>:null
-              <hr className='m-0' ></hr>:null
-            } */}
-            {/* { this.parents.length === 0?
-              <hr className='m-0' ></hr>:null
-            } */}
-
             {/* show collapse icon 'v' for all expendable components,
               show expendable icon '>' for those components have children except the top component
             */}
