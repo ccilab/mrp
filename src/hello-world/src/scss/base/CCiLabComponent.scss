@@ -97,11 +97,11 @@ $fa-font-path:   "../scss/fontawesome-5.6.1/webfonts";
 .cci-component__green_10{
   @include bg-linear-gradient($brand-success, 10%)
 }
-
+ 
 
 .cci-component__img{
-  height: $component_img_hight;
-  width: $component_img_width;      
+  // height: $component_img_hight;
+  // width: $component_img_width;      
   object-fit: scale-down;
   filter:opacity(80%);
   -ms-filter: opacity(80%);

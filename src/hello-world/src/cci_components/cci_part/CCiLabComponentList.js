@@ -326,11 +326,11 @@ class CCiLabComponentList extends Component {
             {/* <div className='d-flex'> */}
             {/* following d-flex is needed to show collapse icon (>) next to the top component  */}
             {/* https://code.i-harness.com/en/q/27a5171 explains why vertical scroll bar won't appear for flex box and what is the workaroud
-                 className={`d-flex flex-column flyout-menu ${this.visibility}`*/} 
-              <div id='cciLabComponentListID' className={`d-flex flex-column flyout-menu elemnt-transition`} 
+                 className={`d-flex flex-column flyout-component-list ${this.visibility}`*/} 
+              <div id='cciLabComponentListID' className={`d-flex flex-column flyout-component-list elemnt-transition`} 
                   style={{'transform': `${this.compnentListTranslateStyle}`, 'height':`${this.componentListHeight}`}}>
                   {/* set style left:0px did the trick when move horizontal scroll bar the list title will auto grow */}
-                  <div className='flex-row bg-info sticky-top fa' style={{ 'height': '25px'}}>
+                  <div className='flex-row bg-info component-list-title-sticky fa' style={{ 'height': '25px', 'width': `${this.componentListWidth}`}}>
                     <span className='pl-5 border-0 text-primary  text-nowrap'>部件名:</span>
                     <span className='pl-5 border-0 text-primary  text-nowrap'>进度 <span className='font-weight-normal text-primary '> (%)</span></span> 
                   </div>
