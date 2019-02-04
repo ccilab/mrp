@@ -45,7 +45,7 @@ $fa-font-path:   "../scss/fontawesome-5.6.1/webfonts";
    overflow: auto;
    border: 2px solid #00D8FF;
    background-color: #DDEEFF;   
-   z-index: $zindex-sticky - 1;
+   z-index: 0; 
  }
  
 

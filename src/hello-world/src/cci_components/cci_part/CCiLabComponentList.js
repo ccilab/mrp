@@ -98,7 +98,7 @@ const hideChildren = (aComponent, aComponents, aShowStatus)=>{
 
 const estimateComponentListRect = (componentLists)=>{
   let componentListRect = document.getElementById( 'cciLabComponentListID' ).getBoundingClientRect();
-  let updatedRect = {top: componentListRect.top, left: componentListRect.left, bottom: componentListRect.bottom, right: componentListRect.right };
+  let updatedRect = {top: componentListRect.top, left: componentListRect.left, bottom: componentListRect.bottom, right: componentListRect.right*1.2 };
   
   let shownComponents = componentLists.filter(component=>component.displayLogic.showMyself === true)
   
@@ -126,9 +126,8 @@ class CCiLabComponentList extends Component {
     state = { greetings: undefined, visible: true };
 
     slidingComponentListIconClassName = this.state.visible? 'fa fa-angle-double-left' : 'fa fa-angle-double-right';
-    componentListHeight='';
-    componentListWidth=40;
-    scrollWidth;
+    componentListHeight='auto';
+    componentListWidth=210;
     compnentListTranslateStyle = this.state.visible ? 'translate3d(0vw, 0, 0)': `translate3d(-${this.componentListWidth}px, 0, 0)`;
 
     toggleHideShowComponentList = () =>{
@@ -138,7 +137,7 @@ class CCiLabComponentList extends Component {
 
       let updatedRect = estimateComponentListRect(this.state.greetings);
 
-      this.componentListWidth = (updatedRect.right - updatedRect.left)*0.99;
+      this.componentListWidth = (updatedRect.right - updatedRect.left);
 
       // have to use px for componentListWidth here so the hide/show works
       this.compnentListTranslateStyle = this.state.visible ? 'translate3d(0vw, 0, 0)': `translate3d(-${this.componentListWidth}px, 0, 0)`;
@@ -188,7 +187,7 @@ class CCiLabComponentList extends Component {
     updateDimensions=()=>{
       let updatedRect = estimateComponentListRect(this.state.greetings);
 
-      this.componentListHeight = isElementInViewportHeight( updatedRect ) ? '':'90vh';
+      this.componentListHeight = isElementInViewportHeight( updatedRect ) ? 'auto':'90vh';
 
       // this.componentListWidth = updatedRect.right - updatedRect.left;
 
@@ -280,10 +279,8 @@ class CCiLabComponentList extends Component {
           // create vertical scroll bar based on the height of component list dynamically
           let updatedRect = estimateComponentListRect(currentSessionComponents);
 
-          this.componentListHeight = isElementInViewportHeight( updatedRect ) ? '':'90vh';
+          this.componentListHeight = isElementInViewportHeight( updatedRect ) ? 'auto':'90vh';
 
-          this.scrollWidth = document.getElementById( 'cciLabComponentListID' ).scrollWidth;  
-        
           this.setState( { greetings: currentSessionComponents })
     };
 
@@ -309,8 +306,7 @@ class CCiLabComponentList extends Component {
                   if( typeof parentComponent !== "undefined")
                       leftOffset = parentComponent.displayLogic.rectLeft;
 
-                  let scrollWidth = this.scrollWidth;
-                  return <CCiLabComponent key={component.displayLogic.key} component={component} leftOffset={leftOffset} scrollWidth={scrollWidth} removeGreeting={this.removeGreeting} showOrHideChildren={this.showOrHideChildren}/> ;
+                  return <CCiLabComponent key={component.displayLogic.key} component={component} leftOffset={leftOffset} removeGreeting={this.removeGreeting} showOrHideChildren={this.showOrHideChildren}/> ;
                 }
                 else
                   return null;
@@ -326,13 +322,15 @@ class CCiLabComponentList extends Component {
             {/* <div className='d-flex'> */}
             {/* following d-flex is needed to show collapse icon (>) next to the top component  */}
             {/* https://code.i-harness.com/en/q/27a5171 explains why vertical scroll bar won't appear for flex box and what is the workaroud
-                 className={`d-flex flex-column flyout-component-list ${this.visibility}`*/} 
+                 className={`d-flex flex-column flyout-component-list ${this.visibility}`, 'width':`${this.componentListWidth}px`}
+                 uc browser doesn't suppot sticky-top*/} 
               <div id='cciLabComponentListID' className={`d-flex flex-column flyout-component-list elemnt-transition`} 
-                  style={{'transform': `${this.compnentListTranslateStyle}`, 'height':`${this.componentListHeight}`}}>
-                  {/* set style left:0px did the trick when move horizontal scroll bar the list title will auto grow */}
-                  <div className='flex-row bg-info component-list-title-sticky fa' style={{ 'height': '25px', 'width': `${this.componentListWidth}`}}>
+                  style={{'transform': `${this.compnentListTranslateStyle}`, 'height':`${this.componentListHeight}`}}
+                  onScroll={this.updateDimensions}>
+                  {/* set style left:0px to sticky-top to left too*/}
+                  <div className='flex-row bg-info sticky-top fa' style={{ 'height': '25px', 'width': `${this.componentListWidth}px`, 'left':'0px'}}>
                     <span className='pl-5 border-0 text-primary  text-nowrap'>部件名:</span>
-                    <span className='pl-5 border-0 text-primary  text-nowrap'>进度 <span className='font-weight-normal text-primary '> (%)</span></span> 
+                    <span className='pl-4 border-0 text-primary  text-nowrap'>进度 <span className='font-weight-normal text-primary '> (%)</span></span> 
                   </div>
                   
                   {/* <hr className='m-0'></hr> */}
