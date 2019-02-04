@@ -129,7 +129,7 @@ class CCiLabComponentList extends Component {
     componentListHeight='';
     componentListWidth=40;
     scrollWidth;
-    compnentListTranslateStyle = this.state.visible ? 'translate3d(0vw, 0, 0)': `translate3d(-${this.componentListWidth}vw, 0, 0)`;
+    compnentListTranslateStyle = this.state.visible ? 'translate3d(0vw, 0, 0)': `translate3d(-${this.componentListWidth}px, 0, 0)`;
 
     toggleHideShowComponentList = () =>{
       console.log('container: clicked before: - ', this.state.visible ? 'true' : 'false' );
@@ -140,7 +140,8 @@ class CCiLabComponentList extends Component {
 
       this.componentListWidth = (updatedRect.right - updatedRect.left)*0.99;
 
-      this.compnentListTranslateStyle = this.state.visible ? 'translate3d(0vw, 0, 0)': `translate3d(-${this.componentListWidth}vw, 0, 0)`;
+      // have to use px for componentListWidth here so the hide/show works
+      this.compnentListTranslateStyle = this.state.visible ? 'translate3d(0vw, 0, 0)': `translate3d(-${this.componentListWidth}px, 0, 0)`;
 
       this.slidingComponentListIconClassName = this.state.visible? 'fa fa-angle-double-left' : 'fa fa-angle-double-right';
       console.log('container: clicked after: - ', this.state.visible ? 'true' : 'false' );
@@ -205,7 +206,7 @@ class CCiLabComponentList extends Component {
      * */ 
     componentDidMount =()=> {
         window.addEventListener("resize", this.updateDimensions);
-        window.addEventListener('scroll', this.updateDimensions);
+        //window.addEventListener('scroll', this.updateDimensions);
     }
 
     //called after render()
@@ -329,7 +330,7 @@ class CCiLabComponentList extends Component {
               <div id='cciLabComponentListID' className={`d-flex flex-column flyout-menu elemnt-transition`} 
                   style={{'transform': `${this.compnentListTranslateStyle}`, 'height':`${this.componentListHeight}`}}>
                   {/* set style left:0px did the trick when move horizontal scroll bar the list title will auto grow */}
-                  <div className='flex-row bg-info sticky-top fa' style={{ 'height': '25px', 'left':'0px', 'width' : `${this.componentListWidth}` }}>
+                  <div className='flex-row bg-info sticky-top fa' style={{ 'height': '25px'}}>
                     <span className='pl-5 border-0 text-primary  text-nowrap'>部件名:</span>
                     <span className='pl-5 border-0 text-primary  text-nowrap'>进度 <span className='font-weight-normal text-primary '> (%)</span></span> 
                   </div>
