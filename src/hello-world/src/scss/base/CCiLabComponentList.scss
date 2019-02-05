@@ -42,7 +42,8 @@ $fa-font-path:   "../scss/fontawesome-5.6.1/webfonts";
 // }
 
 .flyout-component-list {
-   overflow: auto;
+   overflow-y: scroll;  //have to set y to scroll otherwise Edge horizontal scroll will no resonse in all the components are within the viewport
+   overflow-x: scroll;
    border: 2px solid #00D8FF;
    background-color: #DDEEFF;   
    z-index: 0; 

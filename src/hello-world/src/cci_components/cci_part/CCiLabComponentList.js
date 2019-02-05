@@ -126,7 +126,7 @@ class CCiLabComponentList extends Component {
     state = { greetings: undefined, visible: true };
 
     slidingComponentListIconClassName = this.state.visible? 'fa fa-angle-double-left' : 'fa fa-angle-double-right';
-    componentListHeight='auto';
+    componentListHeight='20vh';
     componentListWidth=210;
     compnentListTranslateStyle = this.state.visible ? 'translate3d(0vw, 0, 0)': `translate3d(-${this.componentListWidth}px, 0, 0)`;
 
@@ -137,7 +137,7 @@ class CCiLabComponentList extends Component {
 
       let updatedRect = estimateComponentListRect(this.state.greetings);
 
-      this.componentListWidth = (updatedRect.right - updatedRect.left);
+      this.componentListWidth = (updatedRect.right - updatedRect.left)*.85;
 
       // have to use px for componentListWidth here so the hide/show works
       this.compnentListTranslateStyle = this.state.visible ? 'translate3d(0vw, 0, 0)': `translate3d(-${this.componentListWidth}px, 0, 0)`;
@@ -205,7 +205,6 @@ class CCiLabComponentList extends Component {
      * */ 
     componentDidMount =()=> {
         window.addEventListener("resize", this.updateDimensions);
-        //window.addEventListener('scroll', this.updateDimensions);
     }
 
     //called after render()
@@ -280,6 +279,7 @@ class CCiLabComponentList extends Component {
           let updatedRect = estimateComponentListRect(currentSessionComponents);
 
           this.componentListHeight = isElementInViewportHeight( updatedRect ) ? 'auto':'90vh';
+          // this.componentListWidth = (updatedRect.right - updatedRect.left)*.85;
 
           this.setState( { greetings: currentSessionComponents })
     };
@@ -342,7 +342,7 @@ class CCiLabComponentList extends Component {
                  className={`d-flex flex-column flyout-component-list ${this.visibility}`, 'width':`${this.componentListWidth}px`}
                  UC browser, pro to Edge 15 (https://caniuse.com/#feat=css-sticky) doesn't suppot sticky-top*/} 
               <div id='cciLabComponentListID' className={`d-flex flex-column flyout-component-list elemnt-transition`} 
-                  style={{'transform': `${this.compnentListTranslateStyle}`, 'height':`${this.componentListHeight}`}}
+                  style={{'transform': `${this.compnentListTranslateStyle}`, 'height':`${this.componentListHeight}`, 'width':`${this.componentListWidth}px`}}
                   onScroll={this.updateDimensions}>
                   {/* set style left:0px to sticky-top to left too*/}
                   <div className='flex-row bg-info sticky-top fa' style={{ 'height': '25px', 'width': 'auto', 'left':'0px'}}>
