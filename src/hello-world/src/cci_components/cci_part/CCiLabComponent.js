@@ -4,8 +4,10 @@ import "./../../css/CCiLabComponent.css";
 
 class CCiLabComponent extends Component {
         state = {
-            expended:  true
+            expended:  true,
+           
         };
+
         currentComponent = this.props.component;
         parents = this.currentComponent.businessLogic.parentIds;
         children = this.currentComponent.businessLogic.childIds;
@@ -47,6 +49,10 @@ class CCiLabComponent extends Component {
          
     };
 
+    componentSelected = () =>{
+        this.props.selectedComponentHandler(this.currentComponent);
+    }
+
     removeGreeting = () => {
         this.props.removeGreeting(this.component.businessLogic.imgName);
     };
@@ -57,7 +63,8 @@ class CCiLabComponent extends Component {
 
     render() {
         console.log('CCiLabComponent::render() imgFile: ', this.imgName);
-        let Component ='';
+      
+        let  Component =  this.currentComponent.displayLogic.selected ? 'sticky-top':'';
         let ComponentClassNameBase = 'btn m-0 float-left rounded-circle p-0'
         let ComponentClassName = ComponentClassNameBase +' cci-component-btn';
         let expendCollapseBadgeIconClassName= 'fa fa-angle-right';
@@ -66,11 +73,7 @@ class CCiLabComponent extends Component {
             this.progressStatus === 'success' ? 'fa fa-check-circle' :
             this.progressStatus === 'warning' ? 'fa fa-exclamation-circle' : 'fa fa-exclamation-triangle';
             
-        if( this.parents.length === 0 )
-        { //top element
-          Component +=' ';//sticky-top'
-        }
-        else
+        if( this.parents.length !== 0 )
         {
  
             if ( this.children.length === 0   )
@@ -122,7 +125,7 @@ class CCiLabComponent extends Component {
             <ul id={`${this.currentComponent.displayLogic.key}`} className='flow-right list-group flex-row cci-component-lable_position' style={leftShiftStyle}>
               <button className={`${ComponentClassName}`} 
                 style={ { 'height': this.componentLableHeight, 'width': this.componentLableHeight} }
-                onClick={ ( this.children.length !== 0 ) ? null :null } >
+                onClick={ this.componentSelected } >
                 
                 {/* no style for top element so the button can host the image, other elements need style to set image position  */}
                 { (this.imgName.length !== 0 ) ? 

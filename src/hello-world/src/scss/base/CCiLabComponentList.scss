@@ -54,12 +54,6 @@ $fa-font-path:   "../scss/fontawesome-5.6.1/webfonts";
    transition: transform 1s cubic-bezier(0, .52, 0, 1);
  }
 
- .component-list-title-sticky {
-   position: absolute !important;
-   left: 0px !important;
-   top: 0px !important;
-   z-index: $zindex-sticky;
- }
 //// controlled using inline style 
 //  .flyout-menu_hide {
 //    // -webkit-transform: translate3d(-10vw, 0, 0);

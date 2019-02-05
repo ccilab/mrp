@@ -284,6 +284,18 @@ class CCiLabComponentList extends Component {
           this.setState( { greetings: currentSessionComponents })
     };
 
+    selectedComponentHandler = ( selectedComponent ) =>{
+      let currentSessionComponents=this.state.greetings;
+      for( let idxComponent = 0;  idxComponent < currentSessionComponents.length; idxComponent++ ) 
+      {
+        // skip the first component
+        if( currentSessionComponents[idxComponent].displayLogic.key === selectedComponent.displayLogic.key )
+          currentSessionComponents[idxComponent].displayLogic.selected = true;
+        else
+          currentSessionComponents[idxComponent].displayLogic.selected = false;
+      }
+    }
+
     //need to update showMyself to true after button is clicked to canExpend
     //need to update showMyself to false after button is clicked to collaps
     renderGreetings = () => {
@@ -306,7 +318,12 @@ class CCiLabComponentList extends Component {
                   if( typeof parentComponent !== "undefined")
                       leftOffset = parentComponent.displayLogic.rectLeft;
 
-                  return <CCiLabComponent key={component.displayLogic.key} component={component} leftOffset={leftOffset} removeGreeting={this.removeGreeting} showOrHideChildren={this.showOrHideChildren}/> ;
+                  return <CCiLabComponent key={component.displayLogic.key} 
+                                          component={component} 
+                                          leftOffset={leftOffset} 
+                                          removeGreeting={this.removeGreeting} 
+                                          showOrHideChildren={this.showOrHideChildren}
+                                          selectedComponentHandler={this.selectedComponentHandler}/> ;
                 }
                 else
                   return null;
@@ -323,12 +340,12 @@ class CCiLabComponentList extends Component {
             {/* following d-flex is needed to show collapse icon (>) next to the top component  */}
             {/* https://code.i-harness.com/en/q/27a5171 explains why vertical scroll bar won't appear for flex box and what is the workaroud
                  className={`d-flex flex-column flyout-component-list ${this.visibility}`, 'width':`${this.componentListWidth}px`}
-                 uc browser doesn't suppot sticky-top*/} 
+                 UC browser, pro to Edge 15 (https://caniuse.com/#feat=css-sticky) doesn't suppot sticky-top*/} 
               <div id='cciLabComponentListID' className={`d-flex flex-column flyout-component-list elemnt-transition`} 
                   style={{'transform': `${this.compnentListTranslateStyle}`, 'height':`${this.componentListHeight}`}}
                   onScroll={this.updateDimensions}>
                   {/* set style left:0px to sticky-top to left too*/}
-                  <div className='flex-row bg-info sticky-top fa' style={{ 'height': '25px', 'width': `${this.componentListWidth}px`, 'left':'0px'}}>
+                  <div className='flex-row bg-info sticky-top fa' style={{ 'height': '25px', 'width': 'auto', 'left':'0px'}}>
                     <span className='pl-5 border-0 text-primary  text-nowrap'>部件名:</span>
                     <span className='pl-4 border-0 text-primary  text-nowrap'>进度 <span className='font-weight-normal text-primary '> (%)</span></span> 
                   </div>
