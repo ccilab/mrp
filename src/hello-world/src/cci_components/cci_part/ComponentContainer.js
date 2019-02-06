@@ -6,8 +6,15 @@ import CCiLabComponentList from "./CCiLabComponentList";
 import "./../../css/CCiLabComponentContainer.css";
 
 class ComponentContainer extends Component {
-  
+  state = {  width: 0 };
 
+  updateDimensions=()=>{
+    this.setState({width:`{window.innerWidth}`});
+  }
+
+  componentDidMount =()=> {
+    window.addEventListener("resize", this.updateDimensions);
+}
   
   render () {
     return (
@@ -17,9 +24,13 @@ class ComponentContainer extends Component {
         </div>     
 
 
-        <div>
-          'this is place holder for creating component'
-        </div>
+        <ul>
+          <div>  window.screen.width width is :   {window.screen.width} </div>
+
+          <div > window.innerWidth is: {window.innerWidth }; </div>
+           
+           <div > window.innerHeight is: {window.innerHeight}</div>
+        </ul>
 
       </div>
     );

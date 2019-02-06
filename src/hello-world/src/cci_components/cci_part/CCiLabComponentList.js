@@ -122,25 +122,31 @@ const isElementInViewportHeight = (rect) => {
       rect.bottom <= (window.innerHeight || document.documentElement.clientHeight) 
   );
 }
+
+const setListHeight = (rect) => {
+  window.innerHeight <= 200 ? '90vh' : isElementInViewportHeight( rect ) ? 'auto':'90vh';
+}
+
+const setListWidth = () =>{
+  return window.innerWidth <= 330 ? '95' : window.innerWidth <= 600 ? '70' : window.innerWidth <= 800 ? '50' : window.innerWidth <= 1000 ? '40' : window.innerWidth <= 1500 ? '30':'15';
+}
+
 class CCiLabComponentList extends Component {
     state = { greetings: undefined, visible: true };
 
     slidingComponentListIconClassName = this.state.visible? 'fa fa-angle-double-left' : 'fa fa-angle-double-right';
-    componentListHeight='100px';  //minimum height 
-    componentListWidth='210';
-    compnentListTranslateStyle = this.state.visible ? 'translate3d(0vw, 0, 0)': `translate3d(-${this.componentListWidth}px, 0, 0)`;
-
+    componentListHeight= window.innerHeight <= 200 ? '90vh' : 'auto';  //minimum height 
+    componentListWidth= setListWidth();
+      
+    compnentListTranslateStyle='';
+    
     toggleHideShowComponentList = () =>{
       console.log('container: clicked before: - ', this.state.visible ? 'true' : 'false' );
       this.setState( { visible: this.state.visible ? false : true } );
-    
 
-      let updatedRect = estimateComponentListRect(this.state.greetings);
+      let hideListWidth = this.componentListWidth*.99;
 
-      this.componentListWidth = (updatedRect.right - updatedRect.left)*.85;
-
-      // have to use px for componentListWidth here so the hide/show works
-      this.compnentListTranslateStyle = this.state.visible ? 'translate3d(0vw, 0, 0)': `translate3d(-${this.componentListWidth}px, 0, 0)`;
+      this.compnentListTranslateStyle = this.state.visible ? 'translate3d(0vw, 0, 0)': `translate3d(-${hideListWidth}vw, 0, 0)`;
 
       this.slidingComponentListIconClassName = this.state.visible? 'fa fa-angle-double-left' : 'fa fa-angle-double-right';
       console.log('container: clicked after: - ', this.state.visible ? 'true' : 'false' );
@@ -187,9 +193,9 @@ class CCiLabComponentList extends Component {
     updateDimensions=()=>{
       let updatedRect = estimateComponentListRect(this.state.greetings);
 
-      this.componentListHeight = isElementInViewportHeight( updatedRect ) ? 'auto':'90vh';
+      this.componentListHeight = setListHeight( updatedRect );
 
-      // this.componentListWidth = updatedRect.right - updatedRect.left;
+      this.componentListWidth= setListWidth();
 
       this.setState( { greetings: this.state.greetings })
     }
@@ -283,8 +289,8 @@ class CCiLabComponentList extends Component {
           // create vertical scroll bar based on the height of component list dynamically
           let updatedRect = estimateComponentListRect(currentSessionComponents);
 
-          this.componentListHeight = isElementInViewportHeight( updatedRect ) ? 'auto':'90vh';
-          // this.componentListWidth = (updatedRect.right - updatedRect.left)*.85;
+          this.componentListHeight = setListHeight( updatedRect );
+          this.componentListWidth = setListWidth();
 
           this.setState( { greetings: currentSessionComponents })
     };
@@ -347,7 +353,7 @@ class CCiLabComponentList extends Component {
                  className={`d-flex flex-column flyout-component-list ${this.visibility}`, 'width':`${this.componentListWidth}px`}
                  UC browser, pro to Edge 15 (https://caniuse.com/#feat=css-sticky) doesn't suppot sticky-top*/} 
               <div id='cciLabComponentListID' className={`d-flex flex-column flyout-component-list elemnt-transition`} 
-                  style={{'transform': `${this.compnentListTranslateStyle}`, 'height':`${this.componentListHeight}`, 'width':`${this.componentListWidth}px`}}
+                  style={{'transform': `${this.compnentListTranslateStyle}`, 'height':`${this.componentListHeight}`, 'width':`${this.componentListWidth}vw`}}
                   onScroll={this.updateDimensions}>
                   {/* set style left:0px to sticky-top to left too*/}
                   <div className='flex-row bg-info sticky-top fa' style={{ 'height': '25px', 'width': 'auto', 'left':'0px'}}>
