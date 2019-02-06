@@ -21,6 +21,7 @@ class CCiLabComponent extends Component {
         progressStatus = this.currentComponent.businessLogic.status;
         progressValue = this.currentComponent.businessLogic.progressPercent;
       
+        StickyWidth =  this.currentComponent.displayLogic.selected ? '100':'';
 
     componentWillMount=()=>{
       this.setState({expended: this.props.component.displayLogic.canExpend});
@@ -33,6 +34,9 @@ class CCiLabComponent extends Component {
         this.currentComponent.displayLogic.rectLeft = componentRect.left;
       }
 
+      let progressStatusSpanRect = document.getElementById( 'progressStatusSpan' ).getBoundingClientRect();
+
+      this.StickyWidth = componentRect.right + (progressStatusSpanRect.right - progressStatusSpanRect.left);
     };
 
     expending = () => {
@@ -46,8 +50,6 @@ class CCiLabComponent extends Component {
           this.setState({ expended: true });
           this.showOrHideChildren(false);
         }
-         
-        this.componentSelected();
     };
 
     componentSelected = () =>{
@@ -65,8 +67,9 @@ class CCiLabComponent extends Component {
     render() {
         console.log('CCiLabComponent::render() imgFile: ', this.imgName);
       
-        let  Component =  this.currentComponent.displayLogic.selected ? 'bg-info sticky-top':'';
+        let  Component =  this.currentComponent.displayLogic.selected ? 'bg-info component_opacity sticky-top':'';
         let  StickyPos =  this.currentComponent.displayLogic.selected ? '25px':'';
+      
         let ComponentClassNameBase = 'btn m-0 float-left rounded-circle p-0'
         let ComponentClassName = ComponentClassNameBase +' cci-component-btn';
         let expendCollapseBadgeIconClassName= 'fa fa-angle-right';
@@ -111,7 +114,7 @@ class CCiLabComponent extends Component {
         
 
         return (
-          <span  className={`${Component}`}  style={{'top' : `${StickyPos}`}}> 
+          <span  className={`${Component}`}  style={{'top' : `${StickyPos}`, 'width': `${this.StickyWidth}px`}}> 
             {/* show collapse icon 'v' for all expendable components,
               show expendable icon '>' for those components have children except the top component
             */}
@@ -138,7 +141,7 @@ class CCiLabComponent extends Component {
                  }
               </button>
               <span className='lead font-weight-normal text-primary text-truncate ml-1 align-self-center' style={{ 'height': '10%' }}>{this.componentName}:</span>
-              <span className={`badge-pill badge-${this.progressStatus} ${statusBadgeIconClassName} text-body text-nowrap align-self-center ml-1`} style={{ 'height': '15% !important'}}> {this.progressValue}%</span>  
+              <span id='progressStatusSpan' className={`badge-pill badge-${this.progressStatus} ${statusBadgeIconClassName} text-body text-nowrap align-self-center ml-1`} style={{ 'height': '15% !important'}}> {this.progressValue}%</span>  
             </ul>
           </span>
         )

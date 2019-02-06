@@ -126,8 +126,8 @@ class CCiLabComponentList extends Component {
     state = { greetings: undefined, visible: true };
 
     slidingComponentListIconClassName = this.state.visible? 'fa fa-angle-double-left' : 'fa fa-angle-double-right';
-    componentListHeight='20vh';
-    componentListWidth=210;
+    componentListHeight='100px';  //minimum height 
+    componentListWidth='210';
     compnentListTranslateStyle = this.state.visible ? 'translate3d(0vw, 0, 0)': `translate3d(-${this.componentListWidth}px, 0, 0)`;
 
     toggleHideShowComponentList = () =>{
@@ -261,6 +261,11 @@ class CCiLabComponentList extends Component {
           // looping through entire component list to find the component included inside child component list
           for( idxComponent = 0;  idxComponent < currentSessionComponents.length; idxComponent++ ) 
           {
+            if( currentSessionComponents[idxComponent].displayLogic.key === selectedComponent.displayLogic.key )
+              currentSessionComponents[idxComponent].displayLogic.selected = true;
+            else
+              currentSessionComponents[idxComponent].displayLogic.selected = false;
+ 
             // skip the first component
             if( currentSessionComponents[idxComponent].displayLogic.key === rootComponent.displayLogic.key )
               continue;
@@ -288,12 +293,12 @@ class CCiLabComponentList extends Component {
       let currentSessionComponents=this.state.greetings;
       for( let idxComponent = 0;  idxComponent < currentSessionComponents.length; idxComponent++ ) 
       {
-        // skip the first component
         if( currentSessionComponents[idxComponent].displayLogic.key === selectedComponent.displayLogic.key )
           currentSessionComponents[idxComponent].displayLogic.selected = true;
         else
           currentSessionComponents[idxComponent].displayLogic.selected = false;
       }
+      this.setState( { greetings: currentSessionComponents });
     }
 
     //need to update showMyself to true after button is clicked to canExpend
@@ -346,7 +351,7 @@ class CCiLabComponentList extends Component {
                   onScroll={this.updateDimensions}>
                   {/* set style left:0px to sticky-top to left too*/}
                   <div className='flex-row bg-info sticky-top fa' style={{ 'height': '25px', 'width': 'auto', 'left':'0px'}}>
-                    <span className='pl-5 border-0 text-primary  text-nowrap'>部件名:</span>
+                    <span className='pl-4 border-0 text-primary  text-nowrap'>部件名:</span>
                     <span className='pl-4 border-0 text-primary  text-nowrap'>进度 <span className='font-weight-normal text-primary '> (%)</span></span> 
                   </div>
                   
