@@ -33,7 +33,7 @@ class CCiLabComponent extends Component {
         progressStatus = this.currentComponent.businessLogic.status;
         progressValue = this.currentComponent.businessLogic.progressPercent;
       
-        StickyWidth =  this.currentComponent.displayLogic.selected ? '100':'';
+        StickyWidth =  this.currentComponent.displayLogic.selected !== 0 ? '100':'';
 
     componentWillMount=()=>{
       this.setState({expended: this.props.component.displayLogic.canExpend});
@@ -79,8 +79,8 @@ class CCiLabComponent extends Component {
     render() {
         console.log('CCiLabComponent::render() imgFile: ', this.imgName);
       
-        let  Component =  this.currentComponent.displayLogic.selected ? 'bg-info component_opacity sticky-top':'';
-        let  StickyPos =  this.currentComponent.displayLogic.selected ? '25px':'';
+        let  Component =  this.currentComponent.displayLogic.selected > 0 ? 'bg-info component_opacity sticky-top':'';
+        let  StickyPos =  this.currentComponent.displayLogic.selected > 0 ? '25px':'';
       
         let ComponentClassNameBase = 'btn m-0 float-left rounded-circle p-0'
         let ComponentClassName = ComponentClassNameBase +' cci-component-btn';

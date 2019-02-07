@@ -34,6 +34,10 @@ class ComponentContainer extends Component {
           <div > window.innerHeight is: {window.innerHeight}</div>
 
           <div> documentElement.clientHeight is: {document.documentElement.clientHeight}</div>
+
+          <div> Browser is: {navigator.appName}</div>
+
+          <div> Broser version: {parseInt(navigator.appVersion, 10)}</div>
         </ul>
 
       </div>
