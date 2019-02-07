@@ -28,8 +28,12 @@ class ComponentContainer extends Component {
           <div>  window.screen.width width is :   {window.screen.width} </div>
 
           <div > window.innerWidth is: {window.innerWidth }; </div>
-           
-           <div > window.innerHeight is: {window.innerHeight}</div>
+
+          <div> documentElement.clientWidth is: {document.documentElement.clientWidth}</div> 
+
+          <div > window.innerHeight is: {window.innerHeight}</div>
+
+          <div> documentElement.clientHeight is: {document.documentElement.clientHeight}</div>
         </ul>
 
       </div>

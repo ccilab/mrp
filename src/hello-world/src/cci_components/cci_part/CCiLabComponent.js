@@ -1,6 +1,18 @@
 import React, { Component } from "react";
 import "./../../css/CCiLabComponent.css";
 
+// const isAtTop = (rect) => {
+//   return (
+//       rect.top >= 0 &&
+//       rect.bottom <= (window.innerHeight || document.documentElement.clientHeight) 
+//   );
+// }
+
+// const isAtBottom = (rect)=>{
+//   return (
+//     rect.top >= 0 &&
+//     rect.bottom <= (window.innerHeight || document.documentElement.clientHeight) ;
+// }
 
 class CCiLabComponent extends Component {
         state = {

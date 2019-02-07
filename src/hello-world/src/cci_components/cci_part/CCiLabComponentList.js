@@ -124,7 +124,7 @@ const isElementInViewportHeight = (rect) => {
 }
 
 const setListHeight = (rect) => {
-  window.innerHeight <= 200 ? '90vh' : isElementInViewportHeight( rect ) ? 'auto':'90vh';
+  return window.innerHeight <= 200 ? '150px' : isElementInViewportHeight( rect ) ? 'auto':'90vh';
 }
 
 const setListWidth = () =>{
@@ -135,7 +135,7 @@ class CCiLabComponentList extends Component {
     state = { greetings: undefined, visible: true };
 
     slidingComponentListIconClassName = this.state.visible? 'fa fa-angle-double-left' : 'fa fa-angle-double-right';
-    componentListHeight= window.innerHeight <= 200 ? '90vh' : 'auto';  //minimum height 
+    componentListHeight= window.innerHeight <= 200 ? '150px' : 'auto';  //minimum height 
     componentListWidth= setListWidth();
       
     compnentListTranslateStyle='';
@@ -351,10 +351,10 @@ class CCiLabComponentList extends Component {
             {/* following d-flex is needed to show collapse icon (>) next to the top component  */}
             {/* https://code.i-harness.com/en/q/27a5171 explains why vertical scroll bar won't appear for flex box and what is the workaroud
                  className={`d-flex flex-column flyout-component-list ${this.visibility}`, 'width':`${this.componentListWidth}px`}
-                 UC browser, pro to Edge 15 (https://caniuse.com/#feat=css-sticky) doesn't suppot sticky-top*/} 
+                 UC browser, pro to Edge 15 (https://caniuse.com/#feat=css-sticky) doesn't suppot sticky-top onScroll={this.updateDimensions}*/} 
               <div id='cciLabComponentListID' className={`d-flex flex-column flyout-component-list elemnt-transition`} 
                   style={{'transform': `${this.compnentListTranslateStyle}`, 'height':`${this.componentListHeight}`, 'width':`${this.componentListWidth}vw`}}
-                  onScroll={this.updateDimensions}>
+                  >
                   {/* set style left:0px to sticky-top to left too*/}
                   <div className='flex-row bg-info sticky-top fa' style={{ 'height': '25px', 'width': 'auto', 'left':'0px'}}>
                     <span className='pl-4 border-0 text-primary  text-nowrap'>部件名:</span>
