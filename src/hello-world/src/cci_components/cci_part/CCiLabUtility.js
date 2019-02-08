@@ -1,3 +1,5 @@
+// http://exploringjs.com/es6/ch_modules.html#sec_importing-exporting-details
+
 export const isElementInViewportHeight = (rect) => {
     return (
         rect.top >= 0 &&
