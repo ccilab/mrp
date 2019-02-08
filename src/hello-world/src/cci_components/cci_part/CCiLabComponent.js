@@ -85,6 +85,7 @@ class CCiLabComponent extends Component {
         let ComponentClassNameBase = 'btn m-0 float-left rounded-circle p-0'
         let ComponentClassName = ComponentClassNameBase +' cci-component-btn';
         let expendCollapseBadgeIconClassName= 'fa fa-angle-right';
+        let componentNameClassName= this.parents.length === 0 ? 'lead nav-link font-weight-normal text-primary text-truncate py-1' :'lead nav-link font-weight-normal text-primary text-truncate py-0';
 
         let statusBadgeIconClassName = this.progressStatus === 'info' ? 'fa ':
             this.progressStatus === 'success' ? 'fa fa-check-circle' :
@@ -152,8 +153,8 @@ class CCiLabComponent extends Component {
                     :null
                  }
               </button>
-              <span className='lead font-weight-normal text-primary text-truncate ml-1 align-self-center' style={{ 'height': '10%' }}>{this.componentName}:</span>
-              <span id='progressStatusSpan' className={`badge-pill badge-${this.progressStatus} ${statusBadgeIconClassName} text-body text-nowrap align-self-center ml-1`} style={{ 'height': '15% !important'}}> {this.progressValue}%</span>  
+              <a href="#1" className={`${componentNameClassName}`} style={{ 'height': '10%' }} onClick={ this.componentSelected }>{this.componentName}:</a>
+              <span id='progressStatusSpan' className={`badge-pill badge-${this.progressStatus} ${statusBadgeIconClassName} text-body text-nowrap align-self-center ml-0`} style={{ 'height': '15% !important'}}> {this.progressValue}%</span>  
             </ul>
           </span>
         )

@@ -1,12 +1,24 @@
 // http://exploringjs.com/es6/ch_modules.html#sec_importing-exporting-details
 
-export const isElementInViewportHeight = (rect) => {
+const isElementInViewportHeight = (rect) => {
     return (
         rect.top >= 0 &&
         rect.bottom <= (window.innerHeight || document.documentElement.clientHeight) 
     );
   }
   
+// check if an element is in viewport
+// eslint-disable-next-line
+const isElementInViewport = (rect) => {
+  return (
+      rect.top >= 0 &&
+      rect.left >= 0 &&
+      rect.bottom <= (window.innerHeight || document.documentElement.clientHeight)  && /*or $(window).height() */
+      rect.right <= (window.innerWidth || document.documentElement.clientWidth) /*or $(window).width() */
+  );
+}
+
+
 export  const setListHeight = (rect) => {
     return window.innerHeight <= 200 ? '150px' : isElementInViewportHeight( rect ) ? 'auto':'90vh';
   }
@@ -16,7 +28,14 @@ export  const setListWidth = () =>{
   }
   
 export  const setHideListWidth = () =>{
-    return window.innerWidth <= 330 ? '40' : window.innerWidth <= 600 ? '70' : window.innerWidth <= 800 ? '50' : window.innerWidth <= 1000 ? '40' : window.innerWidth <= 1500 ? '30':'15';
+    let osVersion = detectOSVersion();
+    let ListWidth;
+    // on iphone 4S, os is 9.3.5 needs workaround to hide list
+    if( osVersion.os === 'iOS' && osVersion.osMajorVersion < 10 )
+        ListWidth = window.innerWidth <= 330 ? '40' : window.innerWidth <= 600 ? '48' : window.innerWidth <= 800 ? '50' : window.innerWidth <= 1000 ? '40' : window.innerWidth <= 1500 ? '30':'15';
+    else
+        ListWidth = setListWidth();
+    return ListWidth;
   }
   
   //http://jsfiddle.net/ChristianL/AVyND/
@@ -182,6 +201,7 @@ export  const detectOSVersion = () =>{
           default:
           break;
       }
+      var osMajorVersion = parseInt('' + osVersion, 10);
       let jscd = {
         screen: screenSize,
         browser: browser,
@@ -190,6 +210,7 @@ export  const detectOSVersion = () =>{
         mobile: mobile,
         os: os,
         osVersion: osVersion,
+        osMajorVersion: osMajorVersion,
         cookies: cookieEnabled
       };
       return jscd;
