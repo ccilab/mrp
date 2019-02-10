@@ -1,19 +1,6 @@
 import React, { Component } from "react";
 import "./../../css/CCiLabComponent.css";
 
-// const isAtTop = (rect) => {
-//   return (
-//       rect.top >= 0 &&
-//       rect.bottom <= (window.innerHeight || document.documentElement.clientHeight) 
-//   );
-// }
-
-// const isAtBottom = (rect)=>{
-//   return (
-//     rect.top >= 0 &&
-//     rect.bottom <= (window.innerHeight || document.documentElement.clientHeight) ;
-// }
-
 class CCiLabComponent extends Component {
         state = {
             expended:  true,
@@ -77,10 +64,12 @@ class CCiLabComponent extends Component {
     }
 
     render() {
-        console.log('CCiLabComponent::render() imgFile: ', this.imgName);
+        // console.log('CCiLabComponent::render() imgFile: ', this.imgName);
       
-        let  Component =  this.currentComponent.displayLogic.selected > 0 ? 'bg-info component_opacity sticky-top':'';
-        let  StickyPos =  this.currentComponent.displayLogic.selected > 0 ? '25px':'';
+        let  Component =  this.currentComponent.displayLogic.selected > 0 ? 'bg-info component_opacity sticky-top':
+                          this.currentComponent.displayLogic.selected < 0 ? 'bg-info component_opacity ccilab-component-sticky-bottom':'';
+        let  StickyPos =  this.currentComponent.displayLogic.selected > 0 ? "'top':'25px'": 
+              this.currentComponent.displayLogic.selected < 0 ? "'bottom':'25px'":"''";
       
         let ComponentClassNameBase = 'btn m-0 float-left rounded-circle p-0'
         let ComponentClassName = ComponentClassNameBase +' cci-component-btn';

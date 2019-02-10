@@ -149,3 +149,8 @@ $fa-font-path:   "../scss/fontawesome-5.6.1/webfonts";
   position: relative;
 }
 
+.ccilab-component-sticky-bottom{
+  position: sticky;
+  bottom: 0;
+  z-index: $zindex-sticky;
+}

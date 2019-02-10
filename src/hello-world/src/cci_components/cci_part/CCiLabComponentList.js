@@ -101,18 +101,26 @@ const estimateComponentListRect = (componentLists)=>{
   return updatedRect;
 }
 
+const setComponentSelected = ( component, selectedComponentKey ) =>{
+  if( component.displayLogic.key === selectedComponentKey )
+    component.displayLogic.selected = 1; //can be +1 or -1
+  else
+    component.displayLogic.selected = 0;
+
+}
 
 class CCiLabComponentList extends Component {
-    state = { greetings: undefined, visible: true };
+    state = { greetings: undefined, visible: true, selected: 0 };
 
     slidingComponentListIconClassName = this.state.visible? 'fa fa-angle-double-left' : 'fa fa-angle-double-right';
     componentListHeight= window.innerHeight <= 200 ? '150px' : 'auto';  //minimum height 
     componentListWidth= setListWidth();
       
     compnentListTranslateStyle='';
+    lastScrollPosition = 0;
     
     toggleHideShowComponentList = () =>{
-      console.log('container: clicked before: - ', this.state.visible ? 'true' : 'false' );
+      // console.log('container: clicked before: - ', this.state.visible ? 'true' : 'false' );
       this.setState( { visible: this.state.visible ? false : true } );
 
       let hideListWidth = setHideListWidth()*.99;
@@ -120,7 +128,7 @@ class CCiLabComponentList extends Component {
       this.compnentListTranslateStyle = this.state.visible ? 'translate3d(0vw, 0, 0)': `translate3d(-${hideListWidth}vw, 0, 0)`;
 
       this.slidingComponentListIconClassName = this.state.visible? 'fa fa-angle-double-left' : 'fa fa-angle-double-right';
-      console.log('container: clicked after: - ', this.state.visible ? 'true' : 'false' );
+      // console.log('container: clicked after: - ', this.state.visible ? 'true' : 'false' );
     }
 
     // show or hide component list
@@ -238,10 +246,7 @@ class CCiLabComponentList extends Component {
           // looping through entire component list to find the component included inside child component list
           for( idxComponent = 0;  idxComponent < currentSessionComponents.length; idxComponent++ ) 
           {
-            if( currentSessionComponents[idxComponent].displayLogic.key === selectedComponent.displayLogic.key )
-              currentSessionComponents[idxComponent].displayLogic.selected = 1; //can be +1 or -1
-            else
-              currentSessionComponents[idxComponent].displayLogic.selected = 0;
+            setComponentSelected(currentSessionComponents[idxComponent], selectedComponent.displayLogic.key);
  
             // skip the first component
             if( currentSessionComponents[idxComponent].displayLogic.key === rootComponent.displayLogic.key )
@@ -266,16 +271,44 @@ class CCiLabComponentList extends Component {
           this.setState( { greetings: currentSessionComponents })
     };
 
+     
+
     selectedComponentHandler = ( selectedComponent ) =>{
       let currentSessionComponents=this.state.greetings;
       for( let idxComponent = 0;  idxComponent < currentSessionComponents.length; idxComponent++ ) 
       {
-        if( currentSessionComponents[idxComponent].displayLogic.key === selectedComponent.displayLogic.key )
-          currentSessionComponents[idxComponent].displayLogic.selected = 1; //can be +1 or -1
-        else
-          currentSessionComponents[idxComponent].displayLogic.selected = 0;
+        setComponentSelected(currentSessionComponents[idxComponent], selectedComponent.displayLogic.key);
       }
       this.setState( { greetings: currentSessionComponents });
+    }
+
+    
+
+    setSelectedComponentStickDirection = () =>{
+      let newScrollPosition = window.scrollY;
+ 
+      let currentSessionComponents = this.state.greetings;
+      let selectedComponent = currentSessionComponents.find( (component)=>{return component.displayLogic.selected !== 0; })
+
+      if( selectedComponent !== "undefined" )
+      {
+          if ( newScrollPosition < this.lastScrollPosition )
+          {
+              //upward - set selected to +1 - sticky-top
+              selectedComponent.displayLogic.selected = 1;
+          }
+          else
+          {
+              //downward - set selected to -1 - sticky-bottom
+              selectedComponent.displayLogic.selected = -1;
+          }
+      }
+     
+      console.log('new position: ' + newScrollPosition + ' last position: ' + this.lastScrollPosition + ' selected: ' + selectedComponent.displayLogic.selected);
+
+      this.lastScrollPosition = newScrollPosition;
+
+      this.setState({selected: selectedComponent.displayLogic.selected});
     }
 
     //need to update showMyself to true after button is clicked to canExpend
@@ -324,7 +357,8 @@ class CCiLabComponentList extends Component {
                  className={`d-flex flex-column flyout-component-list ${this.visibility}`, 'width':`${this.componentListWidth}px`}
                  UC browser, pro to Edge 15 (https://caniuse.com/#feat=css-sticky) doesn't suppot sticky-top onScroll={this.updateDimensions}*/} 
               <div id='cciLabComponentListID' className={`d-flex flex-column flyout-component-list elemnt-transition`} 
-                  style={{'transform': `${this.compnentListTranslateStyle}`, 'height':`${this.componentListHeight}`, 'width':`${this.componentListWidth}vw`}}>
+                  style={{'transform': `${this.compnentListTranslateStyle}`, 'height':`${this.componentListHeight}`, 'width':`${this.componentListWidth}vw`}}
+                  onScroll={this.setSelectedComponentStickDirection}>
                   {/* set style left:0px to sticky-top to left too*/}
                   <div className='flex-row bg-info sticky-top fa' style={{ 'height': '25px', 'width': 'auto', 'left':'0px'}}>
                     <span className='pl-4 border-0 text-primary  text-nowrap'>部件名:</span>
