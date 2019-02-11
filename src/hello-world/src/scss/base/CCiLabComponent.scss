@@ -154,3 +154,9 @@ $fa-font-path:   "../scss/fontawesome-5.6.1/webfonts";
   bottom: 0;
   z-index: $zindex-sticky;
 }
+ 
+.ccilab-component-sticky-top{
+  position: sticky;
+  top: 15px;
+  z-index: $zindex-sticky;
+}

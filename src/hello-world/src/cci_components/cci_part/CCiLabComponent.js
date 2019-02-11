@@ -66,10 +66,8 @@ class CCiLabComponent extends Component {
     render() {
         // console.log('CCiLabComponent::render() imgFile: ', this.imgName);
       
-        let  Component =  this.currentComponent.displayLogic.selected > 0 ? 'bg-info component_opacity sticky-top':
+        let  Component =  this.currentComponent.displayLogic.selected > 0 ? 'bg-info component_opacity ccilab-component-sticky-top':
                           this.currentComponent.displayLogic.selected < 0 ? 'bg-info component_opacity ccilab-component-sticky-bottom':'';
-        let  StickyPos =  this.currentComponent.displayLogic.selected > 0 ? "'top':'25px'": 
-              this.currentComponent.displayLogic.selected < 0 ? "'bottom':'25px'":"''";
       
         let ComponentClassNameBase = 'btn m-0 float-left rounded-circle p-0'
         let ComponentClassName = ComponentClassNameBase +' cci-component-btn';
@@ -116,7 +114,7 @@ class CCiLabComponent extends Component {
         
 
         return (
-          <span  className={`${Component}`}  style={{'top' : `${StickyPos}`, 'width': `${this.StickyWidth}px`}}> 
+          <span  className={`${Component}`}  style={{'width': `${this.StickyWidth}px`}}> 
             {/* show collapse icon 'v' for all expendable components,
               show expendable icon '>' for those components have children except the top component
             */}

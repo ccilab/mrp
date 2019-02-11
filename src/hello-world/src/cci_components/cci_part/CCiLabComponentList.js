@@ -284,8 +284,10 @@ class CCiLabComponentList extends Component {
 
     
 
-    setSelectedComponentStickDirection = () =>{
-      let newScrollPosition = window.scrollY;
+    setSelectedComponentStickDirection = (e) =>{
+      let scrollY = e.target.scrollTop;
+
+      let newScrollPosition = scrollY;
  
       let currentSessionComponents = this.state.greetings;
       let selectedComponent = currentSessionComponents.find( (component)=>{return component.displayLogic.selected !== 0; })
@@ -294,17 +296,17 @@ class CCiLabComponentList extends Component {
       {
           if ( newScrollPosition < this.lastScrollPosition )
           {
-              //upward - set selected to +1 - sticky-top
-              selectedComponent.displayLogic.selected = 1;
+              //scroll up - component move downward - set selected to -1 - sticky-bottom
+              selectedComponent.displayLogic.selected = -1;
           }
           else
           {
-              //downward - set selected to -1 - sticky-bottom
-              selectedComponent.displayLogic.selected = -1;
+              //scroll down - component move upward - set selected to +1 - sticky-top
+              selectedComponent.displayLogic.selected = 1;
           }
       }
      
-      console.log('new position: ' + newScrollPosition + ' last position: ' + this.lastScrollPosition + ' selected: ' + selectedComponent.displayLogic.selected);
+      // console.log('new position: ' + newScrollPosition + ' last position: ' + this.lastScrollPosition + ' selected: ' + selectedComponent.displayLogic.selected);
 
       this.lastScrollPosition = newScrollPosition;
 
