@@ -114,7 +114,14 @@ class CCiLabComponent extends Component {
         
 
         return (
-          <span  className={`${Component}`}  style={{'width': `${this.StickyWidth}px`}}> 
+          // https://developer.mozilla.org/en-US/docs/Web/API/HTML_Drag_and_Drop_API
+          // https://developer.mozilla.org/en-US/docs/Web/API/HTML_Drag_and_Drop_API/Drag_operations#dragstart
+          // https://developer.mozilla.org/en-US/docs/Web/API/DataTransferItem#Browser_compatibility
+          <span  className={`${Component}`}  
+                 style={{'width': `${this.StickyWidth}px`}} 
+                 draggable={( this.parents.length === 0  )? 'false':'true'}
+                 onDragStart={this.drag}
+                 > 
             {/* show collapse icon 'v' for all expendable components,
               show expendable icon '>' for those components have children except the top component
             */}
@@ -127,7 +134,9 @@ class CCiLabComponent extends Component {
           
             
             {/* shift the child components to the right */}  
-            <ul id={`${this.currentComponent.displayLogic.key}`} className='flow-right list-group flex-row cci-component-lable_position' style={leftShiftStyle}>
+            <ul id={`${this.currentComponent.displayLogic.key}`} 
+                className='flow-right list-group flex-row cci-component-lable_position' 
+                style={leftShiftStyle}>
               <button className={`${ComponentClassName}`} 
                 style={ { 'height': this.componentLableHeight, 'width': this.componentLableHeight} }
                 onClick={ this.componentSelected } >

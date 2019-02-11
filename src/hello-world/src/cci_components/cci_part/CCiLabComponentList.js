@@ -292,7 +292,7 @@ class CCiLabComponentList extends Component {
       let currentSessionComponents = this.state.greetings;
       let selectedComponent = currentSessionComponents.find( (component)=>{return component.displayLogic.selected !== 0; })
 
-      if( selectedComponent !== "undefined" )
+      if( selectedComponent !== "undefined" && selectedComponent.displayLogic !== "undefined" )
       {
           if ( newScrollPosition < this.lastScrollPosition )
           {
@@ -304,13 +304,14 @@ class CCiLabComponentList extends Component {
               //scroll down - component move upward - set selected to +1 - sticky-top
               selectedComponent.displayLogic.selected = 1;
           }
-      }
      
-      // console.log('new position: ' + newScrollPosition + ' last position: ' + this.lastScrollPosition + ' selected: ' + selectedComponent.displayLogic.selected);
+     
+          // console.log('new position: ' + newScrollPosition + ' last position: ' + this.lastScrollPosition + ' selected: ' + selectedComponent.displayLogic.selected);
 
-      this.lastScrollPosition = newScrollPosition;
+          this.lastScrollPosition = newScrollPosition;
 
-      this.setState({selected: selectedComponent.displayLogic.selected});
+          this.setState({selected: selectedComponent.displayLogic.selected});
+      }
     }
 
     //need to update showMyself to true after button is clicked to canExpend
