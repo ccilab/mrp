@@ -24,7 +24,7 @@ export  const setListHeight = (rect) => {
   }
   
 export  const setListWidth = () =>{
-    return window.innerWidth <= 330 ? '90' : window.innerWidth <= 600 ? '70' : window.innerWidth <= 800 ? '50' : window.innerWidth <= 1000 ? '40' : window.innerWidth <= 1500 ? '30':'15';
+    return window.innerWidth <= 330 ? '90' : window.innerWidth <= 600 ? '70' : window.innerWidth <= 800 ? '50' : window.innerWidth <= 1000 ? '40' : window.innerWidth <= 1500 ? '30':'30';
   }
   
 export  const setHideListWidth = () =>{
@@ -32,7 +32,7 @@ export  const setHideListWidth = () =>{
     let ListWidth;
     // on iphone 4S, os is 9.3.5 needs workaround to hide list
     if( osVersion.os === 'iOS' && osVersion.osMajorVersion < 10 )
-        ListWidth = window.innerWidth <= 330 ? '40' : window.innerWidth <= 600 ? '48' : window.innerWidth <= 800 ? '50' : window.innerWidth <= 1000 ? '40' : window.innerWidth <= 1500 ? '30':'15';
+        ListWidth = window.innerWidth <= 330 ? '40' : window.innerWidth <= 600 ? '48' : window.innerWidth <= 800 ? '50' : window.innerWidth <= 1000 ? '40' : window.innerWidth <= 1500 ? '30':'30';
     else
         ListWidth = setListWidth();
     return ListWidth;
