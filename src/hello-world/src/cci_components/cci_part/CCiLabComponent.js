@@ -63,12 +63,20 @@ class CCiLabComponent extends Component {
       this.props.showOrHideChildren(this.currentComponent, isShow)
     }
 
+    dragStart(e) {
+      e.dataTransfer.setData("Text", e.target.id);
+      console.log('select span id: ', e.target.id );
+    }
+
     render() {
         // console.log('CCiLabComponent::render() imgFile: ', this.imgName);
       
         let  Component =  this.currentComponent.displayLogic.selected > 0 ? 'bg-info component_opacity ccilab-component-sticky-top':
-                          this.currentComponent.displayLogic.selected < 0 ? 'bg-info component_opacity ccilab-component-sticky-bottom':'';
+                          this.currentComponent.displayLogic.selected < 0 ? 'bg-info component_opacity ccilab-component-sticky-bottom':' ';
       
+        // draggable not for the very top element
+        let draggableSetting = ( this.currentComponent.displayLogic.selected !== 0 &&  this.parents.length !== 0 )? 'true':'false';
+
         let ComponentClassNameBase = 'btn m-0 float-left rounded-circle p-0'
         let ComponentClassName = ComponentClassNameBase +' cci-component-btn';
         let expendCollapseBadgeIconClassName= 'fa fa-angle-right';
@@ -117,11 +125,12 @@ class CCiLabComponent extends Component {
           // https://developer.mozilla.org/en-US/docs/Web/API/HTML_Drag_and_Drop_API
           // https://developer.mozilla.org/en-US/docs/Web/API/HTML_Drag_and_Drop_API/Drag_operations#dragstart
           // https://developer.mozilla.org/en-US/docs/Web/API/DataTransferItem#Browser_compatibility
-          <span  className={`${Component}`}  
-                 style={{'width': `${this.StickyWidth}px`}} 
-                 draggable={( this.parents.length === 0  )? 'false':'true'}
-                 onDragStart={this.drag}
-                 > 
+          <span id={`${this.currentComponent.displayLogic.key}`} 
+                className={`${Component}`}  
+                style={{'width': `${this.StickyWidth}px`}} 
+                draggable={`${draggableSetting}`}
+                onDragStart={this.dragStart}
+          > 
             {/* show collapse icon 'v' for all expendable components,
               show expendable icon '>' for those components have children except the top component
             */}
