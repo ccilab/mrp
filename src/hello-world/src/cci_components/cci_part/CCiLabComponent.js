@@ -64,34 +64,59 @@ class CCiLabComponent extends Component {
     }
 
     dragStart(e) {
-      e.dataTransfer.setData("Text", e.target.id);
-      console.log('select span id: ', e.target.id );
+      if (e.target.id.includes('-drag') ) 
+      {
+        e.dataTransfer.setData("Text", e.target.id);
+        console.log('drag select span id: ', e.target.id );    
+      }
+      else 
+      {
+          e.preventDefault();
+          console.log('not onDragStart event span id: ', e.target.id );    
+      }
+      
+
+
     }
 
     render() {
         // console.log('CCiLabComponent::render() imgFile: ', this.imgName);
-      
-        let  Component =  this.currentComponent.displayLogic.selected > 0 ? 'bg-info component_opacity ccilab-component-sticky-top':
-                          this.currentComponent.displayLogic.selected < 0 ? 'bg-info component_opacity ccilab-component-sticky-bottom':' ';
-      
-        // draggable not for the very top element
-        let draggableSetting = ( this.currentComponent.displayLogic.selected !== 0 &&  this.parents.length !== 0 )? 'true':'false';
-
         let ComponentClassNameBase = 'btn m-0 float-left rounded-circle p-0'
-        let ComponentClassName = ComponentClassNameBase +' cci-component-btn';
+        let ComponentClassName = ComponentClassNameBase + ' cci-component-btn';
         let expendCollapseBadgeIconClassName= 'fa fa-angle-right';
-        let componentNameClassName= this.parents.length === 0 ? 'lead nav-link font-weight-normal text-primary text-truncate py-1' :'lead nav-link font-weight-normal text-primary text-truncate py-0';
+        let componentNameClassNameBase = 'lead font-weight-normal text-primary text-truncate nav-link ';
+        let componentNameClassName= this.parents.length === 0 ? componentNameClassNameBase + ' py-1' : componentNameClassNameBase + ' py-0';
 
         let statusBadgeIconClassName = this.progressStatus === 'info' ? 'fa ':
             this.progressStatus === 'success' ? 'fa fa-check-circle' :
             this.progressStatus === 'warning' ? 'fa fa-exclamation-circle' : 'fa fa-exclamation-triangle';
-            
-        if( this.parents.length !== 0 )
+    
+        let permissionEabled = true; // need to add check later
+        let  Component=' ';
+        let draggableSetting = false;
+
+        if ( this.parents.length === 0 ) 
         {
- 
-            if ( this.children.length === 0   )
-              ComponentClassName =ComponentClassNameBase + ' cci-component-btn';
+            Component =  this.currentComponent.displayLogic.selected !== 0 ? 'bg-info component_opacity ccilab-component-sticky-top':' ';
+            draggableSetting= false;
         }
+        else
+        { // draggable for elements bellow the very top one, if use has the permission ( need to check)
+            Component =  this.currentComponent.displayLogic.selected > 0 ? 'bg-info component_opacity ccilab-component-sticky-top ' + (permissionEabled? 'move':' ' ):
+                         this.currentComponent.displayLogic.selected < 0 ? 'bg-info component_opacity ccilab-component-sticky-bottom ' + (permissionEabled? 'move':' ' ):' ';
+            draggableSetting = ( permissionEabled && this.currentComponent.displayLogic.selected !== 0 &&  this.parents.length !== 0 )? 'true':'false';
+        }
+
+        if( this.currentComponent.displayLogic.selected !== 0 )
+        {
+          ComponentClassName = ComponentClassNameBase + ' cci-component-btn cusor-default';
+          componentNameClassName = ( this.parents.length === 0 )? componentNameClassNameBase + ' py-1 cusor-default' : componentNameClassNameBase + ' py-0 cusor-default';
+        }
+        // if( this.parents.length !== 0 )
+        // {
+        //     if ( this.children.length === 0   )
+        //       ComponentClassName =ComponentClassNameBase + ' cci-component-btn';
+        // }
 
         if( this.state.expended === false || this.currentComponent.displayLogic.canExpend === false ) 
         {
@@ -125,7 +150,8 @@ class CCiLabComponent extends Component {
           // https://developer.mozilla.org/en-US/docs/Web/API/HTML_Drag_and_Drop_API
           // https://developer.mozilla.org/en-US/docs/Web/API/HTML_Drag_and_Drop_API/Drag_operations#dragstart
           // https://developer.mozilla.org/en-US/docs/Web/API/DataTransferItem#Browser_compatibility
-          <span id={`${this.currentComponent.displayLogic.key}`} 
+         
+          <span id={`${this.currentComponent.displayLogic.key}-drag`} 
                 className={`${Component}`}  
                 style={{'width': `${this.StickyWidth}px`}} 
                 draggable={`${draggableSetting}`}
@@ -146,20 +172,20 @@ class CCiLabComponent extends Component {
             <ul id={`${this.currentComponent.displayLogic.key}`} 
                 className='flow-right list-group flex-row cci-component-lable_position' 
                 style={leftShiftStyle}>
-              <button className={`${ComponentClassName}`} 
-                style={ { 'height': this.componentLableHeight, 'width': this.componentLableHeight} }
-                onClick={ this.componentSelected } >
-                
-                {/* no style for top element so the button can host the image, other elements need style to set image position  */}
-                { (this.imgName.length !== 0 ) ? 
-                    <img className='cci-component__img rounded-circle float-left' src={this.imgName} alt=""
-                      style={{'height': this.componentLableHeight, 'width': this.componentLableHeight}} >
-                    </img>
-                    :null
-                 }
-              </button>
-              <a href="#1" className={`${componentNameClassName}`} style={{ 'height': '10%' }} onClick={ this.componentSelected }>{this.componentName}:</a>
-              <span id='progressStatusSpan' className={`badge-pill badge-${this.progressStatus} ${statusBadgeIconClassName} text-body text-nowrap align-self-center ml-0`} style={{ 'height': '15% !important'}}> {this.progressValue}%</span>  
+                <button className={`${ComponentClassName}`} 
+                  style={ { 'height': this.componentLableHeight, 'width': this.componentLableHeight} }
+                  onClick={ this.componentSelected } >
+                  
+                  {/* no style for top element so the button can host the image, other elements need style to set image position  */}
+                  { (this.imgName.length !== 0 ) ? 
+                      <img className='cci-component__img rounded-circle float-left' src={this.imgName} alt=""
+                        style={{'height': this.componentLableHeight, 'width': this.componentLableHeight}} >
+                      </img>
+                      :null
+                   }
+                </button>
+                <a href="#1" className={`${componentNameClassName}`} style={{ 'height': '10%' }} onClick={ this.componentSelected }>{this.componentName}:</a>
+                <span id='progressStatusSpan' className={`badge-pill badge-${this.progressStatus} ${statusBadgeIconClassName} text-body text-nowrap align-self-center ml-0`} style={{ 'height': '15% !important'}}> {this.progressValue}%</span>  
             </ul>
           </span>
         )
