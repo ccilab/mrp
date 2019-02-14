@@ -63,21 +63,35 @@ class CCiLabComponent extends Component {
       this.props.showOrHideChildren(this.currentComponent, isShow)
     }
 
-    dragStart(e) {
+    dragStart=(e) => {
       if (e.target.id.includes('-drag') ) 
       {
-        e.dataTransfer.setData("Text", e.target.id);
-        console.log('drag select span id: ', e.target.id );    
+        let draggedComponetId=e.target.id.replace(/-drag/g,'');
+        e.dataTransfer.setData("Text", draggedComponetId);
+        e.effectAllowed='copyMove';
+        console.log('drag select span id: ', draggedComponetId );    
       }
       else 
       {
           e.preventDefault();
           console.log('not onDragStart event span id: ', e.target.id );    
       }
-      
+    }  
 
-
+    dragOver=(e) =>{
+      e.preventDefault();
+      // e.dropEffect='copyMove';
+      console.log('drag over from source: ');
+    
     }
+
+    doDrop=(e)=>{
+      e.preventDefault();
+      var sourceId = e.dataTransfer.getData("Text");
+      console.log('droped from source: ', sourceId);
+    
+    }
+
 
     render() {
         // console.log('CCiLabComponent::render() imgFile: ', this.imgName);
@@ -112,11 +126,6 @@ class CCiLabComponent extends Component {
           ComponentClassName = ComponentClassNameBase + ' cci-component-btn cusor-default';
           componentNameClassName = ( this.parents.length === 0 )? componentNameClassNameBase + ' py-1 cusor-default' : componentNameClassNameBase + ' py-0 cusor-default';
         }
-        // if( this.parents.length !== 0 )
-        // {
-        //     if ( this.children.length === 0   )
-        //       ComponentClassName =ComponentClassNameBase + ' cci-component-btn';
-        // }
 
         if( this.state.expended === false || this.currentComponent.displayLogic.canExpend === false ) 
         {
@@ -155,7 +164,9 @@ class CCiLabComponent extends Component {
                 className={`${Component}`}  
                 style={{'width': `${this.StickyWidth}px`}} 
                 draggable={`${draggableSetting}`}
-                onDragStart={this.dragStart}
+                onDragStart={ draggableSetting === 'true' ? this.dragStart : null}
+                onDragOver={  draggableSetting === 'false' ? this.dragOver : null}
+                onDrop={  draggableSetting === 'false' ? this.doDrop : null}
           > 
             {/* show collapse icon 'v' for all expendable components,
               show expendable icon '>' for those components have children except the top component
