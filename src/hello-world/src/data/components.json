@@ -1,7 +1,7 @@
 
 { 
 	"firstComponents": [ 	
-		{ "businessLogic": {"id": 0, "name": "table", "parentIds":[], "childIds":[1,5,6],  "imgFile": "table.png", "status": "danger", "progressPercent":0}, "displayLogic": { "key": 0,"childKeyIds":[1,2,3], "showMyself":false, "canExpend": true, "rectLeft": 0, "selected":0 }},
+		{ "businessLogic": {"id": 0, "name": "table", "parentIds":[], "childIds":[1,5,6],  "imgFile": "table.png", "status": "danger", "progressPercent":0}, "displayLogic": { "key": 0,"childKeyIds":[], "showMyself":false, "canExpend": true, "rectLeft": 0, "selected":0 }},
 		{ "businessLogic": {"id": 1, "name":"top", "parentIds":[0], "childIds":[2,3], "imgFile":"top.png", "status": "warning", "progressPercent": 40}, "displayLogic": {"key": 0,"childKeyIds":[], "showMyself": false, "canExpend": false, "rectLeft": 0, "selected":0}},
 		{ "businessLogic": {"id": 5, "name":"nail", "parentIds":[0], "childIds":[],  "imgFile":"", "status": "success", "progressPercent": 100},"displayLogic": {"key": 0, "childKeyIds":[],"showMyself": false, "canExpend": false, "rectLeft": 0, "selected":0}},
 		{ "businessLogic": {"id": 6, "name":"glue", "parentIds":[0], "childIds":[], "imgFile":"", "status": "info", "progressPercent": 10},"displayLogic": {"key": 0,"childKeyIds":[], "showMyself": false, "canExpend": false, "rectLeft": 0, "selected":0}}

@@ -87,9 +87,14 @@ class CCiLabComponent extends Component {
 
     doDrop=(e)=>{
       e.preventDefault();
-      var sourceId = e.dataTransfer.getData("Text");
+
+      if ( e.target.id.includes('-drag') ) 
+      {
+          var sourceId = e.dataTransfer.getData("Text");
+          this.props.moveComponentHandler(sourceId, this.currentComponent);
+      }
+
       console.log('droped from source: ', sourceId);
-    
     }
 
 

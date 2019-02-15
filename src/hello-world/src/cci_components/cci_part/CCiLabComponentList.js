@@ -101,6 +101,7 @@ const estimateComponentListRect = (componentLists)=>{
   return updatedRect;
 }
 
+// setSelectedComponentStickDirection(e), changes the direction of sticky element
 const setComponentSelected = ( component, selectedComponentKey ) =>{
   if( component.displayLogic.key === selectedComponentKey )
     component.displayLogic.selected = 1; //can be +1 or -1
@@ -108,6 +109,7 @@ const setComponentSelected = ( component, selectedComponentKey ) =>{
     component.displayLogic.selected = 0;
 
 }
+
 
 class CCiLabComponentList extends Component {
     state = { greetings: undefined, visible: true, selected: 0 };
@@ -283,7 +285,7 @@ class CCiLabComponentList extends Component {
     }
 
     
-
+    // handles vertical scroll bar event
     setSelectedComponentStickDirection = (e) =>{
       let scrollY = e.target.scrollTop;
 
@@ -314,6 +316,51 @@ class CCiLabComponentList extends Component {
       }
     }
 
+    // handle componemt move
+    // - update component list
+    // - update component status after move by check against the new parent
+    moveComponentHandler = ( movedComponentDisplayKey, targetComponent ) =>{
+      if( movedComponentDisplayKey !== "undefined" && typeof( movedComponentDisplayKey) === "string" )
+      {
+        console.log('moved component key: ', movedComponentDisplayKey);
+
+
+        let currentSessionComponents = this.state.greetings;
+        let sourceId = parseInt(movedComponentDisplayKey, 10);
+        let movedComponent = currentSessionComponents.find( (component)=>{return component.displayLogic.key === sourceId } )
+
+        console.log('source component name: ', movedComponent.businessLogic.name);
+        console.log('target component name: ', targetComponent.businessLogic.name);
+
+         //remove moved component id from prevous parent's childId list
+         let parentComponents = currentSessionComponents.filter(  (component)=>{return component.businessLogic.childIds.length && component.businessLogic.childIds.find( (childId)=>{return childId === movedComponent.businessLogic.id } ) } );
+
+         parentComponents.map( (component)=>{return console.log('parent component name of source component: ', component.businessLogic.name) } );
+
+        //update parent id of moved component (source) as target Component id
+        movedComponent.parentIds=[];
+        movedComponent.parentIds.push(targetComponent.businessLogic.id);
+
+        //reset display key and childKeys
+        movedComponent.displayLogic.key=0;
+        movedComponent.displayLogic.childKeyIds=[];
+
+       
+
+
+        //rebuild the component list
+        let updatedSessionComponents = [];
+        
+
+
+        //check if moved component progress status need to change (#todo)
+
+        //set the state again
+        this.setState( { greetings: updatedSessionComponents });
+
+      }
+    }
+
     //need to update showMyself to true after button is clicked to canExpend
     //need to update showMyself to false after button is clicked to collaps
     renderGreetings = () => {
@@ -341,7 +388,8 @@ class CCiLabComponentList extends Component {
                                           leftOffset={leftOffset} 
                                           removeGreeting={this.removeGreeting} 
                                           showOrHideChildren={this.showOrHideChildren}
-                                          selectedComponentHandler={this.selectedComponentHandler}/> ;
+                                          selectedComponentHandler={this.selectedComponentHandler}
+                                          moveComponentHandler={this.moveComponentHandler}/> ;
                 }
                 else
                   return null;
