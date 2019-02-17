@@ -22,41 +22,57 @@ const thirdComponents = components.thirdComponents;
 // simulate load children of component id 4 ( low_beam )
 const forthComponents = components.forthComponents;
 
-// utility funtions need move to a saperate js file
-// merge incomingComponents (new ones) and originComponents (existing components) into targetComponents
-const initializeComponents = ( startComponent, originComponents, incomingComponents, targetComponents)=>{
+// initialize displayLogic object
+const displayLogic = (key, childKeyIds, showMyself, canExpend, rectLeft, selected ) =>{
+  let displayLogic = {};
+  displayLogic.key = key;
+  displayLogic.childIds = childKeyIds;
+  displayLogic.showMyself = showMyself;
+  displayLogic.canExpend = canExpend;
+  displayLogic.rectLeft = rectLeft;
+  displayLogic.selected = selected;
+  return displayLogic;
+};
+
+// merge newComponentList (that displayLogic isn't initialized) and existingComponentList (existing components, displayLogic is initialized) into targetComponentList
+// from the startComponent 
+const initializeComponents = ( startComponent, existingComponentList, newComponentList, targetComponentList)=>{
   let displayKeyValue = 0;
 
-  if( typeof originComponents !== "undefined") {
-    originComponents.forEach( (existingComponent)=>{ targetComponents.push( existingComponent ) } );
-    displayKeyValue = targetComponents.length;
+  if( typeof existingComponentList !== "undefined") {
+    existingComponentList.forEach( (existingComponent)=>{ targetComponentList.push( existingComponent ) } );
+    displayKeyValue = targetComponentList.length;
   }
 
-
-  
   // initialize displayLogic items, create unique key value for latest componets from data layer
-  // this guarantees that displayLogic.key is unique, newly added componet won't show itself until
-  // user clicks it, except the very top component
+  // this guarantees that displayLogic.key is unique, (newly added componet won't show itself until
+  // user clicks it, except the very top component), 
   
-  for(let idx = 0; idx < incomingComponents.length; idx++ ) {
-    let element = incomingComponents[idx];
-    element.displayLogic.key = displayKeyValue++;
-    element.displayLogic.childKeyIds.length = 0;
-    element.displayLogic.showMyself = false;
-    element.businessLogic.childIds.length !== 0 ? element.displayLogic.canExpend = true : element.displayLogic.canExpend = false;
+  for(let idx = 0; idx < newComponentList.length; idx++ ) {
+    let element = newComponentList[idx];
+    if( typeof (element.displayLogic)=== "undefined")
+    {
+      element.displayLogic = new displayLogic( displayKeyValue++,
+                                                0,
+                                                false,
+                                                element.businessLogic.childIds.length !== 0 ? true :  false,
+                                                0,
+                                                0 );
+    }
+
    
-    let startComponentKey = 0;
-    if(typeof startComponent !== "undefined" ) {
-      startComponentKey = startComponent.displayLogic.key;
+    if(typeof( startComponent )  !== "undefined"  && typeof(startComponent.displayLogic) !== "undefined") {
+      let startComponentKey = startComponent.displayLogic.key;
       //need populate childKeyIds[] if its not fully populated yet
       if( startComponent.businessLogic.childIds.length !==  startComponent.displayLogic.childKeyIds.length && 
-          startComponent.displayLogic.childKeyIds.includes( element.displayLogic.key ) === false ) {
-          let idxInsertAt = targetComponents.findIndex(startComponent=>{return startComponent.displayLogic.key === startComponentKey});
+          startComponent.displayLogic.childKeyIds.includes( element.displayLogic.key ) === false ) 
+      {
+          let idxInsertAt = targetComponentList.findIndex((component)=>{return component.displayLogic.key === startComponentKey});
           // component without childIs[] is always above componets with childIds[] for display/expending purpose
           if( element.businessLogic.childIds.length === 0 )
-            targetComponents.splice( idxInsertAt+1,0,element);
+            targetComponentList.splice( idxInsertAt+1,0,element);
           else
-            targetComponents.push(element);
+            targetComponentList.push(element);
       }
     }
   }
@@ -319,6 +335,8 @@ class CCiLabComponentList extends Component {
     // handle componemt move
     // - update component list
     // - update component status after move by check against the new parent
+    // issue - after move the position isn't right if don't expend the parent
+    //       - collapse the parent, moved element won't hide
     moveComponentHandler = ( movedComponentDisplayKey, targetComponent ) =>{
       if( movedComponentDisplayKey !== "undefined" && typeof( movedComponentDisplayKey) === "string" )
       {
@@ -329,37 +347,66 @@ class CCiLabComponentList extends Component {
         let sourceId = parseInt(movedComponentDisplayKey, 10);
         let movedComponent = currentSessionComponents.find( (component)=>{return component.displayLogic.key === sourceId } )
 
-        console.log('source component name: ', movedComponent.businessLogic.name);
-        console.log('target component name: ', targetComponent.businessLogic.name);
+        if( movedComponent !== "undefined")
+        {
+          console.log('source component name: ', movedComponent.businessLogic.name);
+          console.log('target component name: ', targetComponent.businessLogic.name);
 
-         //remove moved component id from prevous parent's childId list
-         let parentComponents = currentSessionComponents.filter(  (component)=>{return component.businessLogic.childIds.length && component.businessLogic.childIds.find( (childId)=>{return childId === movedComponent.businessLogic.id } ) } );
+          // find current parent components of source/moved component 
+          let parentComponents = currentSessionComponents.filter(  (component)=>{return component.businessLogic.childIds.length && component.businessLogic.childIds.find( (childId)=>{return childId === movedComponent.businessLogic.id } ) } );
+          parentComponents.map( (component)=>{return console.log('parent component name of source component: ', component.businessLogic.name) } );
 
-         parentComponents.map( (component)=>{return console.log('parent component name of source component: ', component.businessLogic.name) } );
+          //remove moved/source component id and displayLogicKey from prevous parent's businessLogic and displayLogic childId list
+          parentComponents.map( (component)=>{
+                if( component.businessLogic.childIds.length || component.displayLogic.childKeyIds.length )
+                {
+                  let idxBusinessLogicId = component.businessLogic.childIds.indexOf( movedComponent.businessLogic.id );
+                  if( idxBusinessLogicId >= 0 )
+                    component.businessLogic.childIds.splice( idxBusinessLogicId,1);
 
-        //update parent id of moved component (source) as target Component id
-        movedComponent.parentIds=[];
-        movedComponent.parentIds.push(targetComponent.businessLogic.id);
+                  let idxDisplayLogicId = component.displayLogic.childKeyIds.indexOf( movedComponent.displayLogic.key );
+                  if( idxDisplayLogicId >= 0 )
+                    component.displayLogic.childKeyIds.splice( idxDisplayLogicId, 1 );
+                }
 
-        //reset display key and childKeys
-        movedComponent.displayLogic.key=0;
-        movedComponent.displayLogic.childKeyIds=[];
+                return component;
+              } );
+              
+          
+          //remove moved/source component from component list
+          let idxMovedComponent = currentSessionComponents.findIndex( (component)=>{return component.displayLogic.key === sourceId; });
+          if( idxMovedComponent >= 0 )
+          {
+              let rmMovedComponent = currentSessionComponents.splice( idxMovedComponent, 1);
 
-       
+              //update parent id of moved component (source) as target Component id
+              rmMovedComponent[0].businessLogic.parentIds.length=0;
+              rmMovedComponent[0].businessLogic.parentIds.push(targetComponent.businessLogic.id);
 
+              //reset display key and childKeys
+              rmMovedComponent[0].displayLogic.key=0;
+              rmMovedComponent[0].displayLogic.childKeyIds=[];
 
-        //rebuild the component list
-        let updatedSessionComponents = [];
-        
+              //move to not expended component, change source component show status to false 
+              if( targetComponent.displayLogic.canExpend )
+                rmMovedComponent[0].displayLogic.showMyself = false;
 
+              //update businessLogic and displayLogic childIds of target component (target) as moved component ( source )
+              targetComponent.businessLogic.childIds.push(rmMovedComponent[0].businessLogic.id);
 
-        //check if moved component progress status need to change (#todo)
+              //rebuild the component list
+              let updatedSessionComponents = [];
+              
+              initializeComponents(targetComponent, currentSessionComponents, rmMovedComponent, updatedSessionComponents);
 
-        //set the state again
-        this.setState( { greetings: updatedSessionComponents });
+              //check if moved component progress status need to change (#todo)
 
+              //set the state again
+              this.setState( { greetings: updatedSessionComponents });
+          }
+        }
       }
-    }
+    };
 
     //need to update showMyself to true after button is clicked to canExpend
     //need to update showMyself to false after button is clicked to collaps
