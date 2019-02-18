@@ -23,14 +23,14 @@ const thirdComponents = components.thirdComponents;
 const forthComponents = components.forthComponents;
 
 // initialize displayLogic object
-const displayLogic = (key, childKeyIds, showMyself, canExpend, rectLeft, selected ) =>{
+const initializeDisplayLogic = (key, canExpend ) =>{
   let displayLogic = {};
   displayLogic.key = key;
-  displayLogic.childIds = childKeyIds;
-  displayLogic.showMyself = showMyself;
+  displayLogic.childKeyIds = [];
+  displayLogic.showMyself = false;
   displayLogic.canExpend = canExpend;
-  displayLogic.rectLeft = rectLeft;
-  displayLogic.selected = selected;
+  displayLogic.rectLeft = 0;
+  displayLogic.selected = 0;  // 0, -1, +1
   return displayLogic;
 };
 
@@ -50,18 +50,13 @@ const initializeComponents = ( startComponent, existingComponentList, newCompone
   
   for(let idx = 0; idx < newComponentList.length; idx++ ) {
     let element = newComponentList[idx];
-    if( typeof (element.displayLogic)=== "undefined")
+    if( typeof element.displayLogic === "undefined")
     {
-      element.displayLogic = new displayLogic( displayKeyValue++,
-                                                0,
-                                                false,
-                                                element.businessLogic.childIds.length !== 0 ? true :  false,
-                                                0,
-                                                0 );
+      element.displayLogic = new initializeDisplayLogic( ++displayKeyValue, element.businessLogic.childIds.length !== 0 ? true : false );
     }
 
    
-    if(typeof( startComponent )  !== "undefined"  && typeof(startComponent.displayLogic) !== "undefined") {
+    if(typeof startComponent   !== "undefined"  && typeof startComponent.displayLogic !== "undefined" && typeof element !== "undefined") {
       let startComponentKey = startComponent.displayLogic.key;
       //need populate childKeyIds[] if its not fully populated yet
       if( startComponent.businessLogic.childIds.length !==  startComponent.displayLogic.childKeyIds.length && 
@@ -165,6 +160,7 @@ class CCiLabComponentList extends Component {
 
       //#todo: need to query server side to find the very top component 
       let rootComponent = components.filter(component=>component.businessLogic.parentIds.length === 0)[0]
+      rootComponent.displayLogic = initializeDisplayLogic( 0, rootComponent.businessLogic.childIds.length !== 0 ? true : false );
        
       initializeComponents(rootComponent, this.state.greetings, components, currentSessionComponents);
     
