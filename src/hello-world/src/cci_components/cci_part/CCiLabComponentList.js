@@ -23,13 +23,13 @@ const thirdComponents = components.thirdComponents;
 const forthComponents = components.forthComponents;
 
 // initialize displayLogic object
-const initializeDisplayLogic = (key, canExpend ) =>{
+const initializeDisplayLogic = (key, canExpend, rectLeft ) =>{
   let displayLogic = {};
   displayLogic.key = key;
   displayLogic.childKeyIds = [];
   displayLogic.showMyself = false;
   displayLogic.canExpend = canExpend;
-  displayLogic.rectLeft = 0;
+  displayLogic.rectLeft = (typeof rectLeft === "undefined" ) ? 0:rectLeft;
   displayLogic.selected = 0;  // 0, -1, +1
   return displayLogic;
 };
@@ -41,7 +41,7 @@ const initializeComponents = ( startComponent, existingComponentList, newCompone
 
   if( typeof existingComponentList !== "undefined") {
     existingComponentList.forEach( (existingComponent)=>{ targetComponentList.push( existingComponent ) } );
-    displayKeyValue = targetComponentList.length;
+    displayKeyValue = targetComponentList.length;  //this isn't guaranteed unique
   }
 
   // initialize displayLogic items, create unique key value for latest componets from data layer
@@ -380,12 +380,11 @@ class CCiLabComponentList extends Component {
               rmMovedComponent[0].businessLogic.parentIds.push(targetComponent.businessLogic.id);
 
               //reset display key and childKeys
-              rmMovedComponent[0].displayLogic.key=0;
-              rmMovedComponent[0].displayLogic.childKeyIds=[];
+              delete rmMovedComponent[0].displayLogic;
 
-              //move to not expended component, change source component show status to false 
-              if( targetComponent.displayLogic.canExpend )
-                rmMovedComponent[0].displayLogic.showMyself = false;
+              rmMovedComponent[0].displayLogic = initializeDisplayLogic(10, false, targetComponent.displayLogic.rectLeft)
+
+             
 
               //update businessLogic and displayLogic childIds of target component (target) as moved component ( source )
               targetComponent.businessLogic.childIds.push(rmMovedComponent[0].businessLogic.id);
@@ -394,6 +393,15 @@ class CCiLabComponentList extends Component {
               let updatedSessionComponents = [];
               
               initializeComponents(targetComponent, currentSessionComponents, rmMovedComponent, updatedSessionComponents);
+ 
+              //move to not expended component, change source component show status to false 
+              if( !targetComponent.displayLogic.canExpend )
+                rmMovedComponent[0].displayLogic.showMyself = true;
+              else
+                rmMovedComponent[0].displayLogic.showMyself = false;
+
+              // populate target component's displayLogic.childKeyIds[]
+              populateComponentChildKeyIds(targetComponent, updatedSessionComponents);
 
               //check if moved component progress status need to change (#todo)
 

@@ -29,9 +29,7 @@ class CCiLabComponent extends Component {
     componentDidMount =()=> {
       let componentRect = document.getElementById( `${this.currentComponent.displayLogic.key}` ).getBoundingClientRect();
 
-      if( this.children.length !== 0 ) {
-        this.currentComponent.displayLogic.rectLeft = componentRect.left;
-      }
+      this.currentComponent.displayLogic.rectLeft = componentRect.left;
 
       let progressStatusSpanRect = document.getElementById( 'progressStatusSpan' ).getBoundingClientRect();
 
@@ -114,7 +112,8 @@ class CCiLabComponent extends Component {
         let  Component=' ';
         let draggableSetting = false;
 
-        if ( this.parents.length === 0 ) 
+        // very top component or component has children can't be moved 
+        if ( this.parents.length === 0 || this.children.length !== 0 ) 
         {
             Component =  this.currentComponent.displayLogic.selected !== 0 ? 'bg-info component_opacity ccilab-component-sticky-top':' ';
             draggableSetting= false;
@@ -170,8 +169,10 @@ class CCiLabComponent extends Component {
                 style={{'width': `${this.StickyWidth}px`}} 
                 draggable={`${draggableSetting}`}
                 onDragStart={ draggableSetting === 'true' ? this.dragStart : null}
-                onDragOver={  draggableSetting === 'false' ? this.dragOver : null}
-                onDrop={  draggableSetting === 'false' ? this.doDrop : null}
+                // onDragOver={  draggableSetting === 'false' ? this.dragOver : null}
+                // onDrop={  draggableSetting === 'false' ? this.doDrop : null}
+                onDragOver={ this.dragOver }
+                onDrop={  this.doDrop }
           > 
             {/* show collapse icon 'v' for all expendable components,
               show expendable icon '>' for those components have children except the top component
