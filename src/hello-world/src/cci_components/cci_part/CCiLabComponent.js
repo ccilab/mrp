@@ -169,8 +169,6 @@ class CCiLabComponent extends Component {
                 style={{'width': `${this.StickyWidth}px`}} 
                 draggable={`${draggableSetting}`}
                 onDragStart={ draggableSetting === 'true' ? this.dragStart : null}
-                // onDragOver={  draggableSetting === 'false' ? this.dragOver : null}
-                // onDrop={  draggableSetting === 'false' ? this.doDrop : null}
                 onDragOver={ this.dragOver }
                 onDrop={  this.doDrop }
           > 
@@ -178,7 +176,8 @@ class CCiLabComponent extends Component {
               show expendable icon '>' for those components have children except the top component
             */}
             { ( this.children.length !== 0  )?
-                  <a href="#1" className={`cci-link_position float-left nav-link ${this.expendCollapseBadgePadding} `} style={anchorLeftstyle} onClick={ this.expending }>
+                  // {/* tag's id used to handle drop event */}
+                  <a  id={`${this.currentComponent.displayLogic.key}-drag`} href="#1" className={`cci-link_position float-left nav-link ${this.expendCollapseBadgePadding} `} style={anchorLeftstyle} onClick={ this.expending }>
                     <span className={expendCollapseBadgeIconClassName}></span>
                   </a>:null
             }  
@@ -186,22 +185,28 @@ class CCiLabComponent extends Component {
           
             
             {/* shift the child components to the right */}  
+            {/* tag's id is used to get component's rect */}
             <ul id={`${this.currentComponent.displayLogic.key}`} 
                 className='flow-right list-group flex-row cci-component-lable_position' 
                 style={leftShiftStyle}>
-                <button className={`${ComponentClassName}`} 
+                 {/* tag's id is used to handle drop event */}
+                <button id={`${this.currentComponent.displayLogic.key}-drag`} className={`${ComponentClassName}`} 
                   style={ { 'height': this.componentLableHeight, 'width': this.componentLableHeight} }
                   onClick={ this.componentSelected } >
                   
                   {/* no style for top element so the button can host the image, other elements need style to set image position  */}
                   { (this.imgName.length !== 0 ) ? 
-                      <img className='cci-component__img rounded-circle float-left' src={this.imgName} alt=""
+                      // {/* tag's id used to handle drop event */}
+                      <img id={`${this.currentComponent.displayLogic.key}-drag`} className='cci-component__img rounded-circle float-left' src={this.imgName} alt=""
                         style={{'height': this.componentLableHeight, 'width': this.componentLableHeight}} >
                       </img>
                       :null
                    }
                 </button>
-                <a href="#1" className={`${componentNameClassName}`} style={{ 'height': '10%' }} onClick={ this.componentSelected }>{this.componentName}:</a>
+                {/* tag's id is used to handle drop event */}
+                <a id={`${this.currentComponent.displayLogic.key}-drag`} href="#1" className={`${componentNameClassName}`} style={{ 'height': '10%' }} onClick={ this.componentSelected }>{this.componentName}:</a>
+                
+                {/* tag span's id used to find rect */}
                 <span id='progressStatusSpan' className={`badge-pill badge-${this.progressStatus} ${statusBadgeIconClassName} text-body text-nowrap align-self-center ml-0`} style={{ 'height': '15% !important'}}> {this.progressValue}%</span>  
             </ul>
           </span>

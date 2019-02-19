@@ -34,14 +34,27 @@ const initializeDisplayLogic = (key, canExpend, rectLeft ) =>{
   return displayLogic;
 };
 
+// find maximum displayLogic.key
+const findMaxDisplayKey = ( componentList )=>{
+  let displayKeyValue = 0;
+  let childKeys =[];
+  if( typeof componentList !== "undefined") {
+    componentList.forEach( (component)=>{ childKeys.push( component.displayLogic.key ) } );
+    // https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Function/apply#Using_apply_and_built-in_functions
+    // The consequences of applying a function with too many arguments (think more than tens of thousands of arguments) vary across engines 
+    // (JavaScriptCore has hard-coded argument limit of 65536), because the limit (indeed even the nature of any excessively-large-stack behavior) is unspecified. 
+    displayKeyValue = Math.max( ...childKeys);
+  }
+  return displayKeyValue;
+};
+
 // merge newComponentList (that displayLogic isn't initialized) and existingComponentList (existing components, displayLogic is initialized) into targetComponentList
 // from the startComponent 
 const initializeComponents = ( startComponent, existingComponentList, newComponentList, targetComponentList)=>{
-  let displayKeyValue = 0;
+  let displayKeyValue = findMaxDisplayKey(existingComponentList);
 
   if( typeof existingComponentList !== "undefined") {
     existingComponentList.forEach( (existingComponent)=>{ targetComponentList.push( existingComponent ) } );
-    displayKeyValue = targetComponentList.length;  //this isn't guaranteed unique
   }
 
   // initialize displayLogic items, create unique key value for latest componets from data layer
@@ -331,8 +344,8 @@ class CCiLabComponentList extends Component {
     // handle componemt move
     // - update component list
     // - update component status after move by check against the new parent
-    // issue - after move the position isn't right if don't expend the parent
-    //       - collapse the parent, moved element won't hide
+    // issue - move  first glue to second nail, the position is wrong
+    //       - move glue ...
     moveComponentHandler = ( movedComponentDisplayKey, targetComponent ) =>{
       if( movedComponentDisplayKey !== "undefined" && typeof( movedComponentDisplayKey) === "string" )
       {
@@ -341,21 +354,39 @@ class CCiLabComponentList extends Component {
 
         let currentSessionComponents = this.state.greetings;
         let sourceId = parseInt(movedComponentDisplayKey, 10);
+
+        if( typeof targetComponent === "undefined")
+          return;
+
+        //component can't drop to its own parent, 
+        if( targetComponent.displayLogic.childKeyIds.find( (key)=>{ return key === sourceId}) )
+          return;
+
         let movedComponent = currentSessionComponents.find( (component)=>{return component.displayLogic.key === sourceId } )
 
-        if( movedComponent !== "undefined")
-        {
-          console.log('source component name: ', movedComponent.businessLogic.name);
-          console.log('target component name: ', targetComponent.businessLogic.name);
+        if( typeof movedComponent === "undefined" )
+          return;
 
-          // find current parent components of source/moved component 
-          let parentComponents = currentSessionComponents.filter(  (component)=>{return component.businessLogic.childIds.length && component.businessLogic.childIds.find( (childId)=>{return childId === movedComponent.businessLogic.id } ) } );
-          parentComponents.map( (component)=>{return console.log('parent component name of source component: ', component.businessLogic.name) } );
+        
+        console.log('source component name: ', movedComponent.businessLogic.name);
+        console.log('target component name: ', targetComponent.businessLogic.name);
 
-          //remove moved/source component id and displayLogicKey from prevous parent's businessLogic and displayLogic childId list
-          parentComponents.map( (component)=>{
-                if( component.businessLogic.childIds.length || component.displayLogic.childKeyIds.length )
-                {
+        //same component business id can't be move to itself
+        if( targetComponent.businessLogic.id === movedComponent.businessLogic.id )
+          return;
+
+        // component can't be moved to a parent already has the same component as it's child
+          if( targetComponent.businessLogic.childIds.includes( movedComponent.businessLogic.id ) )
+              return;
+
+        // find current parent components of source/moved component 
+        let parentComponents = currentSessionComponents.filter(  (component)=>{return component.businessLogic.childIds.length && component.businessLogic.childIds.find( (childId)=>{return childId === movedComponent.businessLogic.id } ) } );
+        parentComponents.map( (component)=>{return console.log('parent component name of source component: ', component.businessLogic.name) } );
+
+        //remove moved/source component id and displayLogicKey from prevous parent's businessLogic and displayLogic childId list
+        parentComponents.map( (component)=>{
+              if( component.businessLogic.childIds.length || component.displayLogic.childKeyIds.length )
+              {
                   let idxBusinessLogicId = component.businessLogic.childIds.indexOf( movedComponent.businessLogic.id );
                   if( idxBusinessLogicId >= 0 )
                     component.businessLogic.childIds.splice( idxBusinessLogicId,1);
@@ -363,52 +394,51 @@ class CCiLabComponentList extends Component {
                   let idxDisplayLogicId = component.displayLogic.childKeyIds.indexOf( movedComponent.displayLogic.key );
                   if( idxDisplayLogicId >= 0 )
                     component.displayLogic.childKeyIds.splice( idxDisplayLogicId, 1 );
-                }
+              }
+              return component;
+            } );
+            
+        
+        //remove moved/source component from component list
+        let idxMovedComponent = currentSessionComponents.findIndex( (component)=>{return component.displayLogic.key === sourceId; });
+        if( idxMovedComponent >= 0 )
+        {
+            let rmMovedComponent = currentSessionComponents.splice( idxMovedComponent, 1);
 
-                return component;
-              } );
-              
-          
-          //remove moved/source component from component list
-          let idxMovedComponent = currentSessionComponents.findIndex( (component)=>{return component.displayLogic.key === sourceId; });
-          if( idxMovedComponent >= 0 )
-          {
-              let rmMovedComponent = currentSessionComponents.splice( idxMovedComponent, 1);
+            //update parent id of moved component (source) as target Component id
+            rmMovedComponent[0].businessLogic.parentIds.length=0;
+            rmMovedComponent[0].businessLogic.parentIds.push(targetComponent.businessLogic.id);
 
-              //update parent id of moved component (source) as target Component id
-              rmMovedComponent[0].businessLogic.parentIds.length=0;
-              rmMovedComponent[0].businessLogic.parentIds.push(targetComponent.businessLogic.id);
+            //reset display key and childKeys
+            delete rmMovedComponent[0].displayLogic;
 
-              //reset display key and childKeys
-              delete rmMovedComponent[0].displayLogic;
+            let newDisplayKey = findMaxDisplayKey(currentSessionComponents);
 
-              rmMovedComponent[0].displayLogic = initializeDisplayLogic(10, false, targetComponent.displayLogic.rectLeft)
+            rmMovedComponent[0].displayLogic = initializeDisplayLogic(++newDisplayKey, false, targetComponent.displayLogic.rectLeft)
 
-             
+            //update businessLogic and displayLogic childIds of target component (target) as moved component ( source )
+            targetComponent.businessLogic.childIds.push(rmMovedComponent[0].businessLogic.id);
 
-              //update businessLogic and displayLogic childIds of target component (target) as moved component ( source )
-              targetComponent.businessLogic.childIds.push(rmMovedComponent[0].businessLogic.id);
+            //rebuild the component list
+            let updatedSessionComponents = [];
+            
+            initializeComponents(targetComponent, currentSessionComponents, rmMovedComponent, updatedSessionComponents);
 
-              //rebuild the component list
-              let updatedSessionComponents = [];
-              
-              initializeComponents(targetComponent, currentSessionComponents, rmMovedComponent, updatedSessionComponents);
- 
-              //move to not expended component, change source component show status to false 
-              if( !targetComponent.displayLogic.canExpend )
-                rmMovedComponent[0].displayLogic.showMyself = true;
-              else
-                rmMovedComponent[0].displayLogic.showMyself = false;
+            //move to not expended component, change source component show status to false 
+            if( !targetComponent.displayLogic.canExpend )
+              rmMovedComponent[0].displayLogic.showMyself = true;
+            else
+              rmMovedComponent[0].displayLogic.showMyself = false;
 
-              // populate target component's displayLogic.childKeyIds[]
-              populateComponentChildKeyIds(targetComponent, updatedSessionComponents);
+            // populate target component's displayLogic.childKeyIds[]
+            populateComponentChildKeyIds(targetComponent, updatedSessionComponents);
 
-              //check if moved component progress status need to change (#todo)
+            //check if moved component progress status need to change (#todo)
 
-              //set the state again
-              this.setState( { greetings: updatedSessionComponents });
-          }
+            //set the state again
+            this.setState( { greetings: updatedSessionComponents });
         }
+        
       }
     };
 
