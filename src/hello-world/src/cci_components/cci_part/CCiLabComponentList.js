@@ -51,7 +51,7 @@ const findMaxDisplayKey = ( componentList )=>{
 // merge newComponentList (that displayLogic isn't initialized) and existingComponentList (existing components, displayLogic is initialized) into targetComponentList
 // from the startComponent 
 const initializeComponents = ( startComponent, existingComponentList, newComponentList, targetComponentList)=>{
-  let displayKeyValue = findMaxDisplayKey(existingComponentList);
+ 
 
   if( typeof existingComponentList !== "undefined") {
     existingComponentList.forEach( (existingComponent)=>{ targetComponentList.push( existingComponent ) } );
@@ -60,8 +60,9 @@ const initializeComponents = ( startComponent, existingComponentList, newCompone
   // initialize displayLogic items, create unique key value for latest componets from data layer
   // this guarantees that displayLogic.key is unique, (newly added componet won't show itself until
   // user clicks it, except the very top component), 
-  
-  for(let idx = 0; idx < newComponentList.length; idx++ ) {
+  let displayKeyValue = findMaxDisplayKey(existingComponentList);
+  for(let idx = 0; idx < newComponentList.length; idx++ ) 
+  {
     let element = newComponentList[idx];
     if( typeof element.displayLogic === "undefined")
     {
@@ -314,6 +315,10 @@ class CCiLabComponentList extends Component {
     setSelectedComponentStickDirection = (e) =>{
       let scrollY = e.target.scrollTop;
 
+      // horizontal scroll, return
+      if( scrollY === 0 )
+        return;
+
       let newScrollPosition = scrollY;
  
       let currentSessionComponents = this.state.greetings;
@@ -345,7 +350,7 @@ class CCiLabComponentList extends Component {
     // - update component list
     // - update component status after move by check against the new parent
     // issue - move  first glue to second nail, the position is wrong
-    //       - move glue ...
+    //       
     moveComponentHandler = ( movedComponentDisplayKey, targetComponent ) =>{
       if( movedComponentDisplayKey !== "undefined" && typeof( movedComponentDisplayKey) === "string" )
       {
@@ -379,8 +384,10 @@ class CCiLabComponentList extends Component {
           if( targetComponent.businessLogic.childIds.includes( movedComponent.businessLogic.id ) )
               return;
 
-        // find current parent components of source/moved component 
-        let parentComponents = currentSessionComponents.filter(  (component)=>{return component.businessLogic.childIds.length && component.businessLogic.childIds.find( (childId)=>{return childId === movedComponent.businessLogic.id } ) } );
+        // find current parent components of source/moved component, have to use displayLogic.Key that is unique, to search  
+        let parentComponents = currentSessionComponents.filter(  (component)=>{
+                    return component.displayLogic.childKeyIds.length && component.displayLogic.childKeyIds.find( (childKey)=>{return childKey === sourceId } ) 
+                  } );
         parentComponents.map( (component)=>{return console.log('parent component name of source component: ', component.businessLogic.name) } );
 
         //remove moved/source component id and displayLogicKey from prevous parent's businessLogic and displayLogic childId list
