@@ -302,10 +302,7 @@ class CCiLabComponentList extends Component {
 
     selectedComponentHandler = ( selectedComponent ) =>{
       let currentSessionComponents=this.state.greetings;
-      for( let idxComponent = 0;  idxComponent < currentSessionComponents.length; idxComponent++ ) 
-      {
-        setComponentSelected(currentSessionComponents[idxComponent], selectedComponent.displayLogic.key);
-      }
+      currentSessionComponents.forEach( (item)=>{setComponentSelected(item, selectedComponent.displayLogic.key);});
       this.setState( { greetings: currentSessionComponents });
     }
 
@@ -348,7 +345,7 @@ class CCiLabComponentList extends Component {
     // handle componemt move
     // - update component list
     // - update component status after move by check against the new parent
-    // issue - move  first glue to second nail, the position is wrong
+    // issue - need to keep highlight is component is show or it's parent should be highlight
     //       
     moveComponentHandler = ( movedComponentDisplayKey, targetComponent ) =>{
       if( movedComponentDisplayKey !== "undefined" && typeof( movedComponentDisplayKey) === "string" )
