@@ -105,13 +105,13 @@ const populateComponentChildKeyIds = (selectedComponent, cachedComponents )=>{
 const hideChildren = (aComponent, aComponents, aShowStatus)=>{
   if( !aComponent.displayLogic.canExpend && aComponent.displayLogic.childKeyIds.length ) 
   {
-      for( let idx2Component = 0;  idx2Component < aComponents.length; idx2Component++ ) 
+    aComponents.forEach( (component)=>{
+      if( aComponent.displayLogic.childKeyIds.includes(component.displayLogic.key) ) 
       {
-        if( aComponent.displayLogic.childKeyIds.includes(aComponents[idx2Component].displayLogic.key) ) {
-            aComponents[idx2Component].displayLogic.showMyself = aShowStatus;
-            hideChildren(aComponents[idx2Component], aComponents, aShowStatus)
-        }
+        component.displayLogic.showMyself = aShowStatus;
+        hideChildren(component, aComponents, aShowStatus)
       }
+    });
   }
 }
 
@@ -239,7 +239,6 @@ class CCiLabComponentList extends Component {
 
     //based on selected component and its show Status to show or hide its children
     showOrHideChildren = ( selectedComponent, showStatus ) =>{
-          let idxComponent = 0;
           let currentSessionComponents=[];
         
 
@@ -269,26 +268,44 @@ class CCiLabComponentList extends Component {
 
           populateComponentChildKeyIds(selectedComponent, currentSessionComponents );
 
-          let rootComponent = currentSessionComponents.filter(component=>component.businessLogic.parentIds.length === 0)[0];
+          let rootComponent = currentSessionComponents.find(component=>component.businessLogic.parentIds.length === 0);
 
           // looping through entire component list to find the component included inside child component list
-          for( idxComponent = 0;  idxComponent < currentSessionComponents.length; idxComponent++ ) 
-          {
-            setComponentSelected(currentSessionComponents[idxComponent], selectedComponent.displayLogic.key);
+          currentSessionComponents.forEach( (item)=>{
+            setComponentSelected(item, selectedComponent.displayLogic.key);
  
             // skip the first component
-            if( currentSessionComponents[idxComponent].displayLogic.key === rootComponent.displayLogic.key )
-              continue;
+            if( item.displayLogic.key !== rootComponent.displayLogic.key )
+            {
+               // find the component that has the child components, and show or hide the show status of this component's childKeyIds 
+              if( selectedComponent.displayLogic.childKeyIds.includes(item.displayLogic.key) ) {
+                item.displayLogic.showMyself = showStatus;
 
-            // find the component that has the child components, and show or hide the show status of this component's childKeyIds 
-            if( selectedComponent.displayLogic.childKeyIds.includes(currentSessionComponents[idxComponent].displayLogic.key) ) {
-                currentSessionComponents[idxComponent].displayLogic.showMyself = showStatus;
-
-                // recursively hide childKeyIds[] of child component included in childKeyIds[] of current component,
-                // but we don't want to hide child component's childKeyIds[] unless its direct parent's canExpend = false 
-                hideChildren(currentSessionComponents[idxComponent], currentSessionComponents, showStatus);
+                  // recursively hide childKeyIds[] of child component included in childKeyIds[] of current component,
+                  // but we don't want to hide child component's childKeyIds[] unless its direct parent's canExpend = false 
+                  hideChildren(item, currentSessionComponents, showStatus);
+              }
             }
-          }
+
+           
+          });
+          // for( idxComponent = 0;  idxComponent < currentSessionComponents.length; idxComponent++ ) 
+          // {
+          //   setComponentSelected(currentSessionComponents[idxComponent], selectedComponent.displayLogic.key);
+ 
+          //   // skip the first component
+          //   if( currentSessionComponents[idxComponent].displayLogic.key === rootComponent.displayLogic.key )
+          //     continue;
+
+          //   // find the component that has the child components, and show or hide the show status of this component's childKeyIds 
+          //   if( selectedComponent.displayLogic.childKeyIds.includes(currentSessionComponents[idxComponent].displayLogic.key) ) {
+          //       currentSessionComponents[idxComponent].displayLogic.showMyself = showStatus;
+
+          //       // recursively hide childKeyIds[] of child component included in childKeyIds[] of current component,
+          //       // but we don't want to hide child component's childKeyIds[] unless its direct parent's canExpend = false 
+          //       hideChildren(currentSessionComponents[idxComponent], currentSessionComponents, showStatus);
+          //   }
+          // }
           
           // create vertical scroll bar based on the height of component list dynamically
           let updatedRect = estimateComponentListRect(currentSessionComponents);
@@ -457,15 +474,14 @@ class CCiLabComponentList extends Component {
                 if( component.displayLogic.showMyself === true )
                 {
                   // get parent's rectLeft as left offset of this component
-                  let parentComponent;
-                  for( let idxComponent = 0;  idxComponent < this.state.greetings.length; idxComponent++ )  
-                  {
-                    if( component.businessLogic.parentIds.includes( this.state.greetings[idxComponent].businessLogic.id ) ) 
-                    {
-                      parentComponent = this.state.greetings[idxComponent];
-                      break;
-                    }
-                  }
+                  let parentComponent = this.state.greetings.find( (item)=>{
+                      if( typeof item.displayLogic !== "undefined" && typeof component.displayLogic !== "undefined")
+                      {
+                        return item.displayLogic.childKeyIds.includes(component.displayLogic.key); 
+                      }
+                      else
+                        return "undefined";
+                  });
                   
                   let leftOffset = 0;
                   if( typeof parentComponent !== "undefined")
