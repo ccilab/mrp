@@ -132,12 +132,20 @@ $fa-font-path:   "../scss/fontawesome-5.6.1/webfonts";
 //static lable, is able to load image
 .cci-component-lable{
   background-color: transparent; 
-  margin-top: $component_columns_margin; 
-  margin-bottom: $component_columns_margin; 
-  margin-left: 0; //0%
-  margin-right: 15px; 
+  margin: $component_columns_margin; 
   padding: $card-img-overlay-padding !important; //0%;
-  // z-index: 1;
+  box-shadow: 2px 6px 10px 0 rgba($cci-shadow-dark,0.3);
+  z-index: 1;
+  &:focus {
+    box-shadow: 4px 10px 15px 0 rgba($cci-shadow-dark,0.5),
+              0px 0px 4px 3px $border_color,
+              0px 0px 4px 1.5px $border_color !important; 
+  }
+
+  &:active {
+    transform: scale(0.85);
+    box-shadow: 4px 2px 15px 0 rgba($cci-shadow-dark,0.3);
+  }
 } 
 
 .cci-component-lable_position{
@@ -159,4 +167,17 @@ $fa-font-path:   "../scss/fontawesome-5.6.1/webfonts";
   position: sticky;
   top: 15px;
   z-index: $zindex-sticky;
+}
+
+ // https://www.w3schools.com/cssref/tryit.asp?filename=trycss_cursor 
+.move{
+  cursor: move;
+}
+
+.progress{
+  cursor:progress;
+}
+
+.cusor-default{
+  cursor: default;
 }

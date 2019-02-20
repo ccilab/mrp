@@ -22,41 +22,66 @@ const thirdComponents = components.thirdComponents;
 // simulate load children of component id 4 ( low_beam )
 const forthComponents = components.forthComponents;
 
-// utility funtions need move to a saperate js file
-// merge incomingComponents (new ones) and originComponents (existing components) into targetComponents
-const initializeComponents = ( startComponent, originComponents, incomingComponents, targetComponents)=>{
-  let displayKeyValue = 0;
+// initialize displayLogic object
+const initializeDisplayLogic = (key, canExpend, rectLeft ) =>{
+  let displayLogic = {};
+  displayLogic.key = key;
+  displayLogic.childKeyIds = [];
+  displayLogic.showMyself = false;
+  displayLogic.canExpend = canExpend;
+  displayLogic.rectLeft = (typeof rectLeft === "undefined" ) ? 0:rectLeft;
+  displayLogic.selected = 0;  // 0, -1, +1
+  return displayLogic;
+};
 
-  if( typeof originComponents !== "undefined") {
-    originComponents.forEach( (existingComponent)=>{ targetComponents.push( existingComponent ) } );
-    displayKeyValue = targetComponents.length;
+// find maximum displayLogic.key
+const findMaxDisplayKey = ( componentList )=>{
+  let displayKeyValue = 0;
+  let childKeys =[];
+  if( typeof componentList !== "undefined") {
+    componentList.forEach( (component)=>{ childKeys.push( component.displayLogic.key ) } );
+    // https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Function/apply#Using_apply_and_built-in_functions
+    // The consequences of applying a function with too many arguments (think more than tens of thousands of arguments) vary across engines 
+    // (JavaScriptCore has hard-coded argument limit of 65536), because the limit (indeed even the nature of any excessively-large-stack behavior) is unspecified. 
+    displayKeyValue = Math.max( ...childKeys);
+  }
+  return displayKeyValue;
+};
+
+// merge newComponentList (that displayLogic isn't initialized) and existingComponentList (existing components, displayLogic is initialized) into targetComponentList
+// from the startComponent 
+const initializeComponents = ( startComponent, existingComponentList, newComponentList, targetComponentList)=>{
+ 
+
+  if( typeof existingComponentList !== "undefined") {
+    existingComponentList.forEach( (existingComponent)=>{ targetComponentList.push( existingComponent ) } );
   }
 
-
-  
   // initialize displayLogic items, create unique key value for latest componets from data layer
-  // this guarantees that displayLogic.key is unique, newly added componet won't show itself until
-  // user clicks it, except the very top component
-  
-  for(let idx = 0; idx < incomingComponents.length; idx++ ) {
-    let element = incomingComponents[idx];
-    element.displayLogic.key = displayKeyValue++;
-    element.displayLogic.childKeyIds.length = 0;
-    element.displayLogic.showMyself = false;
-    element.businessLogic.childIds.length !== 0 ? element.displayLogic.canExpend = true : element.displayLogic.canExpend = false;
+  // this guarantees that displayLogic.key is unique, (newly added componet won't show itself until
+  // user clicks it, except the very top component), 
+  let displayKeyValue = findMaxDisplayKey(existingComponentList);
+  for(let idx = 0; idx < newComponentList.length; idx++ ) 
+  {
+    let element = newComponentList[idx];
+    if( typeof element.displayLogic === "undefined")
+    {
+      element.displayLogic = new initializeDisplayLogic( ++displayKeyValue, element.businessLogic.childIds.length !== 0 ? true : false );
+    }
+
    
-    let startComponentKey = 0;
-    if(typeof startComponent !== "undefined" ) {
-      startComponentKey = startComponent.displayLogic.key;
+    if(typeof startComponent   !== "undefined"  && typeof startComponent.displayLogic !== "undefined" && typeof element !== "undefined") {
+      let startComponentKey = startComponent.displayLogic.key;
       //need populate childKeyIds[] if its not fully populated yet
       if( startComponent.businessLogic.childIds.length !==  startComponent.displayLogic.childKeyIds.length && 
-          startComponent.displayLogic.childKeyIds.includes( element.displayLogic.key ) === false ) {
-          let idxInsertAt = targetComponents.findIndex(startComponent=>{return startComponent.displayLogic.key === startComponentKey});
+          startComponent.displayLogic.childKeyIds.includes( element.displayLogic.key ) === false ) 
+      {
+          let idxInsertAt = targetComponentList.findIndex((component)=>{return component.displayLogic.key === startComponentKey});
           // component without childIs[] is always above componets with childIds[] for display/expending purpose
           if( element.businessLogic.childIds.length === 0 )
-            targetComponents.splice( idxInsertAt+1,0,element);
+            targetComponentList.splice( idxInsertAt+1,0,element);
           else
-            targetComponents.push(element);
+            targetComponentList.push(element);
       }
     }
   }
@@ -80,13 +105,13 @@ const populateComponentChildKeyIds = (selectedComponent, cachedComponents )=>{
 const hideChildren = (aComponent, aComponents, aShowStatus)=>{
   if( !aComponent.displayLogic.canExpend && aComponent.displayLogic.childKeyIds.length ) 
   {
-      for( let idx2Component = 0;  idx2Component < aComponents.length; idx2Component++ ) 
+    aComponents.forEach( (component)=>{
+      if( aComponent.displayLogic.childKeyIds.includes(component.displayLogic.key) ) 
       {
-        if( aComponent.displayLogic.childKeyIds.includes(aComponents[idx2Component].displayLogic.key) ) {
-            aComponents[idx2Component].displayLogic.showMyself = aShowStatus;
-            hideChildren(aComponents[idx2Component], aComponents, aShowStatus)
-        }
+        component.displayLogic.showMyself = aShowStatus;
+        hideChildren(component, aComponents, aShowStatus)
       }
+    });
   }
 }
 
@@ -101,6 +126,7 @@ const estimateComponentListRect = (componentLists)=>{
   return updatedRect;
 }
 
+// setSelectedComponentStickDirection(e), changes the direction of sticky element
 const setComponentSelected = ( component, selectedComponentKey ) =>{
   if( component.displayLogic.key === selectedComponentKey )
     component.displayLogic.selected = 1; //can be +1 or -1
@@ -108,6 +134,7 @@ const setComponentSelected = ( component, selectedComponentKey ) =>{
     component.displayLogic.selected = 0;
 
 }
+
 
 class CCiLabComponentList extends Component {
     state = { greetings: undefined, visible: true, selected: 0 };
@@ -147,6 +174,7 @@ class CCiLabComponentList extends Component {
 
       //#todo: need to query server side to find the very top component 
       let rootComponent = components.filter(component=>component.businessLogic.parentIds.length === 0)[0]
+      rootComponent.displayLogic = initializeDisplayLogic( 0, rootComponent.businessLogic.childIds.length !== 0 ? true : false );
        
       initializeComponents(rootComponent, this.state.greetings, components, currentSessionComponents);
     
@@ -211,7 +239,6 @@ class CCiLabComponentList extends Component {
 
     //based on selected component and its show Status to show or hide its children
     showOrHideChildren = ( selectedComponent, showStatus ) =>{
-          let idxComponent = 0;
           let currentSessionComponents=[];
         
 
@@ -241,26 +268,44 @@ class CCiLabComponentList extends Component {
 
           populateComponentChildKeyIds(selectedComponent, currentSessionComponents );
 
-          let rootComponent = currentSessionComponents.filter(component=>component.businessLogic.parentIds.length === 0)[0];
+          let rootComponent = currentSessionComponents.find(component=>component.businessLogic.parentIds.length === 0);
 
           // looping through entire component list to find the component included inside child component list
-          for( idxComponent = 0;  idxComponent < currentSessionComponents.length; idxComponent++ ) 
-          {
-            setComponentSelected(currentSessionComponents[idxComponent], selectedComponent.displayLogic.key);
+          currentSessionComponents.forEach( (item)=>{
+            setComponentSelected(item, selectedComponent.displayLogic.key);
  
             // skip the first component
-            if( currentSessionComponents[idxComponent].displayLogic.key === rootComponent.displayLogic.key )
-              continue;
+            if( item.displayLogic.key !== rootComponent.displayLogic.key )
+            {
+               // find the component that has the child components, and show or hide the show status of this component's childKeyIds 
+              if( selectedComponent.displayLogic.childKeyIds.includes(item.displayLogic.key) ) {
+                item.displayLogic.showMyself = showStatus;
 
-            // find the component that has the child components, and show or hide the show status of this component's childKeyIds 
-            if( selectedComponent.displayLogic.childKeyIds.includes(currentSessionComponents[idxComponent].displayLogic.key) ) {
-                currentSessionComponents[idxComponent].displayLogic.showMyself = showStatus;
-
-                // recursively hide childKeyIds[] of child component included in childKeyIds[] of current component,
-                // but we don't want to hide child component's childKeyIds[] unless its direct parent's canExpend = false 
-                hideChildren(currentSessionComponents[idxComponent], currentSessionComponents, showStatus);
+                  // recursively hide childKeyIds[] of child component included in childKeyIds[] of current component,
+                  // but we don't want to hide child component's childKeyIds[] unless its direct parent's canExpend = false 
+                  hideChildren(item, currentSessionComponents, showStatus);
+              }
             }
-          }
+
+           
+          });
+          // for( idxComponent = 0;  idxComponent < currentSessionComponents.length; idxComponent++ ) 
+          // {
+          //   setComponentSelected(currentSessionComponents[idxComponent], selectedComponent.displayLogic.key);
+ 
+          //   // skip the first component
+          //   if( currentSessionComponents[idxComponent].displayLogic.key === rootComponent.displayLogic.key )
+          //     continue;
+
+          //   // find the component that has the child components, and show or hide the show status of this component's childKeyIds 
+          //   if( selectedComponent.displayLogic.childKeyIds.includes(currentSessionComponents[idxComponent].displayLogic.key) ) {
+          //       currentSessionComponents[idxComponent].displayLogic.showMyself = showStatus;
+
+          //       // recursively hide childKeyIds[] of child component included in childKeyIds[] of current component,
+          //       // but we don't want to hide child component's childKeyIds[] unless its direct parent's canExpend = false 
+          //       hideChildren(currentSessionComponents[idxComponent], currentSessionComponents, showStatus);
+          //   }
+          // }
           
           // create vertical scroll bar based on the height of component list dynamically
           let updatedRect = estimateComponentListRect(currentSessionComponents);
@@ -283,16 +328,20 @@ class CCiLabComponentList extends Component {
     }
 
     
-
+    // handles vertical scroll bar event
     setSelectedComponentStickDirection = (e) =>{
       let scrollY = e.target.scrollTop;
+
+      // horizontal scroll, return
+      if( scrollY === 0 )
+        return;
 
       let newScrollPosition = scrollY;
  
       let currentSessionComponents = this.state.greetings;
       let selectedComponent = currentSessionComponents.find( (component)=>{return component.displayLogic.selected !== 0; })
 
-      if( selectedComponent !== "undefined" )
+      if( selectedComponent !== "undefined" && selectedComponent.displayLogic !== "undefined" )
       {
           if ( newScrollPosition < this.lastScrollPosition )
           {
@@ -304,14 +353,118 @@ class CCiLabComponentList extends Component {
               //scroll down - component move upward - set selected to +1 - sticky-top
               selectedComponent.displayLogic.selected = 1;
           }
-      }
      
-      // console.log('new position: ' + newScrollPosition + ' last position: ' + this.lastScrollPosition + ' selected: ' + selectedComponent.displayLogic.selected);
+     
+          // console.log('new position: ' + newScrollPosition + ' last position: ' + this.lastScrollPosition + ' selected: ' + selectedComponent.displayLogic.selected);
 
-      this.lastScrollPosition = newScrollPosition;
+          this.lastScrollPosition = newScrollPosition;
 
-      this.setState({selected: selectedComponent.displayLogic.selected});
+          this.setState({selected: selectedComponent.displayLogic.selected});
+      }
     }
+
+    // handle componemt move
+    // - update component list
+    // - update component status after move by check against the new parent
+    // issue - move  first glue to second nail, the position is wrong
+    //       
+    moveComponentHandler = ( movedComponentDisplayKey, targetComponent ) =>{
+      if( movedComponentDisplayKey !== "undefined" && typeof( movedComponentDisplayKey) === "string" )
+      {
+        console.log('moved component key: ', movedComponentDisplayKey);
+
+
+        let currentSessionComponents = this.state.greetings;
+        let sourceId = parseInt(movedComponentDisplayKey, 10);
+
+        if( typeof targetComponent === "undefined")
+          return;
+
+        //component can't drop to its own parent, 
+        if( targetComponent.displayLogic.childKeyIds.find( (key)=>{ return key === sourceId}) )
+          return;
+
+        let movedComponent = currentSessionComponents.find( (component)=>{return component.displayLogic.key === sourceId } )
+
+        if( typeof movedComponent === "undefined" )
+          return;
+
+        
+        console.log('source component name: ', movedComponent.businessLogic.name);
+        console.log('target component name: ', targetComponent.businessLogic.name);
+
+        //same component business id can't be move to itself
+        if( targetComponent.businessLogic.id === movedComponent.businessLogic.id )
+          return;
+
+        // component can't be moved to a parent already has the same component as it's child
+          if( targetComponent.businessLogic.childIds.includes( movedComponent.businessLogic.id ) )
+              return;
+
+        // find current parent components of source/moved component, have to use displayLogic.Key that is unique, to search  
+        let parentComponents = currentSessionComponents.filter(  (component)=>{
+                    return component.displayLogic.childKeyIds.length && component.displayLogic.childKeyIds.find( (childKey)=>{return childKey === sourceId } ) 
+                  } );
+        parentComponents.map( (component)=>{return console.log('parent component name of source component: ', component.businessLogic.name) } );
+
+        //remove moved/source component id and displayLogicKey from prevous parent's businessLogic and displayLogic childId list
+        parentComponents.map( (component)=>{
+              if( component.businessLogic.childIds.length || component.displayLogic.childKeyIds.length )
+              {
+                  let idxBusinessLogicId = component.businessLogic.childIds.indexOf( movedComponent.businessLogic.id );
+                  if( idxBusinessLogicId >= 0 )
+                    component.businessLogic.childIds.splice( idxBusinessLogicId,1);
+
+                  let idxDisplayLogicId = component.displayLogic.childKeyIds.indexOf( movedComponent.displayLogic.key );
+                  if( idxDisplayLogicId >= 0 )
+                    component.displayLogic.childKeyIds.splice( idxDisplayLogicId, 1 );
+              }
+              return component;
+            } );
+            
+        
+        //remove moved/source component from component list
+        let idxMovedComponent = currentSessionComponents.findIndex( (component)=>{return component.displayLogic.key === sourceId; });
+        if( idxMovedComponent >= 0 )
+        {
+            let rmMovedComponent = currentSessionComponents.splice( idxMovedComponent, 1);
+
+            //update parent id of moved component (source) as target Component id
+            rmMovedComponent[0].businessLogic.parentIds.length=0;
+            rmMovedComponent[0].businessLogic.parentIds.push(targetComponent.businessLogic.id);
+
+            //reset display key and childKeys
+            delete rmMovedComponent[0].displayLogic;
+
+            let newDisplayKey = findMaxDisplayKey(currentSessionComponents);
+
+            rmMovedComponent[0].displayLogic = initializeDisplayLogic(++newDisplayKey, false, targetComponent.displayLogic.rectLeft)
+
+            //update businessLogic and displayLogic childIds of target component (target) as moved component ( source )
+            targetComponent.businessLogic.childIds.push(rmMovedComponent[0].businessLogic.id);
+
+            //rebuild the component list
+            let updatedSessionComponents = [];
+            
+            initializeComponents(targetComponent, currentSessionComponents, rmMovedComponent, updatedSessionComponents);
+
+            //move to not expended component, change source component show status to false 
+            if( !targetComponent.displayLogic.canExpend )
+              rmMovedComponent[0].displayLogic.showMyself = true;
+            else
+              rmMovedComponent[0].displayLogic.showMyself = false;
+
+            // populate target component's displayLogic.childKeyIds[]
+            populateComponentChildKeyIds(targetComponent, updatedSessionComponents);
+
+            //check if moved component progress status need to change (#todo)
+
+            //set the state again
+            this.setState( { greetings: updatedSessionComponents });
+        }
+        
+      }
+    };
 
     //need to update showMyself to true after button is clicked to canExpend
     //need to update showMyself to false after button is clicked to collaps
@@ -321,15 +474,14 @@ class CCiLabComponentList extends Component {
                 if( component.displayLogic.showMyself === true )
                 {
                   // get parent's rectLeft as left offset of this component
-                  let parentComponent;
-                  for( let idxComponent = 0;  idxComponent < this.state.greetings.length; idxComponent++ )  
-                  {
-                    if( component.businessLogic.parentIds.includes( this.state.greetings[idxComponent].businessLogic.id ) ) 
-                    {
-                      parentComponent = this.state.greetings[idxComponent];
-                      break;
-                    }
-                  }
+                  let parentComponent = this.state.greetings.find( (item)=>{
+                      if( typeof item.displayLogic !== "undefined" && typeof component.displayLogic !== "undefined")
+                      {
+                        return item.displayLogic.childKeyIds.includes(component.displayLogic.key); 
+                      }
+                      else
+                        return "undefined";
+                  });
                   
                   let leftOffset = 0;
                   if( typeof parentComponent !== "undefined")
@@ -340,7 +492,8 @@ class CCiLabComponentList extends Component {
                                           leftOffset={leftOffset} 
                                           removeGreeting={this.removeGreeting} 
                                           showOrHideChildren={this.showOrHideChildren}
-                                          selectedComponentHandler={this.selectedComponentHandler}/> ;
+                                          selectedComponentHandler={this.selectedComponentHandler}
+                                          moveComponentHandler={this.moveComponentHandler}/> ;
                 }
                 else
                   return null;
