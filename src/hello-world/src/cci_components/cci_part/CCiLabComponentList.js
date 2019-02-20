@@ -241,7 +241,6 @@ class CCiLabComponentList extends Component {
     showOrHideChildren = ( selectedComponent, showStatus ) =>{
           let currentSessionComponents=[];
         
-
           // if selected component's childKeyIds[] isn't fully populated we need to request new components from server side first
           if ( selectedComponent.businessLogic.childIds.length !== selectedComponent.displayLogic.childKeyIds.length ) {
               //#todo: need to query server to get a new components
@@ -289,23 +288,6 @@ class CCiLabComponentList extends Component {
 
            
           });
-          // for( idxComponent = 0;  idxComponent < currentSessionComponents.length; idxComponent++ ) 
-          // {
-          //   setComponentSelected(currentSessionComponents[idxComponent], selectedComponent.displayLogic.key);
- 
-          //   // skip the first component
-          //   if( currentSessionComponents[idxComponent].displayLogic.key === rootComponent.displayLogic.key )
-          //     continue;
-
-          //   // find the component that has the child components, and show or hide the show status of this component's childKeyIds 
-          //   if( selectedComponent.displayLogic.childKeyIds.includes(currentSessionComponents[idxComponent].displayLogic.key) ) {
-          //       currentSessionComponents[idxComponent].displayLogic.showMyself = showStatus;
-
-          //       // recursively hide childKeyIds[] of child component included in childKeyIds[] of current component,
-          //       // but we don't want to hide child component's childKeyIds[] unless its direct parent's canExpend = false 
-          //       hideChildren(currentSessionComponents[idxComponent], currentSessionComponents, showStatus);
-          //   }
-          // }
           
           // create vertical scroll bar based on the height of component list dynamically
           let updatedRect = estimateComponentListRect(currentSessionComponents);
