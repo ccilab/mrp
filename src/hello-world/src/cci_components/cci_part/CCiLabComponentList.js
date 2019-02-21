@@ -207,10 +207,6 @@ class CCiLabComponentList extends Component {
       this.setState( { greetings: this.state.greetings })
     }
 
-    // moveComponentListTitleBar=()=>{
-
-    // }
-
     /** 
      * called after initial render() is called and element is inserted indo DOM
      * Add event listener to show vertical scroll bar if browser window is shorter 
@@ -435,6 +431,11 @@ class CCiLabComponentList extends Component {
 
             // populate target component's displayLogic.childKeyIds[]
             populateComponentChildKeyIds(targetComponent, updatedSessionComponents);
+
+            // update selected status so the moved component or its parent will be highlighted 
+            updatedSessionComponents.forEach( (item)=>{
+                    setComponentSelected( item, rmMovedComponent[0].displayLogic.showMyself? rmMovedComponent[0].displayLogic.key : targetComponent.displayLogic.key); 
+                  });
 
             //check if moved component progress status need to change (#todo)
 

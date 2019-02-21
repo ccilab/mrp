@@ -30,10 +30,6 @@ class CCiLabComponent extends Component {
       let componentRect = document.getElementById( `${this.currentComponent.displayLogic.key}` ).getBoundingClientRect();
 
       this.currentComponent.displayLogic.rectLeft = componentRect.left;
-
-      let progressStatusSpanRect = document.getElementById( 'progressStatusSpan' ).getBoundingClientRect();
-
-      this.StickyWidth = componentRect.right + (progressStatusSpanRect.right - progressStatusSpanRect.left);
     };
 
     expending = () => {
@@ -166,7 +162,7 @@ class CCiLabComponent extends Component {
          
           <span id={`${this.currentComponent.displayLogic.key}-drag`} 
                 className={`${Component}`}  
-                style={{'width': `${this.StickyWidth}px`}} 
+                style={{'width': `${this.StickyWidth}%`}} 
                 draggable={`${draggableSetting}`}
                 onDragStart={ draggableSetting === 'true' ? this.dragStart : null}
                 onDragOver={ this.dragOver }
@@ -177,7 +173,10 @@ class CCiLabComponent extends Component {
             */}
             { ( this.children.length !== 0  )?
                   // {/* tag's id used to handle drop event */}
-                  <a  id={`${this.currentComponent.displayLogic.key}-drag`} href="#1" className={`cci-link_position float-left nav-link ${this.expendCollapseBadgePadding} `} style={anchorLeftstyle} onClick={ this.expending }>
+                  <a  id={`${this.currentComponent.displayLogic.key}-drag`} 
+                      href="#1" className={`cci-link_position float-left nav-link ${this.expendCollapseBadgePadding} `} 
+                      style={anchorLeftstyle} 
+                      onClick={ this.expending }>
                     <span className={expendCollapseBadgeIconClassName}></span>
                   </a>:null
             }  
@@ -204,10 +203,20 @@ class CCiLabComponent extends Component {
                    }
                 </button>
                 {/* tag's id is used to handle drop event */}
-                <a id={`${this.currentComponent.displayLogic.key}-drag`} href="#1" className={`${componentNameClassName}`} style={{ 'height': '10%' }} onClick={ this.componentSelected }>{this.componentName}:</a>
+                <a  id={`${this.currentComponent.displayLogic.key}-drag`} 
+                    href="#1" className={`${componentNameClassName}`} 
+                    style={{ 'height': '10%' }} 
+                    onClick={ this.componentSelected }>
+                    {this.componentName}:
+                </a>
                 
-                {/* tag span's id used to find rect */}
-                <span id='progressStatusSpan' className={`badge-pill badge-${this.progressStatus} ${statusBadgeIconClassName} text-body text-nowrap align-self-center ml-0`} style={{ 'height': '15% !important'}}> {this.progressValue}%</span>  
+                {/* tag's id is used to handle drop event */}
+                <span id={`${this.currentComponent.displayLogic.key}-drag`} 
+                      className={`badge-pill badge-${this.progressStatus} ${statusBadgeIconClassName} text-body text-nowrap align-self-center ml-0`} 
+                      style={{ 'height': '15% !important'}} 
+                      onClick={ this.componentSelected }> 
+                      {this.progressValue}%
+                </span>  
             </ul>
           </span>
         )
