@@ -2,6 +2,8 @@
 import React, { Component } from "react";
 import "./../../css/CCiLabComponentList.css";
 import CCiLabComponent from "./CCiLabComponent";
+import DropComponentCheckFailedModal from "./CCiLabDropComponentCheckFailedModal";
+
 // import AddGreeter from "./AddGreeter";
 import { setListHeight, setListWidth, setHideListWidth} from "./CCiLabUtility"
 

@@ -60,6 +60,7 @@ class CCiLabComponent extends Component {
     dragStart=(e) => {
       if (e.target.id.includes('-drag') ) 
       {
+        console.log('before remove -drag select span id: ', parseInt(e.target.id.includes, 10));
         let draggedComponetId=e.target.id.replace(/-drag/g,'');
         e.dataTransfer.setData("Text", draggedComponetId);
         e.effectAllowed='copyMove';
@@ -174,9 +175,10 @@ class CCiLabComponent extends Component {
             { ( this.children.length !== 0  )?
                   // {/* tag's id used to handle drop event */}
                   <a  id={`${this.currentComponent.displayLogic.key}-drag`} 
-                      href="#1" className={`cci-link_position float-left nav-link ${this.expendCollapseBadgePadding} `} 
+                      href="#expend-collapse-badge" className={`cci-link_position float-left nav-link ${this.expendCollapseBadgePadding} `} 
                       style={anchorLeftstyle} 
-                      onClick={ this.expending }>
+                      onClick={ this.expending }
+                      onDrop={  this.doDrop }>
                     <span className={expendCollapseBadgeIconClassName}></span>
                   </a>:null
             }  
@@ -196,17 +198,20 @@ class CCiLabComponent extends Component {
                   {/* no style for top element so the button can host the image, other elements need style to set image position  */}
                   { (this.imgName.length !== 0 ) ? 
                       // {/* tag's id used to handle drop event */}
-                      <img id={`${this.currentComponent.displayLogic.key}-drag`} className='cci-component__img rounded-circle float-left' src={this.imgName} alt=""
-                        style={{'height': this.componentLableHeight, 'width': this.componentLableHeight}} >
+                      <img id={`${this.currentComponent.displayLogic.key}-drag`} 
+                           className='cci-component__img rounded-circle float-left' src={this.imgName} alt=""
+                           style={{'height': this.componentLableHeight, 'width': this.componentLableHeight}} 
+                           onDrop={  this.doDrop }>
                       </img>
                       :null
                    }
                 </button>
                 {/* tag's id is used to handle drop event */}
                 <a  id={`${this.currentComponent.displayLogic.key}-drag`} 
-                    href="#1" className={`${componentNameClassName}`} 
+                    href="#select-component-name" className={`${componentNameClassName}`} 
                     style={{ 'height': '10%' }} 
-                    onClick={ this.componentSelected }>
+                    onClick={ this.componentSelected }
+                    onDrop={  this.doDrop }>
                     {this.componentName}:
                 </a>
                 
@@ -214,7 +219,8 @@ class CCiLabComponent extends Component {
                 <span id={`${this.currentComponent.displayLogic.key}-drag`} 
                       className={`badge-pill badge-${this.progressStatus} ${statusBadgeIconClassName} text-body text-nowrap align-self-center ml-0`} 
                       style={{ 'height': '15% !important'}} 
-                      onClick={ this.componentSelected }> 
+                      onClick={ this.componentSelected }
+                      onDrop={  this.doDrop }> 
                       {this.progressValue}%
                 </span>  
             </ul>
@@ -224,25 +230,3 @@ class CCiLabComponent extends Component {
 }
 
 export default CCiLabComponent;
-
- /*{{ this.state.greeting } { this.props.name }! http://www.rachelgallen.com/images/purpleflowers.jpg}
- import images from "./images";  
- src={this.props.name} 
- src={require('../../images/edit_32.png')} 
-  <img className="ComponentImg" src={images.edit_32_png} alt="edit"></img>*/
-    
- /*
-<!-- Block level -->
-<div class="row">
-  <div class="col-2 text-truncate">
-    Praeterea iter est quasdam res quas ex communi.
-  </div>
-</div>
-
-<!-- Inline level -->
-<span class="d-inline-block text-truncate" style="max-width: 150px;">
-  Praeterea iter est quasdam res quas ex communi.
-</span>
-
-'font-weight': 'normal',
-*/
