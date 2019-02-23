@@ -24,6 +24,34 @@ const thirdComponents = components.thirdComponents;
 // simulate load children of component id 4 ( low_beam )
 const forthComponents = components.forthComponents;
 
+const getChildComponentsFromDataSource = (parentComponent)=>{
+  //#todo: need to query server to get a new components
+  console.log("query server to get child components")
+                
+  let components =[];
+  if( parentComponent.businessLogic.id === 1 )
+  {
+    components= secondComponents;
+    return components;
+  }
+
+    
+  if( parentComponent.businessLogic.id === 2 )
+  {
+    components= thirdComponents;  
+    return components;
+  }
+
+  
+  if( parentComponent.businessLogic.id === 4 )
+  {
+    components= forthComponents;
+    return components;
+  }
+
+  return components;
+}
+
 // initialize displayLogic object
 const initializeDisplayLogic = (key, canExpend, rectLeft ) =>{
   let displayLogic = {};
@@ -235,8 +263,10 @@ class CCiLabComponentList extends Component {
       this.setState({ greetings: filteredGreetings });
     };
 
+   
+
     //based on selected component and its show Status to show or hide its children
-    showOrHideChildren = ( selectedComponent, showStatus ) =>{
+    showOrHideChildren = ( selectedComponent, showStatus, isRending=true ) =>{
           let currentSessionComponents=[];
         
           // if selected component's childKeyIds[] isn't fully populated we need to request new components from server side first
@@ -244,15 +274,7 @@ class CCiLabComponentList extends Component {
               //#todo: need to query server to get a new components
               console.log("query server to get child components")
               
-              let components =[];
-              if( selectedComponent.businessLogic.id === 1 )
-                components= secondComponents;
-                
-              if( selectedComponent.businessLogic.id === 2 )
-                components= thirdComponents;
-              
-              if( selectedComponent.businessLogic.id === 4 )
-                components= forthComponents;
+              let components = getChildComponentsFromDataSource(selectedComponent);
 
               initializeComponents(selectedComponent, this.state.greetings, components, currentSessionComponents);
           }
@@ -293,7 +315,11 @@ class CCiLabComponentList extends Component {
           this.componentListHeight = setListHeight( updatedRect );
           this.componentListWidth = setListWidth();
 
-          this.setState( { greetings: currentSessionComponents })
+          if( isRending )
+            this.setState( { greetings: currentSessionComponents })
+          
+          return currentSessionComponents;
+
     };
 
      
@@ -375,13 +401,22 @@ class CCiLabComponentList extends Component {
           return;
 
         // component can't be moved to a parent already has the same component as it's child
-          if( targetComponent.businessLogic.childIds.includes( movedComponent.businessLogic.id ) )
+        if( targetComponent.businessLogic.childIds.includes( movedComponent.businessLogic.id ) )
               return;
+
+        // if targer component's children are hidden, expending all the children first without calling setState to rend the list
+        if( targetComponent.displayLogic.canExpend )
+        {
+           currentSessionComponents = this.showOrHideChildren( targetComponent, true, false);
+           targetComponent.displayLogic.canExpend = false;
+        }
+         
 
         // find current parent components of source/moved component, have to use displayLogic.Key that is unique, to search  
         let parentComponents = currentSessionComponents.filter(  (component)=>{
                     return component.displayLogic.childKeyIds.length && component.displayLogic.childKeyIds.find( (childKey)=>{return childKey === sourceId } ) 
                   } );
+
         parentComponents.map( (component)=>{return console.log('parent component name of source component: ', component.businessLogic.name) } );
 
         //remove moved/source component id and displayLogicKey from prevous parent's businessLogic and displayLogic childId list
@@ -423,25 +458,27 @@ class CCiLabComponentList extends Component {
             //rebuild the component list
             let updatedSessionComponents = [];
             
+            
+            
+            //initialize the updated session components
             initializeComponents(targetComponent, currentSessionComponents, rmMovedComponent, updatedSessionComponents);
-
-            //move to not expended component, change source component show status to false 
-            if( !targetComponent.displayLogic.canExpend )
-              rmMovedComponent[0].displayLogic.showMyself = true;
-            else
-              rmMovedComponent[0].displayLogic.showMyself = false;
 
             // populate target component's displayLogic.childKeyIds[]
             populateComponentChildKeyIds(targetComponent, updatedSessionComponents);
+            
+
+            rmMovedComponent[0].displayLogic.showMyself = true;
 
             // update selected status so the moved component or its parent will be highlighted 
             updatedSessionComponents.forEach( (item)=>{
-                    setComponentSelected( item, rmMovedComponent[0].displayLogic.showMyself? rmMovedComponent[0].displayLogic.key : targetComponent.displayLogic.key); 
+                    setComponentSelected( item, rmMovedComponent[0].displayLogic.key ); 
                   });
 
-            //check if moved component progress status need to change (#todo)
 
-            //set the state again
+
+            //check if moved component progress status need to change (#todo)
+ 
+            // update greetings list
             this.setState( { greetings: updatedSessionComponents });
         }
         
