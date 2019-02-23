@@ -201,6 +201,7 @@ class CCiLabComponent extends Component {
                       style={anchorLeftstyle} 
                       onClick={ this.expending }
                       onDragStart={ draggableSetting === 'true' ? this.dragStart : null}
+                      onDragOver={ this.dragOver }
                       onDrop={  this.doDrop }>
                     <span className={expendCollapseBadgeIconClassName}></span>
                   </a>:null
@@ -209,15 +210,19 @@ class CCiLabComponent extends Component {
           
             
             {/* shift the child components to the right */}  
-            {/* tag's id is used to get component's rect */}
+            {/* tag's id is used to get component's rect and handle drop event*/}
             <ul id={`${this.currentComponent.displayLogic.key}-item`} 
                 className='flow-right list-group flex-row cci-component-lable_position' 
-                style={leftShiftStyle}>
+                style={leftShiftStyle}
+                onDragStart={ draggableSetting === 'true' ? this.dragStart : null}
+                onDragOver={ this.dragOver }
+                onDrop={  this.doDrop }>
                  {/* tag's id is used to handle drop event */}
                 <button id={`${this.currentComponent.displayLogic.key}`} className={`${ComponentClassName}`} 
                   style={ { 'height': this.componentLableHeight, 'width': this.componentLableHeight} }
                   onClick={ this.componentSelected } 
                   onDragStart={ draggableSetting === 'true' ? this.dragStart : null}
+                  onDragOver={ this.dragOver }
                   onDrop={  this.doDrop }>
                   
                   {/* no style for top element so the button can host the image, other elements need style to set image position  */}
@@ -227,6 +232,7 @@ class CCiLabComponent extends Component {
                            className='cci-component__img rounded-circle float-left' src={this.imgName} alt=""
                            style={{'height': this.componentLableHeight, 'width': this.componentLableHeight}} 
                            onDragStart={ draggableSetting === 'true' ? this.dragStart : null}
+                           onDragOver={ this.dragOver }
                            onDrop={  this.doDrop }>
                       </img>
                       :null
@@ -238,6 +244,7 @@ class CCiLabComponent extends Component {
                     style={{ 'height': '10%' }} 
                     onClick={ this.componentSelected }
                     onDragStart={ draggableSetting === 'true' ? this.dragStart : null}
+                    onDragOver={ this.dragOver }
                     onDrop={  this.doDrop }>
                     {this.componentName}:
                 </a>
@@ -248,6 +255,7 @@ class CCiLabComponent extends Component {
                       style={{ 'height': '15% !important'}} 
                       onClick={ this.componentSelected }
                       onDragStart={ draggableSetting === 'true' ? this.dragStart : null}
+                      onDragOver={ this.dragOver }
                       onDrop={  this.doDrop }> 
                       {this.progressValue}%
                 </span>  
