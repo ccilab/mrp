@@ -81,25 +81,18 @@ const findMaxDisplayKey = ( componentList )=>{
 // merge newComponentList (that displayLogic isn't initialized) and existingComponentList (existing components, displayLogic is initialized) into targetComponentList
 // from the startComponent 
 const initializeComponents = ( startComponent, existingComponentList, newComponentList, targetComponentList)=>{
- 
-
-  if( typeof existingComponentList !== "undefined") {
+  if( typeof existingComponentList !== "undefined") 
     existingComponentList.forEach( (existingComponent)=>{ targetComponentList.push( existingComponent ) } );
-  }
 
   // initialize displayLogic items, create unique key value for latest componets from data layer
   // this guarantees that displayLogic.key is unique, (newly added componet won't show itself until
   // user clicks it, except the very top component), 
   let displayKeyValue = findMaxDisplayKey(existingComponentList);
-  for(let idx = 0; idx < newComponentList.length; idx++ ) 
-  {
-    let element = newComponentList[idx];
+  
+  newComponentList.forEach((element)=>{
     if( typeof element.displayLogic === "undefined")
-    {
       element.displayLogic = new initializeDisplayLogic( ++displayKeyValue, element.businessLogic.childIds.length !== 0 ? true : false );
-    }
-
-   
+  
     if(typeof startComponent   !== "undefined"  && typeof startComponent.displayLogic !== "undefined" && typeof element !== "undefined") {
       let startComponentKey = startComponent.displayLogic.key;
       //need populate childKeyIds[] if its not fully populated yet
@@ -114,17 +107,18 @@ const initializeComponents = ( startComponent, existingComponentList, newCompone
             targetComponentList.push(element);
       }
     }
-  }
+  });
 };
 
 const populateComponentChildKeyIds = (selectedComponent, cachedComponents )=>{
-  if( selectedComponent.businessLogic.childIds.length !== selectedComponent.displayLogic.childKeyIds.length ) {
-      for( let idx = 0; idx < cachedComponents.length; idx++ ) { 
-        if( selectedComponent.businessLogic.childIds.includes( cachedComponents[idx].businessLogic.id ) &&
-            cachedComponents[idx].businessLogic.parentIds.includes(selectedComponent.businessLogic.id )  && 
-            !selectedComponent.displayLogic.childKeyIds.includes( cachedComponents[idx].displayLogic.key) ) 
-            selectedComponent.displayLogic.childKeyIds.push( cachedComponents[idx].displayLogic.key )
-      }
+  if( selectedComponent.businessLogic.childIds.length !== selectedComponent.displayLogic.childKeyIds.length ) 
+  {
+      cachedComponents.forEach((element)=>{
+        if( selectedComponent.businessLogic.childIds.includes( element.businessLogic.id ) &&
+            element.businessLogic.parentIds.includes(selectedComponent.businessLogic.id )  && 
+            !selectedComponent.displayLogic.childKeyIds.includes( element.displayLogic.key) ) 
+            selectedComponent.displayLogic.childKeyIds.push( element.displayLogic.key )
+      })
   }
 }
 
