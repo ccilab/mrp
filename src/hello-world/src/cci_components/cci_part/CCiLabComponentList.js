@@ -2,7 +2,7 @@
 import React, { Component } from "react";
 import "./../../css/CCiLabComponentList.css";
 import CCiLabComponent from "./CCiLabComponent";
-import DropComponentCheckFailedModal from "./CCiLabDropComponentCheckFailedModal";
+import Modal from "./CCiLabDropComponentCheckFailedModal";
 
 // import AddGreeter from "./AddGreeter";
 import { setListHeight, setListWidth, setHideListWidth} from "./CCiLabUtility"
@@ -161,7 +161,7 @@ const setComponentSelected = ( component, selectedComponentKey ) =>{
 
 
 class CCiLabComponentList extends Component {
-    state = { greetings: undefined, visible: true, selected: 0 };
+    state = { greetings: undefined, visible: true, selected: 0, isDropToSameParentWarning: false, isDropToItselfWarning: false };
 
     slidingComponentListIconClassName = this.state.visible? 'fa fa-angle-double-left' : 'fa fa-angle-double-right';
     componentListHeight= window.innerHeight <= 200 ? '150px' : 'auto';  //minimum height 
@@ -379,7 +379,11 @@ class CCiLabComponentList extends Component {
 
         //component can't drop to its own parent, 
         if( targetComponent.displayLogic.childKeyIds.find( (key)=>{ return key === sourceId}) )
+        {
+          this.setState( {isDropToSameParentWarning: true} );
           return;
+        }
+          
 
         let movedComponent = currentSessionComponents.find( (component)=>{return component.displayLogic.key === sourceId } )
 
@@ -392,11 +396,17 @@ class CCiLabComponentList extends Component {
 
         //same component business id can't be move to itself
         if( targetComponent.businessLogic.id === movedComponent.businessLogic.id )
+        {
+          this.setState( {isDropToItselfWarning: true} );
           return;
+        }
 
         // component can't be moved to a parent already has the same component as it's child
         if( targetComponent.businessLogic.childIds.includes( movedComponent.businessLogic.id ) )
-              return;
+        {
+          this.setState( {isDropToSameParentWarning: true} );
+          return;
+        }
 
         // if targer component's children are hidden, expending all the children first without calling setState to rend the list
         if( targetComponent.displayLogic.canExpend )
@@ -516,7 +526,41 @@ class CCiLabComponentList extends Component {
 
 
     render() {
+      const droptoSameParentWarningModal = this.state.isDropToSameParentWarning ? (
+            <Modal>
+              <div className='modal' style={{'display':'inline'}}>
+                  <div className='modal-dialog'>
+                      <div className='modal-content'>
+                          {/* Modal Header */}
+                          <div className='modal-header'>
+                              <h4 className='modal-title text-danger'>Warning:</h4>
+                              <button type='button' className='close' data-dismiss='modal'>&time;</button>
+                          </div>
+
+                          {/* Modal body */}                 
+                          <div className="modal-body">
+
+                              Target component has same item as its child component!
+                          </div>
+
+                          {/* Modal footer */}
+                          <div className="modal-footer">
+                            <button type="button" className="btn btn-danger" data-dismiss="modal">Close</button>
+                          </div>
+                      </div>
+                  </div>
+              </div>
+            </Modal>
+            ) : null;
+
+      const droptoItselfWarningModal = this.state.isDropToItselfWarning ? (
+            <Modal>
+
+            </Modal>
+          ) : null;
+
       return (
+       
         <div className={`d-flex flex-row`} >
           {/* <AddGreeter addGreeting={this.addGreeting} /> */}
             {/* <div className='d-flex'> */}
@@ -541,6 +585,8 @@ class CCiLabComponentList extends Component {
                     <span className={`badge-pill badge-info ${this.slidingComponentListIconClassName}`}></span>
                 </a>
             </div>
+            {droptoSameParentWarningModal}
+            {droptoItselfWarningModal}
         </div>
       );
     };
