@@ -169,6 +169,9 @@ class CCiLabComponentList extends Component {
       
     compnentListTranslateStyle='';
     lastScrollPosition = 0;
+
+    movedComponentName='undefined';
+    targetComponentName='undefined';
     
     toggleHideShowComponentList = () =>{
       // console.log('container: clicked before: - ', this.state.visible ? 'true' : 'false' );
@@ -247,7 +250,7 @@ class CCiLabComponentList extends Component {
   
     addGreeting = (newName, progressValue) =>{
       this.setState({ greetings: [...this.state.greetings, 
-        { businessLogic: {id: this.state.greetings.length + 1, name: newName, parentIds:[0], childIds:[], imgFile:'', status: "alarm", progressPercent: progressValue}, displayLogic:{key: undefined}, childKeyIds:[], showMyself: false, canExpend: false}] });
+        { businessLogic: {id: this.state.greetings.length + 1, name: newName, parentIds:[0], childIds:[], imgFile:'', status: "alarm", progressPercent: progressValue}}] });
     };
 
     removeGreeting = (removeName) =>{
@@ -377,26 +380,28 @@ class CCiLabComponentList extends Component {
         if( typeof targetComponent === "undefined")
           return;
 
-        //component can't drop to its own parent, 
-        if( targetComponent.displayLogic.childKeyIds.find( (key)=>{ return key === sourceId}) )
-        {
-          this.setState( {isDropToSameParentWarning: true} );
-          return;
-        }
-          
-
         let movedComponent = currentSessionComponents.find( (component)=>{return component.displayLogic.key === sourceId } )
 
         if( typeof movedComponent === "undefined" )
           return;
-
         
         console.log('source component name: ', movedComponent.businessLogic.name);
         console.log('target component name: ', targetComponent.businessLogic.name);
+ 
+        //component can't drop to its own parent, 
+        if( targetComponent.displayLogic.childKeyIds.find( (key)=>{ return key === sourceId}) )
+        {
+          this.targetComponentName = targetComponent.businessLogic.name;
+          this.movedComponentName = movedComponent.businessLogic.name;
+          this.setState( {isDropToSameParentWarning: true} );
+          return;
+        }
 
         //same component business id can't be move to itself
         if( targetComponent.businessLogic.id === movedComponent.businessLogic.id )
         {
+          this.targetComponentName = targetComponent.businessLogic.name;
+          this.movedComponentName = movedComponent.businessLogic.name;
           this.setState( {isDropToItselfWarning: true} );
           return;
         }
@@ -404,6 +409,8 @@ class CCiLabComponentList extends Component {
         // component can't be moved to a parent already has the same component as it's child
         if( targetComponent.businessLogic.childIds.includes( movedComponent.businessLogic.id ) )
         {
+          this.targetComponentName = targetComponent.businessLogic.name;
+          this.movedComponentName = movedComponent.businessLogic.name;
           this.setState( {isDropToSameParentWarning: true} );
           return;
         }
@@ -536,14 +543,14 @@ class CCiLabComponentList extends Component {
       const droptoSameParentWarningModal = this.state.isDropToSameParentWarning ? 
                   <DropComponentWarningModal 
                   title='Waring:' 
-                  body='Target component has same item as its child component!'
+                  body={`"${this.targetComponentName}" already has "${this.movedComponentName}" as its child component!`}
                   hideDropWarning={this.hideDropToSameParentWarning}/>
                   : null;
 
       const droptoItselfWarningModal = this.state.isDropToItselfWarning ? 
                   <DropComponentWarningModal 
                     title='Waring:' 
-                    body='Target component is same item as this dropped component!'
+                    body={`These two "${this.targetComponentName}" is the same component!`}
                     hideDropWarning={this.hideDropToItselfWarning}/>
                   : null;
 
