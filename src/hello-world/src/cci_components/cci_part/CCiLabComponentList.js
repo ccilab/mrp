@@ -2,7 +2,7 @@
 import React, { Component } from "react";
 import "./../../css/CCiLabComponentList.css";
 import CCiLabComponent from "./CCiLabComponent";
-import Modal from "./CCiLabDropComponentCheckFailedModal";
+import DropComponentWarningModal from "./CCiLabDropComponentCheckFailedModal";
 
 // import AddGreeter from "./AddGreeter";
 import { setListHeight, setListWidth, setHideListWidth} from "./CCiLabUtility"
@@ -524,40 +524,28 @@ class CCiLabComponentList extends Component {
           ) : null;
     };
 
+    hideDropToSameParentWarning=()=>{
+      this.setState({isDropToSameParentWarning: false});
+    }
+
+    hideDropToItselfWarning=()=>{
+      this.setState({isDropToItselfWarning: false});
+    }
 
     render() {
-      const droptoSameParentWarningModal = this.state.isDropToSameParentWarning ? (
-            <Modal>
-              <div className='modal' style={{'display':'inline'}}>
-                  <div className='modal-dialog'>
-                      <div className='modal-content'>
-                          {/* Modal Header */}
-                          <div className='modal-header'>
-                              <h4 className='modal-title text-danger'>Warning:</h4>
-                              <button type='button' className='close' data-dismiss='modal'>&time;</button>
-                          </div>
+      const droptoSameParentWarningModal = this.state.isDropToSameParentWarning ? 
+                  <DropComponentWarningModal 
+                  title='Waring:' 
+                  body='Target component has same item as its child component!'
+                  hideDropWarning={this.hideDropToSameParentWarning}/>
+                  : null;
 
-                          {/* Modal body */}                 
-                          <div className="modal-body">
-
-                              Target component has same item as its child component!
-                          </div>
-
-                          {/* Modal footer */}
-                          <div className="modal-footer">
-                            <button type="button" className="btn btn-danger" data-dismiss="modal">Close</button>
-                          </div>
-                      </div>
-                  </div>
-              </div>
-            </Modal>
-            ) : null;
-
-      const droptoItselfWarningModal = this.state.isDropToItselfWarning ? (
-            <Modal>
-
-            </Modal>
-          ) : null;
+      const droptoItselfWarningModal = this.state.isDropToItselfWarning ? 
+                  <DropComponentWarningModal 
+                    title='Waring:' 
+                    body='Target component is same item as this dropped component!'
+                    hideDropWarning={this.hideDropToItselfWarning}/>
+                  : null;
 
       return (
        

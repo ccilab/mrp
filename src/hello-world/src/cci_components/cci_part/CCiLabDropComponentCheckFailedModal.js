@@ -1,4 +1,4 @@
-import { Component } from "react";
+import React, { Component } from "react";
 import ReactDOM from "react-dom";
 
 class Modal extends Component {
@@ -26,7 +26,35 @@ class Modal extends Component {
     }
 }
 
-export default Modal;
+function DropComponentWarningModal(props) {
+    return <Modal>
+              <div className='modal' style={{'display':'inline'}}>
+                  <div className='modal-dialog '>
+                      <div className='modal-content'>
+                          {/* Modal Header */}
+                          <div className='modal-header'>
+                              <h5 className='modal-title text-danger'>{props.title}</h5>
+                              <button type='button' className='close' aria-label="Close" onClick={props.hideDropWarning}>
+                                <span aria-hidden="true">&times;</span>
+                              </button>
+                          </div>
+
+                          {/* Modal body */}                 
+                          <div className="modal-body">
+                            {props.body}
+                          </div>
+
+                          {/* Modal footer */}
+                          <div className="modal-footer">
+                            <button type="button" className="btn btn-danger" onClick={props.hideDropWarning}>Close</button>
+                          </div>
+                      </div>
+                  </div>
+              </div>
+           </Modal>;
+}
+
+export default DropComponentWarningModal;
 
 // const dropDomponentWarningModalBase = (
 //     <div className='modal fade'>
