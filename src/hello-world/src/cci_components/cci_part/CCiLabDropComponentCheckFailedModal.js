@@ -1,6 +1,8 @@
 import React, { Component } from "react";
 import ReactDOM from "react-dom";
 
+import "./../../css/CCiLabDropComponentCheckFailedModal.css"
+
 class Modal extends Component {
     el = document.createElement('div');
 
@@ -30,7 +32,7 @@ function DropComponentWarningModal(props) {
     return <Modal>
               <div className='modal' style={{'display':'inline'}}>
                   <div className='modal-dialog' >
-                      <div className='modal-content bg-faded' style={{"background-color":"#D3D3D3!important;"}}>
+                      <div className='modal-content bg-faded'>
                           {/* Modal Header */}
                           <div className='modal-header'>
                               <h5 className='modal-title text-danger'>{props.title}</h5>
