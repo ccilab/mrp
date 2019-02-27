@@ -5,7 +5,7 @@ import React, { Component } from "react";
 import CCiLabComponentList from "./CCiLabComponentList";
 import {detectOSVersion} from "./CCiLabUtility";
 
-import "./../../css/CCiLabComponentContainer.css";
+// import "./../../css/CCiLabComponentContainer.css";
 
 class ComponentContainer extends Component {
   state = {  width: 0 };

@@ -161,7 +161,12 @@ const setComponentSelected = ( component, selectedComponentKey ) =>{
 
 
 class CCiLabComponentList extends Component {
-    state = { greetings: undefined, visible: true, selected: 0, isDropToSameParentWarning: false, isDropToItselfWarning: false };
+    state = { greetings: undefined, 
+              visible: true, 
+              selected: 0, 
+              isDropToSameParentWarning: false, 
+              isDropToItselfWarning: false,
+              isCannotDropWarning: false };
 
     slidingComponentListIconClassName = this.state.visible? 'fa fa-angle-double-left' : 'fa fa-angle-double-right';
     componentListHeight= window.innerHeight <= 200 ? '150px' : 'auto';  //minimum height 
@@ -382,8 +387,12 @@ class CCiLabComponentList extends Component {
 
         let movedComponent = currentSessionComponents.find( (component)=>{return component.displayLogic.key === sourceId } )
 
+        // this component can't be moved e.g. it has children
         if( typeof movedComponent === "undefined" )
+        {
+          this.setState( {isCannotDropWarning: true});
           return;
+        }
         
         console.log('source component name: ', movedComponent.businessLogic.name);
         console.log('target component name: ', targetComponent.businessLogic.name);
@@ -539,6 +548,9 @@ class CCiLabComponentList extends Component {
       this.setState({isDropToItselfWarning: false});
     }
 
+    hideCannotDropWarning=()=>{
+      this.setState({isCannotDropWarning: false});
+    }
     render() {
       const droptoSameParentWarningModal = this.state.isDropToSameParentWarning ? 
                   <DropComponentWarningModal 
@@ -553,6 +565,13 @@ class CCiLabComponentList extends Component {
                     body={`These two "${this.targetComponentName}" is the same component!`}
                     hideDropWarning={this.hideDropToItselfWarning}/>
                   : null;
+
+      const cannotDropWarning = this.state.isCannotDropWarning ? 
+                <DropComponentWarningModal 
+                  title='Waring:' 
+                  body={`Selected component can't be moved to other component, becase it has child components!`}
+                  hideDropWarning={this.hideCannotDropWarning}/>
+                : null;
 
       return (
        
@@ -582,6 +601,7 @@ class CCiLabComponentList extends Component {
             </div>
             {droptoSameParentWarningModal}
             {droptoItselfWarningModal}
+            {cannotDropWarning}
         </div>
       );
     };

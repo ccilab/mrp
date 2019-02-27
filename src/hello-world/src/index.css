@@ -2,7 +2,7 @@ body {
   margin: 0;
   padding: 25;
   font-family: sans-serif;
-  background-color: #EEE;
+  background-color: rgb(145, 240, 68);
   font-size: 20px;
   overflow: auto;
 }

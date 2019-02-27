@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import ReactDOM from "react-dom";
 
-import "./../../css/CCiLabDropComponentCheckFailedModal.css"
+// import "./../../css/CCiLabDropComponentCheckFailedModal.css"
 
 class Modal extends Component {
     el = document.createElement('div');
@@ -31,10 +31,11 @@ class Modal extends Component {
 function DropComponentWarningModal(props) {
     return <Modal>
               <div className='modal' style={{'display':'inline'}}>
-                  <div className='modal-dialog' >
-                      <div className='modal-content bg-faded'>
+                  <div className='modal-dialog'>
+                  {/* https://www.htmlcsscolor.com/hex/CDCDCD */}
+                      <div className='modal-content'  style={{'backgroundColor': '#E5E5E5'}}>
                           {/* Modal Header */}
-                          <div className='modal-header'>
+                          <div className='modal-header' >
                               <h5 className='modal-title text-danger'>{props.title}</h5>
                               <button type='button' className='close' aria-label="Close" onClick={props.hideDropWarning}>
                                 <span aria-hidden="true">&times;</span>
