@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import "./../../css/CCiLabComponent.css";
+import "./../../css/_ccilab-component.css";
 
 class CCiLabComponent extends Component {
         state = {

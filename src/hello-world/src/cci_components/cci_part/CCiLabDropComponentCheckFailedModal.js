@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import ReactDOM from "react-dom";
 
-// import "./../../css/CCiLabDropComponentCheckFailedModal.css"
+// import "./../../css/_ccilab-drop-component-check-failed-modal.css"
 
 class Modal extends Component {
     el = document.createElement('div');
