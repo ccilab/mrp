@@ -1,6 +1,7 @@
 
 import React, { Component } from "react";
-
+// import "./../../stylesheets/ccilab/scss/components/ccilab-component-list.scss";
+import "./../../dist/css/ccilab-component-list.css"
 import CCiLabComponent from "./CCiLabComponent";
 import DropComponentWarningModal from "./CCiLabDropComponentCheckFailedModal";
 
@@ -390,7 +391,7 @@ class CCiLabComponentList extends Component {
         // this component can't be moved e.g. it has children
         if( typeof movedComponent === "undefined" )
         {
-          this.setState( {isCannotDropWarning: true});
+          //this.setState( {isCannotDropWarning: true});
           return;
         }
         
@@ -493,8 +494,6 @@ class CCiLabComponentList extends Component {
             updatedSessionComponents.forEach( (item)=>{
                     setComponentSelected( item, rmMovedComponent[0].displayLogic.key ); 
                   });
-
-
 
             //check if moved component progress status need to change (#todo)
  

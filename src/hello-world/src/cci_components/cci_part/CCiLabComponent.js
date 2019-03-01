@@ -1,5 +1,6 @@
 import React, { Component } from "react";
-// import "./../../css/_ccilab-component.css";
+// import "./../../stylesheets/ccilab/scss/components/ccilab-component.scss";
+import "./../../dist/css/ccilab-component.css"
 
 class CCiLabComponent extends Component {
         state = {
@@ -89,9 +90,7 @@ class CCiLabComponent extends Component {
         draggedComponetId=draggedComponetId.replace(/-show-hide/g,'');
 
       if ( Number.isInteger( parseInt(draggedComponetId, 10) ) )
-          var sourceId = e.dataTransfer.getData("Text");
-
-      console.log('drag over from source: ', sourceId);
+        console.log('drag over: ', draggedComponetId);
     
     }
 
@@ -199,6 +198,7 @@ class CCiLabComponent extends Component {
                   <a  id={`${this.currentComponent.displayLogic.key}-show-hide`} 
                       href="#expend-collapse-badge" className={`cci-link_position float-left nav-link ${this.expendCollapseBadgePadding} `} 
                       style={anchorLeftstyle} 
+                      draggable={`${draggableSetting}`}
                       onClick={ this.expending }
                       onDragStart={ draggableSetting === 'true' ? this.dragStart : null}
                       onDragOver={ this.dragOver }
@@ -214,12 +214,14 @@ class CCiLabComponent extends Component {
             <ul id={`${this.currentComponent.displayLogic.key}-item`} 
                 className='flow-right list-group flex-row cci-component-lable_position' 
                 style={leftShiftStyle}
+                draggable={`${draggableSetting}`}
                 onDragStart={ draggableSetting === 'true' ? this.dragStart : null}
                 onDragOver={ this.dragOver }
                 onDrop={  this.doDrop }>
                  {/* tag's id is used to handle drop event */}
                 <button id={`${this.currentComponent.displayLogic.key}`} className={`${ComponentClassName}`} 
                   style={ { 'height': this.componentLableHeight, 'width': this.componentLableHeight} }
+                  draggable={`${draggableSetting}`}
                   onClick={ this.componentSelected } 
                   onDragStart={ draggableSetting === 'true' ? this.dragStart : null}
                   onDragOver={ this.dragOver }
@@ -231,6 +233,7 @@ class CCiLabComponent extends Component {
                       <img id={`${this.currentComponent.displayLogic.key}`} 
                            className='cci-component__img rounded-circle float-left' src={this.imgName} alt=""
                            style={{'height': this.componentLableHeight, 'width': this.componentLableHeight}} 
+                           draggable={`${draggableSetting}`}
                            onDragStart={ draggableSetting === 'true' ? this.dragStart : null}
                            onDragOver={ this.dragOver }
                            onDrop={  this.doDrop }>
@@ -242,6 +245,7 @@ class CCiLabComponent extends Component {
                 <a  id={`${this.currentComponent.displayLogic.key}`} 
                     href="#select-component-name" className={`${componentNameClassName}`} 
                     style={{ 'height': '10%' }} 
+                    draggable={`${draggableSetting}`}
                     onClick={ this.componentSelected }
                     onDragStart={ draggableSetting === 'true' ? this.dragStart : null}
                     onDragOver={ this.dragOver }
@@ -253,6 +257,7 @@ class CCiLabComponent extends Component {
                 <span id={`${this.currentComponent.displayLogic.key}`} 
                       className={`badge-pill badge-${this.progressStatus} ${statusBadgeIconClassName} text-body text-nowrap align-self-center ml-0`} 
                       style={{ 'height': '15% !important'}} 
+                      draggable={`${draggableSetting}`}
                       onClick={ this.componentSelected }
                       onDragStart={ draggableSetting === 'true' ? this.dragStart : null}
                       onDragOver={ this.dragOver }
