@@ -1,4 +1,4 @@
-@import "./../vendors/bootstrap-4.0.0-alpha.6/scss/variables";
+@import "./../../../vendors/bootstrap-4.0.0-alpha.6/scss/_variables";
 // beging customization
 $text_color_theme: rgba(36, 37, 34, 0.596);
 $border_color: rgba(35, 56, 73, 0.842);
@@ -26,21 +26,23 @@ $component_columns_margin: 10px;
 
 
 //set up font awesome 
+@import "./../../../vendors/fontawesome-5.6.1/scss/variables";
+
 // You probably already know this but we seem to always forget it. 
 // The font path is relative from your compiled CSS directory. 
 // Ensure that you place your webfonts directory in a place relative to where your final CSS will be located.
-@import "./../vendors/fontawesome-5.6.1/scss/variables";
-$fa-font-path:   "./../scss/vendors/fontawesome-5.6.1/webfonts";
+$fa-font-path:   "./../../stylesheets/vendors/fontawesome-5.6.1/webfonts";
 
 
 // end customization
 
-@import "./../vendors/bootstrap-4.0.0-alpha.6/scss/bootstrap";
+@import "./../../../vendors/bootstrap-4.0.0-alpha.6/scss/bootstrap";
 
 
-@import "./../vendors/fontawesome-5.6.1/scss/fontawesome";
+@import "./../../../vendors/fontawesome-5.6.1/scss/fontawesome";
+
 // @import "../fontawesome-5.6.1/scss/regular";
-@import "./../vendors/fontawesome-5.6.1/scss/solid";
+@import "./../../../vendors/fontawesome-5.6.1/scss/solid";
 // @import "../fontawesome-5.6.1/scss/brands";
 
 @mixin bg-linear-gradient($bg-primary-color, $start-location-percentage){
