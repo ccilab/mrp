@@ -1,8 +1,6 @@
 import React, { Component } from "react";
 import ReactDOM from "react-dom";
 
-// import "./../../css/_ccilab-drop-component-check-failed-modal.css"
-
 class Modal extends Component {
     el = document.createElement('div');
 
@@ -34,6 +32,7 @@ function DropComponentWarningModal(props) {
                   <div className='modal-dialog'>
                   {/* https://www.htmlcsscolor.com/hex/CDCDCD */}
                   {/* https://developer.mozilla.org/en-US/docs/Web/CSS/Specificity */}
+                  {/* backgroundColor converts to background-color */}
                       <div className='modal-content'  style={{'backgroundColor': '#E5E5E5'}}>
                           {/* Modal Header */}
                           <div className='modal-header' >

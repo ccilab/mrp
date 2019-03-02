@@ -21,8 +21,6 @@ class CCiLabComponent extends Component {
         progressStatus = this.currentComponent.businessLogic.status;
         progressValue = this.currentComponent.businessLogic.progressPercent;
       
-        StickyWidth =  this.currentComponent.displayLogic.selected !== 0 ? '100':'';
-
     componentWillMount=()=>{
       this.setState({expended: this.props.component.displayLogic.canExpend});
     }
@@ -126,7 +124,7 @@ class CCiLabComponent extends Component {
             this.progressStatus === 'success' ? 'fa fa-check-circle' :
             this.progressStatus === 'warning' ? 'fa fa-exclamation-circle' : 'fa fa-exclamation-triangle';
     
-        let permissionEabled = true; // need to add check later
+        let permissionEabled = true; // #todo: need to add check later
         let  Component=' ';
         let draggableSetting = false;
 
@@ -157,25 +155,26 @@ class CCiLabComponent extends Component {
         
         let leftShiftStyle;
         let anchorLeftstyle;
+        let leftOffset=this.props.leftOffset;
         
         // expendable component left shift less, to compensate <a> 
         if ( this.children.length !== 0 )
         {
           anchorLeftstyle = {
-            'left': `${this.props.leftOffset}px`,
+            'left': `${leftOffset}px`,
           }
           leftShiftStyle = {
-            'left': `${this.props.leftOffset}px`,
+            'left': `${leftOffset}px`,
             };
         }
         else{
-          let leftOffset = this.props.leftOffset+39;
+          leftOffset = this.props.leftOffset+39;
           leftShiftStyle = {
             'left': `${leftOffset}px`,
             };
         }
          
-        
+        let  stickyWidth =  this.currentComponent.displayLogic.selected !== 0 ? '150%':'';
 
         return (
           // https://developer.mozilla.org/en-US/docs/Web/API/HTML_Drag_and_Drop_API
@@ -184,7 +183,7 @@ class CCiLabComponent extends Component {
          
           <span id={`${this.currentComponent.displayLogic.key}`} 
                 className={`${Component}`}  
-                style={{'width': `${this.StickyWidth}%`}} 
+                style={{'width': `${stickyWidth}` }}
                 draggable={`${draggableSetting}`}
                 onDragStart={ draggableSetting === 'true' ? this.dragStart : null}
                 onDragOver={ this.dragOver }

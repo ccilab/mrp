@@ -1,0 +1,46 @@
+//  {/* https://developer.mozilla.org/en-US/docs/Web/CSS/Specificity */}
+
+@import "./../../../vendors/bootstrap-4.0.0-alpha.6/scss/variables";
+
+
+@import "./../../../vendors/fontawesome-5.6.1/scss/variables";
+// You probably already know this but we seem to always forget it. 
+// The font path is relative from your compiled CSS directory. 
+// Ensure that you place your webfonts directory in a place relative 
+// to where your final CSS will be located.
+$fa-font-path:   "./../../stylesheets/vendors/fontawesome-5.6.1/webfonts";
+ 
+
+// end customization
+@import "./../../../vendors/bootstrap-4.0.0-alpha.6/scss/bootstrap";
+
+
+@import "./../../../vendors/fontawesome-5.6.1/scss/fontawesome";
+@import "./../../../vendors/fontawesome-5.6.1/scss/solid";
+
+
+.cci-flyout-component-list {
+   overflow-y: scroll;  //have to set y to scroll otherwise Edge horizontal scroll will no resonse in all the components are within the viewport
+   overflow-x: scroll;
+   border: 2px solid #00D8FF;
+   background-color: #DDEEFF;   
+   z-index: 0; 
+ }
+  
+
+ .cci-component-list_transition {
+   -webkit-transition: transform 1s cubic-bezier(0, .52, 0, 1);
+   transition: transform 1s cubic-bezier(0, .52, 0, 1);
+ }
+
+//// controlled using inline style 
+//  .flyout-menu_hide {
+//    // -webkit-transform: translate3d(-10vw, 0, 0);
+//    // transform: translate3d(-10vw, 0, 0);
+//    //overflow:hidden;
+//    }
+   
+// .flyout-menu_show {
+//    -webkit-transform: translate3d(0vw, 0, 0);
+//    transform: translate3d(0vw, 0, 0);
+//    }

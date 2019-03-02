@@ -1,0 +1,23 @@
+$text_color_theme: rgba(36, 37, 34, 0.596);
+$border_color: rgba(35, 56, 73, 0.842);
+
+//$btn-border-radius: map-get($sizes, 50 );
+$circle:#5befa7;
+$traffic_light_green: #4cd964;//#33a532;
+$traffic_light_red: #ff3b30; //#cc0605;
+$traffic_light_amber: #ff9500;// #fad201;#ffbf00
+$cci-info-blue: #40c4ff;   //#007aff
+$cci-shadow-dark: black;
+$cci-disable-grey: #8e8e93;
+
+$brand-danger: $traffic_light_red;
+$brand-warning: $traffic_light_amber;
+$brand-success: $traffic_light_green;
+$badge-info-bg: $cci-info-blue;
+
+$component_bg_color: #3e4444;
+$component_select_color: rgb(95, 95, 95);
+
+$component_img_radius: map-get($sizes, 50 ); 
+$card-img-overlay-padding: 0%;
+$component_columns_margin: 10px;

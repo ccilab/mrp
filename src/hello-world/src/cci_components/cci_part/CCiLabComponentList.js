@@ -166,8 +166,7 @@ class CCiLabComponentList extends Component {
               visible: true, 
               selected: 0, 
               isDropToSameParentWarning: false, 
-              isDropToItselfWarning: false,
-              isCannotDropWarning: false };
+              isDropToItselfWarning: false};
 
     slidingComponentListIconClassName = this.state.visible? 'fa fa-angle-double-left' : 'fa fa-angle-double-right';
     componentListHeight= window.innerHeight <= 200 ? '150px' : 'auto';  //minimum height 
@@ -391,7 +390,6 @@ class CCiLabComponentList extends Component {
         // this component can't be moved e.g. it has children
         if( typeof movedComponent === "undefined" )
         {
-          //this.setState( {isCannotDropWarning: true});
           return;
         }
         
@@ -547,9 +545,6 @@ class CCiLabComponentList extends Component {
       this.setState({isDropToItselfWarning: false});
     }
 
-    hideCannotDropWarning=()=>{
-      this.setState({isCannotDropWarning: false});
-    }
     render() {
       const droptoSameParentWarningModal = this.state.isDropToSameParentWarning ? 
                   <DropComponentWarningModal 
@@ -565,13 +560,6 @@ class CCiLabComponentList extends Component {
                     hideDropWarning={this.hideDropToItselfWarning}/>
                   : null;
 
-      const cannotDropWarning = this.state.isCannotDropWarning ? 
-                <DropComponentWarningModal 
-                  title='Waring:' 
-                  body={`Selected component can't be moved to other component, becase it has child components!`}
-                  hideDropWarning={this.hideCannotDropWarning}/>
-                : null;
-
       return (
        
         <div className={`d-flex flex-row`} >
@@ -579,13 +567,13 @@ class CCiLabComponentList extends Component {
             {/* <div className='d-flex'> */}
             {/* following d-flex is needed to show collapse icon (>) next to the top component  */}
             {/* https://code.i-harness.com/en/q/27a5171 explains why vertical scroll bar won't appear for flex box and what is the workaroud
-                 className={`d-flex flex-column flyout-component-list ${this.visibility}`, 'width':`${this.componentListWidth}px`}
+                 className={`d-flex flex-column cci-flyout-component-list ${this.visibility}`, 'width':`${this.componentListWidth}px`}
                  UC browser, pro to Edge 15 (https://caniuse.com/#feat=css-sticky) doesn't suppot sticky-top onScroll={this.updateDimensions}*/} 
-              <div id='cciLabComponentListID' className={`d-flex flex-column flyout-component-list elemnt-transition`} 
+              <div id='cciLabComponentListID' className={`d-flex flex-column cci-flyout-component-list cci-component-list_transition`} 
                   style={{'transform': `${this.compnentListTranslateStyle}`, 'height':`${this.componentListHeight}`, 'width':`${this.componentListWidth}vw`}}
                   onScroll={this.setSelectedComponentStickDirection}>
-                  {/* set style left:0px to sticky-top to left too*/}
-                  <div className='flex-row bg-info sticky-top fa' style={{ 'height': '25px', 'width': 'auto', 'left':'0px'}}>
+                  {/*  sticky to top and left*/}
+                  <div className='flex-row bg-info sticky-top fa' style={{ 'height': '25px', 'width': 'auto', 'left':'0'}}>
                     <span className='pl-4 border-0 text-primary  text-nowrap'>部件名:</span>
                     <span className='pl-4 border-0 text-primary  text-nowrap'>进度 <span className='font-weight-normal text-primary '> (%)</span></span> 
                   </div>
@@ -594,13 +582,12 @@ class CCiLabComponentList extends Component {
                   {this.renderGreetings()}
               </div>
               <div>
-                <a href="#1" className='float-left nav-link pl-0 py-4 pr-4 elemnt-transition sticky-top' style={{'transform': `${this.compnentListTranslateStyle}`}} onClick={this.showHideComponentList} >
+                <a href="#show-hide-component-list" className='float-left nav-link pl-0 py-4 pr-4 cci-component-list_transition sticky-top' style={{'transform': `${this.compnentListTranslateStyle}`}} onClick={this.showHideComponentList} >
                     <span className={`badge-pill badge-info ${this.slidingComponentListIconClassName}`}></span>
                 </a>
             </div>
             {droptoSameParentWarningModal}
             {droptoItselfWarningModal}
-            {cannotDropWarning}
         </div>
       );
     };
