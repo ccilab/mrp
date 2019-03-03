@@ -1,47 +1,4 @@
-@import "../bootstrap-4.0.0-alpha.6/scss/variables";
-// beging customization
-$text_color_theme: rgba(36, 37, 34, 0.596);
-$border_color: rgba(35, 56, 73, 0.842);
-
-//$btn-border-radius: map-get($sizes, 50 );
-$circle:#5befa7;
-$traffic_light_green: #4cd964;//#33a532;
-$traffic_light_red: #ff3b30; //#cc0605;
-$traffic_light_amber: #ff9500;// #fad201;#ffbf00
-$cci-info-blue: #40c4ff;   //#007aff
-$cci-shadow-dark: black;
-$cci-disable-grey: #8e8e93;
-
-$brand-danger: $traffic_light_red;
-$brand-warning: $traffic_light_amber;
-$brand-success: $traffic_light_green;
-$badge-info-bg: $cci-info-blue;
-
-$component_bg_color: #3e4444;
-$component_select_color: rgb(95, 95, 95);
-
-$component_img_radius: map-get($sizes, 50 );
-$card-img-overlay-padding: 0%;
-$component_columns_margin: 10px;
-
-
-//set up font awesome 
-// You probably already know this but we seem to always forget it. 
-// The font path is relative from your compiled CSS directory. 
-// Ensure that you place your webfonts directory in a place relative to where your final CSS will be located.
-@import "../fontawesome-5.6.1/scss/variables";
-$fa-font-path:   "../scss/fontawesome-5.6.1/webfonts";
-
-
-// end customization
-
-@import "../bootstrap-4.0.0-alpha.6/scss/bootstrap";
-
-
-@import "../fontawesome-5.6.1/scss/fontawesome";
-// @import "../fontawesome-5.6.1/scss/regular";
-@import "../fontawesome-5.6.1/scss/solid";
-// @import "../fontawesome-5.6.1/scss/brands";
+// https://hugogiraudel.com/2015/06/18/styling-react-components-in-sass/
 
 @mixin bg-linear-gradient($bg-primary-color, $start-location-percentage){
   //background: $bg-primary-color;
@@ -160,12 +117,16 @@ $fa-font-path:   "../scss/fontawesome-5.6.1/webfonts";
 .ccilab-component-sticky-bottom{
   position: sticky;
   bottom: 0;
+  left: 0;
+  // right: 100%;
   z-index: $zindex-sticky;
 }
  
 .ccilab-component-sticky-top{
   position: sticky;
   top: 15px;
+  left: 0;
+  // right: 100%;
   z-index: $zindex-sticky;
 }
 

@@ -1,7 +1,10 @@
 
 import React, { Component } from "react";
-import "./../../css/CCiLabComponentList.css";
+// import "./../../stylesheets/ccilab/scss/components/ccilab-component-list.scss";
+import "./../../dist/css/ccilab-component-list.css"
 import CCiLabComponent from "./CCiLabComponent";
+import DropComponentWarningModal from "./CCiLabDropComponentCheckFailedModal";
+
 // import AddGreeter from "./AddGreeter";
 import { setListHeight, setListWidth, setHideListWidth} from "./CCiLabUtility"
 
@@ -21,6 +24,72 @@ const thirdComponents = components.thirdComponents;
 
 // simulate load children of component id 4 ( low_beam )
 const forthComponents = components.forthComponents;
+
+<<<<<<< HEAD
+// initialize displayLogic object
+const initializeDisplayLogic = (key, canExpend, rectLeft ) =>{
+  let displayLogic = {};
+  displayLogic.key = key;
+  displayLogic.childKeyIds = [];
+  displayLogic.showMyself = false;
+  displayLogic.canExpend = canExpend;
+  displayLogic.rectLeft = (typeof rectLeft === "undefined" ) ? 0:rectLeft;
+  displayLogic.selected = 0;  // 0, -1, +1
+  return displayLogic;
+};
+
+// find maximum displayLogic.key
+const findMaxDisplayKey = ( componentList )=>{
+  let displayKeyValue = 0;
+  let childKeys =[];
+  if( typeof componentList !== "undefined") {
+    componentList.forEach( (component)=>{ childKeys.push( component.displayLogic.key ) } );
+    // https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Function/apply#Using_apply_and_built-in_functions
+    // The consequences of applying a function with too many arguments (think more than tens of thousands of arguments) vary across engines 
+    // (JavaScriptCore has hard-coded argument limit of 65536), because the limit (indeed even the nature of any excessively-large-stack behavior) is unspecified. 
+    displayKeyValue = Math.max( ...childKeys);
+=======
+const getChildComponentsFromDataSource = (parentComponent)=>{
+  //#todo: need to query server to get a new components
+  console.log("query server to get child components")
+                
+  let components =[];
+  if( parentComponent.businessLogic.id === 1 )
+  {
+    components= secondComponents;
+    return components;
+>>>>>>> zhangchar/move_component
+  }
+  return displayKeyValue;
+};
+
+<<<<<<< HEAD
+// merge newComponentList (that displayLogic isn't initialized) and existingComponentList (existing components, displayLogic is initialized) into targetComponentList
+// from the startComponent 
+const initializeComponents = ( startComponent, existingComponentList, newComponentList, targetComponentList)=>{
+ 
+
+  if( typeof existingComponentList !== "undefined") {
+    existingComponentList.forEach( (existingComponent)=>{ targetComponentList.push( existingComponent ) } );
+  }
+
+=======
+    
+  if( parentComponent.businessLogic.id === 2 )
+  {
+    components= thirdComponents;  
+    return components;
+  }
+
+  
+  if( parentComponent.businessLogic.id === 4 )
+  {
+    components= forthComponents;
+    return components;
+  }
+
+  return components;
+}
 
 // initialize displayLogic object
 const initializeDisplayLogic = (key, canExpend, rectLeft ) =>{
@@ -51,16 +120,15 @@ const findMaxDisplayKey = ( componentList )=>{
 // merge newComponentList (that displayLogic isn't initialized) and existingComponentList (existing components, displayLogic is initialized) into targetComponentList
 // from the startComponent 
 const initializeComponents = ( startComponent, existingComponentList, newComponentList, targetComponentList)=>{
- 
-
-  if( typeof existingComponentList !== "undefined") {
+  if( typeof existingComponentList !== "undefined") 
     existingComponentList.forEach( (existingComponent)=>{ targetComponentList.push( existingComponent ) } );
-  }
 
+>>>>>>> zhangchar/move_component
   // initialize displayLogic items, create unique key value for latest componets from data layer
   // this guarantees that displayLogic.key is unique, (newly added componet won't show itself until
   // user clicks it, except the very top component), 
   let displayKeyValue = findMaxDisplayKey(existingComponentList);
+<<<<<<< HEAD
   for(let idx = 0; idx < newComponentList.length; idx++ ) 
   {
     let element = newComponentList[idx];
@@ -70,6 +138,13 @@ const initializeComponents = ( startComponent, existingComponentList, newCompone
     }
 
    
+=======
+  
+  newComponentList.forEach((element)=>{
+    if( typeof element.displayLogic === "undefined")
+      element.displayLogic = new initializeDisplayLogic( ++displayKeyValue, element.businessLogic.childIds.length !== 0 ? true : false );
+  
+>>>>>>> zhangchar/move_component
     if(typeof startComponent   !== "undefined"  && typeof startComponent.displayLogic !== "undefined" && typeof element !== "undefined") {
       let startComponentKey = startComponent.displayLogic.key;
       //need populate childKeyIds[] if its not fully populated yet
@@ -84,17 +159,18 @@ const initializeComponents = ( startComponent, existingComponentList, newCompone
             targetComponentList.push(element);
       }
     }
-  }
+  });
 };
 
 const populateComponentChildKeyIds = (selectedComponent, cachedComponents )=>{
-  if( selectedComponent.businessLogic.childIds.length !== selectedComponent.displayLogic.childKeyIds.length ) {
-      for( let idx = 0; idx < cachedComponents.length; idx++ ) { 
-        if( selectedComponent.businessLogic.childIds.includes( cachedComponents[idx].businessLogic.id ) &&
-            cachedComponents[idx].businessLogic.parentIds.includes(selectedComponent.businessLogic.id )  && 
-            !selectedComponent.displayLogic.childKeyIds.includes( cachedComponents[idx].displayLogic.key) ) 
-            selectedComponent.displayLogic.childKeyIds.push( cachedComponents[idx].displayLogic.key )
-      }
+  if( selectedComponent.businessLogic.childIds.length !== selectedComponent.displayLogic.childKeyIds.length ) 
+  {
+      cachedComponents.forEach((element)=>{
+        if( selectedComponent.businessLogic.childIds.includes( element.businessLogic.id ) &&
+            element.businessLogic.parentIds.includes(selectedComponent.businessLogic.id )  && 
+            !selectedComponent.displayLogic.childKeyIds.includes( element.displayLogic.key) ) 
+            selectedComponent.displayLogic.childKeyIds.push( element.displayLogic.key )
+      })
   }
 }
 
@@ -137,7 +213,11 @@ const setComponentSelected = ( component, selectedComponentKey ) =>{
 
 
 class CCiLabComponentList extends Component {
-    state = { greetings: undefined, visible: true, selected: 0 };
+    state = { greetings: undefined, 
+              visible: true, 
+              selected: 0, 
+              isDropToSameParentWarning: false, 
+              isDropToItselfWarning: false};
 
     slidingComponentListIconClassName = this.state.visible? 'fa fa-angle-double-left' : 'fa fa-angle-double-right';
     componentListHeight= window.innerHeight <= 200 ? '150px' : 'auto';  //minimum height 
@@ -145,6 +225,9 @@ class CCiLabComponentList extends Component {
       
     compnentListTranslateStyle='';
     lastScrollPosition = 0;
+
+    movedComponentName='undefined';
+    targetComponentName='undefined';
     
     toggleHideShowComponentList = () =>{
       // console.log('container: clicked before: - ', this.state.visible ? 'true' : 'false' );
@@ -207,10 +290,6 @@ class CCiLabComponentList extends Component {
       this.setState( { greetings: this.state.greetings })
     }
 
-    // moveComponentListTitleBar=()=>{
-
-    // }
-
     /** 
      * called after initial render() is called and element is inserted indo DOM
      * Add event listener to show vertical scroll bar if browser window is shorter 
@@ -227,7 +306,7 @@ class CCiLabComponentList extends Component {
   
     addGreeting = (newName, progressValue) =>{
       this.setState({ greetings: [...this.state.greetings, 
-        { businessLogic: {id: this.state.greetings.length + 1, name: newName, parentIds:[0], childIds:[], imgFile:'', status: "alarm", progressPercent: progressValue}, displayLogic:{key: undefined}, childKeyIds:[], showMyself: false, canExpend: false}] });
+        { businessLogic: {id: this.state.greetings.length + 1, name: newName, parentIds:[0], childIds:[], imgFile:'', status: "alarm", progressPercent: progressValue}}] });
     };
 
     removeGreeting = (removeName) =>{
@@ -237,25 +316,22 @@ class CCiLabComponentList extends Component {
       this.setState({ greetings: filteredGreetings });
     };
 
+   
+
     //based on selected component and its show Status to show or hide its children
+<<<<<<< HEAD
     showOrHideChildren = ( selectedComponent, showStatus ) =>{
+=======
+    showOrHideChildren = ( selectedComponent, showStatus, isRending=true ) =>{
+>>>>>>> zhangchar/move_component
           let currentSessionComponents=[];
         
-
           // if selected component's childKeyIds[] isn't fully populated we need to request new components from server side first
           if ( selectedComponent.businessLogic.childIds.length !== selectedComponent.displayLogic.childKeyIds.length ) {
               //#todo: need to query server to get a new components
               console.log("query server to get child components")
               
-              let components =[];
-              if( selectedComponent.businessLogic.id === 1 )
-                components= secondComponents;
-                
-              if( selectedComponent.businessLogic.id === 2 )
-                components= thirdComponents;
-              
-              if( selectedComponent.businessLogic.id === 4 )
-                components= forthComponents;
+              let components = getChildComponentsFromDataSource(selectedComponent);
 
               initializeComponents(selectedComponent, this.state.greetings, components, currentSessionComponents);
           }
@@ -289,6 +365,7 @@ class CCiLabComponentList extends Component {
 
            
           });
+<<<<<<< HEAD
           // for( idxComponent = 0;  idxComponent < currentSessionComponents.length; idxComponent++ ) 
           // {
           //   setComponentSelected(currentSessionComponents[idxComponent], selectedComponent.displayLogic.key);
@@ -306,6 +383,8 @@ class CCiLabComponentList extends Component {
           //       hideChildren(currentSessionComponents[idxComponent], currentSessionComponents, showStatus);
           //   }
           // }
+=======
+>>>>>>> zhangchar/move_component
           
           // create vertical scroll bar based on the height of component list dynamically
           let updatedRect = estimateComponentListRect(currentSessionComponents);
@@ -313,17 +392,18 @@ class CCiLabComponentList extends Component {
           this.componentListHeight = setListHeight( updatedRect );
           this.componentListWidth = setListWidth();
 
-          this.setState( { greetings: currentSessionComponents })
+          if( isRending )
+            this.setState( { greetings: currentSessionComponents })
+          
+          return currentSessionComponents;
+
     };
 
      
 
     selectedComponentHandler = ( selectedComponent ) =>{
       let currentSessionComponents=this.state.greetings;
-      for( let idxComponent = 0;  idxComponent < currentSessionComponents.length; idxComponent++ ) 
-      {
-        setComponentSelected(currentSessionComponents[idxComponent], selectedComponent.displayLogic.key);
-      }
+      currentSessionComponents.forEach( (item)=>{setComponentSelected(item, selectedComponent.displayLogic.key);});
       this.setState( { greetings: currentSessionComponents });
     }
 
@@ -366,7 +446,11 @@ class CCiLabComponentList extends Component {
     // handle componemt move
     // - update component list
     // - update component status after move by check against the new parent
+<<<<<<< HEAD
     // issue - move  first glue to second nail, the position is wrong
+=======
+    // issue - need to keep highlight is component is show or it's parent should be highlight
+>>>>>>> zhangchar/move_component
     //       
     moveComponentHandler = ( movedComponentDisplayKey, targetComponent ) =>{
       if( movedComponentDisplayKey !== "undefined" && typeof( movedComponentDisplayKey) === "string" )
@@ -380,6 +464,7 @@ class CCiLabComponentList extends Component {
         if( typeof targetComponent === "undefined")
           return;
 
+<<<<<<< HEAD
         //component can't drop to its own parent, 
         if( targetComponent.displayLogic.childKeyIds.find( (key)=>{ return key === sourceId}) )
           return;
@@ -400,11 +485,62 @@ class CCiLabComponentList extends Component {
         // component can't be moved to a parent already has the same component as it's child
           if( targetComponent.businessLogic.childIds.includes( movedComponent.businessLogic.id ) )
               return;
+=======
+        let movedComponent = currentSessionComponents.find( (component)=>{return component.displayLogic.key === sourceId } )
+
+        // this component can't be moved e.g. it has children
+        if( typeof movedComponent === "undefined" )
+        {
+          return;
+        }
+        
+        console.log('source component name: ', movedComponent.businessLogic.name);
+        console.log('target component name: ', targetComponent.businessLogic.name);
+ 
+        //component can't drop to its own parent, 
+        if( targetComponent.displayLogic.childKeyIds.find( (key)=>{ return key === sourceId}) )
+        {
+          this.targetComponentName = targetComponent.businessLogic.name;
+          this.movedComponentName = movedComponent.businessLogic.name;
+          this.setState( {isDropToSameParentWarning: true} );
+          return;
+        }
+
+        //same component business id can't be move to itself
+        if( targetComponent.businessLogic.id === movedComponent.businessLogic.id )
+        {
+          this.targetComponentName = targetComponent.businessLogic.name;
+          this.movedComponentName = movedComponent.businessLogic.name;
+          this.setState( {isDropToItselfWarning: true} );
+          return;
+        }
+
+        // component can't be moved to a parent already has the same component as it's child
+        if( targetComponent.businessLogic.childIds.includes( movedComponent.businessLogic.id ) )
+        {
+          this.targetComponentName = targetComponent.businessLogic.name;
+          this.movedComponentName = movedComponent.businessLogic.name;
+          this.setState( {isDropToSameParentWarning: true} );
+          return;
+        }
+
+        // if targer component's children are hidden, expending all the children first without calling setState to rend the list
+        if( targetComponent.displayLogic.canExpend )
+        {
+           currentSessionComponents = this.showOrHideChildren( targetComponent, true, false);
+           targetComponent.displayLogic.canExpend = false;
+        }
+         
+>>>>>>> zhangchar/move_component
 
         // find current parent components of source/moved component, have to use displayLogic.Key that is unique, to search  
         let parentComponents = currentSessionComponents.filter(  (component)=>{
                     return component.displayLogic.childKeyIds.length && component.displayLogic.childKeyIds.find( (childKey)=>{return childKey === sourceId } ) 
                   } );
+<<<<<<< HEAD
+=======
+
+>>>>>>> zhangchar/move_component
         parentComponents.map( (component)=>{return console.log('parent component name of source component: ', component.businessLogic.name) } );
 
         //remove moved/source component id and displayLogicKey from prevous parent's businessLogic and displayLogic childId list
@@ -446,6 +582,7 @@ class CCiLabComponentList extends Component {
             //rebuild the component list
             let updatedSessionComponents = [];
             
+<<<<<<< HEAD
             initializeComponents(targetComponent, currentSessionComponents, rmMovedComponent, updatedSessionComponents);
 
             //move to not expended component, change source component show status to false 
@@ -460,6 +597,27 @@ class CCiLabComponentList extends Component {
             //check if moved component progress status need to change (#todo)
 
             //set the state again
+=======
+            
+            
+            //initialize the updated session components
+            initializeComponents(targetComponent, currentSessionComponents, rmMovedComponent, updatedSessionComponents);
+
+            // populate target component's displayLogic.childKeyIds[]
+            populateComponentChildKeyIds(targetComponent, updatedSessionComponents);
+            
+
+            rmMovedComponent[0].displayLogic.showMyself = true;
+
+            // update selected status so the moved component or its parent will be highlighted 
+            updatedSessionComponents.forEach( (item)=>{
+                    setComponentSelected( item, rmMovedComponent[0].displayLogic.key ); 
+                  });
+
+            //check if moved component progress status need to change (#todo)
+ 
+            // update greetings list
+>>>>>>> zhangchar/move_component
             this.setState( { greetings: updatedSessionComponents });
         }
         
@@ -501,21 +659,43 @@ class CCiLabComponentList extends Component {
           ) : null;
     };
 
+    hideDropToSameParentWarning=()=>{
+      this.setState({isDropToSameParentWarning: false});
+    }
+
+    hideDropToItselfWarning=()=>{
+      this.setState({isDropToItselfWarning: false});
+    }
 
     render() {
+      const droptoSameParentWarningModal = this.state.isDropToSameParentWarning ? 
+                  <DropComponentWarningModal 
+                  title='Waring:' 
+                  body={`"${this.targetComponentName}" already has "${this.movedComponentName}" as its child component!`}
+                  hideDropWarning={this.hideDropToSameParentWarning}/>
+                  : null;
+
+      const droptoItselfWarningModal = this.state.isDropToItselfWarning ? 
+                  <DropComponentWarningModal 
+                    title='Waring:' 
+                    body={`These two "${this.targetComponentName}" is the same component!`}
+                    hideDropWarning={this.hideDropToItselfWarning}/>
+                  : null;
+
       return (
+       
         <div className={`d-flex flex-row`} >
           {/* <AddGreeter addGreeting={this.addGreeting} /> */}
             {/* <div className='d-flex'> */}
             {/* following d-flex is needed to show collapse icon (>) next to the top component  */}
             {/* https://code.i-harness.com/en/q/27a5171 explains why vertical scroll bar won't appear for flex box and what is the workaroud
-                 className={`d-flex flex-column flyout-component-list ${this.visibility}`, 'width':`${this.componentListWidth}px`}
+                 className={`d-flex flex-column cci-flyout-component-list ${this.visibility}`, 'width':`${this.componentListWidth}px`}
                  UC browser, pro to Edge 15 (https://caniuse.com/#feat=css-sticky) doesn't suppot sticky-top onScroll={this.updateDimensions}*/} 
-              <div id='cciLabComponentListID' className={`d-flex flex-column flyout-component-list elemnt-transition`} 
+              <div id='cciLabComponentListID' className={`d-flex flex-column cci-flyout-component-list cci-component-list_transition`} 
                   style={{'transform': `${this.compnentListTranslateStyle}`, 'height':`${this.componentListHeight}`, 'width':`${this.componentListWidth}vw`}}
                   onScroll={this.setSelectedComponentStickDirection}>
-                  {/* set style left:0px to sticky-top to left too*/}
-                  <div className='flex-row bg-info sticky-top fa' style={{ 'height': '25px', 'width': 'auto', 'left':'0px'}}>
+                  {/*  sticky to top and left*/}
+                  <div className='flex-row bg-info sticky-top fa' style={{ 'height': '25px', 'width': 'auto', 'left':'0'}}>
                     <span className='pl-4 border-0 text-primary  text-nowrap'>部件名:</span>
                     <span className='pl-4 border-0 text-primary  text-nowrap'>进度 <span className='font-weight-normal text-primary '> (%)</span></span> 
                   </div>
@@ -524,10 +704,12 @@ class CCiLabComponentList extends Component {
                   {this.renderGreetings()}
               </div>
               <div>
-                <a href="#1" className='float-left nav-link pl-0 py-4 pr-4 elemnt-transition sticky-top' style={{'transform': `${this.compnentListTranslateStyle}`}} onClick={this.showHideComponentList} >
+                <a href="#show-hide-component-list" className='float-left nav-link pl-0 py-4 pr-4 cci-component-list_transition sticky-top' style={{'transform': `${this.compnentListTranslateStyle}`}} onClick={this.showHideComponentList} >
                     <span className={`badge-pill badge-info ${this.slidingComponentListIconClassName}`}></span>
                 </a>
             </div>
+            {droptoSameParentWarningModal}
+            {droptoItselfWarningModal}
         </div>
       );
     };

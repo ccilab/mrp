@@ -5,7 +5,14 @@ body {
   background-color: #EEE;
   font-size: 20px;
   overflow: auto;
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  -khtml-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
 }
+
 
 #root li {
   margin-bottom: 10px;
