@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 // import "./../../stylesheets/ccilab/scss/components/ccilab-component.scss";
 import "./../../dist/css/ccilab-component.css"
-
+ 
 class CCiLabComponent extends Component {
         state = {
             expended:  true,
