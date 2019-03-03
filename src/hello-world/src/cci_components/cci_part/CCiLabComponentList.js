@@ -25,30 +25,6 @@ const thirdComponents = components.thirdComponents;
 // simulate load children of component id 4 ( low_beam )
 const forthComponents = components.forthComponents;
 
-<<<<<<< HEAD
-// initialize displayLogic object
-const initializeDisplayLogic = (key, canExpend, rectLeft ) =>{
-  let displayLogic = {};
-  displayLogic.key = key;
-  displayLogic.childKeyIds = [];
-  displayLogic.showMyself = false;
-  displayLogic.canExpend = canExpend;
-  displayLogic.rectLeft = (typeof rectLeft === "undefined" ) ? 0:rectLeft;
-  displayLogic.selected = 0;  // 0, -1, +1
-  return displayLogic;
-};
-
-// find maximum displayLogic.key
-const findMaxDisplayKey = ( componentList )=>{
-  let displayKeyValue = 0;
-  let childKeys =[];
-  if( typeof componentList !== "undefined") {
-    componentList.forEach( (component)=>{ childKeys.push( component.displayLogic.key ) } );
-    // https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Function/apply#Using_apply_and_built-in_functions
-    // The consequences of applying a function with too many arguments (think more than tens of thousands of arguments) vary across engines 
-    // (JavaScriptCore has hard-coded argument limit of 65536), because the limit (indeed even the nature of any excessively-large-stack behavior) is unspecified. 
-    displayKeyValue = Math.max( ...childKeys);
-=======
 const getChildComponentsFromDataSource = (parentComponent)=>{
   //#todo: need to query server to get a new components
   console.log("query server to get child components")
@@ -58,22 +34,8 @@ const getChildComponentsFromDataSource = (parentComponent)=>{
   {
     components= secondComponents;
     return components;
->>>>>>> zhangchar/move_component
-  }
-  return displayKeyValue;
-};
-
-<<<<<<< HEAD
-// merge newComponentList (that displayLogic isn't initialized) and existingComponentList (existing components, displayLogic is initialized) into targetComponentList
-// from the startComponent 
-const initializeComponents = ( startComponent, existingComponentList, newComponentList, targetComponentList)=>{
- 
-
-  if( typeof existingComponentList !== "undefined") {
-    existingComponentList.forEach( (existingComponent)=>{ targetComponentList.push( existingComponent ) } );
   }
 
-=======
     
   if( parentComponent.businessLogic.id === 2 )
   {
@@ -123,28 +85,15 @@ const initializeComponents = ( startComponent, existingComponentList, newCompone
   if( typeof existingComponentList !== "undefined") 
     existingComponentList.forEach( (existingComponent)=>{ targetComponentList.push( existingComponent ) } );
 
->>>>>>> zhangchar/move_component
   // initialize displayLogic items, create unique key value for latest componets from data layer
   // this guarantees that displayLogic.key is unique, (newly added componet won't show itself until
   // user clicks it, except the very top component), 
   let displayKeyValue = findMaxDisplayKey(existingComponentList);
-<<<<<<< HEAD
-  for(let idx = 0; idx < newComponentList.length; idx++ ) 
-  {
-    let element = newComponentList[idx];
-    if( typeof element.displayLogic === "undefined")
-    {
-      element.displayLogic = new initializeDisplayLogic( ++displayKeyValue, element.businessLogic.childIds.length !== 0 ? true : false );
-    }
-
-   
-=======
   
   newComponentList.forEach((element)=>{
     if( typeof element.displayLogic === "undefined")
       element.displayLogic = new initializeDisplayLogic( ++displayKeyValue, element.businessLogic.childIds.length !== 0 ? true : false );
   
->>>>>>> zhangchar/move_component
     if(typeof startComponent   !== "undefined"  && typeof startComponent.displayLogic !== "undefined" && typeof element !== "undefined") {
       let startComponentKey = startComponent.displayLogic.key;
       //need populate childKeyIds[] if its not fully populated yet
@@ -319,11 +268,7 @@ class CCiLabComponentList extends Component {
    
 
     //based on selected component and its show Status to show or hide its children
-<<<<<<< HEAD
-    showOrHideChildren = ( selectedComponent, showStatus ) =>{
-=======
     showOrHideChildren = ( selectedComponent, showStatus, isRending=true ) =>{
->>>>>>> zhangchar/move_component
           let currentSessionComponents=[];
         
           // if selected component's childKeyIds[] isn't fully populated we need to request new components from server side first
@@ -365,26 +310,6 @@ class CCiLabComponentList extends Component {
 
            
           });
-<<<<<<< HEAD
-          // for( idxComponent = 0;  idxComponent < currentSessionComponents.length; idxComponent++ ) 
-          // {
-          //   setComponentSelected(currentSessionComponents[idxComponent], selectedComponent.displayLogic.key);
- 
-          //   // skip the first component
-          //   if( currentSessionComponents[idxComponent].displayLogic.key === rootComponent.displayLogic.key )
-          //     continue;
-
-          //   // find the component that has the child components, and show or hide the show status of this component's childKeyIds 
-          //   if( selectedComponent.displayLogic.childKeyIds.includes(currentSessionComponents[idxComponent].displayLogic.key) ) {
-          //       currentSessionComponents[idxComponent].displayLogic.showMyself = showStatus;
-
-          //       // recursively hide childKeyIds[] of child component included in childKeyIds[] of current component,
-          //       // but we don't want to hide child component's childKeyIds[] unless its direct parent's canExpend = false 
-          //       hideChildren(currentSessionComponents[idxComponent], currentSessionComponents, showStatus);
-          //   }
-          // }
-=======
->>>>>>> zhangchar/move_component
           
           // create vertical scroll bar based on the height of component list dynamically
           let updatedRect = estimateComponentListRect(currentSessionComponents);
@@ -446,11 +371,7 @@ class CCiLabComponentList extends Component {
     // handle componemt move
     // - update component list
     // - update component status after move by check against the new parent
-<<<<<<< HEAD
-    // issue - move  first glue to second nail, the position is wrong
-=======
     // issue - need to keep highlight is component is show or it's parent should be highlight
->>>>>>> zhangchar/move_component
     //       
     moveComponentHandler = ( movedComponentDisplayKey, targetComponent ) =>{
       if( movedComponentDisplayKey !== "undefined" && typeof( movedComponentDisplayKey) === "string" )
@@ -464,28 +385,6 @@ class CCiLabComponentList extends Component {
         if( typeof targetComponent === "undefined")
           return;
 
-<<<<<<< HEAD
-        //component can't drop to its own parent, 
-        if( targetComponent.displayLogic.childKeyIds.find( (key)=>{ return key === sourceId}) )
-          return;
-
-        let movedComponent = currentSessionComponents.find( (component)=>{return component.displayLogic.key === sourceId } )
-
-        if( typeof movedComponent === "undefined" )
-          return;
-
-        
-        console.log('source component name: ', movedComponent.businessLogic.name);
-        console.log('target component name: ', targetComponent.businessLogic.name);
-
-        //same component business id can't be move to itself
-        if( targetComponent.businessLogic.id === movedComponent.businessLogic.id )
-          return;
-
-        // component can't be moved to a parent already has the same component as it's child
-          if( targetComponent.businessLogic.childIds.includes( movedComponent.businessLogic.id ) )
-              return;
-=======
         let movedComponent = currentSessionComponents.find( (component)=>{return component.displayLogic.key === sourceId } )
 
         // this component can't be moved e.g. it has children
@@ -531,16 +430,12 @@ class CCiLabComponentList extends Component {
            targetComponent.displayLogic.canExpend = false;
         }
          
->>>>>>> zhangchar/move_component
 
         // find current parent components of source/moved component, have to use displayLogic.Key that is unique, to search  
         let parentComponents = currentSessionComponents.filter(  (component)=>{
                     return component.displayLogic.childKeyIds.length && component.displayLogic.childKeyIds.find( (childKey)=>{return childKey === sourceId } ) 
                   } );
-<<<<<<< HEAD
-=======
 
->>>>>>> zhangchar/move_component
         parentComponents.map( (component)=>{return console.log('parent component name of source component: ', component.businessLogic.name) } );
 
         //remove moved/source component id and displayLogicKey from prevous parent's businessLogic and displayLogic childId list
@@ -582,22 +477,6 @@ class CCiLabComponentList extends Component {
             //rebuild the component list
             let updatedSessionComponents = [];
             
-<<<<<<< HEAD
-            initializeComponents(targetComponent, currentSessionComponents, rmMovedComponent, updatedSessionComponents);
-
-            //move to not expended component, change source component show status to false 
-            if( !targetComponent.displayLogic.canExpend )
-              rmMovedComponent[0].displayLogic.showMyself = true;
-            else
-              rmMovedComponent[0].displayLogic.showMyself = false;
-
-            // populate target component's displayLogic.childKeyIds[]
-            populateComponentChildKeyIds(targetComponent, updatedSessionComponents);
-
-            //check if moved component progress status need to change (#todo)
-
-            //set the state again
-=======
             
             
             //initialize the updated session components
@@ -617,7 +496,6 @@ class CCiLabComponentList extends Component {
             //check if moved component progress status need to change (#todo)
  
             // update greetings list
->>>>>>> zhangchar/move_component
             this.setState( { greetings: updatedSessionComponents });
         }
         

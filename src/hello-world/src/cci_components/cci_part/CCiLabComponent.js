@@ -26,13 +26,7 @@ class CCiLabComponent extends Component {
     }
 
     componentDidMount =()=> {
-<<<<<<< HEAD
-      let componentRect = document.getElementById( `${this.currentComponent.displayLogic.key}` ).getBoundingClientRect();
-
-      this.currentComponent.displayLogic.rectLeft = componentRect.left;
-=======
       let componentRect = document.getElementById( `${this.currentComponent.displayLogic.key}-item` ).getBoundingClientRect();
->>>>>>> zhangchar/move_component
 
       this.currentComponent.displayLogic.rectLeft = componentRect.left;
     };
@@ -63,11 +57,6 @@ class CCiLabComponent extends Component {
     }
 
     dragStart=(e) => {
-<<<<<<< HEAD
-      if (e.target.id.includes('-drag') ) 
-      {
-        let draggedComponetId=e.target.id.replace(/-drag/g,'');
-=======
       let draggedComponetId=e.target.id;
       if( draggedComponetId.includes( '-item' ) )
         draggedComponetId=draggedComponetId.replace(/-item/g,'');
@@ -77,7 +66,6 @@ class CCiLabComponent extends Component {
 
       if (Number.isInteger(parseInt(draggedComponetId, 10) ) )
       {
->>>>>>> zhangchar/move_component
         e.dataTransfer.setData("Text", draggedComponetId);
         e.effectAllowed='copyMove';
         console.log('drag select span id: ', draggedComponetId );    
@@ -92,9 +80,6 @@ class CCiLabComponent extends Component {
     dragOver=(e) =>{
       e.preventDefault();
       // e.dropEffect='copyMove';
-<<<<<<< HEAD
-      console.log('drag over from source: ');
-=======
       let draggedComponetId=e.target.id;
       if( draggedComponetId.includes( '-item' ) )
         draggedComponetId=draggedComponetId.replace(/-item/g,'');
@@ -104,16 +89,12 @@ class CCiLabComponent extends Component {
 
       if ( Number.isInteger( parseInt(draggedComponetId, 10) ) )
         console.log('drag over: ', draggedComponetId);
->>>>>>> zhangchar/move_component
     
     }
 
     doDrop=(e)=>{
       e.preventDefault();
 
-<<<<<<< HEAD
-      if ( e.target.id.includes('-drag') ) 
-=======
       let draggedComponetId=e.target.id;
       if( draggedComponetId.includes( '-item' ) )
         draggedComponetId=draggedComponetId.replace(/-item/g,'');
@@ -122,7 +103,6 @@ class CCiLabComponent extends Component {
         draggedComponetId=draggedComponetId.replace(/-show-hide/g,'');
         
       if ( Number.isInteger( parseInt(draggedComponetId, 10) ) )
->>>>>>> zhangchar/move_component
       {
           var sourceId = e.dataTransfer.getData("Text");
           this.props.moveComponentHandler(sourceId, this.currentComponent);
@@ -144,11 +124,7 @@ class CCiLabComponent extends Component {
             this.progressStatus === 'success' ? 'fa fa-check-circle' :
             this.progressStatus === 'warning' ? 'fa fa-exclamation-circle' : 'fa fa-exclamation-triangle';
     
-<<<<<<< HEAD
-        let permissionEabled = true; // need to add check later
-=======
         let permissionEabled = true; // #todo: need to add check later
->>>>>>> zhangchar/move_component
         let  Component=' ';
         let draggableSetting = false;
 
@@ -205,15 +181,9 @@ class CCiLabComponent extends Component {
           // https://developer.mozilla.org/en-US/docs/Web/API/HTML_Drag_and_Drop_API/Drag_operations#dragstart
           // https://developer.mozilla.org/en-US/docs/Web/API/DataTransferItem#Browser_compatibility
          
-<<<<<<< HEAD
-          <span id={`${this.currentComponent.displayLogic.key}-drag`} 
-                className={`${Component}`}  
-                style={{'width': `${this.StickyWidth}px`}} 
-=======
           <span id={`${this.currentComponent.displayLogic.key}`} 
                 className={`${Component}`}  
                 style={{'width': `${stickyWidth}` }}
->>>>>>> zhangchar/move_component
                 draggable={`${draggableSetting}`}
                 onDragStart={ draggableSetting === 'true' ? this.dragStart : null}
                 onDragOver={ this.dragOver }
@@ -224,9 +194,6 @@ class CCiLabComponent extends Component {
             */}
             { ( this.children.length !== 0  )?
                   // {/* tag's id used to handle drop event */}
-<<<<<<< HEAD
-                  <a  id={`${this.currentComponent.displayLogic.key}-drag`} href="#1" className={`cci-link_position float-left nav-link ${this.expendCollapseBadgePadding} `} style={anchorLeftstyle} onClick={ this.expending }>
-=======
                   <a  id={`${this.currentComponent.displayLogic.key}-show-hide`} 
                       href="#expend-collapse-badge" className={`cci-link_position float-left nav-link ${this.expendCollapseBadgePadding} `} 
                       style={anchorLeftstyle} 
@@ -235,7 +202,6 @@ class CCiLabComponent extends Component {
                       onDragStart={ draggableSetting === 'true' ? this.dragStart : null}
                       onDragOver={ this.dragOver }
                       onDrop={  this.doDrop }>
->>>>>>> zhangchar/move_component
                     <span className={expendCollapseBadgeIconClassName}></span>
                   </a>:null
             }  
@@ -243,16 +209,6 @@ class CCiLabComponent extends Component {
           
             
             {/* shift the child components to the right */}  
-<<<<<<< HEAD
-            {/* tag's id is used to get component's rect */}
-            <ul id={`${this.currentComponent.displayLogic.key}`} 
-                className='flow-right list-group flex-row cci-component-lable_position' 
-                style={leftShiftStyle}>
-                 {/* tag's id is used to handle drop event */}
-                <button id={`${this.currentComponent.displayLogic.key}-drag`} className={`${ComponentClassName}`} 
-                  style={ { 'height': this.componentLableHeight, 'width': this.componentLableHeight} }
-                  onClick={ this.componentSelected } >
-=======
             {/* tag's id is used to get component's rect and handle drop event*/}
             <ul id={`${this.currentComponent.displayLogic.key}-item`} 
                 className='flow-right list-group flex-row cci-component-lable_position' 
@@ -269,15 +225,10 @@ class CCiLabComponent extends Component {
                   onDragStart={ draggableSetting === 'true' ? this.dragStart : null}
                   onDragOver={ this.dragOver }
                   onDrop={  this.doDrop }>
->>>>>>> zhangchar/move_component
                   
                   {/* no style for top element so the button can host the image, other elements need style to set image position  */}
                   { (this.imgName.length !== 0 ) ? 
                       // {/* tag's id used to handle drop event */}
-<<<<<<< HEAD
-                      <img id={`${this.currentComponent.displayLogic.key}-drag`} className='cci-component__img rounded-circle float-left' src={this.imgName} alt=""
-                        style={{'height': this.componentLableHeight, 'width': this.componentLableHeight}} >
-=======
                       <img id={`${this.currentComponent.displayLogic.key}`} 
                            className='cci-component__img rounded-circle float-left' src={this.imgName} alt=""
                            style={{'height': this.componentLableHeight, 'width': this.componentLableHeight}} 
@@ -285,18 +236,11 @@ class CCiLabComponent extends Component {
                            onDragStart={ draggableSetting === 'true' ? this.dragStart : null}
                            onDragOver={ this.dragOver }
                            onDrop={  this.doDrop }>
->>>>>>> zhangchar/move_component
                       </img>
                       :null
                    }
                 </button>
                 {/* tag's id is used to handle drop event */}
-<<<<<<< HEAD
-                <a id={`${this.currentComponent.displayLogic.key}-drag`} href="#1" className={`${componentNameClassName}`} style={{ 'height': '10%' }} onClick={ this.componentSelected }>{this.componentName}:</a>
-                
-                {/* tag span's id used to find rect */}
-                <span id='progressStatusSpan' className={`badge-pill badge-${this.progressStatus} ${statusBadgeIconClassName} text-body text-nowrap align-self-center ml-0`} style={{ 'height': '15% !important'}}> {this.progressValue}%</span>  
-=======
                 <a  id={`${this.currentComponent.displayLogic.key}`} 
                     href="#select-component-name" className={`${componentNameClassName}`} 
                     style={{ 'height': '10%' }} 
@@ -319,7 +263,6 @@ class CCiLabComponent extends Component {
                       onDrop={  this.doDrop }> 
                       {this.progressValue}%
                 </span>  
->>>>>>> zhangchar/move_component
             </ul>
           </span>
         )
