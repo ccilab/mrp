@@ -114,6 +114,18 @@ class CCiLabComponent extends Component {
       console.log('droped from source: ', sourceId);
     }
 
+    // to estimate the string width before render the string
+    getElementWidth = (componentName)=>{
+      let elementWidth=0;
+
+      if( componentName !== "undefined" && typeof componentName === "string" )
+      {
+        elementWidth = ( componentName.length + 1 ) * 15; // roughly 15 px as font-size
+        console.log("name width: ", elementWidth)
+      }
+
+      return elementWidth;
+    }
 
     render() {
         // console.log('CCiLabComponent::render() imgFile: ', this.imgName);
@@ -134,13 +146,13 @@ class CCiLabComponent extends Component {
         // very top component or component has children can't be moved 
         if ( this.parents.length === 0 || this.children.length !== 0 ) 
         {
-            Component =  this.currentComponent.displayLogic.selected !== 0 ? 'bg-info component_opacity ccilab-component-sticky-top':' ';
+            Component =  this.currentComponent.displayLogic.selected !== 0 ? 'bg-info component_opacity ccilab-component-sticky-top inline-menu_sticky_horizontal':'inline-menu_sticky_horizontal ';
             draggableSetting= false;
         }
         else
         { // draggable for elements bellow the very top one, if use has the permission ( need to check)
-            Component =  this.currentComponent.displayLogic.selected > 0 ? 'bg-info component_opacity ccilab-component-sticky-top ' + (permissionEabled? 'move':' ' ):
-                         this.currentComponent.displayLogic.selected < 0 ? 'bg-info component_opacity ccilab-component-sticky-bottom ' + (permissionEabled? 'move':' ' ):' ';
+            Component =  this.currentComponent.displayLogic.selected > 0 ? 'bg-info component_opacity ccilab-component-sticky-top inline-menu_sticky_horizontal' + (permissionEabled? 'move':' ' ):
+                         this.currentComponent.displayLogic.selected < 0 ? 'bg-info component_opacity ccilab-component-sticky-bottom inline-menu_sticky_horizontal' + (permissionEabled? 'move':' ' ):'inline-menu_sticky_horizontal ';
             draggableSetting = ( permissionEabled && this.currentComponent.displayLogic.selected !== 0 &&  this.parents.length !== 0 )? 'true':'false';
         }
 
@@ -169,14 +181,13 @@ class CCiLabComponent extends Component {
             this.currentComponent.displayLogic.selected !== 0 ) 
             leftOffset -= this.componentLableWidth;
         }
-         
-     
-
-
-       anchorLeftstyle = {'left': `${leftOffset}px`,}
-       leftShiftStyle = {'left': `${leftOffset}px`,};
+        
+        anchorLeftstyle = {'left': `${leftOffset}px`,}
+        leftShiftStyle = {'left': `${leftOffset}px`,};
 
         let  stickyWidth =  this.currentComponent.displayLogic.selected !== 0 ? '150%':'';
+
+        let labelWidth = this.getElementWidth(this.componentName) + 75; //offset 75 px is defined in .name-label_sticky_horizontal
 
         return (
           // https://developer.mozilla.org/en-US/docs/Web/API/HTML_Drag_and_Drop_API
@@ -195,7 +206,7 @@ class CCiLabComponent extends Component {
               this.children.length === 0 &&  
               this.currentComponent.displayLogic.selected !== 0 ) ?
               <span>
-                <button className='btn rounded-circle p-0 bg-primary float-left sticky-horizontal' 
+                <button className='btn rounded-circle p-0 bg-primary float-left inline-menu_sticky_horizontal' 
                         style={ { 'height': `${this.componentLableHeight}px`, 'width': `${this.componentLableWidth}px`} }>
                   <span className='fa fa-ellipsis-h'></span>
                 </button> 
@@ -231,7 +242,7 @@ class CCiLabComponent extends Component {
                 onDragOver={ this.dragOver }
                 onDrop={  this.doDrop }>
                  {/* tag's id is used to handle drop event */}
-                <button id={`${this.currentComponent.displayLogic.key}`} className={`${ComponentClassName}`} 
+                <button id={`${this.currentComponent.displayLogic.key}`} className={`${ComponentClassName} img-btn_sticky_horizontal`} 
                   style={ { 'height': `${this.componentLableHeight}px`, 'width': `${this.componentLableWidth}px`}}
                   draggable={`${draggableSetting}`}
                   onClick={ this.componentSelected } 
@@ -243,7 +254,7 @@ class CCiLabComponent extends Component {
                   { (this.imgName.length !== 0 ) ? 
                       // {/* tag's id used to handle drop event */}
                       <img id={`${this.currentComponent.displayLogic.key}`} 
-                           className='cci-component__img rounded-circle float-left' src={this.imgName} alt=""
+                           className='cci-component__img rounded-circle float-left img-btn_sticky_horizontal' src={this.imgName} alt=""
                            style={{'height': `${this.componentLableHeight}px`, 'width': `${this.componentLableWidth}px`}} 
                            draggable={`${draggableSetting}`}
                            onDragStart={ draggableSetting === 'true' ? this.dragStart : null}
@@ -255,7 +266,7 @@ class CCiLabComponent extends Component {
                 </button>
                 {/* tag's id is used to handle drop event */}
                 <a  id={`${this.currentComponent.displayLogic.key}`} 
-                    href="#select-component-name" className={`${componentNameClassName}`} 
+                    href="#select-component-name" className={`${componentNameClassName} name-label_sticky_horizontal`} 
                     style={{ 'height': '10%' }} 
                     draggable={`${draggableSetting}`}
                     onClick={ this.componentSelected }
@@ -267,8 +278,8 @@ class CCiLabComponent extends Component {
                 
                 {/* tag's id is used to handle drop event */}
                 <span id={`${this.currentComponent.displayLogic.key}`} 
-                      className={`badge-pill badge-${this.progressStatus} ${statusBadgeIconClassName} text-body text-nowrap align-self-center ml-0`} 
-                      style={{ 'height': '15% !important'}} 
+                      className={`badge-pill badge-${this.progressStatus} ${statusBadgeIconClassName} text-nowrap align-self-center ml-0 status-label_sticky_horizontal`} 
+                      style={{ 'height': '15% !important', 'left':`${labelWidth}px`}} 
                       draggable={`${draggableSetting}`}
                       onClick={ this.componentSelected }
                       onDragStart={ draggableSetting === 'true' ? this.dragStart : null}

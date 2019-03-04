@@ -130,9 +130,29 @@
   z-index: $zindex-sticky;
 }
 
-.sticky-horizontal{
+.inline-menu_sticky_horizontal{
   position: sticky;
-  left: 0;
+  left: 25px;
+  right: 100%;
+  z-index: $zindex-sticky;
+}
+
+.img-btn_sticky_horizontal{
+  position: sticky;
+  left: 55px;
+  right: 100%;
+  z-index: $zindex-sticky;
+}
+
+.name-label_sticky_horizontal{
+  position: sticky;
+  left: 75px;
+  right: 100%;
+  z-index: $zindex-sticky;
+}
+
+.status-label_sticky_horizontal{
+  position: sticky;
   right: 100%;
   z-index: $zindex-sticky;
 }
