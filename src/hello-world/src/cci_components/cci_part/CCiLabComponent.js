@@ -14,7 +14,10 @@ class CCiLabComponent extends Component {
         componentName = this.currentComponent.businessLogic.name;
         imgName = (this.currentComponent.businessLogic.imgFile.length !==0 ) ? '/images/'+ this.currentComponent.businessLogic.imgFile : 
                     (this.children.length !==0) ? '/images/cci_group_block.png' : '/images/cci_single_block_item.png';
-        componentLableHeight =  (this.parents.length === 0 ) ? '45px' : (this.children.length !==0) ? '25px': '25px';
+
+        componentLableHeight =  (this.parents.length === 0 ) ? '45' : (this.children.length !==0) ? '25': '25';
+        componentLableWidth = this.componentLableHeight;
+
         expendCollapseBadgePadding =  (this.parents.length === 0 ) ? 'pt-3 pb-0 pl-4 pr-1' : 'pt-2 pb-0 pl-4 pr-1';
 
 
@@ -158,22 +161,21 @@ class CCiLabComponent extends Component {
         let leftOffset=this.props.leftOffset;
         
         // expendable component left shift less, to compensate <a> 
-        if ( this.children.length !== 0 )
+        if ( this.children.length === 0 )
         {
-          anchorLeftstyle = {
-            'left': `${leftOffset}px`,
-          }
-          leftShiftStyle = {
-            'left': `${leftOffset}px`,
-            };
-        }
-        else{
           leftOffset = this.props.leftOffset+39;
-          leftShiftStyle = {
-            'left': `${leftOffset}px`,
-            };
+
+          if( this.parents.length !== 0 && 
+            this.currentComponent.displayLogic.selected !== 0 ) 
+            leftOffset -= this.componentLableWidth;
         }
          
+     
+
+
+       anchorLeftstyle = {'left': `${leftOffset}px`,}
+       leftShiftStyle = {'left': `${leftOffset}px`,};
+
         let  stickyWidth =  this.currentComponent.displayLogic.selected !== 0 ? '150%':'';
 
         return (
@@ -189,13 +191,24 @@ class CCiLabComponent extends Component {
                 onDragOver={ this.dragOver }
                 onDrop={  this.doDrop }
           > 
+          { ( this.parents.length !== 0 && 
+              this.children.length === 0 &&  
+              this.currentComponent.displayLogic.selected !== 0 ) ?
+              <span>
+                <button className='btn rounded-circle p-0 bg-primary float-left sticky-horizontal' 
+                        style={ { 'height': `${this.componentLableHeight}px`, 'width': `${this.componentLableWidth}px`} }>
+                  <span className='fa fa-ellipsis-h'></span>
+                </button> 
+              </span>: null
+          }
             {/* show collapse icon 'v' for all expendable components,
               show expendable icon '>' for those components have children except the top component
             */}
             { ( this.children.length !== 0  )?
                   // {/* tag's id used to handle drop event */}
                   <a  id={`${this.currentComponent.displayLogic.key}-show-hide`} 
-                      href="#expend-collapse-badge" className={`cci-link_position float-left nav-link ${this.expendCollapseBadgePadding} `} 
+                      href="#expend-collapse-badge" 
+                      className={`cci-link_position float-left nav-link ${this.expendCollapseBadgePadding} `} 
                       style={anchorLeftstyle} 
                       draggable={`${draggableSetting}`}
                       onClick={ this.expending }
@@ -219,7 +232,7 @@ class CCiLabComponent extends Component {
                 onDrop={  this.doDrop }>
                  {/* tag's id is used to handle drop event */}
                 <button id={`${this.currentComponent.displayLogic.key}`} className={`${ComponentClassName}`} 
-                  style={ { 'height': this.componentLableHeight, 'width': this.componentLableHeight} }
+                  style={ { 'height': `${this.componentLableHeight}px`, 'width': `${this.componentLableWidth}px`}}
                   draggable={`${draggableSetting}`}
                   onClick={ this.componentSelected } 
                   onDragStart={ draggableSetting === 'true' ? this.dragStart : null}
@@ -231,7 +244,7 @@ class CCiLabComponent extends Component {
                       // {/* tag's id used to handle drop event */}
                       <img id={`${this.currentComponent.displayLogic.key}`} 
                            className='cci-component__img rounded-circle float-left' src={this.imgName} alt=""
-                           style={{'height': this.componentLableHeight, 'width': this.componentLableHeight}} 
+                           style={{'height': `${this.componentLableHeight}px`, 'width': `${this.componentLableWidth}px`}} 
                            draggable={`${draggableSetting}`}
                            onDragStart={ draggableSetting === 'true' ? this.dragStart : null}
                            onDragOver={ this.dragOver }

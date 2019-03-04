@@ -130,6 +130,13 @@
   z-index: $zindex-sticky;
 }
 
+.sticky-horizontal{
+  position: sticky;
+  left: 0;
+  right: 100%;
+  z-index: $zindex-sticky;
+}
+
  // https://www.w3schools.com/cssref/tryit.asp?filename=trycss_cursor 
 .move{
   cursor: move;

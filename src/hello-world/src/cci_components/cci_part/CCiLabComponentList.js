@@ -1,6 +1,5 @@
 
 import React, { Component } from "react";
-// import "./../../stylesheets/ccilab/scss/components/ccilab-component-list.scss";
 import "./../../dist/css/ccilab-component-list.css"
 import CCiLabComponent from "./CCiLabComponent";
 import DropComponentWarningModal from "./CCiLabDropComponentCheckFailedModal";
