@@ -58,6 +58,7 @@
 
 .cci-component__img{
   // height: $component_img_hight;
+  // height: $component_img_hight;
   // width: $component_img_width;      
   object-fit: scale-down;
   filter:opacity(80%);
@@ -137,21 +138,21 @@
   z-index: $zindex-sticky;
 }
 
-.img-btn_sticky_horizontal{
-  position: sticky;
-  left: 55px;
-  right: 100%;
-  z-index: $zindex-sticky;
-}
+// .img-btn_sticky_horizontal{
+//   position: sticky;
+//   left: 55px;
+//   right: 100%;
+//   z-index: $zindex-sticky;
+// }
 
-.name-label_sticky_horizontal{
-  position: sticky;
-  left: 75px;
-  right: 100%;
-  z-index: $zindex-sticky;
-}
+// .name-label_sticky_horizontal{
+//   position: sticky;
+//   left: 75px;
+//   right: 100%;
+//   z-index: $zindex-sticky;
+// }
 
-.status-label_sticky_horizontal{
+.component-label_sticky_horizontal{
   position: sticky;
   right: 100%;
   z-index: $zindex-sticky;
