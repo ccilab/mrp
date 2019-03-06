@@ -5,7 +5,7 @@ import CCiLabComponent from "./CCiLabComponent";
 import DropComponentWarningModal from "./CCiLabDropComponentCheckFailedModal";
 
 // import AddGreeter from "./AddGreeter";
-import { setListHeight, setListWidth, setHideListWidth} from "./CCiLabUtility"
+import { setListHeight, setListWidth, setHideListWidth, getTextWidth} from "./CCiLabUtility"
 
 //json-loader load the *.json file
 import components from './../../data/components.json';
@@ -525,6 +525,7 @@ class CCiLabComponentList extends Component {
                   return <CCiLabComponent key={component.displayLogic.key} 
                                           component={component} 
                                           leftOffset={leftOffset} 
+                                          listWidth={this.componentListWidth}
                                           removeGreeting={this.removeGreeting} 
                                           showOrHideChildren={this.showOrHideChildren}
                                           selectedComponentHandler={this.selectedComponentHandler}
@@ -559,6 +560,12 @@ class CCiLabComponentList extends Component {
                     hideDropWarning={this.hideDropToItselfWarning}/>
                   : null;
 
+      let componentTitleWidth = getTextWidth('部件名:', 'normal 25px sans-serif')
+      console.log( 'componentTitleWidth: ', componentTitleWidth);
+      let componentTitleLeft = 25; //root element font-size
+      let statusTitleLeft = componentTitleLeft + componentTitleWidth; 
+      let statusTitleWidth = getTextWidth('进度:', 'normal 25px sans-serif');
+      let statusUnitLeft = statusTitleLeft + statusTitleWidth;
       return (
        
         <div className={`d-flex flex-row`} >
@@ -572,9 +579,10 @@ class CCiLabComponentList extends Component {
                   style={{'transform': `${this.compnentListTranslateStyle}`, 'height':`${this.componentListHeight}`, 'width':`${this.componentListWidth}vw`}}
                   onScroll={this.setSelectedComponentStickDirection}>
                   {/*  sticky to top and left*/}
-                  <div className='flex-row bg-info sticky-top fa' style={{ 'height': '25px', 'width': 'auto', 'left':'0'}}>
-                    <span className='pl-4 border-0 text-primary  text-nowrap'>部件名:</span>
-                    <span className='pl-4 border-0 text-primary  text-nowrap'>进度 <span className='font-weight-normal text-primary '> (%)</span></span> 
+                  <div className='flex-row bg-info sticky-top fa' style={{ 'height': '25px', 'width': 'auto'}}>
+                    <span className='border-0 text-primary  text-nowrap sticky-top' style={{'left':`${componentTitleLeft}px`}}>部件名:</span>
+                    <span className='border-0 text-primary  text-nowrap sticky-top' style={{'left':`${statusTitleLeft}px`}}>进度 
+                    <span className='font-weight-normal text-primary sticky-top' style={{'left':`${statusUnitLeft}px`}}> (%)</span></span> 
                   </div>
                   
                   {/* <hr className='m-0'></hr> */}

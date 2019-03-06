@@ -216,3 +216,17 @@ export  const detectOSVersion = () =>{
       return jscd;
   }
   
+// getTextWidth("hello there!", "bold 12pt arial")
+// return unit CSS px - 96css is 1 inch
+//https://webplatform.github.io/docs/tutorials/understanding-css-units/
+//https://developer.mozilla.org/en-US/docs/Web/API/Window/devicePixelRatio
+//need to find dpi to convert px from inch to physical pixel (dot)
+  export const getTextWidth=(text, font)=> {
+    // re-use canvas object for better performance
+    let canvas = getTextWidth.canvas || (getTextWidth.canvas = document.createElement("canvas"));
+    let context = canvas.getContext("2d");
+    context.font = font;
+    let metrics = context.measureText(text);
+    let scale = window.devicePixelRatio;
+    return metrics.width/scale;
+}

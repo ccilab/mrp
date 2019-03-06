@@ -185,7 +185,7 @@ class CCiLabComponent extends Component {
         let anchorLeftstyle = {'left': `${leftOffset}px`,}
         let leftShiftStyle = {'left': `${leftOffset}px`,};
 
-        let  stickyWidth =  this.currentComponent.displayLogic.selected !== 0 ? '150%':'';
+        let  stickyWidth =  this.currentComponent.displayLogic.selected !== 0 ? `${this.props.listWidth}vw`:'auto';
 
         let btnImgLeft = (this.componentLableWidth*2+5 < leftOffset ) ? leftOffset+5: this.componentLableWidth*2+5 ; // 25 is width of component
         //let btnImgLeft = (this.currentComponent.displayLogic.selected !== 0) ? this.componentLableWidth*2+5 : 'inherit';
