@@ -2,22 +2,22 @@
 
 //  {/* https://developer.mozilla.org/en-US/docs/Web/CSS/Specificity */}
 
-@import "./../../../vendors/bootstrap-4.0.0-alpha.6/scss/variables";
+// @import "./../../../vendors/bootstrap-4.0.0-alpha.6/scss/variables";
 
-@import "./../../../vendors/fontawesome-5.6.1/scss/variables";
-// You probably already know this but we seem to always forget it. 
-// The font path is relative from your compiled CSS directory. 
-// Ensure that you place your webfonts directory in a place relative 
-// to where your final CSS will be located.
-$fa-font-path:   "./../../stylesheets/vendors/fontawesome-5.6.1/webfonts";
+// @import "./../../../vendors/fontawesome-5.6.1/scss/variables";
+// // You probably already know this but we seem to always forget it. 
+// // The font path is relative from your compiled CSS directory. 
+// // Ensure that you place your webfonts directory in a place relative 
+// // to where your final CSS will be located.
+// $fa-font-path:   "./../../stylesheets/vendors/fontawesome-5.6.1/webfonts";
  
 
-// end customization
-@import "./../../../vendors/bootstrap-4.0.0-alpha.6/scss/bootstrap";
+// // end customization
+// @import "./../../../vendors/bootstrap-4.0.0-alpha.6/scss/bootstrap";
 
 
-@import "./../../../vendors/fontawesome-5.6.1/scss/fontawesome";
-@import "./../../../vendors/fontawesome-5.6.1/scss/solid";
+// @import "./../../../vendors/fontawesome-5.6.1/scss/fontawesome";
+// @import "./../../../vendors/fontawesome-5.6.1/scss/solid";
 
 .ccilab-rp-root{
   @import "./ccilab-component-list";

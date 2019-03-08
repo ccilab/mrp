@@ -564,7 +564,7 @@ class CCiLabComponentList extends Component {
       console.log( 'componentTitleWidth: ', componentTitleWidth);
       let componentTitleLeft = 25; //root element font-size
       let statusTitleLeft = componentTitleLeft + componentTitleWidth; 
-      let statusTitleWidth = getTextWidth('进度:', 'normal 25px sans-serif');
+      let statusTitleWidth = getTextWidth('进度:', '16px sans-serif');
       let statusUnitLeft = statusTitleLeft + statusTitleWidth;
       return (
        
