@@ -9,23 +9,23 @@
 .cci-component-btn {
     cursor: pointer;
     background-color: transparent !important;
-    margin: $component_columns_margin; //10px;
+    margin: $component_columns_margin; //0.625rem;
     padding: $card-img-overlay-padding !important; //0%;
-    box-shadow: 2px 6px 10px 0 rgba($cci-shadow-dark,0.3);
+    box-shadow: 0.125rem 0.375rem 0.625rem 0 rgba($cci-shadow-dark,0.3);
     z-index: 1;
  
     &:focus {
-      box-shadow: 4px 10px 15px 0 rgba($cci-shadow-dark,0.5),
-                0px 0px 4px 3px $border_color,
-                0px 0px 4px 1.5px $border_color !important; 
+      box-shadow: 0.25rem 0.625rem 0.9375rem 0 rgba($cci-shadow-dark,0.5),
+                0 0 0.25rem 0.1875rem $border_color,
+                0 0 0.25rem 0.09375rem $border_color !important; 
     }
 
     &:active {
       transform: scale(0.85);
-      box-shadow: 4px 2px 15px 0 rgba($cci-shadow-dark,0.3);
+      box-shadow: 0.25rem 0.125rem 0.9375rem 0 rgba($cci-shadow-dark,0.3);
     }
     &:hover  {
-      box-shadow: 4px 10px 15px 0 rgba($cci-shadow-dark,0.5);
+      box-shadow: 0.25rem 0.625rem 0.9375rem 0 rgba($cci-shadow-dark,0.5);
     }
  }
 
@@ -92,17 +92,17 @@
   background-color: transparent; 
   margin: $component_columns_margin; 
   padding: $card-img-overlay-padding !important; //0%;
-  box-shadow: 2px 6px 10px 0 rgba($cci-shadow-dark,0.3);
+  box-shadow: 0.125rem 0.375rem 0.625rem 0 rgba($cci-shadow-dark,0.3);
   z-index: 1;
   &:focus {
-    box-shadow: 4px 10px 15px 0 rgba($cci-shadow-dark,0.5),
-              0px 0px 4px 3px $border_color,
-              0px 0px 4px 1.5px $border_color !important; 
+    box-shadow: 0.25rem 0.625rem 0.9375rem 0 rgba($cci-shadow-dark,0.5),
+              0 0 0.25rem 0.1875rem $border_color,
+              0 0 0.25rem 0.09375rem $border_color !important; 
   }
 
   &:active {
     transform: scale(0.85);
-    box-shadow: 4px 2px 15px 0 rgba($cci-shadow-dark,0.3);
+    box-shadow: 0.25rem 0.125rem 0.9375rem 0 rgba($cci-shadow-dark,0.3);
   }
 } 
 
@@ -125,7 +125,7 @@
  
 .ccilab-component-sticky-top{
   position: sticky;
-  top: 15px;
+  top: 0.9375rem;
   left: 0;
   // right: 100%;
   z-index: $zindex-sticky;
@@ -133,7 +133,7 @@
 
 .inline-menu_sticky_horizontal{
   position: sticky;
-  left: 25px;
+  left: 1.5625rem;
   right: 100%;
   z-index: $zindex-sticky;
 }

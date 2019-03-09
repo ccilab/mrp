@@ -23,6 +23,7 @@ export  const setListHeight = (rect) => {
     return window.innerHeight <= 200 ? '150px' : isElementInViewportHeight( rect ) ? 'auto':'90vh';
   }
   
+// in vw
 export  const setListWidth = () =>{
     return window.innerWidth <= 330 ? '90' : window.innerWidth <= 600 ? '70' : window.innerWidth <= 800 ? '50' : window.innerWidth <= 1000 ? '40' : window.innerWidth <= 1500 ? '30':'30';
   }
@@ -35,7 +36,7 @@ export  const setHideListWidth = () =>{
         ListWidth = window.innerWidth <= 330 ? '40' : window.innerWidth <= 600 ? '48' : window.innerWidth <= 800 ? '50' : window.innerWidth <= 1000 ? '40' : window.innerWidth <= 1500 ? '30':'30';
     else
         ListWidth = setListWidth();
-    return ListWidth;
+    return ListWidth;  //vw
   }
   
   //http://jsfiddle.net/ChristianL/AVyND/
@@ -221,12 +222,28 @@ export  const detectOSVersion = () =>{
 //https://webplatform.github.io/docs/tutorials/understanding-css-units/
 //https://developer.mozilla.org/en-US/docs/Web/API/Window/devicePixelRatio
 //need to find dpi to convert px from inch to physical pixel (dot)
-  export const getTextWidth=(text, font)=> {
-    // re-use canvas object for better performance
-    let canvas = getTextWidth.canvas || (getTextWidth.canvas = document.createElement("canvas"));
-    let context = canvas.getContext("2d");
-    context.font = font;
-    let metrics = context.measureText(text);
-    let scale = window.devicePixelRatio;
-    return metrics.width/scale;
+//   export const getTextWidth=(text, font)=> {
+//     // re-use canvas object for better performance
+//     let canvas = getTextWidth.canvas || (getTextWidth.canvas = document.createElement("canvas"));
+//     let context = canvas.getContext("2d");
+//     context.font = font;
+//     let metrics = context.measureText(text);
+//     let scale = window.devicePixelRatio;
+//     return metrics.width/scale;
+// }
+
+export const getTextWidth=(text)=> {
+
+    let rootNode = document.querySelector('#root');
+    let newDiv = document.createElement('div')
+    let newSpan = document.createElement('span');
+    let newContent = document.createTextNode(text);
+    newSpan.appendChild(newContent);
+    newDiv.appendChild(newSpan);
+    newSpan.id = 'text-width';
+    rootNode.appendChild( newDiv );
+
+    let textRect = document.getElementById('text-width').getBoundingClientRect();
+    rootNode.removeChild(newDiv);
+    return textRect;
 }

@@ -146,7 +146,7 @@ const estimateComponentListRect = (componentLists)=>{
   
   let shownComponents = componentLists.filter(component=>component.displayLogic.showMyself === true)
   
-  updatedRect.bottom = shownComponents.length * 55; //55px defined in CCiLabComponent.js as max button height
+  updatedRect.bottom = shownComponents.length * 3.4375; //55px - 3.4375rem assuming rem is16pxdefined in CCiLabComponent.js as max button height
   return updatedRect;
 }
 
@@ -169,7 +169,7 @@ class CCiLabComponentList extends Component {
 
     slidingComponentListIconClassName = this.state.visible? 'fa fa-angle-double-left' : 'fa fa-angle-double-right';
     componentListHeight= window.innerHeight <= 200 ? '150px' : 'auto';  //minimum height 
-    componentListWidth= setListWidth();
+    componentListWidth= setListWidth(); //in px
       
     compnentListTranslateStyle='';
     lastScrollPosition = 0;
@@ -560,11 +560,11 @@ class CCiLabComponentList extends Component {
                     hideDropWarning={this.hideDropToItselfWarning}/>
                   : null;
 
-      let componentTitleWidth = getTextWidth('部件名:', 'normal 25px sans-serif')
-      console.log( 'componentTitleWidth: ', componentTitleWidth);
-      let componentTitleLeft = 25; //root element font-size
-      let statusTitleLeft = componentTitleLeft + componentTitleWidth; 
-      let statusTitleWidth = getTextWidth('进度:', '16px sans-serif');
+      let componentTitleWidth = getTextWidth('部件名:').width/16;
+      console.log( 'componentTitleWidth (rem): ', componentTitleWidth);
+      let componentTitleLeft = 1.5625; //rem
+      let statusTitleLeft = componentTitleLeft + componentTitleWidth + 2; 
+      let statusTitleWidth = getTextWidth('进度:').width/16;
       let statusUnitLeft = statusTitleLeft + statusTitleWidth;
       return (
        
@@ -579,10 +579,10 @@ class CCiLabComponentList extends Component {
                   style={{'transform': `${this.compnentListTranslateStyle}`, 'height':`${this.componentListHeight}`, 'width':`${this.componentListWidth}vw`}}
                   onScroll={this.setSelectedComponentStickDirection}>
                   {/*  sticky to top and left*/}
-                  <div className='flex-row bg-info sticky-top fa' style={{ 'height': '25px', 'width': 'auto'}}>
-                    <span className='border-0 text-primary  text-nowrap sticky-top' style={{'left':`${componentTitleLeft}px`}}>部件名:</span>
-                    <span className='border-0 text-primary  text-nowrap sticky-top' style={{'left':`${statusTitleLeft}px`}}>进度 
-                    <span className='font-weight-normal text-primary sticky-top' style={{'left':`${statusUnitLeft}px`}}> (%)</span></span> 
+                  <div className='flex-row bg-info sticky-top fa' style={{ 'height': '1.5625rem', 'width': 'auto'}}>
+                    <span className='border-0 text-primary  text-nowrap sticky-top' style={{'left':`${componentTitleLeft}rem`}}>部件名:</span>
+                    <span className='border-0 text-primary  text-nowrap sticky-top' style={{'left':`${statusTitleLeft}rem`}}>进度 
+                    <span className='font-weight-normal text-primary sticky-top' style={{'left':`${statusUnitLeft}rem`}}> (%)</span></span> 
                   </div>
                   
                   {/* <hr className='m-0'></hr> */}
