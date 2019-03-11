@@ -15,7 +15,7 @@ class CCiLabComponent extends Component {
         imgName = (this.currentComponent.businessLogic.imgFile.length !==0 ) ? '/images/'+ this.currentComponent.businessLogic.imgFile : 
                     (this.children.length !==0) ? '/images/cci_group_block.png' : '/images/cci_single_block_item.png';
         
-        // size of component button
+        // size of component button, rem - 16px is default font size of browser
         componentLableHeight =  (this.parents.length === 0 ) ? '2.8125' : (this.children.length !==0) ? '1.5625': '1.5625';
         componentLableWidth = this.componentLableHeight;
 
@@ -30,9 +30,9 @@ class CCiLabComponent extends Component {
     }
 
     componentDidMount =()=> {
-      let componentRect = document.getElementById( `${this.currentComponent.displayLogic.key}-item` ).getBoundingClientRect();
+      let componentRect = document.getElementById( `${this.currentComponent.displayLogic.key}-item` ).getBoundingClientRect();  
 
-      this.currentComponent.displayLogic.rectLeft = componentRect.left;
+      this.currentComponent.displayLogic.rectLeft = componentRect.left/16;  //convert to rem, 16px is default font size for browser
     };
 
     expending = () => {
@@ -170,11 +170,12 @@ class CCiLabComponent extends Component {
         }
         
         let leftOffset=this.props.leftOffset;
-        
+        let anchorLeftstyle = {'left': `${leftOffset}rem`,}
+
         // expendable component left shift less, to compensate <a> 
         if ( this.children.length === 0 )
         {
-          leftOffset = (this.props.leftOffset+2.4375); // single component without children, left offset with 39px (2.4375rem) extra to compensate the >/v badge size
+          leftOffset = (this.props.leftOffset+0.0625); // single component without children, left offset with 10px (0.0625rem) extra to compensate the >/v badge size
 
           //single component and is not the top component, selected 
           // if( this.parents.length !== 0 && 
@@ -182,12 +183,13 @@ class CCiLabComponent extends Component {
           //   leftOffset -= this.componentLableWidth;
         }
         
-        let anchorLeftstyle = {'left': `${leftOffset}rem`,}
+      
         let leftShiftStyle = {'left': `${leftOffset}rem`,};
 
         let  stickyWidth =  this.currentComponent.displayLogic.selected !== 0 ? `${this.props.listWidth}vw`:'auto';
 
-        let btnImgLeft = (this.componentLableWidth*2+0.3125 < leftOffset ) ? leftOffset+0.3125: this.componentLableWidth*2+0.3125 ; // 1.5625rem is width of component
+        let btnImgLeft = (this.children.length === 0 ) ? leftOffset : leftOffset+0.0625 ;
+        // let btnImgLeft = (this.componentLableWidth*2+0.3125 < leftOffset ) ? leftOffset+0.3125: this.componentLableWidth*2+0.3125 ; // 1.5625rem is width of component
         //let btnImgLeft = (this.currentComponent.displayLogic.selected !== 0) ? this.componentLableWidth*2+5 : 'inherit';
         let nameLableLeft = btnImgLeft + ( this.parents.length === 0) ? 3.125:0.625; 
         let statusLabelLeft = this.getElementWidth(this.componentName) + nameLableLeft; 
@@ -247,8 +249,8 @@ class CCiLabComponent extends Component {
                 onDrop={  this.doDrop }>
                  {/* tag's id is used to handle drop event */}
                 <button id={`${this.currentComponent.displayLogic.key}`} className={`${ComponentClassName} component-label_sticky_horizontal`} 
-                  // style={ { 'height': `${this.componentLableHeight}rem`, 'width': `${this.componentLableWidth}rem`, 'left': `${btnImgLeft}rem`}}
-                  style={ { 'height': `${this.componentLableHeight}rem`, 'width': `${this.componentLableWidth}rem`}}
+                  style={ { 'height': `${this.componentLableHeight}rem`, 'width': `${this.componentLableWidth}rem`, 'left': `${btnImgLeft}rem`}}
+                  // style={ { 'height': `${this.componentLableHeight}rem`, 'width': `${this.componentLableWidth}rem`}}
                   draggable={`${draggableSetting}`}
                   onClick={ this.componentSelected } 
                   onDragStart={ draggableSetting === 'true' ? this.dragStart : null}
@@ -260,8 +262,8 @@ class CCiLabComponent extends Component {
                       // {/* tag's id used to handle drop event */}
                       <img id={`${this.currentComponent.displayLogic.key}`} 
                            className='cci-component__img rounded-circle float-left component-label_sticky_horizontal' src={this.imgName} alt=""
-                          //  style={{'height': `${this.componentLableHeight}rem`, 'width': `${this.componentLableWidth}rem`, 'left': `${btnImgLeft}rem`}} 
-                           style={{'height': `${this.componentLableHeight}rem`, 'width': `${this.componentLableWidth}rem`}} 
+                           style={{'height': `${this.componentLableHeight}rem`, 'width': `${this.componentLableWidth}rem`, 'left': `${btnImgLeft}rem`}} 
+                          //  style={{'height': `${this.componentLableHeight}rem`, 'width': `${this.componentLableWidth}rem`}} 
                            draggable={`${draggableSetting}`}
                            onDragStart={ draggableSetting === 'true' ? this.dragStart : null}
                            onDragOver={ this.dragOver }

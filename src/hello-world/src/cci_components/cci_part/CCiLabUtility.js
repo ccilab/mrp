@@ -232,6 +232,7 @@ export  const detectOSVersion = () =>{
 //     return metrics.width/scale;
 // }
 
+// passing string, return rect width in px
 export const getTextWidth=(text)=> {
 
     let rootNode = document.querySelector('#root');

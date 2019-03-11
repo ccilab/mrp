@@ -519,8 +519,8 @@ class CCiLabComponentList extends Component {
                   });
                   
                   let leftOffset = 0;
-                  if( typeof parentComponent !== "undefined")
-                      leftOffset = parentComponent.displayLogic.rectLeft;
+                  if( typeof parentComponent !== "undefined" && parentComponent.displayLogic.rectLeft !== "undefined" )
+                      leftOffset = parentComponent.displayLogic.rectLeft; //in rem
 
                   return <CCiLabComponent key={component.displayLogic.key} 
                                           component={component} 
