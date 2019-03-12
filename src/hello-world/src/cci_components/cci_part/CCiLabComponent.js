@@ -130,7 +130,7 @@ class CCiLabComponent extends Component {
 
     render() {
         // console.log('CCiLabComponent::render() imgFile: ', this.imgName);
-        let ComponentClassNameBase = 'btn m-0 float-left rounded-circle p-0'
+        let ComponentClassNameBase = 'btn m-0 rounded-circle p-0' //float-left
         let ComponentClassName = ComponentClassNameBase + ' cci-component-btn';
         let expendCollapseBadgeIconClassName= 'fa fa-angle-right';
         let componentNameClassNameBase = 'lead font-weight-normal text-primary text-truncate nav-link ';
@@ -170,12 +170,13 @@ class CCiLabComponent extends Component {
         }
         
         let leftOffset=this.props.leftOffset;
+       
+        // expendable component left shift less, to compensate a-tag >/v 
         let anchorLeftstyle = {'left': `${leftOffset}rem`,}
-
-        // expendable component left shift less, to compensate <a> 
+        
         if ( this.children.length === 0 )
         {
-          leftOffset = (this.props.leftOffset+0.0625); // single component without children, left offset with 10px (0.0625rem) extra to compensate the >/v badge size
+          leftOffset = (this.props.leftOffset+0.75); // single component without children, left offset with 12px (0.75rem) extra to compensate the >/v badge size
 
           //single component and is not the top component, selected 
           // if( this.parents.length !== 0 && 
@@ -183,12 +184,13 @@ class CCiLabComponent extends Component {
           //   leftOffset -= this.componentLableWidth;
         }
         
-      
-        let leftShiftStyle = {'left': `${leftOffset}rem`,};
+       
+        // let leftShiftStyle = {'left': `${leftOffset}rem`,};
 
         let  stickyWidth =  this.currentComponent.displayLogic.selected !== 0 ? `${this.props.listWidth}vw`:'auto';
 
-        let btnImgLeft = (this.children.length === 0 ) ? leftOffset : leftOffset+0.0625 ;
+        let btnImgLeft = 2.5; //rem - to the right of ancher
+
         // let btnImgLeft = (this.componentLableWidth*2+0.3125 < leftOffset ) ? leftOffset+0.3125: this.componentLableWidth*2+0.3125 ; // 1.5625rem is width of component
         //let btnImgLeft = (this.currentComponent.displayLogic.selected !== 0) ? this.componentLableWidth*2+5 : 'inherit';
         let nameLableLeft = btnImgLeft + ( this.parents.length === 0) ? 3.125:0.625; 
@@ -240,9 +242,9 @@ class CCiLabComponent extends Component {
             
             {/* shift the child components to the right */}  
             {/* tag's id is used to get component's rect and handle drop event*/}
-            <ul id={`${this.currentComponent.displayLogic.key}-item`} 
+            <span id={`${this.currentComponent.displayLogic.key}-item`} 
                 className='flow-right list-group flex-row cci-component-lable_position' 
-                style={leftShiftStyle}
+                style={{'left': `${btnImgLeft}rem`}}
                 draggable={`${draggableSetting}`}
                 onDragStart={ draggableSetting === 'true' ? this.dragStart : null}
                 onDragOver={ this.dragOver }
@@ -259,9 +261,9 @@ class CCiLabComponent extends Component {
                   
                   {/* no style for top element so the button can host the image, other elements need style to set image position  */}
                   { (this.imgName.length !== 0 ) ? 
-                      // {/* tag's id used to handle drop event */}
+                      // {/* tag's id used to handle drop event float-left*/}
                       <img id={`${this.currentComponent.displayLogic.key}`} 
-                           className='cci-component__img rounded-circle float-left component-label_sticky_horizontal' src={this.imgName} alt=""
+                           className='cci-component__img rounded-circle component-label_sticky_horizontal' src={this.imgName} alt=""
                            style={{'height': `${this.componentLableHeight}rem`, 'width': `${this.componentLableWidth}rem`, 'left': `${btnImgLeft}rem`}} 
                           //  style={{'height': `${this.componentLableHeight}rem`, 'width': `${this.componentLableWidth}rem`}} 
                            draggable={`${draggableSetting}`}
@@ -295,7 +297,7 @@ class CCiLabComponent extends Component {
                       onDrop={  this.doDrop }> 
                       {this.progressValue}%
                 </span>  
-            </ul>
+            </span>
           </span>
         )
       }
