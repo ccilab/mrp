@@ -19,7 +19,7 @@ class CCiLabComponent extends Component {
         componentLableHeight =  (this.parents.length === 0 ) ? '2.8125' : (this.children.length !==0) ? '1.5625': '1.5625';
         componentLableWidth = this.componentLableHeight;
 
-        expendCollapseBadgePadding =  (this.parents.length === 0 ) ? 'pt-3 pb-0 pl-4 pr-1' : 'pt-2 pb-0 pl-4 pr-1';
+        expendCollapseBadgePadding =  (this.parents.length === 0 ) ? 'pt-3 pb-0 pl-0 pr-1' : 'pt-2 pb-0 pl-0 pr-1';
 
 
         progressStatus = this.currentComponent.businessLogic.status;
@@ -189,7 +189,7 @@ class CCiLabComponent extends Component {
 
         let  stickyWidth =  this.currentComponent.displayLogic.selected !== 0 ? `${this.props.listWidth}vw`:'auto';
 
-        let btnImgLeft = 2.5; //rem - to the right of ancher
+        let btnImgLeft = leftOffset+1; //rem - to the right of ancher
 
         // let btnImgLeft = (this.componentLableWidth*2+0.3125 < leftOffset ) ? leftOffset+0.3125: this.componentLableWidth*2+0.3125 ; // 1.5625rem is width of component
         //let btnImgLeft = (this.currentComponent.displayLogic.selected !== 0) ? this.componentLableWidth*2+5 : 'inherit';
@@ -227,7 +227,7 @@ class CCiLabComponent extends Component {
                   // {/* tag's id used to handle drop event */}
                   <a  id={`${this.currentComponent.displayLogic.key}-show-hide`} 
                       href="#expend-collapse-badge" 
-                      className={`cci-link_position float-left nav-link ${this.expendCollapseBadgePadding} component-label_sticky_horizontal`} 
+                      className={`cci-link_position float-left nav-link ${this.expendCollapseBadgePadding}`} 
                       style={anchorLeftstyle} 
                       draggable={`${draggableSetting}`}
                       onClick={ this.expending }
