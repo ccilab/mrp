@@ -227,7 +227,7 @@ class CCiLabComponent extends Component {
                   // {/* tag's id used to handle drop event */}
                   <a  id={`${this.currentComponent.displayLogic.key}-show-hide`} 
                       href="#expend-collapse-badge" 
-                      className={`cci-link_position float-left nav-link ${this.expendCollapseBadgePadding}`} 
+                      className={`cci-link_position nav-link ${this.expendCollapseBadgePadding}`} 
                       style={anchorLeftstyle} 
                       draggable={`${draggableSetting}`}
                       onClick={ this.expending }
