@@ -579,20 +579,20 @@ class CCiLabComponentList extends Component {
                   style={{'transform': `${this.compnentListTranslateStyle}`, 'height':`${this.componentListHeight}`, 'width':`${this.componentListWidth}vw`}}
                   onScroll={this.setSelectedComponentStickDirection}>
                   {/*  sticky to top and left*/}
-                  <div className='flex-row bg-info sticky-top fa' style={{ 'height': '1.5625rem', 'width': 'auto'}}>
-                    <span className='border-0 text-primary  text-nowrap sticky-top' style={{'left':`${componentTitleLeft}rem`}}>部件名:</span>
-                    <span className='border-0 text-primary  text-nowrap sticky-top' style={{'left':`${statusTitleLeft}rem`}}>进度 
-                    <span className='font-weight-normal text-primary sticky-top' style={{'left':`${statusUnitLeft}rem`}}> (%)</span></span> 
+                  <div className='d-flex flex-row justify-content-start align-items-center bg-info sticky-top fa' style={{ 'height': '1.5625rem', 'width': 'auto', 'left':'0'}}>
+                    <div className='align-self-center ml-4 pl-4 border-0 text-primary  text-nowrap sticky-top' style={{'width': '7rem', 'left':`${componentTitleLeft}rem`}}>部件名:</div>
+                    <div className='align-self-center  border-0 ml-4 pl-4 text-primary  text-nowrap sticky-top' style={{'left':`${statusTitleLeft}rem`}}>进度 
+                    <span className='align-self-center font-weight-normal text-primary sticky-top' style={{'left':`${statusUnitLeft}rem`}}> (%)</span></div> 
                   </div>
                   
                   {/* <hr className='m-0'></hr> */}
                   {this.renderGreetings()}
               </div>
-              <div>
-                <a href="#show-hide-component-list" className='float-left nav-link pl-0 py-4 pr-4 cci-component-list_transition sticky-top' style={{'transform': `${this.compnentListTranslateStyle}`}} onClick={this.showHideComponentList} >
+              {/* <div> */}
+                <a href="#show-hide-component-list" className='nav-link pl-0 py-4 pr-4 cci-component-list_transition sticky-top' style={{'transform': `${this.compnentListTranslateStyle}`}} onClick={this.showHideComponentList} >
                     <span className={`badge-pill badge-info ${this.slidingComponentListIconClassName}`}></span>
                 </a>
-            </div>
+            {/* </div> */}
             {droptoSameParentWarningModal}
             {droptoItselfWarningModal}
         </div>
