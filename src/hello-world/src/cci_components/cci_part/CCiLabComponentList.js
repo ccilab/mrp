@@ -560,12 +560,12 @@ class CCiLabComponentList extends Component {
                     hideDropWarning={this.hideDropToItselfWarning}/>
                   : null;
 
-      let componentTitleWidth = getTextWidth('部件名:').width/16;
+      let componentTitleWidth = getTextWidth('部件名:').width/16;  //in rem
       console.log( 'componentTitleWidth (rem): ', componentTitleWidth);
-      let componentTitleLeft = 1.5625; //rem
-      let statusTitleLeft = componentTitleLeft + componentTitleWidth + 2; 
+      let componentTitleStickyLeft = 1.5625; //rem
+      let statusTitleStickyLeft = componentTitleStickyLeft + componentTitleWidth + 2; 
       let statusTitleWidth = getTextWidth('进度:').width/16;
-      let statusUnitLeft = statusTitleLeft + statusTitleWidth;
+      let statusUnitStickyLeft = statusTitleStickyLeft + statusTitleWidth;
       return (
        
         <div className={`d-flex flex-row`} >
@@ -580,9 +580,9 @@ class CCiLabComponentList extends Component {
                   onScroll={this.setSelectedComponentStickDirection}>
                   {/*  sticky to top and left*/}
                   <div className='d-flex flex-row justify-content-start align-items-center bg-info sticky-top fa' style={{ 'height': '1.5625rem', 'width': 'auto', 'left':'0'}}>
-                    <div className='align-self-center ml-4 pl-4 border-0 text-primary  text-nowrap sticky-top' style={{'width': '7rem', 'left':`${componentTitleLeft}rem`}}>部件名:</div>
-                    <div className='align-self-center  border-0 ml-4 pl-4 text-primary  text-nowrap sticky-top' style={{'left':`${statusTitleLeft}rem`}}>进度 
-                    <span className='align-self-center font-weight-normal text-primary sticky-top' style={{'left':`${statusUnitLeft}rem`}}> (%)</span></div> 
+                    <div className='align-self-center w-25 ml-4 pl-4 border-0 text-primary text-nowrap sticky-top' style={{'left':`${componentTitleStickyLeft}rem`}}>部件名:</div>
+                    <div className='align-self-center w-25 border-0 ml-4 pl-4 border-0 text-primary  text-nowrap sticky-top' style={{'left':`${statusTitleStickyLeft}rem`}}>进度 
+                    <span className='align-self-center font-weight-normal text-primary sticky-top' style={{'left':`${statusUnitStickyLeft}rem`}}> (%)</span></div> 
                   </div>
                   
                   {/* <hr className='m-0'></hr> */}
