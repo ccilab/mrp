@@ -7,6 +7,8 @@ import DropComponentWarningModal from "./CCiLabDropComponentCheckFailedModal";
 // import AddGreeter from "./AddGreeter";
 import { setListHeight, setListWidth, setHideListWidth, getTextWidth} from "./CCiLabUtility"
 
+import {TextResizeDetector } from "./TextResizeDetector"
+
 //json-loader load the *.json file
 import components from './../../data/components.json';
 
@@ -176,6 +178,19 @@ class CCiLabComponentList extends Component {
 
     movedComponentName='undefined';
     targetComponentName='undefined';
+
+    componentTitleStickyLeft = 1.5625; //rem  
+    componentTitleWidth;  //in rem
+    statusTitleStickyLeft; 
+    statusTitleWidth;
+    statusUnitStickyLeft;
+
+    positioningListTitle=()=>{  
+      this.componentTitleWidth = getTextWidth('部件名:').width/16;  //in rem
+      this.statusTitleStickyLeft = this.componentTitleStickyLeft + this.componentTitleWidth + 2; 
+      this.statusTitleWidth = getTextWidth('进度:').width/16;
+      this.statusUnitStickyLeft = this.statusTitleStickyLeft + this.statusTitleWidth;
+    }
     
     toggleHideShowComponentList = () =>{
       // console.log('container: clicked before: - ', this.state.visible ? 'true' : 'false' );
@@ -195,10 +210,20 @@ class CCiLabComponentList extends Component {
       //e.stopPropagation();
     };
     
+    
+    onFontResize=()=>{
+      this.positioningListTitle();
+    }
+
+    initTextResizeDetector=()=>{
+      let iBase = TextResizeDetector.addEventListener(this.onFontResize,null);
+			alert("The base font size = " + iBase);
+    }
+  
     // initialize first component's childKeyIds, reorder in following order: the first component, alarm status, warning status, no_issue status
     componentWillMount=()=>{
       let currentSessionComponents=[];
-
+ 
       //#todo: need to query server to get a new components
       console.log("query server to get root components")
       let components = firstComponents;
@@ -219,6 +244,11 @@ class CCiLabComponentList extends Component {
         populateComponentChildKeyIds(rootComponent, currentSessionComponents);
       }
 
+      this.positioningListTitle();
+
+      TextResizeDetector.TARGET_ELEMENT_ID = 'root';
+      TextResizeDetector.USER_INIT_FUNC = this.initTextResizeDetector;
+
       // trick - set default visible=true in constructor, set visible=false in componentWillMount
       // so when user clicks << component list will sliding back
       this.setState( {greetings: currentSessionComponents, visible : false } );
@@ -238,6 +268,7 @@ class CCiLabComponentList extends Component {
       this.setState( { greetings: this.state.greetings })
     }
 
+    
     /** 
      * called after initial render() is called and element is inserted indo DOM
      * Add event listener to show vertical scroll bar if browser window is shorter 
@@ -245,6 +276,7 @@ class CCiLabComponentList extends Component {
      * */ 
     componentDidMount =()=> {
         window.addEventListener("resize", this.updateDimensions);
+        // TextResizeDetector.addEventListener(this.onFontResize,null);
     }
 
     //called after render()
@@ -560,12 +592,8 @@ class CCiLabComponentList extends Component {
                     hideDropWarning={this.hideDropToItselfWarning}/>
                   : null;
 
-      let componentTitleWidth = getTextWidth('部件名:').width/16;  //in rem
-      console.log( 'componentTitleWidth (rem): ', componentTitleWidth);
-      let componentTitleStickyLeft = 1.5625; //rem
-      let statusTitleStickyLeft = componentTitleStickyLeft + componentTitleWidth + 2; 
-      let statusTitleWidth = getTextWidth('进度:').width/16;
-      let statusUnitStickyLeft = statusTitleStickyLeft + statusTitleWidth;
+      console.log( 'componentTitleWidth (rem): ', this.componentTitleWidth);
+
       return (
        
         <div className={`d-flex flex-row`} >
@@ -580,9 +608,9 @@ class CCiLabComponentList extends Component {
                   onScroll={this.setSelectedComponentStickDirection}>
                   {/*  sticky to top and left*/}
                   <div className='d-flex flex-row justify-content-start align-items-center bg-info sticky-top fa' style={{ 'height': '1.5625rem', 'width': 'auto', 'left':'0'}}>
-                    <div className='align-self-center w-25 ml-4 pl-4 border-0 text-primary text-nowrap sticky-top' style={{'left':`${componentTitleStickyLeft}rem`}}>部件名:</div>
-                    <div className='align-self-center w-25 border-0 ml-4 pl-4 border-0 text-primary  text-nowrap sticky-top' style={{'left':`${statusTitleStickyLeft}rem`}}>进度 
-                    <span className='align-self-center font-weight-normal text-primary sticky-top' style={{'left':`${statusUnitStickyLeft}rem`}}> (%)</span></div> 
+                    <div className='align-self-center w-25 ml-4 pl-4 bg-warning border-0 text-primary text-nowrap sticky-top' style={{'left':`${this.componentTitleStickyLeft}rem`}}>部件名:</div>
+                    <div className='align-self-center w-25 ml-4 pl-4 bg-danger border-0  border-0 text-primary  text-nowrap sticky-top' style={{'left':`${this.statusTitleStickyLeft}rem`}}>进度 
+                    <span className='align-self-center font-weight-normal text-primary sticky-top' style={{'left':`${this.statusUnitStickyLeft}rem`}}> (%)</span></div> 
                   </div>
                   
                   {/* <hr className='m-0'></hr> */}

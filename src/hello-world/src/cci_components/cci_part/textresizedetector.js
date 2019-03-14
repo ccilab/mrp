@@ -17,7 +17,7 @@
  * @constructor
  */
 
-{/* example of how to use it
+/* example of how to use it
 	<script type="text/javascript" src="textresizedetector.js"></script>
 	<script type="text/javascript">
 		function init()  {
@@ -34,16 +34,17 @@
 		TextResizeDetector.TARGET_ELEMENT_ID = 'header';
 		//function to call once TextResizeDetector has init'd
 		TextResizeDetector.USER_INIT_FUNC = init;
-	</script> */}
+	</script> */
 
-TextResizeDetector = function() { 
+export const TextResizeDetector = () =>{ 
     var el  = null;
 	var iIntervalDelay  = 200;
 	var iInterval = null;
 	var iCurrSize = -1;
 	var iBase = -1;
+	// var iSize = -1;
  	var aListeners = [];
- 	var createControlElement = function() {
+ 	const createControlElement = ()=> {
 	 	el = document.createElement('span');
 		el.id='textResizeControl';
 		el.innerHTML='&nbsp;';
@@ -56,35 +57,34 @@ TextResizeDetector = function() {
 		iBase = iCurrSize = TextResizeDetector.getSize();
  	};
 
- 	function _stopDetector() {
+ 	const _stopDetector=()=>{
 		window.clearInterval(iInterval);
 		iInterval=null;
 	};
-	function _startDetector() {
+	const _startDetector=()=> {
 		if (!iInterval) {
-			iInterval = window.setInterval('TextResizeDetector.detect()',iIntervalDelay);
+			iInterval = window.setInterval( TextResizeDetector.detect,iIntervalDelay);
 		}
 	};
  	
- 	 function _detect() {
+ 	 const _detect=()=>{
  		var iNewSize = TextResizeDetector.getSize();
 		
- 		if(iNewSize!== iCurrSize) {
-			for (var 	i=0;i <aListeners.length;i++) {
-				aListnr = aListeners[i];
-				var oArgs = {  iBase: iBase,iDelta:((iCurrSize!=-1) ? iNewSize - iCurrSize + 'px' : "0px"),iSize:iCurrSize = iNewSize};
+ 		if( iNewSize!== iCurrSize )  {
+			aListeners.forEach( (item) => {
+				let aListnr = item;
+				var oArgs = {  iBase: iBase, iDelta:( (iCurrSize !== -1) ? iNewSize - iCurrSize + 'px' : "0px"), iSize: iCurrSize = iNewSize };
 				if (!aListnr.obj) {
 					aListnr.fn('textSizeChanged',[oArgs]);
 				}
 				else  {
 					aListnr.fn.apply(aListnr.obj,['textSizeChanged',[oArgs]]);
 				}
-			}
-
+			});
  		}
  		return iCurrSize;
  	};
-	var onAvailable = function() {
+	const onAvailable = () =>{
 		
 		if (!TextResizeDetector.onAvailableCount_i ) {
 			TextResizeDetector.onAvailableCount_i =0;
@@ -112,7 +112,7 @@ TextResizeDetector = function() {
 		 	 * 
 		 	 * @param {String} sId The id of the element in which to create the control element
 		 	 */
-		 	init: function() {
+		 	init:  ()=> {
 		 		
 		 		createControlElement();		
 				_startDetector();
@@ -122,7 +122,7 @@ TextResizeDetector = function() {
 			 * Returns the base font size
 			 * 
 			 */
- 			addEventListener:function(fn,obj,bScope) {
+ 			addEventListener:  (fn,obj,bScope)=> {
 				aListeners[aListeners.length] = {
 					fn: fn,
 					obj: obj
@@ -134,7 +134,7 @@ TextResizeDetector = function() {
 			 * @return the current font size
 			 * @type {integer}
 			 */
- 			detect:function() {
+ 			detect: ()=> {
  				return _detect();
  			},
  			/**
@@ -143,8 +143,8 @@ TextResizeDetector = function() {
 			 * @return the current height of control element
 			 * @type {integer}
  			 */
- 			getSize:function() {
-	 				var iSize;
+ 			getSize: () =>{
+	 				
 			 		return el.offsetHeight;
 		 		
 		 		
@@ -152,17 +152,17 @@ TextResizeDetector = function() {
  			/**
  			 * Stops the detector
  			 */
- 			stopDetector:function() {
+ 			stopDetector:()=> {
 				return _stopDetector();
 			},
 			/*
 			 * Starts the detector
 			 */
- 			startDetector:function() {
+ 			startDetector:()=> {
 				return _startDetector();
 			}
  	}
- }();
+ };
 
 TextResizeDetector.TARGET_ELEMENT_ID = 'doc';
 TextResizeDetector.USER_INIT_FUNC = null;
