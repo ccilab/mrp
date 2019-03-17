@@ -36,7 +36,7 @@
 		TextResizeDetector.USER_INIT_FUNC = init;
 	</script> */
 
-export const TextResizeDetector = () =>{ 
+export const TextResizeDetector = function() { 
     var el  = null;
 	var iIntervalDelay  = 200;
 	var iInterval = null;
@@ -112,7 +112,7 @@ export const TextResizeDetector = () =>{
 		 	 * 
 		 	 * @param {String} sId The id of the element in which to create the control element
 		 	 */
-		 	init:  ()=> {
+		 	init: ()=>{
 		 		
 		 		createControlElement();		
 				_startDetector();
@@ -162,7 +162,7 @@ export const TextResizeDetector = () =>{
 				return _startDetector();
 			}
  	}
- };
+ }();
 
 TextResizeDetector.TARGET_ELEMENT_ID = 'doc';
 TextResizeDetector.USER_INIT_FUNC = null;

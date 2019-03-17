@@ -211,13 +211,14 @@ class CCiLabComponentList extends Component {
     };
     
     
-    onFontResize=()=>{
+    onFontResize=(e, args)=>{
       this.positioningListTitle();
+      alert("The width = " + this.componentTitleWidth);
     }
 
     initTextResizeDetector=()=>{
-      let iBase = TextResizeDetector.addEventListener(this.onFontResize,null);
-			alert("The base font size = " + iBase);
+      TextResizeDetector.addEventListener(this.onFontResize,null);
+			//alert("The base font size = " + iBase);
     }
   
     // initialize first component's childKeyIds, reorder in following order: the first component, alarm status, warning status, no_issue status
@@ -246,9 +247,10 @@ class CCiLabComponentList extends Component {
 
       this.positioningListTitle();
 
+     
       TextResizeDetector.TARGET_ELEMENT_ID = 'root';
       TextResizeDetector.USER_INIT_FUNC = this.initTextResizeDetector;
-
+      
       // trick - set default visible=true in constructor, set visible=false in componentWillMount
       // so when user clicks << component list will sliding back
       this.setState( {greetings: currentSessionComponents, visible : false } );
@@ -608,8 +610,9 @@ class CCiLabComponentList extends Component {
                   onScroll={this.setSelectedComponentStickDirection}>
                   {/*  sticky to top and left*/}
                   <div className='d-flex flex-row justify-content-start align-items-center bg-info sticky-top fa' style={{ 'height': '1.5625rem', 'width': 'auto', 'left':'0'}}>
-                    <div className='align-self-center w-25 ml-4 pl-4 bg-warning border-0 text-primary text-nowrap sticky-top' style={{'left':`${this.componentTitleStickyLeft}rem`}}>部件名:</div>
-                    <div className='align-self-center w-25 ml-4 pl-4 bg-danger border-0  border-0 text-primary  text-nowrap sticky-top' style={{'left':`${this.statusTitleStickyLeft}rem`}}>进度 
+                    {/* https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_Flexible_Box_Layout/Controlling_Ratios_of_Flex_Items_Along_the_Main_Ax */}
+                    <div className='align-self-center w-25 bg-success ml-4 pl-4 border-0 text-primary text-nowrap sticky-top' style={{'flex':'0 0 0', 'left':`${this.componentTitleStickyLeft}rem`}}>部件名:</div>
+                    <div className='align-self-center w-25 bg-danger ml-4 pl-5 border-0 text-primary  text-nowrap sticky-top' style={{'flex':'0 0 0','left':`${this.statusTitleStickyLeft}rem`}}>进度 
                     <span className='align-self-center font-weight-normal text-primary sticky-top' style={{'left':`${this.statusUnitStickyLeft}rem`}}> (%)</span></div> 
                   </div>
                   
