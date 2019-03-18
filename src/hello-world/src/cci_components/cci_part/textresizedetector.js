@@ -35,8 +35,8 @@
 		//function to call once TextResizeDetector has init'd
 		TextResizeDetector.USER_INIT_FUNC = init;
 	</script> */
-
-export const TextResizeDetector = function() { 
+// https://flaviocopes.com/javascript-iife/ this is a IIFE ( Immediately-invoked Function Expression ) 
+export const TextResizeDetector = ( ()=> { 
     var el  = null;
 	var iIntervalDelay  = 200;
 	var iInterval = null;
@@ -162,7 +162,7 @@ export const TextResizeDetector = function() {
 				return _startDetector();
 			}
  	}
- }();
+ })();
 
 TextResizeDetector.TARGET_ELEMENT_ID = 'doc';
 TextResizeDetector.USER_INIT_FUNC = null;
