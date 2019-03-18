@@ -187,7 +187,7 @@ class CCiLabComponentList extends Component {
 
     positioningListTitle=()=>{  
       this.componentTitleWidth = getTextWidth('部件名:').width/16;  //in rem
-      this.statusTitleStickyLeft = this.componentTitleStickyLeft + this.componentTitleWidth + 2; 
+      this.statusTitleStickyLeft = this.componentTitleStickyLeft + this.componentTitleWidth + 6; 
       this.statusTitleWidth = getTextWidth('进度:').width/16;
       this.statusUnitStickyLeft = this.statusTitleStickyLeft + this.statusTitleWidth;
     }
@@ -213,7 +213,7 @@ class CCiLabComponentList extends Component {
     
     onFontResize=(e, args)=>{
       this.positioningListTitle();
-      alert("The width = " + this.componentTitleWidth);
+      // alert("The width = " + this.componentTitleWidth);
     }
 
     initTextResizeDetector=()=>{
@@ -608,11 +608,11 @@ class CCiLabComponentList extends Component {
               <div id='cciLabComponentListID' className={`d-flex flex-column cci-flyout-component-list cci-component-list_transition`} 
                   style={{'transform': `${this.compnentListTranslateStyle}`, 'height':`${this.componentListHeight}`, 'width':`${this.componentListWidth}vw`}}
                   onScroll={this.setSelectedComponentStickDirection}>
-                  {/*  sticky to top and left*/}
-                  <div className='d-flex flex-row justify-content-start align-items-center bg-info sticky-top fa' style={{ 'height': '1.5625rem', 'width': 'auto', 'left':'0'}}>
+                  {/*  sticky to top and left, https://gedd.ski/post/position-sticky/*/}
+                  <div className='d-flex justify-content-around align-items-center bg-info sticky-top fa' style={{ 'height': '1.5625rem', 'width': 'auto'}}>
                     {/* https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_Flexible_Box_Layout/Controlling_Ratios_of_Flex_Items_Along_the_Main_Ax */}
-                    <div className='align-self-center w-25 bg-success ml-4 pl-4 border-0 text-primary text-nowrap sticky-top' style={{'flex':'0 0 0', 'left':`${this.componentTitleStickyLeft}rem`}}>部件名:</div>
-                    <div className='align-self-center w-25 bg-danger ml-4 pl-5 border-0 text-primary  text-nowrap sticky-top' style={{'flex':'0 0 0','left':`${this.statusTitleStickyLeft}rem`}}>进度 
+                    <div className='align-self-center w-25 bg-success border-0 text-primary text-nowrap sticky-top' style={{ 'left':`${this.componentTitleStickyLeft}rem`}}>部件名:</div>
+                    <div className='align-self-center w-25 bg-danger border-0 text-primary  text-nowrap sticky-top' style={{'left':`${this.statusTitleStickyLeft}rem`}}>进度 
                     <span className='align-self-center font-weight-normal text-primary sticky-top' style={{'left':`${this.statusUnitStickyLeft}rem`}}> (%)</span></div> 
                   </div>
                   
