@@ -179,16 +179,20 @@ class CCiLabComponentList extends Component {
     movedComponentName='undefined';
     targetComponentName='undefined';
 
-    componentTitleStickyLeft = 1.5625; //rem  
+    componentTitleLeft = 1.5625; //rem  1.5625
     componentTitleWidth;  //in rem
+    componentTitleHeight = 1.5625; //rem 
     statusTitleStickyLeft; 
     statusTitleWidth;
     statusUnitStickyLeft;
+    componentTitleTop;
 
     positioningListTitle=()=>{  
-      this.componentTitleWidth = getTextWidth('部件名:').width/16;  //in rem
-      this.statusTitleStickyLeft = this.componentTitleStickyLeft + this.componentTitleWidth + 6; 
-      this.statusTitleWidth = getTextWidth('进度:').width/16;
+      let titleRect=getTextWidth('部件名:');
+      this.componentTitleWidth = titleRect.width/16;  //in rem
+      this.componentTitleTop = (this.componentTitleHeight - titleRect.height/16); //in rem
+      this.statusTitleStickyLeft = this.componentTitleLeft + this.componentTitleWidth + 3; //in rem 
+      this.statusTitleWidth = getTextWidth('进度: (%)').width/16;  //in rem
       this.statusUnitStickyLeft = this.statusTitleStickyLeft + this.statusTitleWidth;
     }
     
@@ -388,7 +392,7 @@ class CCiLabComponentList extends Component {
           }
           else
           {
-              //scroll down - component move upward - set selected to +1 - sticky-top
+              //scroll down - component move upward - set selected to +1 -
               selectedComponent.displayLogic.selected = 1;
           }
      
@@ -604,23 +608,29 @@ class CCiLabComponentList extends Component {
             {/* following d-flex is needed to show collapse icon (>) next to the top component  */}
             {/* https://code.i-harness.com/en/q/27a5171 explains why vertical scroll bar won't appear for flex box and what is the workaroud
                  className={`d-flex flex-column cci-flyout-component-list ${this.visibility}`, 'width':`${this.componentListWidth}px`}
-                 UC browser, pro to Edge 15 (https://caniuse.com/#feat=css-sticky) doesn't suppot sticky-top onScroll={this.updateDimensions}*/} 
-              <div id='cciLabComponentListID' className={`d-flex flex-column cci-flyout-component-list cci-component-list_transition`} 
+                 UC browser, pro to Edge 15 (https://caniuse.com/#feat=css-sticky) doesn't suppot onScroll={this.updateDimensions}*/} 
+              <div id='cciLabComponentListID' 
+                  className={`cci-component-list_transition`} 
                   style={{'transform': `${this.compnentListTranslateStyle}`, 'height':`${this.componentListHeight}`, 'width':`${this.componentListWidth}vw`}}
-                  onScroll={this.setSelectedComponentStickDirection}>
+                  >
                   {/*  sticky to top and left, https://gedd.ski/post/position-sticky/*/}
-                  <div className='d-flex justify-content-around align-items-center bg-info sticky-top fa' style={{ 'height': '1.5625rem', 'width': 'auto'}}>
-                    {/* https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_Flexible_Box_Layout/Controlling_Ratios_of_Flex_Items_Along_the_Main_Ax */}
-                    <div className='align-self-center w-25 bg-success border-0 text-primary text-nowrap sticky-top' style={{ 'left':`${this.componentTitleStickyLeft}rem`}}>部件名:</div>
-                    <div className='align-self-center w-25 bg-danger border-0 text-primary  text-nowrap sticky-top' style={{'left':`${this.statusTitleStickyLeft}rem`}}>进度 
-                    <span className='align-self-center font-weight-normal text-primary sticky-top' style={{'left':`${this.statusUnitStickyLeft}rem`}}> (%)</span></div> 
+                  {/* https://iamsteve.me/blog/entry/using-flexbox-for-horizontal-scrolling-navigation
+                      https://codepen.io/stevemckinney/pen/WvWrRX */}
+                  <div className='bg-info fa' style={{ 'height': `${this.componentTitleHeight}rem`, 'width': `${this.componentListWidth}vw`}}>
+                    <span className='border-0 text-primary text-nowrap' style={{'position':'relative', 'top':`${this.componentTitleTop}rem`, 'left':`${this.componentTitleWidth}rem`}}>部件名:</span>
+                    <span className='border-0 text-primary  text-nowrap' style={{'position':'relative', 'top':`${this.componentTitleTop}rem`, 'left':`${this.statusTitleStickyLeft}rem`}}>进度: 
+                    <span className='font-weight-normal text-primary' > (%)</span></span> 
                   </div>
-                  
-                  {/* <hr className='m-0'></hr> */}
-                  {this.renderGreetings()}
+                  {/* https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_Flexible_Box_Layout/Controlling_Ratios_of_Flex_Items_Along_the_Main_Ax */}
+                  <div className={'d-flex flex-column cci-flyout-component-list'} 
+                       style={{ 'height':`${this.componentListHeight}`, 'width':`${this.componentListWidth}vw`}}
+                       onScroll={this.setSelectedComponentStickDirection}>
+                    {/* <hr className='m-0'></hr> */}
+                    {this.renderGreetings()}
+                  </div>
               </div>
               {/* <div> */}
-                <a href="#show-hide-component-list" className='nav-link pl-0 py-4 pr-4 cci-component-list_transition sticky-top' style={{'transform': `${this.compnentListTranslateStyle}`}} onClick={this.showHideComponentList} >
+                <a href="#show-hide-component-list" className='nav-link pl-0 py-4 pr-4 cci-component-list_transition' style={{'transform': `${this.compnentListTranslateStyle}`}} onClick={this.showHideComponentList} >
                     <span className={`badge-pill badge-info ${this.slidingComponentListIconClassName}`}></span>
                 </a>
             {/* </div> */}
