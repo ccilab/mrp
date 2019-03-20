@@ -174,25 +174,28 @@ class CCiLabComponentList extends Component {
     componentListWidth= setListWidth(); //in px
       
     compnentListTranslateStyle='';
-    lastScrollPosition = 0;
+    lastScrollYPosition = 0;
 
     movedComponentName='undefined';
     targetComponentName='undefined';
 
-    componentTitleLeft = 1.5625; //rem  1.5625
+    componentTitleLeft; //rem  1.5625
     componentTitleWidth;  //in rem
-    componentTitleHeight = 1.5625; //rem 
+    componentTitleHeight; //rem 
     statusTitleStickyLeft; 
     statusTitleWidth;
     statusUnitStickyLeft;
     componentTitleTop;
 
-    positioningListTitle=()=>{  
+    positioningListTitle=(fontSizeReady)=>{  
       let titleRect=getTextWidth('部件名:');
-      this.componentTitleWidth = titleRect.width/16;  //in rem
-      this.componentTitleTop = (this.componentTitleHeight - titleRect.height/16); //in rem
-      this.statusTitleStickyLeft = this.componentTitleLeft + this.componentTitleWidth + 3; //in rem 
-      this.statusTitleWidth = getTextWidth('进度: (%)').width/16;  //in rem
+      let fontSize = fontSizeReady === true ? TextResizeDetector.getSize() : 16;  //in px
+      this.componentTitleWidth = titleRect.width/fontSize;  //in rem
+      this.componentTitleLeft = this.componentTitleWidth * 0.3; //30% of title width,in rem
+      this.componentTitleHeight = (titleRect.height/fontSize)*1.4; //140% of title height, in rem
+      this.componentTitleTop = (this.componentTitleHeight - titleRect.height/fontSize)/2; //in rem
+      this.statusTitleStickyLeft = this.componentTitleLeft + this.componentTitleWidth + 2.5; //in rem 
+      this.statusTitleWidth = getTextWidth('进度: (%)').width/fontSize;  //in rem
       this.statusUnitStickyLeft = this.statusTitleStickyLeft + this.statusTitleWidth;
     }
     
@@ -216,7 +219,7 @@ class CCiLabComponentList extends Component {
     
     
     onFontResize=(e, args)=>{
-      this.positioningListTitle();
+      this.positioningListTitle( true);
       // alert("The width = " + this.componentTitleWidth);
     }
 
@@ -249,7 +252,7 @@ class CCiLabComponentList extends Component {
         populateComponentChildKeyIds(rootComponent, currentSessionComponents);
       }
 
-      this.positioningListTitle();
+      this.positioningListTitle(false);
 
      
       TextResizeDetector.TARGET_ELEMENT_ID = 'root';
@@ -282,7 +285,6 @@ class CCiLabComponentList extends Component {
      * */ 
     componentDidMount =()=> {
         window.addEventListener("resize", this.updateDimensions);
-        // TextResizeDetector.addEventListener(this.onFontResize,null);
     }
 
     //called after render()
@@ -375,17 +377,18 @@ class CCiLabComponentList extends Component {
       let scrollY = e.target.scrollTop;
 
       // horizontal scroll, return
-      if( scrollY === 0 )
+      if( scrollY === 0 || this.lastScrollPosition === scrollY )
         return;
 
-      let newScrollPosition = scrollY;
- 
       let currentSessionComponents = this.state.greetings;
       let selectedComponent = currentSessionComponents.find( (component)=>{return component.displayLogic.selected !== 0; })
 
-      if( selectedComponent !== "undefined" && selectedComponent.displayLogic !== "undefined" )
+      if( typeof(selectedComponent)  === "undefined")
+        return; 
+
+      if( typeof( selectedComponent.displayLogic )!== "undefined" )
       {
-          if ( newScrollPosition < this.lastScrollPosition )
+          if ( scrollY < this.lastScrollYPosition )
           {
               //scroll up - component move downward - set selected to -1 - sticky-bottom
               selectedComponent.displayLogic.selected = -1;
@@ -399,7 +402,7 @@ class CCiLabComponentList extends Component {
      
           // console.log('new position: ' + newScrollPosition + ' last position: ' + this.lastScrollPosition + ' selected: ' + selectedComponent.displayLogic.selected);
 
-          this.lastScrollPosition = newScrollPosition;
+          this.lastScrollYPosition = scrollY;
 
           this.setState({selected: selectedComponent.displayLogic.selected});
       }
@@ -411,7 +414,7 @@ class CCiLabComponentList extends Component {
     // issue - need to keep highlight is component is show or it's parent should be highlight
     //       
     moveComponentHandler = ( movedComponentDisplayKey, targetComponent ) =>{
-      if( movedComponentDisplayKey !== "undefined" && typeof( movedComponentDisplayKey) === "string" )
+      if( typeof movedComponentDisplayKey !== "undefined" && typeof( movedComponentDisplayKey) === "string" )
       {
         console.log('moved component key: ', movedComponentDisplayKey);
 
@@ -557,7 +560,7 @@ class CCiLabComponentList extends Component {
                   });
                   
                   let leftOffset = 0;
-                  if( typeof parentComponent !== "undefined" && parentComponent.displayLogic.rectLeft !== "undefined" )
+                  if( typeof parentComponent !== "undefined" && typeof parentComponent.displayLogic.rectLeft !== "undefined" )
                       leftOffset = parentComponent.displayLogic.rectLeft; //in rem
 
                   return <CCiLabComponent key={component.displayLogic.key} 
@@ -617,8 +620,8 @@ class CCiLabComponentList extends Component {
                   {/* https://iamsteve.me/blog/entry/using-flexbox-for-horizontal-scrolling-navigation
                       https://codepen.io/stevemckinney/pen/WvWrRX */}
                   <div className='bg-info fa' style={{ 'height': `${this.componentTitleHeight}rem`, 'width': `${this.componentListWidth}vw`}}>
-                    <span className='border-0 text-primary text-nowrap' style={{'position':'relative', 'top':`${this.componentTitleTop}rem`, 'left':`${this.componentTitleWidth}rem`}}>部件名:</span>
-                    <span className='border-0 text-primary  text-nowrap' style={{'position':'relative', 'top':`${this.componentTitleTop}rem`, 'left':`${this.statusTitleStickyLeft}rem`}}>进度: 
+                    <span className='border-0 text-primary text-nowrap' style={{'display':'inline-block','position':'relative', 'top':`${this.componentTitleTop}rem`, 'left':`${this.componentTitleLeft}rem`}}>部件名:</span>
+                    <span className='border-0 text-primary  text-nowrap' style={{'display':'inline-block','position':'relative', 'top':`${this.componentTitleTop}rem`, 'left':`${this.statusTitleStickyLeft}rem`}}>进度: 
                     <span className='font-weight-normal text-primary' > (%)</span></span> 
                   </div>
                   {/* https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_Flexible_Box_Layout/Controlling_Ratios_of_Flex_Items_Along_the_Main_Ax */}
