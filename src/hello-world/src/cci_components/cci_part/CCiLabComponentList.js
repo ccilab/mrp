@@ -179,6 +179,9 @@ class CCiLabComponentList extends Component {
     movedComponentName='undefined';
     targetComponentName='undefined';
 
+    componentLeftOffset = 1;  // in rem
+ 
+    fontSize = 16; //default browser font size in px
     componentTitleLeft; //rem  1.5625
     componentTitleWidth;  //in rem
     componentTitleHeight; //rem 
@@ -186,16 +189,25 @@ class CCiLabComponentList extends Component {
     statusTitleWidth;
     statusUnitStickyLeft;
     componentTitleTop;
+   
+    rootComponentName;
 
-    positioningListTitle=(fontSizeReady)=>{  
+    positioningListTitle=(fontSizeReady, rootComponentName)=>{  
       let titleRect=getTextWidth('部件名:');
-      let fontSize = fontSizeReady === true ? TextResizeDetector.getSize() : 16;  //in px
-      this.componentTitleWidth = titleRect.width/fontSize;  //in rem
-      this.componentTitleLeft = this.componentTitleWidth * 0.3; //30% of title width,in rem
-      this.componentTitleHeight = (titleRect.height/fontSize)*1.4; //140% of title height, in rem
-      this.componentTitleTop = (this.componentTitleHeight - titleRect.height/fontSize)/2; //in rem
-      this.statusTitleStickyLeft = this.componentTitleLeft + this.componentTitleWidth + 2.5; //in rem 
-      this.statusTitleWidth = getTextWidth('进度: (%)').width/fontSize;  //in rem
+      this.fontSize = fontSizeReady === true ? TextResizeDetector.getSize() : 23;  //in px; warning: 23px is chrom for medium, if user changes to vary large the initial value would be wrong
+      this.componentTitleWidth = titleRect.width/this.fontSize;  //in rem
+      this.componentTitleLeft = this.componentTitleWidth * 0.8; //90% of title width,in rem
+
+      this.componentLeftOffset = fontSizeReady === true ? this.componentLeftOffset : this.componentTitleLeft;
+
+      this.componentTitleHeight = (titleRect.height/this.fontSize)*1.4; //140% of title height, in rem
+      this.componentTitleTop = (this.componentTitleHeight - titleRect.height/this.fontSize)/2; //in rem
+     
+      let rootComponentNameWidth = typeof rootComponentName !== "undefined" ?  getTextWidth(rootComponentName).width/this.fontSize : this.componentTitleWidth;  //in rem
+      
+      this.statusTitleStickyLeft = this.componentTitleLeft + this.componentTitleWidth + rootComponentNameWidth; //in rem 
+      alert("FontSize = " + this.fontSize + " The width = " + getTextWidth(rootComponentName).width + " width/fontSize = "+ rootComponentNameWidth);
+      this.statusTitleWidth = getTextWidth('进度: (%)').width/this.fontSize;  //in rem
       this.statusUnitStickyLeft = this.statusTitleStickyLeft + this.statusTitleWidth;
     }
     
@@ -219,7 +231,7 @@ class CCiLabComponentList extends Component {
     
     
     onFontResize=(e, args)=>{
-      this.positioningListTitle( true);
+      this.positioningListTitle( true, this.rootComponentName);
       // alert("The width = " + this.componentTitleWidth);
     }
 
@@ -252,7 +264,9 @@ class CCiLabComponentList extends Component {
         populateComponentChildKeyIds(rootComponent, currentSessionComponents);
       }
 
-      this.positioningListTitle(false);
+      this.rootComponentName = rootComponent.businessLogic.name;
+
+      this.positioningListTitle(false, this.rootComponentName);
 
      
       TextResizeDetector.TARGET_ELEMENT_ID = 'root';
@@ -559,14 +573,15 @@ class CCiLabComponentList extends Component {
                         return "undefined";
                   });
                   
-                  let leftOffset = 0;
+                  
                   if( typeof parentComponent !== "undefined" && typeof parentComponent.displayLogic.rectLeft !== "undefined" )
-                      leftOffset = parentComponent.displayLogic.rectLeft; //in rem
+                      this.componentLeftOffset = parentComponent.displayLogic.rectLeft; //in rem
 
                   return <CCiLabComponent key={component.displayLogic.key} 
                                           component={component} 
-                                          leftOffset={leftOffset} 
+                                          leftOffset={this.componentLeftOffset} 
                                           listWidth={this.componentListWidth}
+                                          fontSize={this.fontSize}
                                           removeGreeting={this.removeGreeting} 
                                           showOrHideChildren={this.showOrHideChildren}
                                           selectedComponentHandler={this.selectedComponentHandler}
@@ -619,9 +634,9 @@ class CCiLabComponentList extends Component {
                   {/*  sticky to top and left, https://gedd.ski/post/position-sticky/*/}
                   {/* https://iamsteve.me/blog/entry/using-flexbox-for-horizontal-scrolling-navigation
                       https://codepen.io/stevemckinney/pen/WvWrRX */}
-                  <div className='bg-info fa' style={{ 'height': `${this.componentTitleHeight}rem`, 'width': `${this.componentListWidth}vw`}}>
-                    <span className='border-0 text-primary text-nowrap' style={{'display':'inline-block','position':'relative', 'top':`${this.componentTitleTop}rem`, 'left':`${this.componentTitleLeft}rem`}}>部件名:</span>
-                    <span className='border-0 text-primary  text-nowrap' style={{'display':'inline-block','position':'relative', 'top':`${this.componentTitleTop}rem`, 'left':`${this.statusTitleStickyLeft}rem`}}>进度: 
+                  <div className='d-flex align-items-center bg-info fa' style={{ 'height': `${this.componentTitleHeight}rem`, 'width': `${this.componentListWidth}vw`}}>
+                    <span className='border-0 text-primary text-nowrap' style={{'display':'inline-block','position':'relative',  'left':`${this.componentTitleLeft}rem`}}>部件名:</span>
+                    <span className='border-0 text-primary  text-nowrap' style={{'display':'inline-block','position':'relative', 'left':`${this.statusTitleStickyLeft}rem`}}>进度: 
                     <span className='font-weight-normal text-primary' > (%)</span></span> 
                   </div>
                   {/* https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_Flexible_Box_Layout/Controlling_Ratios_of_Flex_Items_Along_the_Main_Ax */}

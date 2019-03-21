@@ -9,6 +9,7 @@ class CCiLabComponent extends Component {
         };
 
         currentComponent = this.props.component;
+        rootFontSize=this.props.fontSize;
         parents = this.currentComponent.businessLogic.parentIds;
         children = this.currentComponent.businessLogic.childIds;
         componentName = this.currentComponent.businessLogic.name;
@@ -16,7 +17,7 @@ class CCiLabComponent extends Component {
                     (this.children.length !==0) ? '/images/cci_group_block.png' : '/images/cci_single_block_item.png';
         
         // size of component button, rem - 16px is default font size of browser
-        componentLableHeight =  (this.parents.length === 0 ) ? '2.8125' : (this.children.length !==0) ? '1.5625': '1.5625';
+        componentLableHeight =  (this.parents.length === 0 ) ? 45/this.rootFontSize : (this.children.length !==0) ? 25/this.rootFontSize: 25/this.rootFontSize;
         componentLableWidth = this.componentLableHeight;
 
         expendCollapseBadgePadding =  (this.parents.length === 0 ) ? 'pt-3 pb-0 pl-0 pr-1' : 'pt-2 pb-0 pl-0 pr-1';
@@ -32,7 +33,7 @@ class CCiLabComponent extends Component {
     componentDidMount =()=> {
       let componentRect = document.getElementById( `${this.currentComponent.displayLogic.key}-item` ).getBoundingClientRect();  
 
-      this.currentComponent.displayLogic.rectLeft = componentRect.left/16;  //convert to rem, 16px is default font size for browser
+      this.currentComponent.displayLogic.rectLeft = componentRect.left/this.rootFontSize;  //convert to rem, 16px is default font size for browser
     };
 
     expending = () => {
@@ -121,7 +122,7 @@ class CCiLabComponent extends Component {
 
       if( componentName !== "undefined" && typeof componentName === "string" )
       {
-        elementWidth = ( componentName.length + 1 ) * 0.9375; // roughly (lenght+1)*15px/16 rem as font-size
+        elementWidth = ( componentName.length + 1 ) * (15/this.rootFontSize); // roughly (lenght+1)*15px/fontSize in rem 
         console.log("name width: ", elementWidth)
       }
 
@@ -176,7 +177,7 @@ class CCiLabComponent extends Component {
         
         if ( this.children.length === 0 )
         {
-          leftOffset = (this.props.leftOffset+0.75); // single component without children, left offset with 12px (0.75rem) extra to compensate the >/v badge size
+          leftOffset = (this.props.leftOffset+(12/this.rootFontSize)); // single component without children, left offset with 12px (0.75rem) extra to compensate the >/v badge size
 
           //single component and is not the top component, selected 
           // if( this.parents.length !== 0 && 
@@ -193,7 +194,7 @@ class CCiLabComponent extends Component {
 
         // let btnImgLeft = (this.componentLableWidth*2+0.3125 < leftOffset ) ? leftOffset+0.3125: this.componentLableWidth*2+0.3125 ; // 1.5625rem is width of component
         //let btnImgLeft = (this.currentComponent.displayLogic.selected !== 0) ? this.componentLableWidth*2+5 : 'inherit';
-        let nameLableLeft = btnImgLeft + ( this.parents.length === 0) ? 3.125:0.625; 
+        let nameLableLeft = btnImgLeft + ( ( this.parents.length === 0) ? 50 : 10 )/this.rootFontSize; // in rem
         let statusLabelLeft = this.getElementWidth(this.componentName) + nameLableLeft; 
 
         return (
