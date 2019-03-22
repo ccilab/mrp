@@ -170,8 +170,6 @@ class CCiLabComponentList extends Component {
               isDropToItselfWarning: false};
 
     slidingComponentListIconClassName = this.state.visible? 'fa fa-angle-double-left' : 'fa fa-angle-double-right';
-    componentListHeight= window.innerHeight <= 200 ? '150px' : 'auto';  //minimum height 
-    componentListWidth= setListWidth(); //in px
       
     compnentListTranslateStyle='';
     lastScrollYPosition = 0;
@@ -181,7 +179,7 @@ class CCiLabComponentList extends Component {
 
     componentLeftOffset = 1;  // in rem
  
-    fontSize = 16; //default browser font size in px
+    fontSize = 23; //default browser medium font size in px
     componentTitleLeft; //rem  1.5625
     componentTitleWidth;  //in rem
     componentTitleHeight; //rem 
@@ -189,12 +187,15 @@ class CCiLabComponentList extends Component {
     statusTitleWidth;
     statusUnitStickyLeft;
     componentTitleTop;
-   
+       
+    componentListHeight= window.innerHeight <= 200 ? 150/this.fontSize +'rem' : 'auto';  //minimum height 
+    componentListWidth= setListWidth(); //in px
+
     rootComponentName;
 
     positioningListTitle=(fontSizeReady, rootComponentName)=>{  
       let titleRect=getTextWidth('部件名:');
-      this.fontSize = fontSizeReady === true ? TextResizeDetector.getSize() : 23;  //in px; warning: 23px is chrom for medium, if user changes to vary large the initial value would be wrong
+      this.fontSize = fontSizeReady === true ? TextResizeDetector.getSize() : this.fontSize;  //in px; warning: 23px is chrom for medium, if user changes to vary large the initial value would be wrong
       this.componentTitleWidth = titleRect.width/this.fontSize;  //in rem
       this.componentTitleLeft = this.componentTitleWidth * 0.8; //90% of title width,in rem
 

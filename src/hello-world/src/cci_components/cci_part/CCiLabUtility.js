@@ -18,13 +18,13 @@ const isElementInViewport = (rect) => {
   );
 }
 
-
-export  const setListHeight = (rect) => {
-    return window.innerHeight <= 200 ? '150px' : isElementInViewportHeight( rect ) ? 'auto':'90vh';
+// in rem or auto or vh
+export  const setListHeight = (rect, fondSize) => {
+    return window.innerHeight <= 200 ? 150/fondSize+'rem' : isElementInViewportHeight( rect ) ? 'auto':'90vh';
   }
   
 // in vw
-export  const setListWidth = () =>{
+export  const setListWidth = (fondSize) =>{
     return window.innerWidth <= 330 ? '90' : window.innerWidth <= 600 ? '70' : window.innerWidth <= 800 ? '50' : window.innerWidth <= 1000 ? '40' : window.innerWidth <= 1500 ? '30':'30';
   }
   
