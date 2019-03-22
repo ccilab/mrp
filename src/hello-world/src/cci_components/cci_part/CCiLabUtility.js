@@ -24,7 +24,7 @@ export  const setListHeight = (rect, fondSize) => {
   }
   
 // in vw
-export  const setListWidth = (fondSize) =>{
+export  const setListWidth = () =>{
     return window.innerWidth <= 330 ? '90' : window.innerWidth <= 600 ? '70' : window.innerWidth <= 800 ? '50' : window.innerWidth <= 1000 ? '40' : window.innerWidth <= 1500 ? '30':'30';
   }
   

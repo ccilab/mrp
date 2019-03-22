@@ -5,8 +5,10 @@ import React, { Component } from "react";
 import CCiLabComponentList from "./CCiLabComponentList";
 import {detectOSVersion} from "./CCiLabUtility";
 
+import {TextResizeDetector } from "./TextResizeDetector"
+
 class ComponentContainer extends Component {
-  state = {  width: 0 };
+  state = {  width: 0, fontSize: 23 };
 
   osVersion = detectOSVersion();
 
@@ -16,13 +18,31 @@ class ComponentContainer extends Component {
 
   componentDidMount =()=> {
     window.addEventListener("resize", this.updateDimensions);
-}
-  
+  }
+
+  onFontResize=(e, args)=>{
+    // this.positioningListTitle( true, this.rootComponentName);
+    this.setState( { fontSize: TextResizeDetector.getSize() } )
+    alert("The width = " + this.state.fontSize);
+  }
+
+  initTextResizeDetector=()=>{
+    let iBase = TextResizeDetector.addEventListener(this.onFontResize,null);
+    alert("The base font size = " + iBase);
+    this.setState( { fontSize: iBase } )
+  }  
+  componentWillMount=()=>{
+    TextResizeDetector.TARGET_ELEMENT_ID = 'root';
+    TextResizeDetector.USER_INIT_FUNC = this.initTextResizeDetector;
+  }
+
+
+
   render () {
     return (
       <div className={`d-flex flex-row`}> 
         <div>
-            <CCiLabComponentList />
+            <CCiLabComponentList fontSize={this.state.fontSize}/>
         </div>     
 
 
@@ -39,9 +59,11 @@ class ComponentContainer extends Component {
 
           <div> Browser is: {this.osVersion.browser}</div>
 
-          <div> Broser version: {this.osVersion.browserMajorVersion}</div>
+          <div> Browser version: {this.osVersion.browserMajorVersion}</div>
 
           <div> OS version: {this.osVersion.os} {this.osVersion.osVersion} major: {this.osVersion.osMajorVersion}</div>
+
+          <div> Browser font size: {this.fontSize}</div>
         </ul>
 
       </div>

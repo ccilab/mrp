@@ -7,7 +7,7 @@ import DropComponentWarningModal from "./CCiLabDropComponentCheckFailedModal";
 // import AddGreeter from "./AddGreeter";
 import { setListHeight, setListWidth, setHideListWidth, getTextWidth} from "./CCiLabUtility"
 
-import {TextResizeDetector } from "./TextResizeDetector"
+
 
 //json-loader load the *.json file
 import components from './../../data/components.json';
@@ -179,7 +179,7 @@ class CCiLabComponentList extends Component {
 
     componentLeftOffset = 1;  // in rem
  
-    fontSize = 23; //default browser medium font size in px
+    fontSize = this.props.fontSize; //default browser medium font size in px
     componentTitleLeft; //rem  1.5625
     componentTitleWidth;  //in rem
     componentTitleHeight; //rem 
@@ -193,13 +193,13 @@ class CCiLabComponentList extends Component {
 
     rootComponentName;
 
-    positioningListTitle=(fontSizeReady, rootComponentName)=>{  
+    positioningListTitle=(rootComponentName)=>{  
       let titleRect=getTextWidth('部件名:');
-      this.fontSize = fontSizeReady === true ? TextResizeDetector.getSize() : this.fontSize;  //in px; warning: 23px is chrom for medium, if user changes to vary large the initial value would be wrong
+            
       this.componentTitleWidth = titleRect.width/this.fontSize;  //in rem
       this.componentTitleLeft = this.componentTitleWidth * 0.8; //90% of title width,in rem
 
-      this.componentLeftOffset = fontSizeReady === true ? this.componentLeftOffset : this.componentTitleLeft;
+      this.componentLeftOffset = this.componentTitleLeft;
 
       this.componentTitleHeight = (titleRect.height/this.fontSize)*1.4; //140% of title height, in rem
       this.componentTitleTop = (this.componentTitleHeight - titleRect.height/this.fontSize)/2; //in rem
@@ -207,7 +207,7 @@ class CCiLabComponentList extends Component {
       let rootComponentNameWidth = typeof rootComponentName !== "undefined" ?  getTextWidth(rootComponentName).width/this.fontSize : this.componentTitleWidth;  //in rem
       
       this.statusTitleStickyLeft = this.componentTitleLeft + this.componentTitleWidth + rootComponentNameWidth; //in rem 
-      alert("FontSize = " + this.fontSize + " The width = " + getTextWidth(rootComponentName).width + " width/fontSize = "+ rootComponentNameWidth);
+      //alert("FontSize = " + this.fontSize + " The width = " + getTextWidth(rootComponentName).width + " width/fontSize = "+ rootComponentNameWidth);
       this.statusTitleWidth = getTextWidth('进度: (%)').width/this.fontSize;  //in rem
       this.statusUnitStickyLeft = this.statusTitleStickyLeft + this.statusTitleWidth;
     }
@@ -231,16 +231,7 @@ class CCiLabComponentList extends Component {
     };
     
     
-    onFontResize=(e, args)=>{
-      this.positioningListTitle( true, this.rootComponentName);
-      // alert("The width = " + this.componentTitleWidth);
-    }
 
-    initTextResizeDetector=()=>{
-      TextResizeDetector.addEventListener(this.onFontResize,null);
-			//alert("The base font size = " + iBase);
-    }
-  
     // initialize first component's childKeyIds, reorder in following order: the first component, alarm status, warning status, no_issue status
     componentWillMount=()=>{
       let currentSessionComponents=[];
@@ -267,11 +258,7 @@ class CCiLabComponentList extends Component {
 
       this.rootComponentName = rootComponent.businessLogic.name;
 
-      this.positioningListTitle(false, this.rootComponentName);
-
-     
-      TextResizeDetector.TARGET_ELEMENT_ID = 'root';
-      TextResizeDetector.USER_INIT_FUNC = this.initTextResizeDetector;
+      this.positioningListTitle(this.rootComponentName);
       
       // trick - set default visible=true in constructor, set visible=false in componentWillMount
       // so when user clicks << component list will sliding back
@@ -285,7 +272,7 @@ class CCiLabComponentList extends Component {
     updateDimensions=()=>{
       let updatedRect = estimateComponentListRect(this.state.greetings);
 
-      this.componentListHeight = setListHeight( updatedRect );
+      this.componentListHeight = setListHeight( updatedRect, this.fontSize );
 
       this.componentListWidth= setListWidth();
 
@@ -368,7 +355,7 @@ class CCiLabComponentList extends Component {
           // create vertical scroll bar based on the height of component list dynamically
           let updatedRect = estimateComponentListRect(currentSessionComponents);
 
-          this.componentListHeight = setListHeight( updatedRect );
+          this.componentListHeight = setListHeight( updatedRect, this.fontSize );
           this.componentListWidth = setListWidth();
 
           if( isRending )

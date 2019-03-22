@@ -210,13 +210,12 @@ class CCiLabComponent extends Component {
                 onDragOver={ this.dragOver }
                 onDrop={  this.doDrop }
           > 
-          {/* a badge to show menu to move/copy/delete component */}
+          {/* a badge to show menu to move/copy/delete/edit component, only sole children component has move and copy option */}
           { ( this.parents.length !== 0 && 
-              this.children.length === 0 &&  
               this.currentComponent.displayLogic.selected !== 0 ) ?
               <span>
                 <button className='btn rounded-circle p-0 bg-primary float-left inline-menu_sticky_horizontal' 
-                        style={ { 'height': `${this.componentLableHeight}rem`, 'width': `${this.componentLableWidth}rem`} }>
+                        style={ { 'visibility': 'visible', 'height': `${this.componentLableHeight}rem`, 'width': `${this.componentLableWidth}rem`} }>
                   <span className='fa fa-ellipsis-h'></span>
                 </button> 
               </span>: null
