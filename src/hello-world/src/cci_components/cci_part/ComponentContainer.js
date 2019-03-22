@@ -21,14 +21,13 @@ class ComponentContainer extends Component {
   }
 
   onFontResize=(e, args)=>{
-    // this.positioningListTitle( true, this.rootComponentName);
     this.setState( { fontSize: TextResizeDetector.getSize() } )
-    alert("The width = " + this.state.fontSize);
+    //alert("The width = " + this.state.fontSize);
   }
 
   initTextResizeDetector=()=>{
     let iBase = TextResizeDetector.addEventListener(this.onFontResize,null);
-    alert("The base font size = " + iBase);
+    // alert("The base font size = " + iBase);
     this.setState( { fontSize: iBase } )
   }  
   componentWillMount=()=>{
@@ -63,7 +62,7 @@ class ComponentContainer extends Component {
 
           <div> OS version: {this.osVersion.os} {this.osVersion.osVersion} major: {this.osVersion.osMajorVersion}</div>
 
-          <div> Browser font size: {this.fontSize}</div>
+          <div> Browser font size: {this.state.fontSize}</div>
         </ul>
 
       </div>

@@ -172,30 +172,20 @@ class CCiLabComponent extends Component {
         
         let leftOffset=this.props.leftOffset;
        
-        // expendable component left shift less, to compensate a-tag >/v 
-        let anchorLeftstyle = {'left': `${leftOffset}rem`,}
-        
-        if ( this.children.length === 0 )
-        {
-          leftOffset = (this.props.leftOffset+(12/this.rootFontSize)); // single component without children, left offset with 12px (0.75rem) extra to compensate the >/v badge size
-
-          //single component and is not the top component, selected 
-          // if( this.parents.length !== 0 && 
-          //   this.currentComponent.displayLogic.selected !== 0 ) 
-          //   leftOffset -= this.componentLableWidth;
-        }
-        
-       
-        // let leftShiftStyle = {'left': `${leftOffset}rem`,};
-
         let  stickyWidth =  this.currentComponent.displayLogic.selected !== 0 ? `${this.props.listWidth}vw`:'auto';
 
-        let btnImgLeft = leftOffset+1; //rem - to the right of ancher
+        let btnImgLeft = leftOffset; //rem - to the right of ancher
 
         // let btnImgLeft = (this.componentLableWidth*2+0.3125 < leftOffset ) ? leftOffset+0.3125: this.componentLableWidth*2+0.3125 ; // 1.5625rem is width of component
         //let btnImgLeft = (this.currentComponent.displayLogic.selected !== 0) ? this.componentLableWidth*2+5 : 'inherit';
         let nameLableLeft = btnImgLeft + ( ( this.parents.length === 0) ? 50 : 10 )/this.rootFontSize; // in rem
         let statusLabelLeft = this.getElementWidth(this.componentName) + nameLableLeft; 
+
+        // expendable icon 
+        let expendableIconLeft = btnImgLeft - ( ( this.parents.length === 0) ? 20 : 10 )/this.rootFontSize;
+        let expendableIconStyle =  {'left': `${expendableIconLeft}rem`, 'visibility': ( `${this.children.length}` !== '0'  ) ? 'visible' : 'hidden'}
+
+        let inlineMenuIconVisiblity =  ( this.currentComponent.displayLogic.selected !== 0 ) ? 'visible' : 'hidden';
 
         return (
           // https://developer.mozilla.org/en-US/docs/Web/API/HTML_Drag_and_Drop_API
@@ -210,36 +200,30 @@ class CCiLabComponent extends Component {
                 onDragOver={ this.dragOver }
                 onDrop={  this.doDrop }
           > 
-          {/* a badge to show menu to move/copy/delete/edit component, only sole children component has move and copy option */}
-          { ( this.parents.length !== 0 && 
-              this.currentComponent.displayLogic.selected !== 0 ) ?
-              <span>
-                <button className='btn rounded-circle p-0 bg-primary float-left inline-menu_sticky_horizontal' 
-                        style={ { 'visibility': 'visible', 'height': `${this.componentLableHeight}rem`, 'width': `${this.componentLableWidth}rem`} }>
-                  <span className='fa fa-ellipsis-h'></span>
-                </button> 
-              </span>: null
-          }
+            {/* a badge to show menu to move/copy/delete/edit component, only sole children component has move and copy option */}
+            <span>
+              <button className='btn rounded-circle p-0 bg-primary' 
+                      style={ {'position':'absolute', 'left':'1rem','visibility': `${inlineMenuIconVisiblity}`, 'height': `${this.componentLableHeight}rem`, 'width': `${this.componentLableWidth}rem`} }>
+                <span className='fa fa-ellipsis-h'></span>
+              </button> 
+            </span>
+
             {/* show collapse icon 'v' for all expendable components,
               show expendable icon '>' for those components have children except the top component
             */}
-            { ( this.children.length !== 0  )?
-                  // {/* tag's id used to handle drop event */}
-                  <a  id={`${this.currentComponent.displayLogic.key}-show-hide`} 
-                      href="#expend-collapse-badge" 
-                      className={`cci-link_position nav-link ${this.expendCollapseBadgePadding}`} 
-                      style={anchorLeftstyle} 
-                      draggable={`${draggableSetting}`}
-                      onClick={ this.expending }
-                      onDragStart={ draggableSetting === 'true' ? this.dragStart : null}
-                      onDragOver={ this.dragOver }
-                      onDrop={  this.doDrop }>
-                    <span className={expendCollapseBadgeIconClassName}></span>
-                  </a>:null
-            }  
+            {/* tag's id used to handle drop event */}
+            <a  id={`${this.currentComponent.displayLogic.key}-show-hide`} 
+                href="#expend-collapse-badge" 
+                className={`cci-link_position nav-link ${this.expendCollapseBadgePadding}`} 
+                style={expendableIconStyle} 
+                draggable={`${draggableSetting}`}
+                onClick={ this.expending }
+                onDragStart={ draggableSetting === 'true' ? this.dragStart : null}
+                onDragOver={ this.dragOver }
+                onDrop={  this.doDrop }>
+              <span className={expendCollapseBadgeIconClassName}></span>
+            </a>
 
-          
-            
             {/* shift the child components to the right */}  
             {/* tag's id is used to get component's rect and handle drop event*/}
             <span id={`${this.currentComponent.displayLogic.key}-item`} 
