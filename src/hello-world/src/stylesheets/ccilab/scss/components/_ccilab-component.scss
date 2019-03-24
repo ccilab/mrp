@@ -118,7 +118,7 @@
 .ccilab-component-sticky-bottom{
   position: sticky;
   bottom: 0;
-  left: 0;
+  //left: 0;
   // right: 100%;
   z-index: $zindex-sticky;
 }
@@ -126,7 +126,7 @@
 .ccilab-component-sticky-top{
   position: sticky;
   top: 0.9375rem;
-  left: 0;
+  //left: 0;
   // right: 100%;
   z-index: $zindex-sticky;
 }
