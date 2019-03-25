@@ -5,7 +5,7 @@ import CCiLabComponent from "./CCiLabComponent";
 import DropComponentWarningModal from "./CCiLabDropComponentCheckFailedModal";
 
 // import AddGreeter from "./AddGreeter";
-import { setListHeight, setListWidth, setHideListWidth, getTextWidth} from "./CCiLabUtility"
+import { setListHeight, setListWidth, setHideListWidth, getTextRect} from "./CCiLabUtility"
 
 
 
@@ -194,7 +194,7 @@ class CCiLabComponentList extends Component {
     rootComponentName;
 
     positioningListTitle=(rootComponentName)=>{  
-      let titleRect=getTextWidth('部件名:');
+      let titleRect=getTextRect('部件名:');
             
       this.componentTitleWidth = titleRect.width/this.fontSize;  //in rem
       this.componentTitleLeft = this.componentTitleWidth * 0.8; //90% of title width,in rem
@@ -204,11 +204,11 @@ class CCiLabComponentList extends Component {
       this.componentTitleHeight = (titleRect.height/this.fontSize)*1.4; //140% of title height, in rem
       this.componentTitleTop = (this.componentTitleHeight - titleRect.height/this.fontSize)/2; //in rem
      
-      let rootComponentNameWidth = typeof rootComponentName !== "undefined" ?  getTextWidth(rootComponentName).width/this.fontSize : this.componentTitleWidth;  //in rem
+      let rootComponentNameWidth = typeof rootComponentName !== "undefined" ?  getTextRect(rootComponentName).width/this.fontSize : this.componentTitleWidth;  //in rem
       
       this.statusTitleStickyLeft = this.componentTitleLeft + this.componentTitleWidth + rootComponentNameWidth; //in rem 
-      //alert("FontSize = " + this.fontSize + " The width = " + getTextWidth(rootComponentName).width + " width/fontSize = "+ rootComponentNameWidth);
-      this.statusTitleWidth = getTextWidth('进度: (%)').width/this.fontSize;  //in rem
+      //alert("FontSize = " + this.fontSize + " The width = " + getTextRect(rootComponentName).width + " width/fontSize = "+ rootComponentNameWidth);
+      this.statusTitleWidth = getTextRect('进度: (%)').width/this.fontSize;  //in rem
       this.statusUnitStickyLeft = this.statusTitleStickyLeft + this.statusTitleWidth;
     }
     

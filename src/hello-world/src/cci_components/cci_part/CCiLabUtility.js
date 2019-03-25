@@ -233,7 +233,7 @@ export  const detectOSVersion = () =>{
 // }
 
 // passing string, return rect width in px
-export const getTextWidth=(text)=> {
+export const getTextRect=(text)=> {
 
     let rootNode = document.querySelector('#root');
     let newDiv = document.createElement('div')
