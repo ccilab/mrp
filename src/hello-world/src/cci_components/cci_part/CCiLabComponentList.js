@@ -619,7 +619,7 @@ class CCiLabComponentList extends Component {
                   {/*  sticky to top and left, https://gedd.ski/post/position-sticky/*/}
                   {/* https://iamsteve.me/blog/entry/using-flexbox-for-horizontal-scrolling-navigation
                       https://codepen.io/stevemckinney/pen/WvWrRX */}
-                  <div className='d-flex align-items-center bg-info fa' style={{ 'height': `${this.componentTitleHeight}rem`, 'width': `${this.componentListWidth}vw`}}>
+                  <div className='d-flex align-items-center bg-info fa' style={{ 'height': `auto`, 'width': `${this.componentListWidth}vw`}}>
                     <span className='border-0 text-primary text-nowrap' style={{'display':'inline-block','position':'relative',  'left':`${this.componentTitleLeft}rem`}}>部件名:</span>
                     <span className='border-0 text-primary  text-nowrap' style={{'display':'inline-block','position':'relative', 'left':`${this.statusTitleStickyLeft}rem`}}>进度: 
                     <span className='font-weight-normal text-primary' > (%)</span></span> 

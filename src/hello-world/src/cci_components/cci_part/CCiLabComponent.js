@@ -136,10 +136,10 @@ class CCiLabComponent extends Component {
 
     render() {
         // console.log('CCiLabComponent::render() imgFile: ', this.imgName);
-        let componentItemClassName='list-group flex-row cci-component-lable_position';
-        let inlineMenuClassName ='btn rounded-circle p-0 bg-primary cci-component-lable_position component-label_sticky_horizontal align-self-center';
-        let ComponentClassNameBase = 'btn rounded-circle align-self-center m-0 p-0'; //float-left
-        let ComponentClassName = ComponentClassNameBase + ' cci-component-btn  component-label_sticky_horizontal';
+        let componentBase='list-group flex-row cci-component-lable_position';
+        let inlineMenuClassName ='btn rounded-circle align-self-center p-0 bg-primary component-label_sticky_horizontal';
+        let ComponentClassNameBase = 'btn rounded-circle align-self-center m-0 p-0 cci-component-btn  component-label_sticky_horizontal'; //float-left
+        let ComponentClassName = ComponentClassNameBase;
         let imamgeClassName = 'cci-component__img rounded-circle align-self-center  component-label_sticky_horizontal';
         let expendCollapseBadgeIconClassNameBase ='cci-component-lable_position component-label_sticky_horizontal align-self-center nav-link p-0';
         let expendCollapseBadgeIconClassName= 'fa fa-angle-right';
@@ -155,15 +155,19 @@ class CCiLabComponent extends Component {
         let permissionEabled = true; // #todo: need to add check later
         let  Component=' ';
         let draggableSetting = false;
+        let  stickyWidth =  this.currentComponent.displayLogic.selected !== 0 ? `${this.props.listWidth}vw`:'auto';
+
+        let componentStyle = {'width': `${stickyWidth}`, 'left': '0'}
 
         // very top component or component has children can't be moved 
         if ( this.parents.length === 0 || this.children.length !== 0 ) 
         {
-            Component =  this.currentComponent.displayLogic.selected !== 0 ? 'bg-info component_opacity ccilab-component-sticky-top inline-menu_sticky_horizontal':'inline-menu_sticky_horizontal ';
-            draggableSetting= false;
+          Component = ( this.currentComponent.displayLogic.selected !== 0 ) ? 'bg-info component_opacity ccilab-component-sticky-top inline-menu_sticky_horizontal' : 'inline-menu_sticky_horizontal';
+          draggableSetting= false;
         }
         else
-        { // draggable for elements bellow the very top one, if use has the permission ( need to check)
+        { 
+            // draggable for elements bellow the very top one, if use has the permission (#todo need to implement the check)
             Component =  this.currentComponent.displayLogic.selected > 0 ? 'bg-info component_opacity ccilab-component-sticky-top inline-menu_sticky_horizontal' + (permissionEabled? ' move':' ' ):
                          this.currentComponent.displayLogic.selected < 0 ? 'bg-info component_opacity ccilab-component-sticky-bottom inline-menu_sticky_horizontal' + (permissionEabled? ' move':' ' ):'inline-menu_sticky_horizontal ';
             draggableSetting = ( permissionEabled && this.currentComponent.displayLogic.selected !== 0 &&  this.parents.length !== 0 )? 'true':'false';
@@ -183,8 +187,6 @@ class CCiLabComponent extends Component {
             expendCollapseBadgeIconClassName= 'fa fa-angle-down';
         }
         
-        let  stickyWidth =  this.currentComponent.displayLogic.selected !== 0 ? `${this.props.listWidth}vw`:'auto';
-
         let expendableIconStyle =  {'display':'inline','left': `${this.expendableIconLeft}rem`, 'visibility': ( `${this.children.length}` !== '0'  ) ? 'visible' : 'hidden'}
 
         let inlineMenuIconVisiblity =  ( this.currentComponent.displayLogic.selected !== 0 ) ? 'visible' : 'hidden';
@@ -193,35 +195,22 @@ class CCiLabComponent extends Component {
           // https://developer.mozilla.org/en-US/docs/Web/API/HTML_Drag_and_Drop_API
           // https://developer.mozilla.org/en-US/docs/Web/API/HTML_Drag_and_Drop_API/Drag_operations#dragstart
           // https://developer.mozilla.org/en-US/docs/Web/API/DataTransferItem#Browser_compatibility
-         
-          <span id={`${this.currentComponent.displayLogic.key}`} 
-                className={`${Component}`}  
-                style={{'width': `${stickyWidth}`, 'left':'0' }}
-                draggable={`${draggableSetting}`}
-                onDragStart={ draggableSetting === 'true' ? this.dragStart : null}
-                onDragOver={ this.dragOver }
-                onDrop={  this.doDrop }
-          > 
-           
-
-            {/* shift the child components to the right */}  
-            {/* tag's id is used to handle drop event*/}
+            // {/* shift the child components to the right */}  
+            // {/* tag's id is used to handle drop event*/}
             <span id={`${this.currentComponent.displayLogic.key}`} 
-                className={`${componentItemClassName}`} 
-                style={{'left': `${this.inlineMenuIconLeft}rem`}}
+                className={`${componentBase} ${Component}`} 
+                style={componentStyle}
                 draggable={`${draggableSetting}`}
                 onDragStart={ draggableSetting === 'true' ? this.dragStart : null}
                 onDragOver={ this.dragOver }
                 onDrop={  this.doDrop }>
 
                 {/* a badge to show menu to move/copy/delete/edit component, only sole children component has move and copy option */}
-                <span>
                   <button id={`${this.currentComponent.displayLogic.key}-inline-menu`}
                           className={`${inlineMenuClassName}`} 
                           style={ {'left':`${this.inlineMenuIconLeft}rem`,'visibility': `${inlineMenuIconVisiblity}`, 'height': `${this.componentLableHeight}rem`, 'width': `${this.componentLableWidth}rem`} }>
                     <span className='fa fa-ellipsis-h'></span>
                   </button> 
-                </span>
                  
                  {/* show collapse icon 'v' for all expendable components,
                   show expendable icon '>' for those components have children except the top component
@@ -285,7 +274,6 @@ class CCiLabComponent extends Component {
                       {this.progressValue}%
                 </span>  
             </span>
-          </span>
         )
       }
 }
