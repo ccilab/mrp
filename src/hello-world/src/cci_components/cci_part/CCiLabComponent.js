@@ -197,7 +197,7 @@ class CCiLabComponent extends Component {
           // https://developer.mozilla.org/en-US/docs/Web/API/DataTransferItem#Browser_compatibility
             // {/* shift the child components to the right */}  
             // {/* tag's id is used to handle drop event*/}
-            <span id={`${this.currentComponent.displayLogic.key}`} 
+            <div id={`${this.currentComponent.displayLogic.key}`} 
                 className={`${componentBase} ${Component}`} 
                 style={componentStyle}
                 draggable={`${draggableSetting}`}
@@ -273,7 +273,7 @@ class CCiLabComponent extends Component {
                       onDrop={  this.doDrop }> 
                       {this.progressValue}%
                 </span>  
-            </span>
+            </div>
         )
       }
 }

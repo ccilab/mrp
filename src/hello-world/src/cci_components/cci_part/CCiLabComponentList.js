@@ -633,8 +633,11 @@ class CCiLabComponentList extends Component {
                   </div>
               </div>
               {/* <div> */}
-                <a href="#show-hide-component-list" className='nav-link pl-0 py-4 pr-4 cci-component-list_transition' style={{'transform': `${this.compnentListTranslateStyle}`}} onClick={this.showHideComponentList} >
-                    <span className={`badge-pill badge-info ${this.slidingComponentListIconClassName}`}></span>
+                <a href="#show-hide-component-list" 
+                  className='nav-link pl-0 py-4 pr-4 cci-component-list_transition' 
+                  style={{'transform': `${this.compnentListTranslateStyle}`}} 
+                  onClick={this.showHideComponentList} >
+                  <span className={`badge-pill badge-info ${this.slidingComponentListIconClassName}`}></span>
                 </a>
             {/* </div> */}
             {droptoSameParentWarningModal}
