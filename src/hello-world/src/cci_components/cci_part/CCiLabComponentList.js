@@ -325,9 +325,6 @@ class CCiLabComponentList extends Component {
             currentSessionComponents = this.state.greetings;
           }
            
-          // don't need to call this function, rectLeft already updated inside component's componentDidMount 
-          // updateComponentValue( selectedComponent, currentSessionComponents );
-
           populateComponentChildKeyIds(selectedComponent, currentSessionComponents );
 
           let rootComponent = currentSessionComponents.find(component=>component.businessLogic.parentIds.length === 0);
@@ -551,7 +548,7 @@ class CCiLabComponentList extends Component {
           this.state.greetings.map( (component) => {
                 if( component.displayLogic.showMyself === true )
                 {
-                  // get parent's rectLeft as left offset of this component
+                  // get parent's of this component
                   let parentComponent = this.state.greetings.find( (item)=>{
                       if( typeof item.displayLogic !== "undefined" && typeof component.displayLogic !== "undefined")
                       {
@@ -561,7 +558,7 @@ class CCiLabComponentList extends Component {
                         return "undefined";
                   });
                   
-                  
+                  // get parent's rectLeft as left offset of this component
                   if( typeof parentComponent !== "undefined" && typeof parentComponent.displayLogic.rectLeft !== "undefined" )
                       this.componentLeftOffset = parentComponent.displayLogic.rectLeft; //in rem
 

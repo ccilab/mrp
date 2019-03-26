@@ -21,10 +21,6 @@ class CCiLabComponent extends Component {
         componentLableHeight =  (this.parents.length === 0 ) ? 45/this.rootFontSize : (this.children.length !==0) ? 25/this.rootFontSize: 25/this.rootFontSize;
         componentLableWidth = this.componentLableHeight;
 
-        // expendCollapseBadgePadding =  (this.parents.length === 0 ) ? 'pt-3 pb-0 pl-0 pr-1' : 'pt-2 pb-0 pl-0 pr-1';
-        expendCollapseBadgePadding =  (this.parents.length === 0 ) ? 'p-0' : 'p-0';
-
-
         progressStatus = this.currentComponent.businessLogic.status;
         progressValue = this.currentComponent.businessLogic.progressPercent;
 
@@ -140,12 +136,15 @@ class CCiLabComponent extends Component {
 
     render() {
         // console.log('CCiLabComponent::render() imgFile: ', this.imgName);
+        let componentItemClassName='list-group flex-row cci-component-lable_position';
+        let inlineMenuClassName ='btn rounded-circle p-0 bg-primary cci-component-lable_position component-label_sticky_horizontal align-self-center';
         let ComponentClassNameBase = 'btn rounded-circle align-self-center m-0 p-0'; //float-left
         let ComponentClassName = ComponentClassNameBase + ' cci-component-btn  component-label_sticky_horizontal';
         let imamgeClassName = 'cci-component__img rounded-circle align-self-center  component-label_sticky_horizontal';
+        let expendCollapseBadgeIconClassNameBase ='cci-component-lable_position component-label_sticky_horizontal align-self-center nav-link p-0';
         let expendCollapseBadgeIconClassName= 'fa fa-angle-right';
-        let componentNameClassNameBase = 'lead align-self-center font-weight-normal text-primary text-truncate nav-link';
-        let componentNameClassName= (this.parents.length === 0 ) ? componentNameClassNameBase + ' py-1' : componentNameClassNameBase + ' py-0';
+        let componentNameClassNameBase = 'lead align-self-center font-weight-normal text-primary text-truncate nav-link component-label_sticky_horizontal';
+        let componentNameClassName=  componentNameClassNameBase; //+ ' py-0' to remove space between components
 
         // .align-self-center to make fa and badge height the same as font height
         let statusBadgetIconClassNameBase = 'align-self-center text-nowrap ml-0 component-label_sticky_horizontal px-1 ';
@@ -208,7 +207,7 @@ class CCiLabComponent extends Component {
             {/* shift the child components to the right */}  
             {/* tag's id is used to handle drop event*/}
             <span id={`${this.currentComponent.displayLogic.key}`} 
-                className='list-group flex-row cci-component-lable_position' 
+                className={`${componentItemClassName}`} 
                 style={{'left': `${this.inlineMenuIconLeft}rem`}}
                 draggable={`${draggableSetting}`}
                 onDragStart={ draggableSetting === 'true' ? this.dragStart : null}
@@ -218,7 +217,7 @@ class CCiLabComponent extends Component {
                 {/* a badge to show menu to move/copy/delete/edit component, only sole children component has move and copy option */}
                 <span>
                   <button id={`${this.currentComponent.displayLogic.key}-inline-menu`}
-                          className='btn rounded-circle p-0 bg-primary cci-component-lable_position component-label_sticky_horizontal align-self-center ' 
+                          className={`${inlineMenuClassName}`} 
                           style={ {'left':`${this.inlineMenuIconLeft}rem`,'visibility': `${inlineMenuIconVisiblity}`, 'height': `${this.componentLableHeight}rem`, 'width': `${this.componentLableWidth}rem`} }>
                     <span className='fa fa-ellipsis-h'></span>
                   </button> 
@@ -230,7 +229,7 @@ class CCiLabComponent extends Component {
                 {/* tag's id used to handle drop event */}
                 <a  id={`${this.currentComponent.displayLogic.key}-show-hide`} 
                     href="#expend-collapse-badge" 
-                    className={`cci-component-lable_position component-label_sticky_horizontal align-self-center nav-link ${this.expendCollapseBadgePadding} ${expendCollapseBadgeIconClassName}`} 
+                    className={`${expendCollapseBadgeIconClassNameBase} ${expendCollapseBadgeIconClassName}`} 
                     style={expendableIconStyle} 
                     draggable={`${draggableSetting}`}
                     onClick={ this.expending }
@@ -264,7 +263,7 @@ class CCiLabComponent extends Component {
                 </button>
                 {/* tag's id is used to handle drop event */}
                 <a  id={`${this.currentComponent.displayLogic.key}`} 
-                    href="#select-component-name" className={`${componentNameClassName} component-label_sticky_horizontal`} 
+                    href="#select-component-name" className={`${componentNameClassName}`} 
                     style={{ 'height': '10%', 'left':`${this.nameLableLeft}rem` }} 
                     draggable={`${draggableSetting}`}
                     onClick={ this.componentSelected }
