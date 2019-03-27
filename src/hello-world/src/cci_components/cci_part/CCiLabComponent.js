@@ -136,7 +136,7 @@ class CCiLabComponent extends Component {
 
     render() {
         // console.log('CCiLabComponent::render() imgFile: ', this.imgName);
-        let componentBase='list-group flex-row cci-component-lable_position';
+        let componentBase='d-flex cci-component-lable_position';
         let inlineMenuClassName ='btn rounded-circle align-self-center p-0 bg-primary component-label_sticky_horizontal';
         let ComponentClassNameBase = 'btn rounded-circle align-self-center m-0 p-0 cci-component-btn  component-label_sticky_horizontal'; //float-left
         let ComponentClassName = ComponentClassNameBase;
@@ -160,7 +160,7 @@ class CCiLabComponent extends Component {
         let componentStyle = {'width': `${stickyWidth}`, 'left': '0'}
 
         // very top component or component has children can't be moved 
-        if ( this.parents.length === 0 || this.children.length !== 0 ) 
+        if ( this.parents.length === 0 ) 
         {
           Component = ( this.currentComponent.displayLogic.selected !== 0 ) ? 'bg-info component_opacity ccilab-component-sticky-top inline-menu_sticky_horizontal' : 'inline-menu_sticky_horizontal';
           draggableSetting= false;
@@ -253,7 +253,7 @@ class CCiLabComponent extends Component {
                 {/* tag's id is used to handle drop event */}
                 <a  id={`${this.currentComponent.displayLogic.key}`} 
                     href="#select-component-name" className={`${componentNameClassName}`} 
-                    style={{ 'height': '10%', 'left':`${this.nameLableLeft}rem` }} 
+                    style={{ 'height': `auto`, 'left':`${this.nameLableLeft}rem` }} 
                     draggable={`${draggableSetting}`}
                     onClick={ this.componentSelected }
                     onDragStart={ draggableSetting === 'true' ? this.dragStart : null}
@@ -265,7 +265,7 @@ class CCiLabComponent extends Component {
                 {/* tag's id is used to handle drop event */}
                 <span id={`${this.currentComponent.displayLogic.key}`} 
                       className={`badge-pill badge-${this.progressStatus} ${statusBadgeIconClassName}`} 
-                      style={{'display':'inline-block','height': '10%', 'left':`${this.statusLabelLeft}rem`}} 
+                      style={{'display':'inline-block','height': `auto`, 'left':`${this.statusLabelLeft}rem`}} 
                       draggable={`${draggableSetting}`}
                       onClick={ this.componentSelected }
                       onDragStart={ draggableSetting === 'true' ? this.dragStart : null}

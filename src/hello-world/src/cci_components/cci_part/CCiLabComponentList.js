@@ -391,11 +391,13 @@ class CCiLabComponentList extends Component {
           {
               //scroll up - component move downward - set selected to -1 - sticky-bottom
               selectedComponent.displayLogic.selected = -1;
+              console.log('scroll up - component move down: ', -1 );
           }
           else
           {
               //scroll down - component move upward - set selected to +1 -
               selectedComponent.displayLogic.selected = 1;
+              console.log('scroll down - component move up: ', 1 );
           }
      
      
@@ -602,8 +604,11 @@ class CCiLabComponentList extends Component {
                   : null;
 
       console.log( 'componentTitleWidth (rem): ', this.componentTitleWidth);
+ 
+      let listTitleClassName='border-0 text-primary text-nowrap';
 
       return (
+       
        
         <div className={`d-flex flex-row`} >
           {/* <AddGreeter addGreeting={this.addGreeting} /> */}
@@ -620,8 +625,8 @@ class CCiLabComponentList extends Component {
                   {/* https://iamsteve.me/blog/entry/using-flexbox-for-horizontal-scrolling-navigation
                       https://codepen.io/stevemckinney/pen/WvWrRX */}
                   <div className='d-flex align-items-center bg-info fa' style={{ 'height': `auto`, 'width': `${this.componentListWidth}vw`}}>
-                    <span className='border-0 text-primary text-nowrap' style={{'display':'inline-block','position':'relative',  'left':`${this.componentTitleLeft}rem`}}>部件名:</span>
-                    <span className='border-0 text-primary  text-nowrap' style={{'display':'inline-block','position':'relative', 'left':`${this.statusTitleStickyLeft}rem`}}>进度: 
+                    <span className={`${listTitleClassName}`} style={{'position':'relative',  'left':`${this.componentTitleLeft}rem`}}>部件名:</span>
+                    <span className={`${listTitleClassName}`} style={{'position':'relative', 'left':`${this.statusTitleStickyLeft}rem`}}>进度: 
                     <span className='font-weight-normal text-primary' > (%)</span></span> 
                   </div>
                   {/* https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_Flexible_Box_Layout/Controlling_Ratios_of_Flex_Items_Along_the_Main_Ax */}
