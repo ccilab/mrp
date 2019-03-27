@@ -37,10 +37,10 @@ class CCiLabComponent extends Component {
       
       this.leftOffset=this.props.leftOffset;
       this.inlineMenuIconLeft = this.leftOffset;
-      this.expendableIconLeft = this.inlineMenuIconLeft + this.componentLableWidth+10/this.rootFontSize;
-      this.btnImgLeft = this.expendableIconLeft +  20/this.rootFontSize; //rem - to the right of ancher
-      this.nameLableLeft = this.btnImgLeft + ( ( this.parents.length === 0) ? 50 : 10 )/this.rootFontSize; // in rem
-      this.statusLabelLeft = this.nameLableLeft + getTextRect(this.componentName+':').width/this.rootFontSize + 3.5; // in rem, compnesate padding left for  ~ 4rem
+      this.expendableIconLeft = this.inlineMenuIconLeft + this.componentLableWidth/2;
+      this.btnImgLeft = this.expendableIconLeft +  5/this.rootFontSize; //rem - to the right of ancher
+      this.nameLableLeft = this.btnImgLeft/2 + 5/this.rootFontSize; // position si relative to img button in rem
+      this.statusLabelLeft = getTextRect(this.componentName+':').width/this.rootFontSize;//this.nameLableLeft + getTextRect(this.componentName+':').width/this.rootFontSize + 3.5; // in rem, compnesate padding left for  ~ 4rem
     }
 
     componentWillMount=()=>{
@@ -136,18 +136,18 @@ class CCiLabComponent extends Component {
 
     render() {
         // console.log('CCiLabComponent::render() imgFile: ', this.imgName);
-        let componentBase='d-flex cci-component-lable_position';
-        let inlineMenuClassName ='btn rounded-circle align-self-center p-0 bg-primary component-label_sticky_horizontal';
-        let ComponentClassNameBase = 'btn rounded-circle align-self-center m-0 p-0 cci-component-btn  component-label_sticky_horizontal'; //float-left
+        let componentBase='d-flex '; //align-items-center cci-component-lable_position
+        let inlineMenuClassName ='btn rounded-circle align-self-center p-0 bg-primary cci-component-lable_position ';//component-label_sticky_horizontal
+        let ComponentClassNameBase = 'btn rounded-circle align-self-center m-0 p-0 cci-component-btn cci-component-lable_position '; //float-left component-label_sticky_horizontal
         let ComponentClassName = ComponentClassNameBase;
-        let imamgeClassName = 'cci-component__img rounded-circle align-self-center  component-label_sticky_horizontal';
-        let expendCollapseBadgeIconClassNameBase ='cci-component-lable_position component-label_sticky_horizontal align-self-center nav-link p-0';
+        let imamgeClassName = 'cci-component__img rounded-circle align-self-center '; 
+        let expendCollapseBadgeIconClassNameBase ='align-self-center nav-link p-0 cci-component-lable_position '; //cci-component-lable_position component-label_sticky_horizontal
         let expendCollapseBadgeIconClassName= 'fa fa-angle-right';
-        let componentNameClassNameBase = 'lead align-self-center font-weight-normal text-primary text-truncate nav-link component-label_sticky_horizontal';
+        let componentNameClassNameBase = 'lead align-self-center font-weight-normal text-primary text-truncate nav-link  cci-component-lable_position ';//component-label_sticky_horizontal
         let componentNameClassName=  componentNameClassNameBase; //+ ' py-0' to remove space between components
 
         // .align-self-center to make fa and badge height the same as font height
-        let statusBadgetIconClassNameBase = 'align-self-center text-nowrap ml-0 component-label_sticky_horizontal px-1 ';
+        let statusBadgetIconClassNameBase = 'align-self-center text-nowrap ml-0 px-1  cci-component-lable_position '; //component-label_sticky_horizontal 
         let statusBadgeIconClassName = statusBadgetIconClassNameBase + (this.progressStatus === 'info' ? 'fa ':
             this.progressStatus === 'success' ? 'fa fa-check-circle' :
             this.progressStatus === 'warning' ? 'fa fa-exclamation-circle' : 'fa fa-exclamation-triangle');
@@ -162,14 +162,14 @@ class CCiLabComponent extends Component {
         // very top component or component has children can't be moved 
         if ( this.parents.length === 0 ) 
         {
-          Component = ( this.currentComponent.displayLogic.selected !== 0 ) ? 'bg-info component_opacity ccilab-component-sticky-top inline-menu_sticky_horizontal' : 'inline-menu_sticky_horizontal';
+          Component = ( this.currentComponent.displayLogic.selected !== 0 ) ? 'bg-info component_opacity ccilab-component-sticky-top' :'';// inline-menu_sticky_horizontal' : 'inline-menu_sticky_horizontal';
           draggableSetting= false;
         }
         else
         { 
-            // draggable for elements bellow the very top one, if use has the permission (#todo need to implement the check)
-            Component =  this.currentComponent.displayLogic.selected > 0 ? 'bg-info component_opacity ccilab-component-sticky-top inline-menu_sticky_horizontal' + (permissionEabled? ' move':' ' ):
-                         this.currentComponent.displayLogic.selected < 0 ? 'bg-info component_opacity ccilab-component-sticky-bottom inline-menu_sticky_horizontal' + (permissionEabled? ' move':' ' ):'inline-menu_sticky_horizontal ';
+            // draggable for elements bellow the very top one, if use has the permission (#todo need to implement the check)inline-menu_sticky_horizontal inline-menu_sticky_horizontal inline-menu_sticky_horizontal
+            Component =  this.currentComponent.displayLogic.selected > 0 ? 'bg-info component_opacity ccilab-component-sticky-top ' + (permissionEabled? ' move':' ' ):
+                         this.currentComponent.displayLogic.selected < 0 ? 'bg-info component_opacity ccilab-component-sticky-bottom ' + (permissionEabled? ' move':' ' ):' ';
             draggableSetting = ( permissionEabled && this.currentComponent.displayLogic.selected !== 0 &&  this.parents.length !== 0 )? 'true':'false';
         }
 
