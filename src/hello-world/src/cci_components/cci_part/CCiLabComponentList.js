@@ -191,13 +191,14 @@ class CCiLabComponentList extends Component {
     componentListHeight= window.innerHeight <= 200 ? 150/this.fontSize +'rem' : 'auto';  //minimum height 
     componentListWidth= setListWidth(); //in px
 
-    rootComponentName;
+    // rootComponentName;
 
-    positioningListTitle=(rootComponentName)=>{  
+    positioningListTitle=(rootComponent)=>{ 
+      let rootComponentName = rootComponent.businessLogic.name; 
       let titleRect=getTextRect('部件名:');
             
       this.componentTitleWidth = titleRect.width/this.fontSize;  //in rem
-      this.componentTitleLeft = this.componentTitleWidth * 0.8; //90% of title width,in rem
+      this.componentTitleLeft = (typeof rootComponent.displayLogic.rectLeft === 'undefined' || rootComponent.displayLogic.rectLeft === 0)? this.componentTitleWidth * 0.8 : rootComponent.displayLogic.rectLeft; //90% of title width,in rem
 
       this.componentLeftOffset = this.componentTitleLeft;
 
@@ -206,7 +207,8 @@ class CCiLabComponentList extends Component {
      
       let rootComponentNameWidth = typeof rootComponentName !== "undefined" ?  getTextRect(rootComponentName).width/this.fontSize : this.componentTitleWidth;  //in rem
       
-      this.statusTitleStickyLeft = this.componentTitleLeft + this.componentTitleWidth + rootComponentNameWidth; //in rem 
+      let rootImgBtnWith = 45/this.fontSize;  //also used in CCiLabComponent.js
+      this.statusTitleStickyLeft = this.componentTitleLeft + this.componentTitleWidth + rootComponentNameWidth + rootImgBtnWith; //in rem 
       //alert("FontSize = " + this.fontSize + " The width = " + getTextRect(rootComponentName).width + " width/fontSize = "+ rootComponentNameWidth);
       this.statusTitleWidth = getTextRect('进度: (%)').width/this.fontSize;  //in rem
       this.statusUnitStickyLeft = this.statusTitleStickyLeft + this.statusTitleWidth;
@@ -256,9 +258,7 @@ class CCiLabComponentList extends Component {
         populateComponentChildKeyIds(rootComponent, currentSessionComponents);
       }
 
-      this.rootComponentName = rootComponent.businessLogic.name;
-
-      this.positioningListTitle(this.rootComponentName);
+      this.positioningListTitle(rootComponent);
       
       // trick - set default visible=true in constructor, set visible=false in componentWillMount
       // so when user clicks << component list will sliding back
@@ -551,14 +551,20 @@ class CCiLabComponentList extends Component {
                 if( component.displayLogic.showMyself === true )
                 {
                   // get parent's of this component
-                  let parentComponent = this.state.greetings.find( (item)=>{
-                      if( typeof item.displayLogic !== "undefined" && typeof component.displayLogic !== "undefined")
-                      {
-                        return item.displayLogic.childKeyIds.includes(component.displayLogic.key); 
-                      }
-                      else
-                        return "undefined";
-                  });
+                  let parentComponent;
+                  if( component.businessLogic.parentIds.length === 0 )
+                    parentComponent = component; // root
+                  else
+                  {
+                    parentComponent = this.state.greetings.find( (item)=>{
+                        if( typeof item.displayLogic !== "undefined" && typeof component.displayLogic !== "undefined")
+                        {
+                          return item.displayLogic.childKeyIds.includes(component.displayLogic.key); 
+                        }
+                        else
+                          return "undefined";
+                    });
+                  }
                   
                   // get parent's rectLeft as left offset of this component
                   if( typeof parentComponent !== "undefined" && typeof parentComponent.displayLogic.rectLeft !== "undefined" )
