@@ -24,7 +24,7 @@ class CCiLabComponent extends Component {
         progressStatus = this.currentComponent.businessLogic.status;
         progressValue = this.currentComponent.businessLogic.progressPercent;
 
-        leftOffset;
+        leftOffset =this.props.leftOffset  + ( (this.parents.length === 0 ) ? 0: this.componentLableWidth/2 );
         // inlineMenuIconLeft;
         // expendableIconLeft;        
         // btnImgLeft;
@@ -44,7 +44,7 @@ class CCiLabComponent extends Component {
     }
 
     componentWillMount=()=>{
-      this.positioningComponentInfo();
+      // this.positioningComponentInfo();
       this.setState({expended: this.props.component.displayLogic.canExpend});
     }
 
@@ -157,7 +157,7 @@ class CCiLabComponent extends Component {
         let permissionEabled = true; // #todo: need to add check later
         let  Component=' ';
         let draggableSetting = false;
-        let  stickyWidth =  this.currentComponent.displayLogic.selected !== 0 ? `${this.props.listWidth}vw`:'auto';
+        let  stickyWidth =  this.currentComponent.displayLogic.selected !== 0 ? `${this.props.listWidth}`:'auto';
 
         let componentStyle = {'width': `${stickyWidth}`, 'left': `0rem`}
 

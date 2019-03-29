@@ -5,7 +5,7 @@ import CCiLabComponent from "./CCiLabComponent";
 import DropComponentWarningModal from "./CCiLabDropComponentCheckFailedModal";
 
 // import AddGreeter from "./AddGreeter";
-import { setListHeight, setListWidth, setHideListWidth, getTextRect} from "./CCiLabUtility"
+import { setListHeight, setListWidth, getTextRect} from "./CCiLabUtility"
 
 
 
@@ -171,7 +171,9 @@ class CCiLabComponentList extends Component {
 
     slidingComponentListIconClassName = this.state.visible? 'fa fa-angle-double-left' : 'fa fa-angle-double-right';
       
-    compnentListTranslateStyle='';
+    componentListWidth= setListWidth(1.0); //in px or vw,  
+    hideListWidth = setListWidth(0.99); //in px or vw
+    compnentListTranslateStyle=this.state.visible ? `translate3d(0, 0, 0)`: `translate3d(-${this.hideListWidth}, 0, 0)`;
     lastScrollYPosition = 0;
 
     movedComponentName='undefined';
@@ -189,7 +191,7 @@ class CCiLabComponentList extends Component {
     componentTitleTop;
        
     componentListHeight= window.innerHeight <= 200 ? ( 150/this.fontSize +'rem' ) : 'auto';  //minimum height 
-    componentListWidth= setListWidth(); //in px
+   
 
     // rootComponentName;
 
@@ -218,10 +220,7 @@ class CCiLabComponentList extends Component {
       // console.log('container: clicked before: - ', this.state.visible ? 'true' : 'false' );
       this.setState( { visible: this.state.visible ? false : true } );
 
-      let hideListWidth = setHideListWidth()*.99;
-
-      this.compnentListTranslateStyle = this.state.visible ? 'translate3d(0vw, 0, 0)': `translate3d(-${hideListWidth}vw, 0, 0)`;
-
+      this.compnentListTranslateStyle = this.state.visible ? `translate3d(0, 0, 0)`: `translate3d(-${this.hideListWidth}, 0, 0)`;
       this.slidingComponentListIconClassName = this.state.visible? 'fa fa-angle-double-left' : 'fa fa-angle-double-right';
       // console.log('container: clicked after: - ', this.state.visible ? 'true' : 'false' );
     }
@@ -274,7 +273,7 @@ class CCiLabComponentList extends Component {
 
       this.componentListHeight = setListHeight( updatedRect, this.fontSize );
 
-      this.componentListWidth= setListWidth();
+      this.componentListWidth= setListWidth(1.0);
 
       this.setState( { greetings: this.state.greetings })
     }
@@ -353,7 +352,7 @@ class CCiLabComponentList extends Component {
           let updatedRect = estimateComponentListRect(currentSessionComponents);
 
           this.componentListHeight = setListHeight( updatedRect, this.fontSize );
-          this.componentListWidth = setListWidth();
+          this.componentListWidth = setListWidth(1.0);
 
           if( isRending )
             this.setState( { greetings: currentSessionComponents })
@@ -616,41 +615,41 @@ class CCiLabComponentList extends Component {
       return (
        
        
-        <div className={`d-flex flex-row`} >
+        <div className={`d-flex align-items-center`} >
           {/* <AddGreeter addGreeting={this.addGreeting} /> */}
-            {/* <div className='d-flex'> */}
-            {/* following d-flex is needed to show collapse icon (>) next to the top component  */}
-            {/* https://code.i-harness.com/en/q/27a5171 explains why vertical scroll bar won't appear for flex box and what is the workaroud
-                 className={`d-flex flex-column cci-flyout-component-list ${this.visibility}`, 'width':`${this.componentListWidth}px`}
-                 UC browser, pro to Edge 15 (https://caniuse.com/#feat=css-sticky) doesn't suppot onScroll={this.updateDimensions}*/} 
+            {/* https://code.i-harness.com/en/q/27a5171 explains why vertical scroll bar won't appear for flex box 
+                and what is the workaroud. iphone4s and lower isn't supported
+                UC browser and Edge pro to 15 (https://caniuse.com/#feat=css-sticky) doesn't suppot onScroll={this.updateDimensions}*/} 
               <div id='cciLabComponentListID' 
                   className={`cci-component-list_transition`} 
-                  style={{'transform': `${this.compnentListTranslateStyle}`, 'height':`${this.componentListHeight}`, 'width':`${this.componentListWidth}vw`}}
+                  style={{'transform': `${this.compnentListTranslateStyle}`, 
+                          '-webkit-transform':`${this.compnentListTranslateStyle}`,
+                          'height':`${this.componentListHeight}`, 
+                          'width':`${this.componentListWidth}`}}
                   >
                   {/*  sticky to top and left, https://gedd.ski/post/position-sticky/*/}
                   {/* https://iamsteve.me/blog/entry/using-flexbox-for-horizontal-scrolling-navigation
                       https://codepen.io/stevemckinney/pen/WvWrRX */}
-                  <div className='d-flex align-items-center bg-info fa' style={{ 'height': `auto`, 'width': `${this.componentListWidth}vw`}}>
+                  <div className='d-flex align-items-center bg-info fa' style={{ 'height': `auto`, 'width': `${this.componentListWidth}`}}>
                     <span className={`${listTitleClassName}`} style={{'position':'relative',  'left':`${this.componentTitleLeft}rem`}}>部件名:</span>
                     <span className={`${listTitleClassName}`} style={{'position':'relative', 'left':`${this.statusTitleStickyLeft}rem`}}>进度: 
                     <span className='font-weight-normal text-primary' > (%)</span></span> 
                   </div>
                   {/* https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_Flexible_Box_Layout/Controlling_Ratios_of_Flex_Items_Along_the_Main_Ax */}
                   <div className={'d-flex flex-column cci-flyout-component-list'} 
-                       style={{ 'height':`${this.componentListHeight}`, 'width':`${this.componentListWidth}vw`}}
+                       style={{ 'height':`${this.componentListHeight}`, 'width':`${this.componentListWidth}`}}
                        onScroll={this.setSelectedComponentStickDirection}>
                     {/* <hr className='m-0'></hr> */}
                     {this.renderGreetings()}
                   </div>
               </div>
-              {/* <div> */}
-                <a href="#show-hide-component-list" 
-                  className='nav-link pl-0 py-4 pr-4 cci-component-list_transition' 
-                  style={{'transform': `${this.compnentListTranslateStyle}`}} 
-                  onClick={this.showHideComponentList} >
-                  <span className={`badge-pill badge-info ${this.slidingComponentListIconClassName}`}></span>
-                </a>
-            {/* </div> */}
+              <a href="#show-hide-component-list" 
+                className='nav-link pl-0 py-4 pr-4 cci-component-list_transition' 
+                style={{'transform': `${this.compnentListTranslateStyle}`,
+                        '-webkit-transform':`${this.compnentListTranslateStyle}`}} 
+                onClick={this.showHideComponentList} >
+                <span className={`badge-pill badge-info ${this.slidingComponentListIconClassName}`}></span>
+              </a>
             {droptoSameParentWarningModal}
             {droptoItselfWarningModal}
         </div>
