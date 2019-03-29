@@ -188,7 +188,7 @@ class CCiLabComponentList extends Component {
     statusUnitStickyLeft;
     componentTitleTop;
        
-    componentListHeight= window.innerHeight <= 200 ? 150/this.fontSize +'rem' : 'auto';  //minimum height 
+    componentListHeight= window.innerHeight <= 200 ? ( 150/this.fontSize +'rem' ) : 'auto';  //minimum height 
     componentListWidth= setListWidth(); //in px
 
     // rootComponentName;

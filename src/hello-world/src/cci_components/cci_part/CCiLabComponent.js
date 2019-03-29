@@ -24,7 +24,7 @@ class CCiLabComponent extends Component {
         progressStatus = this.currentComponent.businessLogic.status;
         progressValue = this.currentComponent.businessLogic.progressPercent;
 
-        leftOffset = this.props.leftOffset  + (this.parents.length === 0 ) ? 0: this.componentLableWidth/2;
+        leftOffset;
         // inlineMenuIconLeft;
         // expendableIconLeft;        
         // btnImgLeft;
@@ -32,19 +32,19 @@ class CCiLabComponent extends Component {
         // statusLabelLeft;
 
       
-    // positioningComponentInfo( )
-    // {
+    positioningComponentInfo( )
+    {
       
-    //   this.leftOffset=this.props.leftOffset  + (this.parents.length === 0 ) ? 0: this.componentLableWidth/2;
-    // // this.inlineMenuIconLeft = this.leftOffset;
-    // //   this.expendableIconLeft = this.inlineMenuIconLeft + this.componentLableWidth/2;
-    // //   this.btnImgLeft = this.expendableIconLeft +  5/this.rootFontSize; //rem - to the right of ancher
-    // //   this.nameLableLeft = this.btnImgLeft/2 + 5/this.rootFontSize; // position si relative to img button in rem
-    // //   this.statusLabelLeft = getTextRect(this.componentName+':').width/this.rootFontSize;//this.nameLableLeft + getTextRect(this.componentName+':').width/this.rootFontSize + 3.5; // in rem, compnesate padding left for  ~ 4rem
-    // }
+      this.leftOffset=this.props.leftOffset  + ( (this.parents.length === 0 ) ? 0: this.componentLableWidth/2 );
+    // this.inlineMenuIconLeft = this.leftOffset;
+    //   this.expendableIconLeft = this.inlineMenuIconLeft + this.componentLableWidth/2;
+    //   this.btnImgLeft = this.expendableIconLeft +  5/this.rootFontSize; //rem - to the right of ancher
+    //   this.nameLableLeft = this.btnImgLeft/2 + 5/this.rootFontSize; // position si relative to img button in rem
+    //   this.statusLabelLeft = getTextRect(this.componentName+':').width/this.rootFontSize;//this.nameLableLeft + getTextRect(this.componentName+':').width/this.rootFontSize + 3.5; // in rem, compnesate padding left for  ~ 4rem
+    }
 
     componentWillMount=()=>{
-      // this.positioningComponentInfo();
+      this.positioningComponentInfo();
       this.setState({expended: this.props.component.displayLogic.canExpend});
     }
 
@@ -52,6 +52,8 @@ class CCiLabComponent extends Component {
       let componentRect = document.getElementById( `${this.currentComponent.displayLogic.key}-item` ).getBoundingClientRect();  
 
       this.currentComponent.displayLogic.rectLeft = componentRect.left/this.rootFontSize;  //convert to rem, 16px is default font size for browser
+
+      this.componentSelected()
     };
 
     expending = () => {
@@ -157,7 +159,7 @@ class CCiLabComponent extends Component {
         let draggableSetting = false;
         let  stickyWidth =  this.currentComponent.displayLogic.selected !== 0 ? `${this.props.listWidth}vw`:'auto';
 
-        let componentStyle = {'width': `${stickyWidth}`, 'left': `0`}
+        let componentStyle = {'width': `${stickyWidth}`, 'left': `0rem`}
 
         // very top component or component has children can't be moved 
         if ( this.parents.length === 0 || this.children.length !== 0 ) 
