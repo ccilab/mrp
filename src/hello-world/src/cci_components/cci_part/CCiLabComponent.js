@@ -20,6 +20,8 @@ class CCiLabComponent extends Component {
         // size of component button, rem - 16px is default font size of browser
         componentLableHeight =  (this.parents.length === 0 ) ? 45/this.rootFontSize : (this.children.length !==0) ? 25/this.rootFontSize: 25/this.rootFontSize;
         componentLableWidth = this.componentLableHeight;
+        inlineMenuHeight = 25/this.rootFontSize;
+        inlineMenuWidth = 25/this.rootFontSize;
 
         progressStatus = this.currentComponent.businessLogic.status;
         progressValue = this.currentComponent.businessLogic.progressPercent;
@@ -140,12 +142,12 @@ class CCiLabComponent extends Component {
         // console.log('CCiLabComponent::render() imgFile: ', this.imgName);
         let componentBase='d-flex cci-component-lable_position  align-items-center '; //align-items-center 
         let inlineMenuClassName ='btn rounded-circle align-self-center p-0 bg-primary  ';//component-label_sticky_horizontal
-        let ComponentClassNameBase = 'btn rounded-circle align-self-center cci-component-btn  '; //float-left component-label_sticky_horizontal
-        let ComponentClassName = ComponentClassNameBase;
+        let btnClassNameBase = 'btn rounded-circle align-self-center cci-component-btn ml-1 '; //float-left component-label_sticky_horizontal
+        let btnClassName = btnClassNameBase;
         let imamgeClassName = 'cci-component__img rounded-circle align-self-center '; 
         let expendCollapseBadgeIconClassNameBase ='align-self-center nav-link p-0  '; // component-label_sticky_horizontal
         let expendCollapseBadgeIconClassName= 'fa fa-angle-right';
-        let componentNameClassNameBase = 'lead align-self-center font-weight-normal text-primary text-truncate nav-link   ';//component-label_sticky_horizontal
+        let componentNameClassNameBase = 'lead align-self-center font-weight-normal text-primary text-truncate nav-link px-2 ';//component-label_sticky_horizontal
         let componentNameClassName=  componentNameClassNameBase; //+ ' py-0' to remove space between components
 
         // .align-self-center to make fa and badge height the same as font height
@@ -171,7 +173,7 @@ class CCiLabComponent extends Component {
           {
            
             componentBase +=  ' cusor-default';
-            ComponentClassName +=  ' cusor-default';
+            btnClassName +=  ' cusor-default';
             imamgeClassName += ' cusor-default';
             componentNameClassName += ' cusor-default';
             statusBadgeIconClassName += ' cusor-default';
@@ -188,7 +190,7 @@ class CCiLabComponent extends Component {
           {
             
             componentBase +=  (permissionEabled && this.currentComponent.displayLogic.selected !== 0 )? ' move':' cusor-default';
-            ComponentClassName +=  (permissionEabled && this.currentComponent.displayLogic.selected !== 0 )? ' move':' cusor-default';
+            btnClassName +=  (permissionEabled && this.currentComponent.displayLogic.selected !== 0 )? ' move':' cusor-default';
             imamgeClassName += (permissionEabled && this.currentComponent.displayLogic.selected !== 0 )? ' move':' cusor-default';
             componentNameClassName += (permissionEabled && this.currentComponent.displayLogic.selected !== 0 )? ' move':' cusor-default';
             statusBadgeIconClassName += (permissionEabled && this.currentComponent.displayLogic.selected !== 0 )? ' move':' cusor-default';
@@ -222,7 +224,7 @@ class CCiLabComponent extends Component {
                 {/* a badge to show menu to move/copy/delete/edit component, only sole children component has move and copy option */}
                   <button id={`${this.currentComponent.displayLogic.key}-inline-menu`}
                           className={`${inlineMenuClassName}`} 
-                          style={ {'visibility': `${inlineMenuIconVisiblity}`, 'height': `${this.componentLableHeight}rem`, 'width': `${this.componentLableWidth}rem`} }>
+                          style={ {'visibility': `${inlineMenuIconVisiblity}`, 'height': `${this.inlineMenuHeight}rem`, 'width': `${this.inlineMenuWidth}rem`} }>
                     <span className='fa fa-ellipsis-h'></span>
                   </button> 
                  
@@ -232,7 +234,7 @@ class CCiLabComponent extends Component {
                 {/* tag's id used to handle drop event */}
                 <a  id={`${this.currentComponent.displayLogic.key}-show-hide`} 
                     href="#expend-collapse-badge" 
-                    className={`${expendCollapseBadgeIconClassNameBase} ${expendCollapseBadgeIconClassName}`} 
+                    className={`${expendCollapseBadgeIconClassNameBase} ${expendCollapseBadgeIconClassName} pl-2 `} 
                     style={expendableIconStyle} 
                     draggable={`${draggableSetting}`}
                     onClick={ this.expending }
@@ -242,7 +244,7 @@ class CCiLabComponent extends Component {
                 </a>
 
                 {/* tag's id is used to get component's rect and handle drop event */}
-                <button id={`${this.currentComponent.displayLogic.key}-item`} className={`${ComponentClassName}`} 
+                <button id={`${this.currentComponent.displayLogic.key}-item`} className={`${btnClassName}`} 
                   style={ { 'height': `${this.componentLableHeight}rem`, 'width': `${this.componentLableWidth}rem`}}
                   draggable={`${draggableSetting}`}
                   onClick={ this.componentSelected } 

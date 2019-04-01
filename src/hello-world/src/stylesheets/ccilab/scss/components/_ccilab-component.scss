@@ -9,7 +9,7 @@
 .cci-component-btn {
     cursor: pointer;
     background-color: transparent !important;
-    margin: $component_columns_margin; //0.625rem;
+    //margin: $component_columns_margin + 0rem; //0.625rem;
     padding: $card-img-overlay-padding !important; //0%;
     box-shadow: 0.125rem 0.375rem 0.625rem 0 rgba($cci-shadow-dark,0.3);
     z-index: 1;
@@ -90,7 +90,7 @@
 //static lable, is able to load image
 .cci-component-lable{
   background-color: transparent; 
-  margin: $component_columns_margin; 
+  margin: $component_columns_margin + 0rem; 
   padding: $card-img-overlay-padding !important; //0%;
   box-shadow: 0.125rem 0.375rem 0.625rem 0 rgba($cci-shadow-dark,0.3);
   z-index: 1;
