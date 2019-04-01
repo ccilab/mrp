@@ -1,7 +1,7 @@
-import React, { Component } from "react";
-// import { getTextRect} from "./CCiLabUtility"
+import React, { Component } from 'react';
 
-import "./../../dist/css/ccilab-component.css"
+
+import './../../dist/css/ccilab-component.css'
  
 class CCiLabComponent extends Component {
         state = {
@@ -93,7 +93,7 @@ class CCiLabComponent extends Component {
 
       if (Number.isInteger(parseInt(draggedComponetId, 10) ) )
       {
-        e.dataTransfer.setData("Text", draggedComponetId);
+        e.dataTransfer.setData('Text', draggedComponetId);
         e.effectAllowed='copyMove';
         console.log('drag select span id: ', draggedComponetId );    
       }
@@ -131,7 +131,7 @@ class CCiLabComponent extends Component {
         
       if ( Number.isInteger( parseInt(draggedComponetId, 10) ) )
       {
-          var sourceId = e.dataTransfer.getData("Text");
+          var sourceId = e.dataTransfer.getData('Text');
           this.props.moveComponentHandler(sourceId, this.currentComponent);
       }
 
@@ -141,7 +141,7 @@ class CCiLabComponent extends Component {
     render() {
         // console.log('CCiLabComponent::render() imgFile: ', this.imgName);
         let componentBase='d-flex cci-component-lable_position  align-items-center '; //align-items-center 
-        let inlineMenuClassName ='btn rounded-circle align-self-center p-0 bg-primary  ';//component-label_sticky_horizontal
+        let inlineMenuClassName ='btn rounded-circle align-self-center p-0 bg-primary dropdown-toggle ';//btn component-label_sticky_horizontal
         let btnClassNameBase = 'btn rounded-circle align-self-center cci-component-btn ml-1 '; //float-left component-label_sticky_horizontal
         let btnClassName = btnClassNameBase;
         let imamgeClassName = 'cci-component__img rounded-circle align-self-center '; 
@@ -222,18 +222,20 @@ class CCiLabComponent extends Component {
                 onDrop={  this.doDrop }>
               <div className={`${componentBase}`} style={{'left':`${this.leftOffset}rem`}}>
                 {/* a badge to show menu to move/copy/delete/edit component, only sole children component has move and copy option */}
-                  <button id={`${this.currentComponent.displayLogic.key}-inline-menu`}
-                          className={`${inlineMenuClassName}`} 
-                          style={ {'visibility': `${inlineMenuIconVisiblity}`, 'height': `${this.inlineMenuHeight}rem`, 'width': `${this.inlineMenuWidth}rem`} }>
-                    <span className='fa fa-ellipsis-h'></span>
-                  </button> 
+                <button 
+                  id={`${this.currentComponent.displayLogic.key}-inline-menu`}
+                  className={`${inlineMenuClassName}`} 
+                  dataToggle='dropdown'
+                  style={ {'visibility': `${inlineMenuIconVisiblity}`, 'height': `${this.inlineMenuHeight}rem`, 'width': `${this.inlineMenuWidth}rem`} }>
+                  {/* <span className='fa fa-ellipsis-h'></span> */}
+                </button> 
                  
                  {/* show collapse icon 'v' for all expendable components,
                   show expendable icon '>' for those components have children except the top component
                 */}
                 {/* tag's id used to handle drop event */}
                 <a  id={`${this.currentComponent.displayLogic.key}-show-hide`} 
-                    href="#expend-collapse-badge" 
+                    href='#expend-collapse-badge' 
                     className={`${expendCollapseBadgeIconClassNameBase} ${expendCollapseBadgeIconClassName} pl-2 `} 
                     style={expendableIconStyle} 
                     draggable={`${draggableSetting}`}
@@ -256,7 +258,7 @@ class CCiLabComponent extends Component {
                   { (this.imgName.length !== 0 ) ? 
                       // {/* tag's id used to handle drop event float-left*/}
                       <img id={`${this.currentComponent.displayLogic.key}`} 
-                           className={`${imamgeClassName}`} src={this.imgName} alt=""
+                           className={`${imamgeClassName}`} src={this.imgName} alt=''
                            style={{'height': `${this.componentLableHeight}rem`, 'width': `${this.componentLableWidth}rem`}} 
                            draggable={`${draggableSetting}`}
                            onDragStart={ draggableSetting === 'true' ? this.dragStart : null}
@@ -268,7 +270,7 @@ class CCiLabComponent extends Component {
                 </button>
                 {/* tag's id is used to handle drop event */}
                 <a  id={`${this.currentComponent.displayLogic.key}`} 
-                    href="#select-component-name" className={`${componentNameClassName}`} 
+                    href='#select-component-name' className={`${componentNameClassName}`} 
                     style={{ 'height': `auto` }} 
                     draggable={`${draggableSetting}`}
                     onClick={ this.componentSelected }
