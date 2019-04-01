@@ -1,8 +1,8 @@
 // https://hugogiraudel.com/2015/06/18/styling-react-components-in-sass/
 .cci-flyout-component-list {
-   overflow-y: scroll;  //have to set y to scroll otherwise Edge horizontal scroll will no resonse in all the components are within the viewport
-   overflow-x: scroll;
-   border: 2px solid #00D8FF;
+   overflow-y: auto;  //have to set y to scroll otherwise Edge horizontal scroll will no resonse in all the components are within the viewport
+   overflow-x: auto;
+   border: thin solid #00D8FF;
    background-color: #DDEEFF;   
    z-index: 0; 
  }

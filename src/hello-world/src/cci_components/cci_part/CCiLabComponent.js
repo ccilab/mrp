@@ -1,5 +1,6 @@
 import React, { Component } from "react";
-// import "./../../stylesheets/ccilab/scss/components/ccilab-component.scss";
+// import { getTextRect} from "./CCiLabUtility"
+
 import "./../../dist/css/ccilab-component.css"
  
 class CCiLabComponent extends Component {
@@ -9,26 +10,52 @@ class CCiLabComponent extends Component {
         };
 
         currentComponent = this.props.component;
+        rootFontSize=this.props.fontSize;
         parents = this.currentComponent.businessLogic.parentIds;
         children = this.currentComponent.businessLogic.childIds;
         componentName = this.currentComponent.businessLogic.name;
         imgName = (this.currentComponent.businessLogic.imgFile.length !==0 ) ? '/images/'+ this.currentComponent.businessLogic.imgFile : 
                     (this.children.length !==0) ? '/images/cci_group_block.png' : '/images/cci_single_block_item.png';
-        componentLableHeight =  (this.parents.length === 0 ) ? '45px' : (this.children.length !==0) ? '25px': '25px';
-        expendCollapseBadgePadding =  (this.parents.length === 0 ) ? 'pt-3 pb-0 pl-4 pr-1' : 'pt-2 pb-0 pl-4 pr-1';
-
+        
+        // size of component button, rem - 16px is default font size of browser
+        componentLableHeight =  (this.parents.length === 0 ) ? 45/this.rootFontSize : (this.children.length !==0) ? 25/this.rootFontSize: 25/this.rootFontSize;
+        componentLableWidth = this.componentLableHeight;
+        inlineMenuHeight = 25/this.rootFontSize;
+        inlineMenuWidth = 25/this.rootFontSize;
 
         progressStatus = this.currentComponent.businessLogic.status;
         progressValue = this.currentComponent.businessLogic.progressPercent;
+
+        leftOffset =this.props.leftOffset  + ( (this.parents.length === 0 ) ? 0: this.componentLableWidth/2 );
+        // inlineMenuIconLeft;
+        // expendableIconLeft;        
+        // btnImgLeft;
+        // nameLableLeft;
+        // statusLabelLeft;
+
       
+    positioningComponentInfo( )
+    {
+      
+      this.leftOffset=this.props.leftOffset  + ( (this.parents.length === 0 ) ? 0: this.componentLableWidth/2 );
+    // this.inlineMenuIconLeft = this.leftOffset;
+    //   this.expendableIconLeft = this.inlineMenuIconLeft + this.componentLableWidth/2;
+    //   this.btnImgLeft = this.expendableIconLeft +  5/this.rootFontSize; //rem - to the right of ancher
+    //   this.nameLableLeft = this.btnImgLeft/2 + 5/this.rootFontSize; // position si relative to img button in rem
+    //   this.statusLabelLeft = getTextRect(this.componentName+':').width/this.rootFontSize;//this.nameLableLeft + getTextRect(this.componentName+':').width/this.rootFontSize + 3.5; // in rem, compnesate padding left for  ~ 4rem
+    }
+
     componentWillMount=()=>{
+      // this.positioningComponentInfo();
       this.setState({expended: this.props.component.displayLogic.canExpend});
     }
 
     componentDidMount =()=> {
-      let componentRect = document.getElementById( `${this.currentComponent.displayLogic.key}-item` ).getBoundingClientRect();
+      let componentRect = document.getElementById( `${this.currentComponent.displayLogic.key}-item` ).getBoundingClientRect();  
 
-      this.currentComponent.displayLogic.rectLeft = componentRect.left;
+      this.currentComponent.displayLogic.rectLeft = componentRect.left/this.rootFontSize;  //convert to rem, 16px is default font size for browser
+
+      this.componentSelected()
     };
 
     expending = () => {
@@ -111,40 +138,63 @@ class CCiLabComponent extends Component {
       console.log('droped from source: ', sourceId);
     }
 
-
     render() {
         // console.log('CCiLabComponent::render() imgFile: ', this.imgName);
-        let ComponentClassNameBase = 'btn m-0 float-left rounded-circle p-0'
-        let ComponentClassName = ComponentClassNameBase + ' cci-component-btn';
+        let componentBase='d-flex cci-component-lable_position  align-items-center '; //align-items-center 
+        let inlineMenuClassName ='btn rounded-circle align-self-center p-0 bg-primary  ';//component-label_sticky_horizontal
+        let btnClassNameBase = 'btn rounded-circle align-self-center cci-component-btn ml-1 '; //float-left component-label_sticky_horizontal
+        let btnClassName = btnClassNameBase;
+        let imamgeClassName = 'cci-component__img rounded-circle align-self-center '; 
+        let expendCollapseBadgeIconClassNameBase ='align-self-center nav-link p-0  '; // component-label_sticky_horizontal
         let expendCollapseBadgeIconClassName= 'fa fa-angle-right';
-        let componentNameClassNameBase = 'lead font-weight-normal text-primary text-truncate nav-link ';
-        let componentNameClassName= this.parents.length === 0 ? componentNameClassNameBase + ' py-1' : componentNameClassNameBase + ' py-0';
+        let componentNameClassNameBase = 'lead align-self-center font-weight-normal text-primary text-truncate nav-link px-2 ';//component-label_sticky_horizontal
+        let componentNameClassName=  componentNameClassNameBase; //+ ' py-0' to remove space between components
 
-        let statusBadgeIconClassName = this.progressStatus === 'info' ? 'fa ':
+        // .align-self-center to make fa and badge height the same as font height
+        let statusBadgetIconClassNameBase = 'align-self-center text-nowrap ml-0 px-1   '; //component-label_sticky_horizontal 
+        let statusBadgeIconClassName = statusBadgetIconClassNameBase + (this.progressStatus === 'info' ? 'fa ':
             this.progressStatus === 'success' ? 'fa fa-check-circle' :
-            this.progressStatus === 'warning' ? 'fa fa-exclamation-circle' : 'fa fa-exclamation-triangle';
+            this.progressStatus === 'warning' ? 'fa fa-exclamation-circle' : 'fa fa-exclamation-triangle');
     
         let permissionEabled = true; // #todo: need to add check later
         let  Component=' ';
         let draggableSetting = false;
+        let  stickyWidth =  this.currentComponent.displayLogic.selected !== 0 ? `${this.props.listWidth}`:'auto';
+
+        let componentStyle = {'width': `${stickyWidth}`, 'left': `0rem`}
 
         // very top component or component has children can't be moved 
         if ( this.parents.length === 0 || this.children.length !== 0 ) 
         {
-            Component =  this.currentComponent.displayLogic.selected !== 0 ? 'bg-info component_opacity ccilab-component-sticky-top':' ';
-            draggableSetting= false;
+          draggableSetting= false;
+          Component = ( this.currentComponent.displayLogic.selected !== 0 ) ? 'bg-info component_opacity ccilab-component-sticky-top' :'';  
+
+          if( this.currentComponent.displayLogic.selected !== 0 )
+          {
+           
+            componentBase +=  ' cusor-default';
+            btnClassName +=  ' cusor-default';
+            imamgeClassName += ' cusor-default';
+            componentNameClassName += ' cusor-default';
+            statusBadgeIconClassName += ' cusor-default';
+          }
         }
         else
-        { // draggable for elements bellow the very top one, if use has the permission ( need to check)
-            Component =  this.currentComponent.displayLogic.selected > 0 ? 'bg-info component_opacity ccilab-component-sticky-top ' + (permissionEabled? 'move':' ' ):
-                         this.currentComponent.displayLogic.selected < 0 ? 'bg-info component_opacity ccilab-component-sticky-bottom ' + (permissionEabled? 'move':' ' ):' ';
+        { 
+            // draggable for elements bellow the very top one, if use has the permission (#todo need to implement the check)inline-menu_sticky_horizontal inline-menu_sticky_horizontal inline-menu_sticky_horizontal
+            Component =  this.currentComponent.displayLogic.selected > 0 ? 'bg-info component_opacity ccilab-component-sticky-top ' + (permissionEabled? ' move':' ' ):
+                         this.currentComponent.displayLogic.selected < 0 ? 'bg-info component_opacity ccilab-component-sticky-bottom ' + (permissionEabled? ' move':' ' ):' ';
             draggableSetting = ( permissionEabled && this.currentComponent.displayLogic.selected !== 0 &&  this.parents.length !== 0 )? 'true':'false';
-        }
 
-        if( this.currentComponent.displayLogic.selected !== 0 )
-        {
-          ComponentClassName = ComponentClassNameBase + ' cci-component-btn cusor-default';
-          componentNameClassName = ( this.parents.length === 0 )? componentNameClassNameBase + ' py-1 cusor-default' : componentNameClassNameBase + ' py-0 cusor-default';
+          if( this.currentComponent.displayLogic.selected !== 0 )
+          {
+            
+            componentBase +=  (permissionEabled && this.currentComponent.displayLogic.selected !== 0 )? ' move':' cusor-default';
+            btnClassName +=  (permissionEabled && this.currentComponent.displayLogic.selected !== 0 )? ' move':' cusor-default';
+            imamgeClassName += (permissionEabled && this.currentComponent.displayLogic.selected !== 0 )? ' move':' cusor-default';
+            componentNameClassName += (permissionEabled && this.currentComponent.displayLogic.selected !== 0 )? ' move':' cusor-default';
+            statusBadgeIconClassName += (permissionEabled && this.currentComponent.displayLogic.selected !== 0 )? ' move':' cusor-default';
+          }
         }
 
         if( this.state.expended === false || this.currentComponent.displayLogic.canExpend === false ) 
@@ -153,73 +203,49 @@ class CCiLabComponent extends Component {
             expendCollapseBadgeIconClassName= 'fa fa-angle-down';
         }
         
-        let leftShiftStyle;
-        let anchorLeftstyle;
-        let leftOffset=this.props.leftOffset;
-        
-        // expendable component left shift less, to compensate <a> 
-        if ( this.children.length !== 0 )
-        {
-          anchorLeftstyle = {
-            'left': `${leftOffset}px`,
-          }
-          leftShiftStyle = {
-            'left': `${leftOffset}px`,
-            };
-        }
-        else{
-          leftOffset = this.props.leftOffset+39;
-          leftShiftStyle = {
-            'left': `${leftOffset}px`,
-            };
-        }
-         
-        let  stickyWidth =  this.currentComponent.displayLogic.selected !== 0 ? '150%':'';
+        let expendableIconStyle =  {'display':'inline','left': `${this.expendableIconLeft}rem`, 'visibility': ( `${this.children.length}` !== '0'  ) ? 'visible' : 'hidden'}
+
+        let inlineMenuIconVisiblity =  ( this.currentComponent.displayLogic.selected !== 0 ) ? 'visible' : 'hidden';
 
         return (
           // https://developer.mozilla.org/en-US/docs/Web/API/HTML_Drag_and_Drop_API
           // https://developer.mozilla.org/en-US/docs/Web/API/HTML_Drag_and_Drop_API/Drag_operations#dragstart
           // https://developer.mozilla.org/en-US/docs/Web/API/DataTransferItem#Browser_compatibility
-         
-          <span id={`${this.currentComponent.displayLogic.key}`} 
-                className={`${Component}`}  
-                style={{'width': `${stickyWidth}` }}
-                draggable={`${draggableSetting}`}
-                onDragStart={ draggableSetting === 'true' ? this.dragStart : null}
-                onDragOver={ this.dragOver }
-                onDrop={  this.doDrop }
-          > 
-            {/* show collapse icon 'v' for all expendable components,
-              show expendable icon '>' for those components have children except the top component
-            */}
-            { ( this.children.length !== 0  )?
-                  // {/* tag's id used to handle drop event */}
-                  <a  id={`${this.currentComponent.displayLogic.key}-show-hide`} 
-                      href="#expend-collapse-badge" className={`cci-link_position float-left nav-link ${this.expendCollapseBadgePadding} `} 
-                      style={anchorLeftstyle} 
-                      draggable={`${draggableSetting}`}
-                      onClick={ this.expending }
-                      onDragStart={ draggableSetting === 'true' ? this.dragStart : null}
-                      onDragOver={ this.dragOver }
-                      onDrop={  this.doDrop }>
-                    <span className={expendCollapseBadgeIconClassName}></span>
-                  </a>:null
-            }  
-
-          
-            
-            {/* shift the child components to the right */}  
-            {/* tag's id is used to get component's rect and handle drop event*/}
-            <ul id={`${this.currentComponent.displayLogic.key}-item`} 
-                className='flow-right list-group flex-row cci-component-lable_position' 
-                style={leftShiftStyle}
+            // {/* shift the child components to the right */}  
+            // {/* tag's id is used to handle drop event*/}
+            <div id={`${this.currentComponent.displayLogic.key}`} 
+                className={`${Component}`} 
+                style={componentStyle}
                 draggable={`${draggableSetting}`}
                 onDragStart={ draggableSetting === 'true' ? this.dragStart : null}
                 onDragOver={ this.dragOver }
                 onDrop={  this.doDrop }>
-                 {/* tag's id is used to handle drop event */}
-                <button id={`${this.currentComponent.displayLogic.key}`} className={`${ComponentClassName}`} 
-                  style={ { 'height': this.componentLableHeight, 'width': this.componentLableHeight} }
+              <div className={`${componentBase}`} style={{'left':`${this.leftOffset}rem`}}>
+                {/* a badge to show menu to move/copy/delete/edit component, only sole children component has move and copy option */}
+                  <button id={`${this.currentComponent.displayLogic.key}-inline-menu`}
+                          className={`${inlineMenuClassName}`} 
+                          style={ {'visibility': `${inlineMenuIconVisiblity}`, 'height': `${this.inlineMenuHeight}rem`, 'width': `${this.inlineMenuWidth}rem`} }>
+                    <span className='fa fa-ellipsis-h'></span>
+                  </button> 
+                 
+                 {/* show collapse icon 'v' for all expendable components,
+                  show expendable icon '>' for those components have children except the top component
+                */}
+                {/* tag's id used to handle drop event */}
+                <a  id={`${this.currentComponent.displayLogic.key}-show-hide`} 
+                    href="#expend-collapse-badge" 
+                    className={`${expendCollapseBadgeIconClassNameBase} ${expendCollapseBadgeIconClassName} pl-2 `} 
+                    style={expendableIconStyle} 
+                    draggable={`${draggableSetting}`}
+                    onClick={ this.expending }
+                    onDragStart={ draggableSetting === 'true' ? this.dragStart : null}
+                    onDragOver={ this.dragOver }
+                    onDrop={  this.doDrop }>
+                </a>
+
+                {/* tag's id is used to get component's rect and handle drop event */}
+                <button id={`${this.currentComponent.displayLogic.key}-item`} className={`${btnClassName}`} 
+                  style={ { 'height': `${this.componentLableHeight}rem`, 'width': `${this.componentLableWidth}rem`}}
                   draggable={`${draggableSetting}`}
                   onClick={ this.componentSelected } 
                   onDragStart={ draggableSetting === 'true' ? this.dragStart : null}
@@ -228,10 +254,10 @@ class CCiLabComponent extends Component {
                   
                   {/* no style for top element so the button can host the image, other elements need style to set image position  */}
                   { (this.imgName.length !== 0 ) ? 
-                      // {/* tag's id used to handle drop event */}
+                      // {/* tag's id used to handle drop event float-left*/}
                       <img id={`${this.currentComponent.displayLogic.key}`} 
-                           className='cci-component__img rounded-circle float-left' src={this.imgName} alt=""
-                           style={{'height': this.componentLableHeight, 'width': this.componentLableHeight}} 
+                           className={`${imamgeClassName}`} src={this.imgName} alt=""
+                           style={{'height': `${this.componentLableHeight}rem`, 'width': `${this.componentLableWidth}rem`}} 
                            draggable={`${draggableSetting}`}
                            onDragStart={ draggableSetting === 'true' ? this.dragStart : null}
                            onDragOver={ this.dragOver }
@@ -243,7 +269,7 @@ class CCiLabComponent extends Component {
                 {/* tag's id is used to handle drop event */}
                 <a  id={`${this.currentComponent.displayLogic.key}`} 
                     href="#select-component-name" className={`${componentNameClassName}`} 
-                    style={{ 'height': '10%' }} 
+                    style={{ 'height': `auto` }} 
                     draggable={`${draggableSetting}`}
                     onClick={ this.componentSelected }
                     onDragStart={ draggableSetting === 'true' ? this.dragStart : null}
@@ -254,8 +280,8 @@ class CCiLabComponent extends Component {
                 
                 {/* tag's id is used to handle drop event */}
                 <span id={`${this.currentComponent.displayLogic.key}`} 
-                      className={`badge-pill badge-${this.progressStatus} ${statusBadgeIconClassName} text-body text-nowrap align-self-center ml-0`} 
-                      style={{ 'height': '15% !important'}} 
+                      className={`badge-pill badge-${this.progressStatus} ${statusBadgeIconClassName}`} 
+                      style={{'display':'inline-block','height': `auto`}} 
                       draggable={`${draggableSetting}`}
                       onClick={ this.componentSelected }
                       onDragStart={ draggableSetting === 'true' ? this.dragStart : null}
@@ -263,8 +289,8 @@ class CCiLabComponent extends Component {
                       onDrop={  this.doDrop }> 
                       {this.progressValue}%
                 </span>  
-            </ul>
-          </span>
+                </div>
+            </div>
         )
       }
 }

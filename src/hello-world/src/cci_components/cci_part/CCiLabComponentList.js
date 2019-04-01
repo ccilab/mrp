@@ -1,12 +1,13 @@
 
 import React, { Component } from "react";
-// import "./../../stylesheets/ccilab/scss/components/ccilab-component-list.scss";
 import "./../../dist/css/ccilab-component-list.css"
 import CCiLabComponent from "./CCiLabComponent";
 import DropComponentWarningModal from "./CCiLabDropComponentCheckFailedModal";
 
 // import AddGreeter from "./AddGreeter";
-import { setListHeight, setListWidth, setHideListWidth} from "./CCiLabUtility"
+import { setListHeight, setListWidth, getTextRect} from "./CCiLabUtility"
+
+
 
 //json-loader load the *.json file
 import components from './../../data/components.json';
@@ -147,7 +148,7 @@ const estimateComponentListRect = (componentLists)=>{
   
   let shownComponents = componentLists.filter(component=>component.displayLogic.showMyself === true)
   
-  updatedRect.bottom = shownComponents.length * 55; //55px defined in CCiLabComponent.js as max button height
+  updatedRect.bottom = shownComponents.length * 3.4375; //55px - 3.4375rem assuming rem is16pxdefined in CCiLabComponent.js as max button height
   return updatedRect;
 }
 
@@ -169,23 +170,57 @@ class CCiLabComponentList extends Component {
               isDropToItselfWarning: false};
 
     slidingComponentListIconClassName = this.state.visible? 'fa fa-angle-double-left' : 'fa fa-angle-double-right';
-    componentListHeight= window.innerHeight <= 200 ? '150px' : 'auto';  //minimum height 
-    componentListWidth= setListWidth();
       
-    compnentListTranslateStyle='';
-    lastScrollPosition = 0;
+    componentListWidth= setListWidth(1.0); //in px or vw,  
+    hideListWidth = setListWidth(0.99); //in px or vw
+    compnentListTranslateStyle=this.state.visible ? `translate3d(0, 0, 0)`: `translate3d(-${this.hideListWidth}, 0, 0)`;
+    lastScrollYPosition = 0;
 
     movedComponentName='undefined';
     targetComponentName='undefined';
+
+    componentLeftOffset = 1;  // in rem
+ 
+    fontSize = this.props.fontSize; //default browser medium font size in px
+    componentTitleLeft; //rem  1.5625
+    componentTitleWidth;  //in rem
+    componentTitleHeight; //rem 
+    statusTitleStickyLeft; 
+    statusTitleWidth;
+    statusUnitStickyLeft;
+    componentTitleTop;
+       
+    componentListHeight= window.innerHeight <= 200 ? ( 150/this.fontSize +'rem' ) : 'auto';  //minimum height 
+   
+
+    // rootComponentName;
+
+    positioningListTitle=(rootComponent)=>{ 
+      let rootComponentName = rootComponent.businessLogic.name; 
+      let titleRect=getTextRect('部件名:');
+            
+      this.componentTitleWidth = titleRect.width/this.fontSize;  //in rem
+      this.componentTitleLeft = (typeof rootComponent.displayLogic.rectLeft === 'undefined' || rootComponent.displayLogic.rectLeft === 0)? this.componentTitleWidth * 0.8 : rootComponent.displayLogic.rectLeft; //90% of title width,in rem
+
+      this.componentLeftOffset = this.componentTitleLeft;
+
+      this.componentTitleHeight = (titleRect.height/this.fontSize)*1.4; //140% of title height, in rem
+      this.componentTitleTop = (this.componentTitleHeight - titleRect.height/this.fontSize)/2; //in rem
+     
+      let rootComponentNameWidth = typeof rootComponentName !== "undefined" ?  getTextRect(rootComponentName).width/this.fontSize : this.componentTitleWidth;  //in rem
+      
+      let rootImgBtnWith = 45/this.fontSize;  //also used in CCiLabComponent.js
+      this.statusTitleStickyLeft = this.componentTitleLeft + this.componentTitleWidth + rootComponentNameWidth + rootImgBtnWith; //in rem 
+      //alert("FontSize = " + this.fontSize + " The width = " + getTextRect(rootComponentName).width + " width/fontSize = "+ rootComponentNameWidth);
+      this.statusTitleWidth = getTextRect('进度: (%)').width/this.fontSize;  //in rem
+      this.statusUnitStickyLeft = this.statusTitleStickyLeft + this.statusTitleWidth;
+    }
     
     toggleHideShowComponentList = () =>{
       // console.log('container: clicked before: - ', this.state.visible ? 'true' : 'false' );
       this.setState( { visible: this.state.visible ? false : true } );
 
-      let hideListWidth = setHideListWidth()*.99;
-
-      this.compnentListTranslateStyle = this.state.visible ? 'translate3d(0vw, 0, 0)': `translate3d(-${hideListWidth}vw, 0, 0)`;
-
+      this.compnentListTranslateStyle = this.state.visible ? `translate3d(0, 0, 0)`: `translate3d(-${this.hideListWidth}, 0, 0)`;
       this.slidingComponentListIconClassName = this.state.visible? 'fa fa-angle-double-left' : 'fa fa-angle-double-right';
       // console.log('container: clicked after: - ', this.state.visible ? 'true' : 'false' );
     }
@@ -196,10 +231,12 @@ class CCiLabComponentList extends Component {
       //e.stopPropagation();
     };
     
+    
+
     // initialize first component's childKeyIds, reorder in following order: the first component, alarm status, warning status, no_issue status
     componentWillMount=()=>{
       let currentSessionComponents=[];
-
+ 
       //#todo: need to query server to get a new components
       console.log("query server to get root components")
       let components = firstComponents;
@@ -220,6 +257,8 @@ class CCiLabComponentList extends Component {
         populateComponentChildKeyIds(rootComponent, currentSessionComponents);
       }
 
+      this.positioningListTitle(rootComponent);
+      
       // trick - set default visible=true in constructor, set visible=false in componentWillMount
       // so when user clicks << component list will sliding back
       this.setState( {greetings: currentSessionComponents, visible : false } );
@@ -232,13 +271,14 @@ class CCiLabComponentList extends Component {
     updateDimensions=()=>{
       let updatedRect = estimateComponentListRect(this.state.greetings);
 
-      this.componentListHeight = setListHeight( updatedRect );
+      this.componentListHeight = setListHeight( updatedRect, this.fontSize );
 
-      this.componentListWidth= setListWidth();
+      this.componentListWidth= setListWidth(1.0);
 
       this.setState( { greetings: this.state.greetings })
     }
 
+    
     /** 
      * called after initial render() is called and element is inserted indo DOM
      * Add event listener to show vertical scroll bar if browser window is shorter 
@@ -284,9 +324,6 @@ class CCiLabComponentList extends Component {
             currentSessionComponents = this.state.greetings;
           }
            
-          // don't need to call this function, rectLeft already updated inside component's componentDidMount 
-          // updateComponentValue( selectedComponent, currentSessionComponents );
-
           populateComponentChildKeyIds(selectedComponent, currentSessionComponents );
 
           let rootComponent = currentSessionComponents.find(component=>component.businessLogic.parentIds.length === 0);
@@ -314,8 +351,8 @@ class CCiLabComponentList extends Component {
           // create vertical scroll bar based on the height of component list dynamically
           let updatedRect = estimateComponentListRect(currentSessionComponents);
 
-          this.componentListHeight = setListHeight( updatedRect );
-          this.componentListWidth = setListWidth();
+          this.componentListHeight = setListHeight( updatedRect, this.fontSize );
+          this.componentListWidth = setListWidth(1.0);
 
           if( isRending )
             this.setState( { greetings: currentSessionComponents })
@@ -338,31 +375,34 @@ class CCiLabComponentList extends Component {
       let scrollY = e.target.scrollTop;
 
       // horizontal scroll, return
-      if( scrollY === 0 )
+      if( scrollY === 0 || this.lastScrollPosition === scrollY )
         return;
 
-      let newScrollPosition = scrollY;
- 
       let currentSessionComponents = this.state.greetings;
       let selectedComponent = currentSessionComponents.find( (component)=>{return component.displayLogic.selected !== 0; })
 
-      if( selectedComponent !== "undefined" && selectedComponent.displayLogic !== "undefined" )
+      if( typeof(selectedComponent)  === "undefined")
+        return; 
+
+      if( typeof( selectedComponent.displayLogic )!== "undefined" )
       {
-          if ( newScrollPosition < this.lastScrollPosition )
+          if ( scrollY < this.lastScrollYPosition )
           {
               //scroll up - component move downward - set selected to -1 - sticky-bottom
               selectedComponent.displayLogic.selected = -1;
+              console.log('scroll up - component move down: ', -1 );
           }
           else
           {
-              //scroll down - component move upward - set selected to +1 - sticky-top
+              //scroll down - component move upward - set selected to +1 -
               selectedComponent.displayLogic.selected = 1;
+              console.log('scroll down - component move up: ', 1 );
           }
      
      
           // console.log('new position: ' + newScrollPosition + ' last position: ' + this.lastScrollPosition + ' selected: ' + selectedComponent.displayLogic.selected);
 
-          this.lastScrollPosition = newScrollPosition;
+          this.lastScrollYPosition = scrollY;
 
           this.setState({selected: selectedComponent.displayLogic.selected});
       }
@@ -374,7 +414,7 @@ class CCiLabComponentList extends Component {
     // issue - need to keep highlight is component is show or it's parent should be highlight
     //       
     moveComponentHandler = ( movedComponentDisplayKey, targetComponent ) =>{
-      if( movedComponentDisplayKey !== "undefined" && typeof( movedComponentDisplayKey) === "string" )
+      if( typeof movedComponentDisplayKey !== "undefined" && typeof( movedComponentDisplayKey) === "string" )
       {
         console.log('moved component key: ', movedComponentDisplayKey);
 
@@ -509,23 +549,31 @@ class CCiLabComponentList extends Component {
           this.state.greetings.map( (component) => {
                 if( component.displayLogic.showMyself === true )
                 {
-                  // get parent's rectLeft as left offset of this component
-                  let parentComponent = this.state.greetings.find( (item)=>{
-                      if( typeof item.displayLogic !== "undefined" && typeof component.displayLogic !== "undefined")
-                      {
-                        return item.displayLogic.childKeyIds.includes(component.displayLogic.key); 
-                      }
-                      else
-                        return "undefined";
-                  });
+                  // get parent's of this component
+                  let parentComponent;
+                  if( component.businessLogic.parentIds.length === 0 )
+                    parentComponent = component; // root
+                  else
+                  {
+                    parentComponent = this.state.greetings.find( (item)=>{
+                        if( typeof item.displayLogic !== "undefined" && typeof component.displayLogic !== "undefined")
+                        {
+                          return item.displayLogic.childKeyIds.includes(component.displayLogic.key); 
+                        }
+                        else
+                          return "undefined";
+                    });
+                  }
                   
-                  let leftOffset = 0;
-                  if( typeof parentComponent !== "undefined")
-                      leftOffset = parentComponent.displayLogic.rectLeft;
+                  // get parent's rectLeft as left offset of this component
+                  if( typeof parentComponent !== "undefined" && typeof parentComponent.displayLogic.rectLeft !== "undefined" )
+                      this.componentLeftOffset = parentComponent.displayLogic.rectLeft; //in rem
 
                   return <CCiLabComponent key={component.displayLogic.key} 
                                           component={component} 
-                                          leftOffset={leftOffset} 
+                                          leftOffset={this.componentLeftOffset} 
+                                          listWidth={this.componentListWidth}
+                                          fontSize={this.fontSize}
                                           removeGreeting={this.removeGreeting} 
                                           showOrHideChildren={this.showOrHideChildren}
                                           selectedComponentHandler={this.selectedComponentHandler}
@@ -560,32 +608,48 @@ class CCiLabComponentList extends Component {
                     hideDropWarning={this.hideDropToItselfWarning}/>
                   : null;
 
+      console.log( 'componentTitleWidth (rem): ', this.componentTitleWidth);
+ 
+      let listTitleClassName='border-0 text-primary text-nowrap';
+
       return (
        
-        <div className={`d-flex flex-row`} >
+       
+        <div className={`d-flex align-items-center`} >
           {/* <AddGreeter addGreeting={this.addGreeting} /> */}
-            {/* <div className='d-flex'> */}
-            {/* following d-flex is needed to show collapse icon (>) next to the top component  */}
-            {/* https://code.i-harness.com/en/q/27a5171 explains why vertical scroll bar won't appear for flex box and what is the workaroud
-                 className={`d-flex flex-column cci-flyout-component-list ${this.visibility}`, 'width':`${this.componentListWidth}px`}
-                 UC browser, pro to Edge 15 (https://caniuse.com/#feat=css-sticky) doesn't suppot sticky-top onScroll={this.updateDimensions}*/} 
-              <div id='cciLabComponentListID' className={`d-flex flex-column cci-flyout-component-list cci-component-list_transition`} 
-                  style={{'transform': `${this.compnentListTranslateStyle}`, 'height':`${this.componentListHeight}`, 'width':`${this.componentListWidth}vw`}}
-                  onScroll={this.setSelectedComponentStickDirection}>
-                  {/*  sticky to top and left*/}
-                  <div className='flex-row bg-info sticky-top fa' style={{ 'height': '25px', 'width': 'auto', 'left':'0'}}>
-                    <span className='pl-4 border-0 text-primary  text-nowrap'>部件名:</span>
-                    <span className='pl-4 border-0 text-primary  text-nowrap'>进度 <span className='font-weight-normal text-primary '> (%)</span></span> 
+            {/* https://code.i-harness.com/en/q/27a5171 explains why vertical scroll bar won't appear for flex box 
+                and what is the workaroud. iphone4s and lower isn't supported
+                UC browser and Edge pro to 15 (https://caniuse.com/#feat=css-sticky) doesn't suppot onScroll={this.updateDimensions}*/} 
+              <div id='cciLabComponentListID' 
+                  className={`cci-component-list_transition`} 
+                  style={{'transform': `${this.compnentListTranslateStyle}`, 
+                          '-webkit-transform':`${this.compnentListTranslateStyle}`,
+                          'height':`${this.componentListHeight}`, 
+                          'width':`${this.componentListWidth}`}}
+                  >
+                  {/*  sticky to top and left, https://gedd.ski/post/position-sticky/*/}
+                  {/* https://iamsteve.me/blog/entry/using-flexbox-for-horizontal-scrolling-navigation
+                      https://codepen.io/stevemckinney/pen/WvWrRX */}
+                  <div className='d-flex align-items-center bg-info fa' style={{ 'height': `auto`, 'width': `${this.componentListWidth}`}}>
+                    <span className={`${listTitleClassName}`} style={{'position':'relative',  'left':`${this.componentTitleLeft}rem`}}>部件名:</span>
+                    <span className={`${listTitleClassName}`} style={{'position':'relative', 'left':`${this.statusTitleStickyLeft}rem`}}>进度: 
+                    <span className='font-weight-normal text-primary' > (%)</span></span> 
                   </div>
-                  
-                  {/* <hr className='m-0'></hr> */}
-                  {this.renderGreetings()}
+                  {/* https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_Flexible_Box_Layout/Controlling_Ratios_of_Flex_Items_Along_the_Main_Ax */}
+                  <div className={'d-flex flex-column cci-flyout-component-list'} 
+                       style={{ 'height':`${this.componentListHeight}`, 'width':`${this.componentListWidth}`}}
+                       onScroll={this.setSelectedComponentStickDirection}>
+                    {/* <hr className='m-0'></hr> */}
+                    {this.renderGreetings()}
+                  </div>
               </div>
-              <div>
-                <a href="#show-hide-component-list" className='float-left nav-link pl-0 py-4 pr-4 cci-component-list_transition sticky-top' style={{'transform': `${this.compnentListTranslateStyle}`}} onClick={this.showHideComponentList} >
-                    <span className={`badge-pill badge-info ${this.slidingComponentListIconClassName}`}></span>
-                </a>
-            </div>
+              <a href="#show-hide-component-list" 
+                className='nav-link pl-0 py-4 pr-4 cci-component-list_transition' 
+                style={{'transform': `${this.compnentListTranslateStyle}`,
+                        '-webkit-transform':`${this.compnentListTranslateStyle}`}} 
+                onClick={this.showHideComponentList} >
+                <span className={`badge-pill badge-info ${this.slidingComponentListIconClassName}`}></span>
+              </a>
             {droptoSameParentWarningModal}
             {droptoItselfWarningModal}
         </div>

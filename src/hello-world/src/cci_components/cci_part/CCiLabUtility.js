@@ -18,25 +18,23 @@ const isElementInViewport = (rect) => {
   );
 }
 
-
-export  const setListHeight = (rect) => {
-    return window.innerHeight <= 200 ? '150px' : isElementInViewportHeight( rect ) ? 'auto':'90vh';
+// in rem or auto or vh
+export  const setListHeight = (rect, fondSize) => {
+    return window.innerHeight <= 200 ? 150/fondSize+'rem' : isElementInViewportHeight( rect ) ? 'auto':'90vh';
   }
   
-export  const setListWidth = () =>{
-    return window.innerWidth <= 330 ? '90' : window.innerWidth <= 600 ? '70' : window.innerWidth <= 800 ? '50' : window.innerWidth <= 1000 ? '40' : window.innerWidth <= 1500 ? '30':'30';
-  }
-  
-export  const setHideListWidth = () =>{
+// in vw
+export  const setListWidth = (factor) =>{
     let osVersion = detectOSVersion();
     let ListWidth;
     // on iphone 4S, os is 9.3.5 needs workaround to hide list
     if( osVersion.os === 'iOS' && osVersion.osMajorVersion < 10 )
-        ListWidth = window.innerWidth <= 330 ? '40' : window.innerWidth <= 600 ? '48' : window.innerWidth <= 800 ? '50' : window.innerWidth <= 1000 ? '40' : window.innerWidth <= 1500 ? '30':'30';
+        ListWidth = window.innerWidth*(window.innerWidth <= 330 ? 0.8 : window.innerWidth <= 600 ? 0.6 : window.innerWidth <= 800 ? 0.50 : 0.4 );
     else
-        ListWidth = setListWidth();
-    return ListWidth;
-  }
+        ListWidth = window.innerWidth <= 330 ? 90 : window.innerWidth <= 600 ? 70 : window.innerWidth <= 800 ? 50 : window.innerWidth <= 1000 ? 40 : window.innerWidth <= 1500 ? 30:30;
+    return (ListWidth * factor).toString() + ((osVersion.os === 'iOS' && osVersion.osMajorVersion < 10)? 'px':'vw' );
+}
+  
   
   //http://jsfiddle.net/ChristianL/AVyND/
   //  const detectBrowserMajorVersion = () =>{
@@ -216,3 +214,34 @@ export  const detectOSVersion = () =>{
       return jscd;
   }
   
+// getTextWidth("hello there!", "bold 12pt arial")
+// return unit CSS px - 96css is 1 inch
+//https://webplatform.github.io/docs/tutorials/understanding-css-units/
+//https://developer.mozilla.org/en-US/docs/Web/API/Window/devicePixelRatio
+//need to find dpi to convert px from inch to physical pixel (dot)
+//   export const getTextWidth=(text, font)=> {
+//     // re-use canvas object for better performance
+//     let canvas = getTextWidth.canvas || (getTextWidth.canvas = document.createElement("canvas"));
+//     let context = canvas.getContext("2d");
+//     context.font = font;
+//     let metrics = context.measureText(text);
+//     let scale = window.devicePixelRatio;
+//     return metrics.width/scale;
+// }
+
+// passing string, return rect width in px
+export const getTextRect=(text)=> {
+
+    let rootNode = document.querySelector('#root');
+    let newDiv = document.createElement('div')
+    let newSpan = document.createElement('span');
+    let newContent = document.createTextNode(text);
+    newSpan.appendChild(newContent);
+    newDiv.appendChild(newSpan);
+    newSpan.id = 'text-width';
+    rootNode.appendChild( newDiv );
+
+    let textRect = document.getElementById('text-width').getBoundingClientRect();
+    rootNode.removeChild(newDiv);
+    return textRect;
+}
