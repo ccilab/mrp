@@ -142,6 +142,7 @@ typings/
 
 # Serverless directories
 
+
 .serverless
 
 #scss out folder
@@ -152,3 +153,4 @@ css/
 
 #bak folder
 bak/
+
