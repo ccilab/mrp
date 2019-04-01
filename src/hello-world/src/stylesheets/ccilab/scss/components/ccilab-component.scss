@@ -1,0 +1,30 @@
+// https://hugogiraudel.com/2015/06/18/styling-react-components-in-sass/
+
+@import "./../../../vendors/bootstrap-4.0.0-alpha.6/scss/variables";
+// beging customization
+
+@import "./../utils/variables";
+
+
+//set up font awesome 
+@import "./../../../vendors/fontawesome-5.6.1/scss/variables";
+
+// You probably already know this but we seem to always forget it. 
+// The font path is relative from your compiled CSS directory. 
+// Ensure that you place your webfonts directory in a place relative to where your final CSS will be located.
+$fa-font-path:   "./../../stylesheets/vendors/fontawesome-5.6.1/webfonts";
+
+// end customization 
+
+@import "./../../../vendors/bootstrap-4.0.0-alpha.6/scss/bootstrap";
+
+
+@import "./../../../vendors/fontawesome-5.6.1/scss/fontawesome";
+
+// @import "../fontawesome-5.6.1/scss/regular";
+@import "./../../../vendors/fontawesome-5.6.1/scss/solid";
+// @import "../fontawesome-5.6.1/scss/brands";
+
+.ccilab-rp-root{
+  @import "./ccilab-component";
+}

@@ -1,0 +1,145 @@
+// https://hugogiraudel.com/2015/06/18/styling-react-components-in-sass/
+
+@mixin bg-linear-gradient($bg-primary-color, $start-location-percentage){
+  //background: $bg-primary-color;
+  background: linear-gradient(to right,rgba($bg-primary-color, 0.8) $start-location-percentage, rgba($bg-primary-color, 0.2)); // W3C 
+}
+
+// clicable button 
+.cci-component-btn {
+    cursor: pointer;
+    background-color: transparent !important;
+    //margin: $component_columns_margin + 0rem; //0.625rem;
+    padding: $card-img-overlay-padding !important; //0%;
+    box-shadow: 0.125rem 0.375rem 0.625rem 0 rgba($cci-shadow-dark,0.3);
+    z-index: 1;
+ 
+    &:focus {
+      box-shadow: 0.25rem 0.625rem 0.9375rem 0 rgba($cci-shadow-dark,0.5),
+                0 0 0.25rem 0.1875rem $border_color,
+                0 0 0.25rem 0.09375rem $border_color !important; 
+    }
+
+    &:active {
+      transform: scale(0.85);
+      box-shadow: 0.25rem 0.125rem 0.9375rem 0 rgba($cci-shadow-dark,0.3);
+    }
+    &:hover  {
+      box-shadow: 0.25rem 0.625rem 0.9375rem 0 rgba($cci-shadow-dark,0.5);
+    }
+ }
+
+.cci-component__alarm_0{
+@include bg-linear-gradient($brand-danger, 0)
+}
+
+.cci-component__alarm_10{
+  @include bg-linear-gradient($brand-danger, 10%)
+}
+
+
+.cci-component__warning_0{
+  @include bg-linear-gradient($brand-warning, 0)
+}
+
+.cci-component__warning_10{
+  @include bg-linear-gradient($brand-warning, 10%)
+}
+
+
+.cci-component__green_0{
+  @include bg-linear-gradient($brand-success, 0%)
+}
+
+.cci-component__green_10{
+  @include bg-linear-gradient($brand-success, 10%)
+}
+ 
+
+.cci-component__img{
+  // height: $component_img_hight;
+  // height: $component_img_hight;
+  // width: $component_img_width;      
+  object-fit: scale-down;
+  filter:opacity(80%);
+  -ms-filter: opacity(80%);
+}
+
+.component_opacity{
+  filter:opacity(70%)
+} 
+
+.cci-badge-position{
+  //position: absolute !important;
+  left: 80px !important;
+}
+
+
+.cci-btn_transparent{
+  //background-image: none;
+  background-color: transparent;
+  //border-color: transparent;
+  // margin-right: 0;
+  // padding-right: 0; 
+  // @include hover-focus-active  {
+  //   cursor: pointer;
+  // }
+}
+
+
+//static lable, is able to load image
+.cci-component-lable{
+  background-color: transparent; 
+  margin: $component_columns_margin + 0rem; 
+  padding: $card-img-overlay-padding !important; //0%;
+  box-shadow: 0.125rem 0.375rem 0.625rem 0 rgba($cci-shadow-dark,0.3);
+  z-index: 1;
+  &:focus {
+    box-shadow: 0.25rem 0.625rem 0.9375rem 0 rgba($cci-shadow-dark,0.5),
+              0 0 0.25rem 0.1875rem $border_color,
+              0 0 0.25rem 0.09375rem $border_color !important; 
+  }
+
+  &:active {
+    transform: scale(0.85);
+    box-shadow: 0.25rem 0.125rem 0.9375rem 0 rgba($cci-shadow-dark,0.3);
+  }
+} 
+
+.cci-component-lable_position{
+  position: relative;
+}
+
+
+.ccilab-component-sticky-bottom{
+  position: sticky;
+  bottom: 0;
+  z-index: $zindex-sticky;
+}
+ 
+.ccilab-component-sticky-top{
+  position: sticky;
+  top: 0;
+  z-index: $zindex-sticky;
+}
+
+// .inline-menu_sticky_horizontal
+// .component-label_sticky_horizontal{
+//   position: sticky;
+//   right: 100%;
+//   z-index: $zindex-sticky;
+// }
+
+
+ // https://www.w3schools.com/cssref/tryit.asp?filename=trycss_cursor 
+.move{
+  cursor: move;
+}
+
+.progress{
+  cursor:progress;
+}
+
+.cusor-default{
+  cursor: default;
+}
