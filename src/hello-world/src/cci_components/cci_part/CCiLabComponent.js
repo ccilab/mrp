@@ -34,8 +34,7 @@ class CCiLabComponent extends Component {
         // statusLabelLeft;
 
       
-    positioningComponentInfo( )
-    {
+    positioningComponentInfo=( )=>{
       
       this.leftOffset=this.props.leftOffset  + ( (this.parents.length === 0 ) ? 0: this.componentLableWidth/2 );
     // this.inlineMenuIconLeft = this.leftOffset;
@@ -138,7 +137,7 @@ class CCiLabComponent extends Component {
       console.log('droped from source: ', sourceId);
     }
 
-    render() {
+    render=()=>{
         // console.log('CCiLabComponent::render() imgFile: ', this.imgName);
         let componentBase='d-flex cci-component-lable_position  align-items-center '; //align-items-center 
         let inlineMenuClassName ='btn rounded-circle align-self-center p-0 bg-primary dropdown-toggle ';//btn component-label_sticky_horizontal

@@ -1,3 +1,4 @@
+// https://github.com/yjose/reactjs-popup/blob/master/src/index.js
 import React from 'react';
 import calculatePosition from './Utils';
 import Ref from './Ref';
@@ -18,49 +19,52 @@ const POSITION_TYPES = [
   'left bottom',
 ];
 
-export default class Popup extends React.PureComponent {
-  static defaultProps = {
-    trigger: null,
-    onOpen: () => {},
-    onClose: () => {},
-    defaultOpen: false,
-    open: false,
-    disabled: false,
-    closeOnDocumentClick: true,
-    repositionOnResize: true,
-    closeOnEscape: true,
-    on: ['click'],
-    contentStyle: {},
-    arrowStyle: {},
-    overlayStyle: {},
-    className: '',
-    position: 'bottom center',
-    modal: false,
-    lockScroll: false,
-    arrow: true,
-    offsetX: 0,
-    offsetY: 0,
-    mouseEnterDelay: 100,
-    mouseLeaveDelay: 100,
-    keepTooltipInside: false,
-  };
-
-  constructor(props) {
-    super(props);
-    this.setTriggerRef = r => (this.TriggerEl = r);
-    this.setContentRef = r => (this.ContentEl = r);
-    this.setArrowRef = r => (this.ArrowEl = r);
-    this.setHelperRef = r => (this.HelperEl = r);
-    this.timeOut = 0;
-    const {open, modal, defaultOpen, trigger} = props;
-    this.state = {
-      isOpen: open || defaultOpen,
-      modal: modal ? true : !trigger,
-      // we create this modal state because the popup can't be a tooltip if the trigger prop doesn't exist
+class Popup extends React.PureComponent {
+    static defaultProps = {
+      trigger: null,
+      onOpen: () => {},
+      onClose: () => {},
+      defaultOpen: false,
+      open: false,
+      disabled: false,
+      closeOnDocumentClick: true,
+      repositionOnResize: true,
+      closeOnEscape: true,
+      on: ['click'],
+      contentStyle: {},
+      arrowStyle: {},
+      overlayStyle: {},
+      className: '',
+      position: 'bottom center',
+      modal: false,
+      lockScroll: false,
+      arrow: true,
+      offsetX: 0,
+      offsetY: 0,
+      mouseEnterDelay: 100,
+      mouseLeaveDelay: 100,
+      keepTooltipInside: false,
     };
-  }
 
-  componentDidMount() {
+
+    constructor(props) {
+      super(props);
+      this.setTriggerRef = r => (this.TriggerEl = r);
+      this.setContentRef = r => (this.ContentEl = r);
+      this.setArrowRef = r => (this.ArrowEl = r);
+      this.setHelperRef = r => (this.HelperEl = r);
+      this.timeOut = 0;
+      // destructuring e.g. open=props.open, etc.
+      const {open, modal, defaultOpen, trigger} = props;
+      // then initialize state
+      this.state = {isOpen: open || defaultOpen,
+                    modal: modal ? true : !trigger,
+                  // we create this modal state because the popup can't be a tooltip if the trigger prop doesn't exist
+                  };
+    }
+
+
+  componentDidMount=()=>{
     const {closeOnEscape, defaultOpen, repositionOnResize} = this.props;
     if (defaultOpen) this.setPosition();
     if (closeOnEscape) {
@@ -73,20 +77,20 @@ export default class Popup extends React.PureComponent {
     }
   }
 
-  componentWillReceiveProps(nextProps) {
+  componentWillReceiveProps=(nextProps)=>{
     if (this.props.open === nextProps.open) return;
     if (nextProps.open) this.openPopup();
     else this.closePopup();
   }
 
-  componentDidUpdate(prevProps) {
+  componentDidUpdate=(prevProps)=>{
     const {disabled} = this.props;
     if (prevProps.disabled !== disabled && disabled && this.state.isOpen) {
       this.closePopup();
     }
   }
 
-  componentWillUnmount() {
+  componentWillUnmount=()=>{
     // kill any function to execute if the component is unmounted
     clearTimeout(this.timeOut);
 
@@ -209,17 +213,16 @@ export default class Popup extends React.PureComponent {
     if (keepTooltipInside || Array.isArray(position))
       positions = [...positions, ...POSITION_TYPES];
 
-    const cords = calculatePosition(
-      trigger,
-      content,
-      positions,
-      arrow,
-      {
-        offsetX,
-        offsetY,
-      },
-      boundingBox,
-    );
+    const cords = calculatePosition(trigger,
+                                    content,
+                                    positions,
+                                    arrow,
+                                    {
+                                      offsetX,
+                                      offsetY,
+                                    },
+                                    boundingBox,
+                                  );
     this.ContentEl.style.top = `${cords.top - helper.top}px`;
     this.ContentEl.style.left = `${cords.left - helper.left}px`;
     if (arrow) {
@@ -309,7 +312,7 @@ export default class Popup extends React.PureComponent {
     );
   };
 
-  render() {
+  render=()=>{
     const {overlayStyle, closeOnDocumentClick, on, trigger} = this.props;
     const {modal, isOpen} = this.state;
     const overlay = isOpen && !(on.indexOf('hover') >= 0);
@@ -338,47 +341,7 @@ export default class Popup extends React.PureComponent {
       ),
       isOpen && !modal && this.renderContent(),
     ];
-  }
-}
-
-if (process.env.NODE_ENV !== 'production') {
-  const PropTypes = require('prop-types');
-  const TRIGGER_TYPES = ['hover', 'click', 'focus'];
-
-  Popup.propTypes = {
-    arrowStyle: PropTypes.object,
-    contentStyle: PropTypes.object,
-    overlayStyle: PropTypes.object,
-    className: PropTypes.string,
-    modal: PropTypes.bool,
-    arrow: PropTypes.bool,
-    closeOnDocumentClick: PropTypes.bool,
-    repositionOnResize: PropTypes.bool,
-    disabled: PropTypes.bool,
-    closeOnEscape: PropTypes.bool,
-    lockScroll: PropTypes.bool,
-    offsetX: PropTypes.number,
-    offsetY: PropTypes.number,
-    mouseEnterDelay: PropTypes.number,
-    mouseLeaveDelay: PropTypes.number,
-    onOpen: PropTypes.func,
-    onClose: PropTypes.func,
-    open: PropTypes.bool,
-    defaultOpen: PropTypes.bool,
-    trigger: PropTypes.oneOfType([PropTypes.func, PropTypes.element]), // for uncontrolled component we don't need the trigger Element
-    on: PropTypes.oneOfType([
-      PropTypes.oneOf(TRIGGER_TYPES),
-      PropTypes.arrayOf(PropTypes.oneOf(TRIGGER_TYPES)),
-    ]),
-    children: PropTypes.oneOfType([
-      PropTypes.func,
-      PropTypes.element,
-      PropTypes.string,
-    ]).isRequired,
-    position: PropTypes.oneOfType([
-      PropTypes.oneOf(POSITION_TYPES),
-      PropTypes.arrayOf(PropTypes.oneOf(POSITION_TYPES)),
-    ]),
-    keepTooltipInside: PropTypes.oneOfType([PropTypes.bool, PropTypes.string]),
   };
 }
+
+export default Popup;

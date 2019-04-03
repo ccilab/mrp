@@ -15,7 +15,8 @@
       the second argument 'top' => translate popup content by + content.height*4/5
 
   4. check if calculated position is going out of bounds of wrapper box or not. If yes repeat 1-3 for next position enum. By default wrapper box is window element
-*/
+  https://github.com/yjose/reactjs-popup/blob/master/src/index.js
+  */
 
 function getCoordinatesForPosition(
   triggerBounding,
