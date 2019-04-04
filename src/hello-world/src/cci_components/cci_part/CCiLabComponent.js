@@ -3,6 +3,7 @@ import Popup from '../popup_menu/Popup'
 
 
 import './../../dist/css/ccilab-component.css'
+import './../../dist/css/popup-menu.css'
  
 class CCiLabComponent extends Component {
         state = {
@@ -141,8 +142,8 @@ class CCiLabComponent extends Component {
     render=()=>{
         // console.log('CCiLabComponent::render() imgFile: ', this.imgName);
         let componentBase='d-flex cci-component-lable_position  align-items-center '; //align-items-center 
-        let inlineMenuClassName ='btn rounded-circle align-self-center p-0 bg-primary dropdown-toggle ';//btn component-label_sticky_horizontal
-        let btnClassNameBase = 'btn rounded-circle align-self-center cci-component-btn ml-1 '; //float-left component-label_sticky_horizontal
+        let inlineMenuClassName ='btn rounded-circle align-self-center p-0 bg-primary ';
+        let btnClassNameBase = 'btn rounded-circle align-self-center cci-component-btn ml-1 '; 
         let btnClassName = btnClassNameBase;
         let imamgeClassName = 'cci-component__img rounded-circle align-self-center '; 
         let expendCollapseBadgeIconClassNameBase ='align-self-center nav-link p-0  '; // component-label_sticky_horizontal
@@ -226,22 +227,27 @@ class CCiLabComponent extends Component {
                 <Popup 
                     trigger={<button 
                               type="button"
-                              className={'button'}
-                              // style={ {'visibility': `${inlineMenuIconVisiblity}`, 'height': `${this.inlineMenuHeight}rem`, 'width': `${this.inlineMenuWidth}rem`} }
-                              > Menu Demo
-                                {/* <span className='fa fa-ellipsis-h'></span> */}
+                              className={`${inlineMenuClassName}`}
+                              style={ {'visibility': `${inlineMenuIconVisiblity}`, 
+                                        'height': `${this.inlineMenuHeight}rem`, 
+                                        'width': `${this.inlineMenuWidth}rem`,
+                                        'cursor': 'pointer'} }
+                              > 
+                                <span className='fa fa-ellipsis-h'
+                                style={ {'visibility': `${inlineMenuIconVisiblity}`} }>
+                                </span>
                              </button>}
-                    // id={`${this.currentComponent.displayLogic.key}-inline-menu`}
-                    // className={`${inlineMenuClassName}`} 
+                    id={`${this.currentComponent.displayLogic.key}-inline-menu`}
+                   // className={`${inlineMenuClassName}`} 
                     // style={ {'visibility': `${inlineMenuIconVisiblity}`, 'height': `${this.inlineMenuHeight}rem`, 'width': `${this.inlineMenuWidth}rem`} }
                     position="top center"
                     closeOnDocumentClick
   						      contentStyle={{ padding: '0px', border: 'none' }}
                     >
-                    <div className="menu">
-        							<div className="menu-item"> Menu item 1</div>
-        							<div className="menu-item"> Menu item 2</div>
-        							<div className="menu-item"> Menu item 3</div>
+                    <div className="ccilab-menu text-info">
+        							<div className='ccilab-menu-item'> <span className='far fa-copy'></span></div> 
+        							<div className="ccilab-menu-item"> Menu item 2</div>
+        							<div className="ccilab-menu-item"> Menu item 3</div>
                     </div>
                 </Popup> 
                  
