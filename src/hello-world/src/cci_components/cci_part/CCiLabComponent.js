@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import Popup from '../popup_menu/Popup'
 
 
 import './../../dist/css/ccilab-component.css'
@@ -221,13 +222,28 @@ class CCiLabComponent extends Component {
                 onDrop={  this.doDrop }>
               <div className={`${componentBase}`} style={{'left':`${this.leftOffset}rem`}}>
                 {/* a badge to show menu to move/copy/delete/edit component, only sole children component has move and copy option */}
-                <button 
-                  id={`${this.currentComponent.displayLogic.key}-inline-menu`}
-                  className={`${inlineMenuClassName}`} 
-                  dataToggle='dropdown'
-                  style={ {'visibility': `${inlineMenuIconVisiblity}`, 'height': `${this.inlineMenuHeight}rem`, 'width': `${this.inlineMenuWidth}rem`} }>
-                  {/* <span className='fa fa-ellipsis-h'></span> */}
-                </button> 
+                {/* https://github.com/yjose/reactjs-popup/blob/master/docs/src/examples/Demo.js */}
+                <Popup 
+                    trigger={<button 
+                              type="button"
+                              className={'button'}
+                              // style={ {'visibility': `${inlineMenuIconVisiblity}`, 'height': `${this.inlineMenuHeight}rem`, 'width': `${this.inlineMenuWidth}rem`} }
+                              > Menu Demo
+                                {/* <span className='fa fa-ellipsis-h'></span> */}
+                             </button>}
+                    // id={`${this.currentComponent.displayLogic.key}-inline-menu`}
+                    // className={`${inlineMenuClassName}`} 
+                    // style={ {'visibility': `${inlineMenuIconVisiblity}`, 'height': `${this.inlineMenuHeight}rem`, 'width': `${this.inlineMenuWidth}rem`} }
+                    position="top center"
+                    closeOnDocumentClick
+  						      contentStyle={{ padding: '0px', border: 'none' }}
+                    >
+                    <div className="menu">
+        							<div className="menu-item"> Menu item 1</div>
+        							<div className="menu-item"> Menu item 2</div>
+        							<div className="menu-item"> Menu item 3</div>
+                    </div>
+                </Popup> 
                  
                  {/* show collapse icon 'v' for all expendable components,
                   show expendable icon '>' for those components have children except the top component

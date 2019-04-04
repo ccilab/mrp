@@ -2,7 +2,7 @@
 import React from 'react';
 import calculatePosition from './Utils';
 import Ref from './Ref';
-import styles from './../../dist/css/popup.css';
+import './../../dist/css/popup.css';
 
 const POSITION_TYPES = [
   'top left',
@@ -248,13 +248,11 @@ class Popup extends React.PureComponent {
   addWarperAction = () => {
     const {contentStyle, className, on} = this.props;
     const {modal} = this.state;
-    const popupContentStyle = modal
-      ? styles.popupContent.modal
-      : styles.popupContent.tooltip;
+    const popupContentStyle = modal ? 'modal' : 'tooltip';
 
     const childrenElementProps = {
-      className: `popup-content ${className}`,
-      style: Object.assign({}, popupContentStyle, contentStyle),
+      className: `popup-content ${className} ${popupContentStyle}`,
+      style: Object.assign({}, contentStyle),
       ref: this.setContentRef,
       onClick: e => {
         e.stopPropagation();
@@ -301,8 +299,9 @@ class Popup extends React.PureComponent {
       <div {...this.addWarperAction()} key="C">
         {arrow && !modal && (
           <div
+            className={'popupArrow'}
             ref={this.setArrowRef}
-            style={Object.assign({}, styles.popupArrow, arrowStyle)}
+            style={Object.assign({}, arrowStyle)}
           />
         )}
         {typeof children === 'function'
@@ -316,7 +315,8 @@ class Popup extends React.PureComponent {
     const {overlayStyle, closeOnDocumentClick, on, trigger} = this.props;
     const {modal, isOpen} = this.state;
     const overlay = isOpen && !(on.indexOf('hover') >= 0);
-    const ovStyle = modal ? styles.overlay.modal : styles.overlay.tooltip;
+    // const ovStyle = modal ? styles.overlay.modal : styles.overlay.tooltip;
+    const ovStyleClass = modal ? 'modal' : 'tooltip';
     return [
       !!trigger && (
         <Ref innerRef={this.setTriggerRef} key="R">
@@ -333,8 +333,8 @@ class Popup extends React.PureComponent {
       overlay && (
         <div
           key="O"
-          className="popup-overlay"
-          style={Object.assign({}, ovStyle, overlayStyle)}
+          className={`popup-overlay ${ovStyleClass}`}
+          style={Object.assign({}, overlayStyle)}
           onClick={closeOnDocumentClick ? this.closePopup : undefined}>
           {modal && this.renderContent()}
         </div>
