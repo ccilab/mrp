@@ -215,26 +215,28 @@ class CCiLabComponent extends Component {
             // {/* shift the child components to the right */}  
             // {/* tag's id is used to handle drop event*/}
             <div id={`${this.currentComponent.displayLogic.key}`} 
+                // 'bg-info component_opacity ccilab-component-sticky-top ' 
                 className={`${Component}`} 
                 style={componentStyle}
                 draggable={`${draggableSetting}`}
                 onDragStart={ draggableSetting === 'true' ? this.dragStart : null}
                 onDragOver={ this.dragOver }
                 onDrop={  this.doDrop }>
+                {/* 'd-flex cci-component-lable_position  align-items-center ' */}
               <div className={`${componentBase}`} style={{'left':`${this.leftOffset}rem`}}>
                 {/* a badge to show menu to move/copy/delete/edit component, only sole children component has move and copy option */}
                 {/* https://github.com/yjose/reactjs-popup/blob/master/docs/src/examples/Demo.js */}
                 <Popup 
                     trigger={<button 
                               type="button"
+                              // 'btn rounded-circle align-self-center p-0 bg-primary '
                               className={`${inlineMenuClassName}`}
                               style={ {'visibility': `${inlineMenuIconVisiblity}`, 
                                         'height': `${this.inlineMenuHeight}rem`, 
-                                        'width': `${this.inlineMenuWidth}rem`,
-                                        'cursor': 'pointer'} }
+                                        'width': `${this.inlineMenuWidth}rem`} }
                               > 
                                 <span className='fa fa-ellipsis-h'
-                                style={ {'visibility': `${inlineMenuIconVisiblity}`} }>
+                                      style={ {'visibility': `${inlineMenuIconVisiblity}`} }>
                                 </span>
                              </button>}
                     id={`${this.currentComponent.displayLogic.key}-inline-menu`}
@@ -244,11 +246,14 @@ class CCiLabComponent extends Component {
                     closeOnDocumentClick
   						      contentStyle={{ padding: '0px', border: 'none' }}
                     >
-                    <div className="ccilab-menu text-info">
-        							<div className='ccilab-menu-item'> <span className='far fa-copy'></span></div> 
-        							<div className="ccilab-menu-item"> Menu item 2</div>
-        							<div className="ccilab-menu-item"> Menu item 3</div>
-                    </div>
+                    {/* <div className='ccilab-menu '> */}
+        							<div className={'d-flex ccilab-menu-item bg-info bg-faded align-items-center'}> 
+                        <a href='#copy' className={'align-self-center nav-link fa fa-copy'}/>
+                        <a href='#move' className={'align-self-center nav-link fa fa-arrows-alt'}/>
+                        <a href='#edit' className={'align-self-center nav-link fa fa-edit'}/>
+                      </div> 
+        						
+                   {/*  </div> */}
                 </Popup> 
                  
                  {/* show collapse icon 'v' for all expendable components,
@@ -257,6 +262,7 @@ class CCiLabComponent extends Component {
                 {/* tag's id used to handle drop event */}
                 <a  id={`${this.currentComponent.displayLogic.key}-show-hide`} 
                     href='#expend-collapse-badge' 
+                    // 'align-self-center nav-link p-0  ' + 'fa fa-angle-right'
                     className={`${expendCollapseBadgeIconClassNameBase} ${expendCollapseBadgeIconClassName} pl-2 `} 
                     style={expendableIconStyle} 
                     draggable={`${draggableSetting}`}
