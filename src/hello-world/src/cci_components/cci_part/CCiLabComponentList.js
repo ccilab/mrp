@@ -142,13 +142,13 @@ const hideChildren = (aComponent, aComponents, aShowStatus)=>{
 }
 
 
-const estimateComponentListRect = (componentLists)=>{
+const estimateComponentListRect = (componentLists, fontSize)=>{
   let componentListRect = document.getElementById( 'cciLabComponentListID' ).getBoundingClientRect();
   let updatedRect = {top: componentListRect.top, left: componentListRect.left, bottom: componentListRect.bottom, right: componentListRect.right*1.2 };
   
   let shownComponents = componentLists.filter(component=>component.displayLogic.showMyself === true)
   
-  updatedRect.bottom = shownComponents.length * 3.4375; //55px - 3.4375rem assuming rem is16pxdefined in CCiLabComponent.js as max button height
+  updatedRect.bottom = shownComponents.length * (45+16)/fontSize; //55px - 3.4375rem assuming rem is 24px defined in CCiLabComponent.js as max button height
   return updatedRect;
 }
 
@@ -189,9 +189,8 @@ class CCiLabComponentList extends Component {
     statusTitleWidth;
     statusUnitStickyLeft;
     componentTitleTop;
-       
-    componentListHeight= window.innerHeight <= 200 ? ( 150/this.fontSize +'rem' ) : 'auto';  //minimum height 
-   
+    componentListMinHeight = ( 150/this.fontSize +'rem' );  
+    componentListHeight= window.innerHeight <= 200 ? this.componentListMinHeight : 'auto';  //minimum height 
 
     // rootComponentName;
 
@@ -269,7 +268,7 @@ class CCiLabComponentList extends Component {
    * bind to resize event, Calculate & Update state of new dimensions
    */
     updateDimensions=()=>{
-      let updatedRect = estimateComponentListRect(this.state.greetings);
+      let updatedRect = estimateComponentListRect(this.state.greetings, this.fontSize);
 
       this.componentListHeight = setListHeight( updatedRect, this.fontSize );
 
@@ -349,7 +348,7 @@ class CCiLabComponentList extends Component {
           });
           
           // create vertical scroll bar based on the height of component list dynamically
-          let updatedRect = estimateComponentListRect(currentSessionComponents);
+          let updatedRect = estimateComponentListRect(currentSessionComponents, this.fontSize);
 
           this.componentListHeight = setListHeight( updatedRect, this.fontSize );
           this.componentListWidth = setListWidth(1.0);
@@ -623,7 +622,7 @@ class CCiLabComponentList extends Component {
               <div id='cciLabComponentListID' 
                   className={`cci-component-list_transition`} 
                   style={{'transform': `${this.compnentListTranslateStyle}`, 
-                          '-webkit-transform':`${this.compnentListTranslateStyle}`,
+                          'WebkitTransform':`${this.compnentListTranslateStyle}`,
                           'height':`${this.componentListHeight}`, 
                           'width':`${this.componentListWidth}`}}
                   >
@@ -637,7 +636,9 @@ class CCiLabComponentList extends Component {
                   </div>
                   {/* https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_Flexible_Box_Layout/Controlling_Ratios_of_Flex_Items_Along_the_Main_Ax */}
                   <div className={'d-flex flex-column cci-flyout-component-list'} 
-                       style={{ 'height':`${this.componentListHeight}`, 'width':`${this.componentListWidth}`}}
+                       style={{ 'height':`${this.componentListHeight}`, 
+                                'minHeight': `${this.componentListMinHeight}`,
+                                'width':`${this.componentListWidth}`}}
                        onScroll={this.setSelectedComponentStickDirection}>
                     {/* <hr className='m-0'></hr> */}
                     {this.renderGreetings()}
@@ -646,7 +647,7 @@ class CCiLabComponentList extends Component {
               <a href="#show-hide-component-list" 
                 className='nav-link pl-0 py-4 pr-4 cci-component-list_transition' 
                 style={{'transform': `${this.compnentListTranslateStyle}`,
-                        '-webkit-transform':`${this.compnentListTranslateStyle}`}} 
+                        'WebkitTransform':`${this.compnentListTranslateStyle}`}} 
                 onClick={this.showHideComponentList} >
                 <span className={`badge-pill badge-info ${this.slidingComponentListIconClassName}`}></span>
               </a>

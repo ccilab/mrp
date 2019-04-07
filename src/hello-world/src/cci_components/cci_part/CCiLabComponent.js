@@ -29,6 +29,8 @@ class CCiLabComponent extends Component {
         progressValue = this.currentComponent.businessLogic.progressPercent;
 
         leftOffset =this.props.leftOffset  + ( (this.parents.length === 0 ) ? 0: this.componentLableWidth/2 );
+
+        selectedComponentId;
         // inlineMenuIconLeft;
         // expendableIconLeft;        
         // btnImgLeft;
@@ -73,7 +75,14 @@ class CCiLabComponent extends Component {
     };
 
     componentSelected = () =>{
+      if( typeof this.selectedComponentId === 'undefined' )
         this.props.selectedComponentHandler(this.currentComponent);
+      else
+      {
+        if (Number.isInteger(parseInt(this.selectedComponentId, 10) ) )
+          this.moveEnd();
+      }
+
     }
 
     removeGreeting = () => {
@@ -83,6 +92,26 @@ class CCiLabComponent extends Component {
     showOrHideChildren = (isShow) =>{
       this.props.showOrHideChildren(this.currentComponent, isShow)
     }
+
+    moveStart=(e)=>{
+      let movededComponetId=e.target.id;
+      if (Number.isInteger(parseInt(movededComponetId, 10) ) )
+      {
+        this.selectedComponentId = movededComponetId;
+        console.log('move select component id: ', this.selectedComponentId );  
+      }
+    }
+    moveEnd=()=>{
+      if( typeof this.selectedComponentId !== 'undefined')
+      {  
+        if (Number.isInteger(parseInt(this.selectedComponentId, 10) ) )
+        {        
+          console.log('moved from source: ', this.selectedComponentId);
+          this.props.moveComponentHandler(this.selectedComponentId, this.currentComponent);
+          this.selectedComponentId='undefined';
+        }
+      }
+     }
 
     dragStart=(e) => {
       let draggedComponetId=e.target.id;
@@ -208,10 +237,14 @@ class CCiLabComponent extends Component {
 
         let inlineMenuIconVisiblity =  ( this.currentComponent.displayLogic.selected !== 0 ) ? 'visible' : 'hidden';
 
+        let inlineMenuPosition = (this.parents.length === 0)? 'bottom left' : 'top left';
+
         return (
           // https://developer.mozilla.org/en-US/docs/Web/API/HTML_Drag_and_Drop_API
           // https://developer.mozilla.org/en-US/docs/Web/API/HTML_Drag_and_Drop_API/Drag_operations#dragstart
           // https://developer.mozilla.org/en-US/docs/Web/API/DataTransferItem#Browser_compatibility
+          // https://www.kirupa.com/html5/drag.htm touch 
+          // https://developer.mozilla.org/en-US/docs/Web/API/GlobalEventHandlers/ontouchstart
             // {/* shift the child components to the right */}  
             // {/* tag's id is used to handle drop event*/}
             <div id={`${this.currentComponent.displayLogic.key}`} 
@@ -220,37 +253,47 @@ class CCiLabComponent extends Component {
                 style={componentStyle}
                 draggable={`${draggableSetting}`}
                 onDragStart={ draggableSetting === 'true' ? this.dragStart : null}
+                onTouchStart={ draggableSetting === 'true' ? this.dragStart : null}
                 onDragOver={ this.dragOver }
                 onDrop={  this.doDrop }>
+                {/* onDragOver={ this.dragOver }
+                onDrop={  this.doDrop }> */}
                 {/* 'd-flex cci-component-lable_position  align-items-center ' */}
               <div className={`${componentBase}`} style={{'left':`${this.leftOffset}rem`}}>
                 {/* a badge to show menu to move/copy/delete/edit component, only sole children component has move and copy option */}
                 {/* https://github.com/yjose/reactjs-popup/blob/master/docs/src/examples/Demo.js */}
                 <Popup 
-                    trigger={<button 
-                              type="button"
-                              // 'btn rounded-circle align-self-center p-0 bg-primary '
-                              className={`${inlineMenuClassName}`}
-                              style={ {'visibility': `${inlineMenuIconVisiblity}`, 
-                                        'height': `${this.inlineMenuHeight}rem`, 
-                                        'width': `${this.inlineMenuWidth}rem`} }
-                              > 
-                                <span className='fa fa-ellipsis-h'
-                                      style={ {'visibility': `${inlineMenuIconVisiblity}`} }>
-                                </span>
-                             </button>}
+                    trigger={
+                      <button 
+                        type="button"
+                        // 'btn rounded-circle align-self-center p-0 bg-primary '
+                        className={`${inlineMenuClassName} cusor-default`}
+                        style={ {'visibility': `${inlineMenuIconVisiblity}`, 
+                                  'height': `${this.inlineMenuHeight}rem`, 
+                                  'width': `${this.inlineMenuWidth}rem`} }
+                        > 
+                          <span className='fa fa-ellipsis-h'
+                                style={ {'visibility': `${inlineMenuIconVisiblity}`} }>
+                          </span>
+                      </button>
+                    }
                     id={`${this.currentComponent.displayLogic.key}-inline-menu`}
-                   // className={`${inlineMenuClassName}`} 
-                    // style={ {'visibility': `${inlineMenuIconVisiblity}`, 'height': `${this.inlineMenuHeight}rem`, 'width': `${this.inlineMenuWidth}rem`} }
-                    position="top center"
+                    position={`${inlineMenuPosition}`}
                     closeOnDocumentClick
+                    on="hover"
+                    mouseLeaveDelay={300}
+                    mouseEnterDelay={0}
   						      contentStyle={{ padding: '0px', border: 'none' }}
                     >
                     {/* <div className='ccilab-menu '> */}
         							<div className={'d-flex ccilab-menu-item bg-info bg-faded align-items-center'}> 
-                        <a href='#copy' className={'align-self-center nav-link fa fa-copy'}/>
-                        <a href='#move' className={'align-self-center nav-link fa fa-arrows-alt'}/>
-                        <a href='#edit' className={'align-self-center nav-link fa fa-edit'}/>
+                        { ( draggableSetting === 'true') ? <a href='#copy' className={'align-self-center nav-link px-1 fa fa-copy '}/> :null}
+                        { ( draggableSetting === 'true') ? <a id={`${this.currentComponent.displayLogic.key}`}
+                           href='#move' 
+                           className={'align-self-center nav-link px-1 fa fa-arrows-alt'}
+                           onClick={ this.moveStart }
+                           /> :null}
+                        <a href='#edit' className={'align-self-center nav-link px-1 fa fa-edit'}/>
                       </div> 
         						
                    {/*  </div> */}
@@ -268,6 +311,7 @@ class CCiLabComponent extends Component {
                     draggable={`${draggableSetting}`}
                     onClick={ this.expending }
                     onDragStart={ draggableSetting === 'true' ? this.dragStart : null}
+                    onTouchStart={ draggableSetting === 'true' ? this.dragStart : null}
                     onDragOver={ this.dragOver }
                     onDrop={  this.doDrop }>
                 </a>
@@ -278,6 +322,7 @@ class CCiLabComponent extends Component {
                   draggable={`${draggableSetting}`}
                   onClick={ this.componentSelected } 
                   onDragStart={ draggableSetting === 'true' ? this.dragStart : null}
+                  onTouchStart={ draggableSetting === 'true' ? this.dragStart : null}
                   onDragOver={ this.dragOver }
                   onDrop={  this.doDrop }>
                   
@@ -302,6 +347,7 @@ class CCiLabComponent extends Component {
                     draggable={`${draggableSetting}`}
                     onClick={ this.componentSelected }
                     onDragStart={ draggableSetting === 'true' ? this.dragStart : null}
+                    onTouchStart={ draggableSetting === 'true' ? this.dragStart : null}
                     onDragOver={ this.dragOver }
                     onDrop={  this.doDrop }>
                     {this.componentName}:
@@ -314,6 +360,7 @@ class CCiLabComponent extends Component {
                       draggable={`${draggableSetting}`}
                       onClick={ this.componentSelected }
                       onDragStart={ draggableSetting === 'true' ? this.dragStart : null}
+                      onTouchStart={ draggableSetting === 'true' ? this.dragStart : null}
                       onDragOver={ this.dragOver }
                       onDrop={  this.doDrop }> 
                       {this.progressValue}%

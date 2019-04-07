@@ -3,7 +3,7 @@ export default {
     tooltip: {
       position: 'absolute',
       zIndex: '2',
-      width: '200px',
+      width: 'auto', //'200px',
       background: `rgb(255, 255, 255)`,
       border: `1px solid rgb(187, 187, 187)`,
       boxShadow: `rgba(0, 0, 0, 0.2) 0px 1px 3px`,
@@ -18,11 +18,12 @@ export default {
       padding: '5px',
     },
   },
+  // trangle under popup retangular
   popupArrow: {
     height: '10px',
     width: '10px',
     position: 'absolute',
-    background: 'rgb(255, 255, 255)',
+    background: `rgb(91,192,222)`, //#5bc0de`,
     transform: 'rotate(45deg)',
     margin: '-5px',
     zIndex: '-1',
