@@ -196,6 +196,8 @@ class CCiLabComponentList extends Component {
 
     positioningListTitle=(rootComponent)=>{ 
       let rootComponentName = rootComponent.businessLogic.name; 
+
+      //#todo: title is from server or user input, not hardcoded here
       let titleRect=getTextRect('部件名:');
             
       this.componentTitleWidth = titleRect.width/this.fontSize;  //in rem
@@ -209,8 +211,9 @@ class CCiLabComponentList extends Component {
       let rootComponentNameWidth = typeof rootComponentName !== "undefined" ?  getTextRect(rootComponentName).width/this.fontSize : this.componentTitleWidth;  //in rem
       
       let rootImgBtnWith = 45/this.fontSize;  //also used in CCiLabComponent.js
-      this.statusTitleStickyLeft = this.componentTitleLeft + this.componentTitleWidth + rootComponentNameWidth + rootImgBtnWith; //in rem 
+      this.statusTitleStickyLeft = this.componentTitleLeft + this.componentTitleWidth + rootComponentNameWidth; //in rem + rootImgBtnWith
       //alert("FontSize = " + this.fontSize + " The width = " + getTextRect(rootComponentName).width + " width/fontSize = "+ rootComponentNameWidth);
+      // status tile is from server or user input
       this.statusTitleWidth = getTextRect('进度: (%)').width/this.fontSize;  //in rem
       this.statusUnitStickyLeft = this.statusTitleStickyLeft + this.statusTitleWidth;
     }
@@ -633,6 +636,8 @@ class CCiLabComponentList extends Component {
                     <span className={`${listTitleClassName}`} style={{'position':'relative',  'left':`${this.componentTitleLeft}rem`}}>部件名:</span>
                     <span className={`${listTitleClassName}`} style={{'position':'relative', 'left':`${this.statusTitleStickyLeft}rem`}}>进度: 
                     <span className='font-weight-normal text-primary' > (%)</span></span> 
+                    {/* #todo - make title editable by user */}
+                    <a href='#edit-title' className='border-0 text-primary text-nowrap p-0 nav-link fa fa-edit' style={{'position':'absolute', 'right':'0'}}></a>
                   </div>
                   {/* https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_Flexible_Box_Layout/Controlling_Ratios_of_Flex_Items_Along_the_Main_Ax */}
                   <div className={'d-flex flex-column cci-flyout-component-list'} 

@@ -256,7 +256,6 @@ class CCiLabComponent extends Component {
                 style={componentStyle}
                 draggable={`${draggableSetting}`}
                 onDragStart={ draggableSetting === 'true' ? this.dragStart : null}
-                onTouchStart={ draggableSetting === 'true' ? this.dragStart : null}
                 onDragOver={ this.dragOver }
                 onDrop={  this.doDrop }>
                 {/* onDragOver={ this.dragOver }
@@ -315,7 +314,6 @@ class CCiLabComponent extends Component {
                     draggable={`${draggableSetting}`}
                     onClick={ this.expending }
                     onDragStart={ draggableSetting === 'true' ? this.dragStart : null}
-                    onTouchStart={ draggableSetting === 'true' ? this.dragStart : null}
                     onDragOver={ this.dragOver }
                     onDrop={  this.doDrop }>
                 </a>
@@ -326,7 +324,6 @@ class CCiLabComponent extends Component {
                   draggable={`${draggableSetting}`}
                   onClick={ this.componentSelected } 
                   onDragStart={ draggableSetting === 'true' ? this.dragStart : null}
-                  onTouchStart={ draggableSetting === 'true' ? this.dragStart : null}
                   onDragOver={ this.dragOver }
                   onDrop={  this.doDrop }>
                   
@@ -336,6 +333,7 @@ class CCiLabComponent extends Component {
                       <img id={`${this.currentComponent.displayLogic.key}`} 
                            className={`${imamgeClassName}`} src={this.imgName} alt=''
                            style={{'height': `${this.componentLableHeight}rem`, 'width': `${this.componentLableWidth}rem`}} 
+                           onClick={ this.componentSelected } 
                            draggable={`${draggableSetting}`}
                            onDragStart={ draggableSetting === 'true' ? this.dragStart : null}
                            onDragOver={ this.dragOver }
@@ -351,7 +349,6 @@ class CCiLabComponent extends Component {
                     draggable={`${draggableSetting}`}
                     onClick={ this.componentSelected }
                     onDragStart={ draggableSetting === 'true' ? this.dragStart : null}
-                    onTouchStart={ draggableSetting === 'true' ? this.dragStart : null}
                     onDragOver={ this.dragOver }
                     onDrop={  this.doDrop }>
                     {this.componentName}:
@@ -364,7 +361,6 @@ class CCiLabComponent extends Component {
                       draggable={`${draggableSetting}`}
                       onClick={ this.componentSelected }
                       onDragStart={ draggableSetting === 'true' ? this.dragStart : null}
-                      onTouchStart={ draggableSetting === 'true' ? this.dragStart : null}
                       onDragOver={ this.dragOver }
                       onDrop={  this.doDrop }> 
                       {this.progressValue}%
