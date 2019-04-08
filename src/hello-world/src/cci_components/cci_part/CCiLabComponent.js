@@ -30,12 +30,8 @@ class CCiLabComponent extends Component {
 
         leftOffset =this.props.leftOffset  + ( (this.parents.length === 0 ) ? 0: this.componentLableWidth/2 );
 
-        selectedComponentId;
-        // inlineMenuIconLeft;
-        // expendableIconLeft;        
-        // btnImgLeft;
-        // nameLableLeft;
-        // statusLabelLeft;
+        static inlineMenu ={ cmd: 'select',
+                             itemId: 'undefined'};
 
       
     positioningComponentInfo=( )=>{
@@ -75,14 +71,19 @@ class CCiLabComponent extends Component {
     };
 
     componentSelected = () =>{
-      if( typeof this.selectedComponentId === 'undefined' )
-        this.props.selectedComponentHandler(this.currentComponent);
-      else
+      switch( CCiLabComponent.inlineMenu.cmd )
       {
-        if (Number.isInteger(parseInt(this.selectedComponentId, 10) ) )
+        case 'select':
+          this.props.selectedComponentHandler(this.currentComponent);
+        break;
+        case 'move':
           this.moveEnd();
+        break;
+        case 'edit':
+        default:
+          console.log('inline Menu cmd is not supported yet: ' + CCiLabComponent.inlineMenu.cmd)
+          break;
       }
-
     }
 
     removeGreeting = () => {
@@ -97,18 +98,20 @@ class CCiLabComponent extends Component {
       let movededComponetId=e.target.id;
       if (Number.isInteger(parseInt(movededComponetId, 10) ) )
       {
-        this.selectedComponentId = movededComponetId;
-        console.log('move select component id: ', this.selectedComponentId );  
+        CCiLabComponent.inlineMenu.cmd = 'move';
+        CCiLabComponent.inlineMenu.itemId = movededComponetId;
+        console.log('move select component id: ', CCiLabComponent.inlineMenu.itemId );  
       }
     }
     moveEnd=()=>{
-      if( typeof this.selectedComponentId !== 'undefined')
+      if( typeof CCiLabComponent.inlineMenu.itemId !== 'undefined')
       {  
-        if (Number.isInteger(parseInt(this.selectedComponentId, 10) ) )
+        if (Number.isInteger(parseInt(CCiLabComponent.inlineMenu.itemId, 10) ) )
         {        
-          console.log('moved from source: ', this.selectedComponentId);
-          this.props.moveComponentHandler(this.selectedComponentId, this.currentComponent);
-          this.selectedComponentId='undefined';
+          console.log('moved from source: ', CCiLabComponent.inlineMenu.itemId);
+          this.props.moveComponentHandler(CCiLabComponent.inlineMenu.itemId, this.currentComponent);
+          CCiLabComponent.inlineMenu.itemId='undefined';
+          CCiLabComponent.inlineMenu.cmd = 'select';
         }
       }
      }
@@ -287,7 +290,8 @@ class CCiLabComponent extends Component {
                     >
                     {/* <div className='ccilab-menu '> */}
         							<div className={'d-flex ccilab-menu-item bg-info bg-faded align-items-center'}> 
-                        { ( draggableSetting === 'true') ? <a href='#copy' className={'align-self-center nav-link px-1 fa fa-copy '}/> :null}
+                        {/* copy is not supported for now
+                           { ( draggableSetting === 'true') ? <a href='#copy' className={'align-self-center nav-link px-1 fa fa-copy '}/> :null} */}
                         { ( draggableSetting === 'true') ? <a id={`${this.currentComponent.displayLogic.key}`}
                            href='#move' 
                            className={'align-self-center nav-link px-1 fa fa-arrows-alt'}
