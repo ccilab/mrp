@@ -142,13 +142,13 @@ const hideChildren = (aComponent, aComponents, aShowStatus)=>{
 }
 
 
-const estimateComponentListRect = (componentLists)=>{
+const estimateComponentListRect = (componentLists, fontSize)=>{
   let componentListRect = document.getElementById( 'cciLabComponentListID' ).getBoundingClientRect();
   let updatedRect = {top: componentListRect.top, left: componentListRect.left, bottom: componentListRect.bottom, right: componentListRect.right*1.2 };
   
   let shownComponents = componentLists.filter(component=>component.displayLogic.showMyself === true)
   
-  updatedRect.bottom = shownComponents.length * 3.4375; //55px - 3.4375rem assuming rem is16pxdefined in CCiLabComponent.js as max button height
+  updatedRect.bottom = shownComponents.length * (45+16)/fontSize; //55px - 3.4375rem assuming rem is 24px defined in CCiLabComponent.js as max button height
   return updatedRect;
 }
 
@@ -189,14 +189,15 @@ class CCiLabComponentList extends Component {
     statusTitleWidth;
     statusUnitStickyLeft;
     componentTitleTop;
-       
-    componentListHeight= window.innerHeight <= 200 ? ( 150/this.fontSize +'rem' ) : 'auto';  //minimum height 
-   
+    componentListMinHeight = ( 150/this.fontSize +'rem' );  
+    componentListHeight= window.innerHeight <= 200 ? this.componentListMinHeight : 'auto';  //minimum height 
 
     // rootComponentName;
 
     positioningListTitle=(rootComponent)=>{ 
       let rootComponentName = rootComponent.businessLogic.name; 
+
+      //#todo: title is from server or user input, not hardcoded here
       let titleRect=getTextRect('部件名:');
             
       this.componentTitleWidth = titleRect.width/this.fontSize;  //in rem
@@ -210,8 +211,9 @@ class CCiLabComponentList extends Component {
       let rootComponentNameWidth = typeof rootComponentName !== "undefined" ?  getTextRect(rootComponentName).width/this.fontSize : this.componentTitleWidth;  //in rem
       
       let rootImgBtnWith = 45/this.fontSize;  //also used in CCiLabComponent.js
-      this.statusTitleStickyLeft = this.componentTitleLeft + this.componentTitleWidth + rootComponentNameWidth + rootImgBtnWith; //in rem 
+      this.statusTitleStickyLeft = this.componentTitleLeft + this.componentTitleWidth + rootComponentNameWidth; //in rem + rootImgBtnWith
       //alert("FontSize = " + this.fontSize + " The width = " + getTextRect(rootComponentName).width + " width/fontSize = "+ rootComponentNameWidth);
+      // status tile is from server or user input
       this.statusTitleWidth = getTextRect('进度: (%)').width/this.fontSize;  //in rem
       this.statusUnitStickyLeft = this.statusTitleStickyLeft + this.statusTitleWidth;
     }
@@ -269,7 +271,7 @@ class CCiLabComponentList extends Component {
    * bind to resize event, Calculate & Update state of new dimensions
    */
     updateDimensions=()=>{
-      let updatedRect = estimateComponentListRect(this.state.greetings);
+      let updatedRect = estimateComponentListRect(this.state.greetings, this.fontSize);
 
       this.componentListHeight = setListHeight( updatedRect, this.fontSize );
 
@@ -349,7 +351,7 @@ class CCiLabComponentList extends Component {
           });
           
           // create vertical scroll bar based on the height of component list dynamically
-          let updatedRect = estimateComponentListRect(currentSessionComponents);
+          let updatedRect = estimateComponentListRect(currentSessionComponents, this.fontSize);
 
           this.componentListHeight = setListHeight( updatedRect, this.fontSize );
           this.componentListWidth = setListWidth(1.0);
@@ -623,7 +625,7 @@ class CCiLabComponentList extends Component {
               <div id='cciLabComponentListID' 
                   className={`cci-component-list_transition`} 
                   style={{'transform': `${this.compnentListTranslateStyle}`, 
-                          '-webkit-transform':`${this.compnentListTranslateStyle}`,
+                          'WebkitTransform':`${this.compnentListTranslateStyle}`,
                           'height':`${this.componentListHeight}`, 
                           'width':`${this.componentListWidth}`}}
                   >
@@ -634,10 +636,14 @@ class CCiLabComponentList extends Component {
                     <span className={`${listTitleClassName}`} style={{'position':'relative',  'left':`${this.componentTitleLeft}rem`}}>部件名:</span>
                     <span className={`${listTitleClassName}`} style={{'position':'relative', 'left':`${this.statusTitleStickyLeft}rem`}}>进度: 
                     <span className='font-weight-normal text-primary' > (%)</span></span> 
+                    {/* #todo - make title editable by user */}
+                    <a href='#edit-title' className='border-0 text-primary text-nowrap p-0 nav-link fa fa-edit' style={{'position':'absolute', 'right':'0'}}></a>
                   </div>
                   {/* https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_Flexible_Box_Layout/Controlling_Ratios_of_Flex_Items_Along_the_Main_Ax */}
                   <div className={'d-flex flex-column cci-flyout-component-list'} 
-                       style={{ 'height':`${this.componentListHeight}`, 'width':`${this.componentListWidth}`}}
+                       style={{ 'height':`${this.componentListHeight}`, 
+                                'minHeight': `${this.componentListMinHeight}`,
+                                'width':`${this.componentListWidth}`}}
                        onScroll={this.setSelectedComponentStickDirection}>
                     {/* <hr className='m-0'></hr> */}
                     {this.renderGreetings()}
@@ -646,7 +652,7 @@ class CCiLabComponentList extends Component {
               <a href="#show-hide-component-list" 
                 className='nav-link pl-0 py-4 pr-4 cci-component-list_transition' 
                 style={{'transform': `${this.compnentListTranslateStyle}`,
-                        '-webkit-transform':`${this.compnentListTranslateStyle}`}} 
+                        'WebkitTransform':`${this.compnentListTranslateStyle}`}} 
                 onClick={this.showHideComponentList} >
                 <span className={`badge-pill badge-info ${this.slidingComponentListIconClassName}`}></span>
               </a>
