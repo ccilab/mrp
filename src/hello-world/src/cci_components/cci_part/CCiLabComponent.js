@@ -333,7 +333,6 @@ class CCiLabComponent extends Component {
                       <img id={`${this.currentComponent.displayLogic.key}`} 
                            className={`${imamgeClassName}`} src={this.imgName} alt=''
                            style={{'height': `${this.componentLableHeight}rem`, 'width': `${this.componentLableWidth}rem`}} 
-                           onClick={ this.componentSelected } 
                            draggable={`${draggableSetting}`}
                            onDragStart={ draggableSetting === 'true' ? this.dragStart : null}
                            onDragOver={ this.dragOver }
