@@ -3,11 +3,13 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
-    "ajv": "^6.5.3",
-    "react": "^16.4.2",
-    "react-dom": "^16.4.2",
+    "ajv": "^6.10.0",
+    "kleur": "3.0.3",
+    "react": "^16.8.6",
+    "react-dom": "^16.8.6",
     "react-router-dom": "^4.3.1",
-    "react-scripts": "1.1.4"
+    "react-scripts": "2.1.8",
+    "typescript": "^3.4.3"
   },
   "scripts": {
     "start": "react-scripts start",
@@ -16,7 +18,7 @@
     "eject": "react-scripts eject"
   },
   "devDependencies": {
-    "node-sass": "^4.9.3"
+    "node-sass": "^4.11.0"
   },
   "browserslist": [
     ">0.2%",
