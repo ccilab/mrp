@@ -210,7 +210,7 @@ class CCiLabComponentList extends Component {
      
       let rootComponentNameWidth = typeof rootComponentName !== "undefined" ?  getTextRect(rootComponentName).width/this.fontSize : this.componentTitleWidth;  //in rem
       
-      let rootImgBtnWith = 45/this.fontSize;  //also used in CCiLabComponent.js
+      // let rootImgBtnWith = 45/this.fontSize;  //also used in CCiLabComponent.js
       this.statusTitleStickyLeft = this.componentTitleLeft + this.componentTitleWidth + rootComponentNameWidth; //in rem + rootImgBtnWith
       //alert("FontSize = " + this.fontSize + " The width = " + getTextRect(rootComponentName).width + " width/fontSize = "+ rootComponentNameWidth);
       // status tile is from server or user input

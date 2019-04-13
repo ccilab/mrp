@@ -1,6 +1,6 @@
 import 'raf/polyfill'
-import 'core-js/es6/set'
-import 'core-js/es6/map'
+// import 'core-js/es6/set'
+// import 'core-js/es6/map'
 import React, { Component } from "react";
 import CCiLabComponentList from "./CCiLabComponentList";
 import {detectOSVersion} from "./CCiLabUtility";
