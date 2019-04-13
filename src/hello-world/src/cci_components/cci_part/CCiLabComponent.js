@@ -289,14 +289,16 @@ class CCiLabComponent extends Component {
                     >
                     {/* <div className='ccilab-menu '> */}
         							<div className={'d-flex ccilab-menu-item bg-info bg-faded align-items-center'}> 
-                        {/* copy is not supported for now
-                           { ( draggableSetting === 'true') ? <a href='#copy' className={'align-self-center nav-link px-1 fa fa-copy '}/> :null} */}
+                        {/* copy is not supported for now */}
+                        {/* { ( draggableSetting === 'true') ? <a href='#copy' className={'align-self-center nav-link px-1 fa fa-copy '}/> :null} */}
                         { ( draggableSetting === 'true') ? <a id={`${this.currentComponent.displayLogic.key}`}
                            href='#move' 
                            className={'align-self-center nav-link px-1 fa fa-arrows-alt'}
                            onClick={ this.moveStart }
                            /> :null}
+                        <a href='#addNew' className={'align-self-center nav-link px-1 fa fa-plus'}/>
                         <a href='#edit' className={'align-self-center nav-link px-1 fa fa-edit'}/>
+                        { ( draggableSetting === 'true') ? <a href='#delete' className={'align-self-center nav-link px-1 fa fa-trash-alt'}/>:null}
                       </div> 
         						
                    {/*  </div> */}
