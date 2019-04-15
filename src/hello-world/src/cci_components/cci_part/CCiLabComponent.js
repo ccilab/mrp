@@ -364,7 +364,7 @@ class CCiLabComponent extends Component {
                       onDragStart={ draggableSetting === 'true' ? this.dragStart : null}
                       onDragOver={ this.dragOver }
                       onDrop={  this.doDrop }> 
-                      {this.progressValue}%
+                      {this.progressValue}% - {this.currentComponent.businessLogic.remainDays}天
                 </span>  
                 </div>
             </div>

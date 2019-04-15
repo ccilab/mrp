@@ -214,7 +214,7 @@ class CCiLabComponentList extends Component {
       this.statusTitleStickyLeft = this.componentTitleLeft + this.componentTitleWidth + rootComponentNameWidth; //in rem + rootImgBtnWith
       //alert("FontSize = " + this.fontSize + " The width = " + getTextRect(rootComponentName).width + " width/fontSize = "+ rootComponentNameWidth);
       // status tile is from server or user input
-      this.statusTitleWidth = getTextRect('进度: (%)').width/this.fontSize;  //in rem
+      this.statusTitleWidth = getTextRect('进度: (%) - 剩余时间:(天)').width/this.fontSize;  //in rem
       this.statusUnitStickyLeft = this.statusTitleStickyLeft + this.statusTitleWidth;
     }
     
@@ -635,7 +635,7 @@ class CCiLabComponentList extends Component {
                   <div className='d-flex align-items-center bg-info fa' style={{ 'height': `auto`, 'width': `${this.componentListWidth}`}}>
                     <span className={`${listTitleClassName}`} style={{'position':'relative',  'left':`${this.componentTitleLeft}rem`}}>部件名:</span>
                     <span className={`${listTitleClassName}`} style={{'position':'relative', 'left':`${this.statusTitleStickyLeft}rem`}}>进度: 
-                    <span className='font-weight-normal text-primary' > (%)</span></span> 
+                    <span className='font-weight-normal text-primary' > (%)</span> <span className={`${listTitleClassName}`} > - 剩余时间: (天)</span></span> 
                     {/* #todo - make title editable by user */}
                     <a href='#edit-title' className='border-0 text-primary text-nowrap p-0 nav-link fa fa-edit' style={{'position':'absolute', 'right':'0'}}></a>
                   </div>
