@@ -153,3 +153,5 @@ css/
 #bak folder
 bak/
 
+bash.exe.stackdump
+.gitignore.orig
