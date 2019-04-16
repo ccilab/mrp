@@ -3,9 +3,8 @@ import React, { Component } from "react";
 import "./../../dist/css/ccilab-component-list.css"
 import CCiLabComponent from "./CCiLabComponent";
 import DropComponentWarningModal from "./CCiLabDropComponentCheckFailedModal";
-
-// import AddGreeter from "./AddGreeter";
 import { setListHeight, setListWidth, getTextRect} from "./CCiLabUtility"
+import {saveAs} from "./../file_save/FileSaver"
 
 
 
