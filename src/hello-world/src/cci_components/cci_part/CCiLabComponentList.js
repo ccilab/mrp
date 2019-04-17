@@ -1,6 +1,7 @@
 
 import React, { Component } from "react";
 import "./../../dist/css/ccilab-component-list.css"
+import styles from "./../../dist/css/ccilab-component.css"
 import CCiLabComponent from "./CCiLabComponent";
 import DropComponentWarningModal from "./CCiLabDropComponentCheckFailedModal";
 import { setListHeight, setListWidth, getTextRect} from "./CCiLabUtility"
@@ -613,6 +614,8 @@ class CCiLabComponentList extends Component {
  
       let listTitleClassName='border-0 text-primary text-nowrap';
 
+      let setupBOM = this.state.greetings.length <= 1 ? true : false;
+
       return (
        
        
@@ -628,10 +631,16 @@ class CCiLabComponentList extends Component {
                           'height':`${this.componentListHeight}`, 
                           'width':`${this.componentListWidth}`}}
                   >
+                  <div className='d-flex align-items-center bg-info fa' style={{ 'height': `${this.componentTitleHeight}rem`, 'width': `${this.componentListWidth}`}}>
+                    <span className={`${listTitleClassName}`} style={{'position':'relative', 'left':`${this.componentTitleLeft}rem`}}>设置物料清单:</span>
+                    {/* #todo - make title editable by user */}
+                    <a href='#edit-title' className='border-0 text-primary text-nowrap p-0 nav-link fa fa-file-upload' style={{'position':'absolute', 'right':'0'}}></a>
+                  </div>
+                  <hr className='my-0 bg-info' style={{'border-style':'groove', borderWidth: '0.1em', borderColor:`${styles.cciInfoBlue}`}}/>
                   {/*  sticky to top and left, https://gedd.ski/post/position-sticky/*/}
                   {/* https://iamsteve.me/blog/entry/using-flexbox-for-horizontal-scrolling-navigation
                       https://codepen.io/stevemckinney/pen/WvWrRX */}
-                  <div className='d-flex align-items-center bg-info fa' style={{ 'height': `auto`, 'width': `${this.componentListWidth}`}}>
+                  <div className='d-flex align-items-center bg-info fa' style={{ 'height': `${this.componentTitleHeight}rem`, 'width': `${this.componentListWidth}`}}>
                     <span className={`${listTitleClassName}`} style={{'position':'relative',  'left':`${this.componentTitleLeft}rem`}}>部件名:</span>
                     <span className={`${listTitleClassName}`} style={{'position':'relative', 'left':`${this.statusTitleStickyLeft}rem`}}>进度: 
                     <span className='font-weight-normal text-primary' > (%)</span> <span className={`${listTitleClassName}`} > - 剩余时间: (天)</span></span> 
