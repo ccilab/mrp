@@ -174,7 +174,7 @@ let fileToSave = new Blob([JSON.stringify(data)], {
 // Save the file
 saveAs(fileToSave, fileName);*/
 
-export const saveAs =( blob, fileName)=>{
+export const saveToFile =( blob, fileName)=>{
   //  create a new Blob (html5 magic) that conatins the data from your form feild
   let jsonFileAsBlob = new Blob([blob], { type: 'application/json' });
   
@@ -250,43 +250,26 @@ export const loadFile =( fileName )=>{
   fr = new FileReader();
   fr.onload = receivedText;
   fr.readAsText(fileName);
-  
+}
 
-  const receivedText =(e)=>{
-      lines = e.target.result;
+const receivedText =(e)=>{
+      let lines = e.target.result;
       let newArr = JSON.parse(lines);
 
       let number = Object.keys(newArr.MsiGroupList).length;
       console.log("number is: " + number);
       
-      for (i=0;i<number;i++) {
+      for (let i=0;i<number;i++) {
           console.log(newArr.MsiGroupList['MsiGroup' + i]);
-          let newMsiGroup = newArr.MsiGroupList['MsiGroup' + i];
-          console.log("baseImageDir" + i + ": " + newMsiGroup.baseImageDir);
-          console.log("upgradeImageDir" + i + ": " + newMsiGroup.upgradeImageDir);
-          console.log("changedFileLsit" + i + ": " + newMsiGroup.changedFileList);
-
-          if (document.getElementById('groupMSIform' + i) == null) {
-              console.log("groupMSIform" + i + "doesn't exist, start to create");
-              let tmpfieldWrapper = $("<div class=\"groupMSI\" method=\"get\" id=\"groupMSIform" + i + "\"/>");
-              let tmpfLegend = $("<fieldset><legend>one Group of base build msi and upgrade build msi</legend>Base Image path: <input type=\"text\" class=\"cBaseImage\" id=\"txBaseImageDir" + i + "\"/> Upgrade Image path: <input type=\"text\" class=\"cUpgradeImage\" id=\"txUpgradeImageDir" + i + "\"/>" + " Changed File List: <textarea class=\"cChangedFile\" " + "id=\"txaChangeFile" + i + "\" ></textarea>");
-              let tmpremoveButton = $("<input type=\"button\" class=\"remove\" value=\"remove\" /></fieldset>");
-              tmpremoveButton.click(function () {
-                  $(this).parent().remove();
-              });
-              tmpfieldWrapper.append(tmpfLegend);
-              tmpfieldWrapper.append(tmpremoveButton);
-              $("#groupMSIform0").append(tmpfieldWrapper);
+         
           }
 
-          document.getElementById('txBaseImageDir' + i).value = newMsiGroup.baseImageDir;
-          document.getElementById('txUpgradeImageDir' + i).value = newMsiGroup.upgradeImageDir;
-          document.getElementById('txaChangeFile' + i).value = newMsiGroup.changedFileList;
-      }
+      //     document.getElementById('txBaseImageDir' + i).value = newMsiGroup.baseImageDir;
+      //     document.getElementById('txUpgradeImageDir' + i).value = newMsiGroup.upgradeImageDir;
+      //     document.getElementById('txaChangeFile' + i).value = newMsiGroup.changedFileList;
+      
      
-      document.getElementById("SPVersion").value = newArr.SPversion;
-      document.getElementById("txEmail").value = newArr.Email;
-      document.getElementById("txInstallIconFile").value = newArr.IconFile;
-    
-  }
+      // document.getElementById("SPVersion").value = newArr.SPversion;
+      // document.getElementById("txEmail").value = newArr.Email;
+      // document.getElementById("txInstallIconFile").value = newArr.IconFile;
 }
