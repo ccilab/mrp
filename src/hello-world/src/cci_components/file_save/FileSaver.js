@@ -117,7 +117,8 @@ export const saveAs=(blob, name, opts)=> {
     // Open a popup immediately do go around popup blocker
     // Mostly only available on user interaction and the fileReader is async so...
     let popup = window.popup || window.open('', '_blank')
-    if (popup) {
+    if (popup) 
+    {
       popup.document.title =
       popup.document.body.innerText = 'downloading...'
     }
@@ -144,7 +145,8 @@ export const saveAs=(blob, name, opts)=> {
     } else {
       let URL = window.URL || window.webkitURL
       let url = URL.createObjectURL(blob)
-      if (popup) popup.location = url
+      if (popup) 
+        popup.location = url
       else 
         window.location.href = url
       popup = null // reverse-tabnabbing #460
@@ -171,3 +173,120 @@ let fileToSave = new Blob([JSON.stringify(data)], {
 
 // Save the file
 saveAs(fileToSave, fileName);*/
+
+export const saveAs =( blob, fileName)=>{
+  //  create a new Blob (html5 magic) that conatins the data from your form feild
+  let jsonFileAsBlob = new Blob([blob], { type: 'application/json' });
+  
+  // create a link for our script to 'click'
+  let downloadLink = document.createElement("a");
+
+  downloadLink.download = fileName;
+  
+  // provide text for the link. This will be hidden so you
+  // can actually use anything you want.
+  downloadLink.innerHTML = "My Hidden Link";
+  // make sure the link is hidden.
+  downloadLink.style.display = "none";
+
+  // allow our code to work in webkit & Gecko based browsers
+  // without the need for a if / else block.
+  window.URL = window.URL || window.webkitURL;
+
+  // Create the link Object.
+  downloadLink.href = window.URL.createObjectURL(jsonFileAsBlob);
+
+  // when link is clicked call a function to remove it from
+  // the DOM in case user wants to save a second file.
+  downloadLink.onclick = destroyClickedElement;
+
+  // add the link to the DOM
+  document.body.appendChild(downloadLink);
+
+  // click the new link
+  downloadLink.click();
+}
+
+
+const destroyClickedElement = (e)=> {
+  e.preventDefault();
+  // remove the link from the DOM
+  document.body.removeChild(e.target);
+}
+
+
+
+// example:
+// let strjson = {
+//   'SPversion': SPversion,
+//   'Email': txEmail,
+//   'IconFile': txIconFile,
+//   'PatchType': patchType
+// };
+// strjson.MsiGroupList = GetGroupMsiData();
+// let jsonse = JSON.stringify(strjson);
+
+// //  create a new Blob (html5 magic) that conatins the data from your form feild
+// //let textFileAsBlob = new Blob([textToWrite], { type: 'text/plain' });
+// let textFileAsBlob = new Blob([jsonse], { type: 'application/json' });
+// let d = new Date()
+//   let hour = d.getHours();
+//   let date = d.getDate();
+//   let month = d.getMonth() + 1;
+//   // Specify the name of the file to be saved
+//   let fileNameToSaveAs = "myconfigFile-"+month.toString()+date.toString()+hour.toString()+".json";
+
+
+export const loadFile =( fileName )=>{
+  let input, file, fr;
+
+  if (typeof window.FileReader !== 'function') {
+      alert("The file API isn't supported on this browser yet.");
+      return;
+  }
+
+ 
+  file = input.files[0];
+  fr = new FileReader();
+  fr.onload = receivedText;
+  fr.readAsText(fileName);
+  
+
+  const receivedText =(e)=>{
+      lines = e.target.result;
+      let newArr = JSON.parse(lines);
+
+      let number = Object.keys(newArr.MsiGroupList).length;
+      console.log("number is: " + number);
+      
+      for (i=0;i<number;i++) {
+          console.log(newArr.MsiGroupList['MsiGroup' + i]);
+          let newMsiGroup = newArr.MsiGroupList['MsiGroup' + i];
+          console.log("baseImageDir" + i + ": " + newMsiGroup.baseImageDir);
+          console.log("upgradeImageDir" + i + ": " + newMsiGroup.upgradeImageDir);
+          console.log("changedFileLsit" + i + ": " + newMsiGroup.changedFileList);
+
+          if (document.getElementById('groupMSIform' + i) == null) {
+              console.log("groupMSIform" + i + "doesn't exist, start to create");
+              let tmpfieldWrapper = $("<div class=\"groupMSI\" method=\"get\" id=\"groupMSIform" + i + "\"/>");
+              let tmpfLegend = $("<fieldset><legend>one Group of base build msi and upgrade build msi</legend>Base Image path: <input type=\"text\" class=\"cBaseImage\" id=\"txBaseImageDir" + i + "\"/> Upgrade Image path: <input type=\"text\" class=\"cUpgradeImage\" id=\"txUpgradeImageDir" + i + "\"/>" + " Changed File List: <textarea class=\"cChangedFile\" " + "id=\"txaChangeFile" + i + "\" ></textarea>");
+              let tmpremoveButton = $("<input type=\"button\" class=\"remove\" value=\"remove\" /></fieldset>");
+              tmpremoveButton.click(function () {
+                  $(this).parent().remove();
+              });
+              tmpfieldWrapper.append(tmpfLegend);
+              tmpfieldWrapper.append(tmpremoveButton);
+              $("#groupMSIform0").append(tmpfieldWrapper);
+          }
+
+          document.getElementById('txBaseImageDir' + i).value = newMsiGroup.baseImageDir;
+          document.getElementById('txUpgradeImageDir' + i).value = newMsiGroup.upgradeImageDir;
+          document.getElementById('txaChangeFile' + i).value = newMsiGroup.changedFileList;
+      }
+     
+      document.getElementById("SPVersion").value = newArr.SPversion;
+      document.getElementById("txEmail").value = newArr.Email;
+      document.getElementById("txInstallIconFile").value = newArr.IconFile;
+    
+  }
+}
