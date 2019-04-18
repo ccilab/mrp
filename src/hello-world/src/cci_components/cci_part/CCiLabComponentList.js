@@ -38,18 +38,18 @@ const getChildComponentsFromDataSource = (parentComponent)=>{
   }
 
     
-  if( parentComponent.businessLogic.id === 2 )
-  {
-    components= thirdComponents;  
-    return components;
-  }
+  // if( parentComponent.businessLogic.id === 2 )
+  // {
+  //   components= thirdComponents;  
+  //   return components;
+  // }
 
   
-  if( parentComponent.businessLogic.id === 4 )
-  {
-    components= forthComponents;
-    return components;
-  }
+  // if( parentComponent.businessLogic.id === 4 )
+  // {
+  //   components= forthComponents;
+  //   return components;
+  // }
 
   return components;
 }
@@ -161,6 +161,28 @@ const setComponentSelected = ( component, selectedComponentKey ) =>{
 
 }
 
+// titleName, titleHeight, titleWidth, titlePositionLeft, titleClassName
+const ComponentListTitle =(propos)=>{
+  return (
+    <div className='d-flex align-items-center bg-info fa' style={{ 'height': `${propos.titleHeight}rem`, 'width': `${propos.titleWidth}`}}>
+    <span className={propos.titleClassName} style={{'position':'relative', 'left':`${propos.titlePositionLeft}rem`, fontSize: '0.9rem'}}>{propos.title}
+    {/* #todo - make title editable by user style={{'position':'absolute', 'right':'0'}} */}
+    <a href='#submit-bom' className='px-1 border-0 text-primary text-nowrap p-0 nav-link fa fa-file-upload' ></a></span>
+  </div>
+  );
+}
+
+const ComponentListSubTitle = (props)=>{
+  return ( 
+    <div className='d-flex align-items-center bg-info fa' style={{ 'height': `${props.height}rem`, 'width': `${props.width}`}}>
+        <span className={props.className} style={{'position':'relative',  'left':`${props.positionLeft}rem`, fontSize: '0.8rem'}}>{props.name}</span>
+        <span className={props.className} style={{'position':'relative', 'left':`${props.ratePositionLeft}rem`, fontSize: '0.8rem'}}>{props.rateType} 
+        </span> 
+        {/* #todo - make title editable by user  <span className={props.className} > - {props.remaining}</span> */}
+        <a href='#edit-title' className='border-0 text-primary text-nowrap p-0 nav-link fa fa-edit' style={{'position':'absolute', 'right':'0'}}></a>
+    </div>
+  );
+}
 
 class CCiLabComponentList extends Component {
     state = { greetings: undefined, 
@@ -185,9 +207,8 @@ class CCiLabComponentList extends Component {
     componentTitleLeft; //rem  1.5625
     componentTitleWidth;  //in rem
     componentTitleHeight; //rem 
-    statusTitleStickyLeft; 
+    statusTitleLeft; 
     statusTitleWidth;
-    statusUnitStickyLeft;
     componentTitleTop;
     componentListMinHeight = ( 150/this.fontSize +'rem' );  
     componentListHeight= window.innerHeight <= 200 ? this.componentListMinHeight : 'auto';  //minimum height 
@@ -211,11 +232,10 @@ class CCiLabComponentList extends Component {
       let rootComponentNameWidth = typeof rootComponentName !== "undefined" ?  getTextRect(rootComponentName).width/this.fontSize : this.componentTitleWidth;  //in rem
       
       // let rootImgBtnWith = 45/this.fontSize;  //also used in CCiLabComponent.js
-      this.statusTitleStickyLeft = this.componentTitleLeft + this.componentTitleWidth + rootComponentNameWidth; //in rem + rootImgBtnWith
+      this.statusTitleLeft = this.componentTitleLeft + this.componentTitleWidth + rootComponentNameWidth; //in rem + rootImgBtnWith
       //alert("FontSize = " + this.fontSize + " The width = " + getTextRect(rootComponentName).width + " width/fontSize = "+ rootComponentNameWidth);
       // status tile is from server or user input
       this.statusTitleWidth = getTextRect('进度: (%) - 剩余时间:(天)').width/this.fontSize;  //in rem
-      this.statusUnitStickyLeft = this.statusTitleStickyLeft + this.statusTitleWidth;
     }
     
     toggleHideShowComponentList = () =>{
@@ -631,22 +651,43 @@ class CCiLabComponentList extends Component {
                           'height':`${this.componentListHeight}`, 
                           'width':`${this.componentListWidth}`}}
                   >
-                  <div className='d-flex align-items-center bg-info fa' style={{ 'height': `${this.componentTitleHeight}rem`, 'width': `${this.componentListWidth}`}}>
-                    <span className={`${listTitleClassName}`} style={{'position':'relative', 'left':`${this.componentTitleLeft}rem`}}>设置物料清单:</span>
-                    {/* #todo - make title editable by user */}
-                    <a href='#edit-title' className='border-0 text-primary text-nowrap p-0 nav-link fa fa-file-upload' style={{'position':'absolute', 'right':'0'}}></a>
-                  </div>
-                  <hr className='my-0 bg-info' style={{'border-style':'groove', borderWidth: '0.1em', borderColor:`${styles.cciInfoBlue}`}}/>
+
+                  { setupBOM ? <ComponentListTitle title='物料清单 - 设置部件之间的结构和数量关系:' 
+                                      titleHeight={this.componentTitleHeight}
+                                      titleWidth={this.componentListWidth}
+                                      titlePositionLeft= {this.componentTitleLeft}
+                                      titleClassName = {listTitleClassName}/> :
+                                <ComponentListTitle title='生产进度:' 
+                                      titleHeight={this.componentTitleHeight}
+                                      titleWidth={this.componentListWidth}
+                                      titlePositionLeft= {this.componentTitleLeft}
+                                      titleClassName = {listTitleClassName}/>
+                  }
+                  <hr className='my-0 bg-info' style={{'border-style':'groove', borderWidth: '0.08em', borderColor:`${styles.cciInfoBlue}`}}/>
+
                   {/*  sticky to top and left, https://gedd.ski/post/position-sticky/*/}
                   {/* https://iamsteve.me/blog/entry/using-flexbox-for-horizontal-scrolling-navigation
                       https://codepen.io/stevemckinney/pen/WvWrRX */}
-                  <div className='d-flex align-items-center bg-info fa' style={{ 'height': `${this.componentTitleHeight}rem`, 'width': `${this.componentListWidth}`}}>
-                    <span className={`${listTitleClassName}`} style={{'position':'relative',  'left':`${this.componentTitleLeft}rem`}}>部件名:</span>
-                    <span className={`${listTitleClassName}`} style={{'position':'relative', 'left':`${this.statusTitleStickyLeft}rem`}}>进度: 
-                    <span className='font-weight-normal text-primary' > (%)</span> <span className={`${listTitleClassName}`} > - 剩余时间: (天)</span></span> 
-                    {/* #todo - make title editable by user */}
-                    <a href='#edit-title' className='border-0 text-primary text-nowrap p-0 nav-link fa fa-edit' style={{'position':'absolute', 'right':'0'}}></a>
-                  </div>
+                 
+                  { setupBOM ? <ComponentListSubTitle 
+                                         name='部件名:'
+                                         rateType='部件之间的数量关系：'
+                                        //  remaining= ''
+                                         height={this.componentTitleHeight}
+                                         width={this.componentListWidth}
+                                         className={listTitleClassName}
+                                         positionLeft={this.componentTitleLeft}
+                                         ratePositionLeft={this.statusTitleLeft}/> :
+                                <ComponentListSubTitle 
+                                         name='部件名:'
+                                         rateType='进度: (%) - 剩余时间: (天)'
+                                        //  remaining= ''
+                                         height={this.componentTitleHeight}
+                                         width={this.componentListWidth}
+                                         className={listTitleClassName}
+                                         positionLeft={this.componentTitleLeft}
+                                         ratePositionLeft={this.statusTitleLeft}/> 
+                   }  
                   {/* https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_Flexible_Box_Layout/Controlling_Ratios_of_Flex_Items_Along_the_Main_Ax */}
                   <div className={'d-flex flex-column cci-flyout-component-list'} 
                        style={{ 'height':`${this.componentListHeight}`, 
