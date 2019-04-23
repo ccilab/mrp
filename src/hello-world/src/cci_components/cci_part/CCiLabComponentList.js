@@ -1,7 +1,14 @@
 
 import React, { Component } from "react";
+import {I18n} from 'react-i18next';
+
+// Import a pre-configured insance of i18next
+// https://github.com/ccilab/react-i18next/tree/master/example/react
+import i18n_unused from './i18n';
+
 import "./../../dist/css/ccilab-component-list.css"
 import styles from "./../../dist/css/ccilab-component.css"
+
 import CCiLabComponent from "./CCiLabComponent";
 import DropComponentWarningModal from "./CCiLabDropComponentCheckFailedModal";
 import { setListHeight, setListWidth, getTextRect} from "./CCiLabUtility"
@@ -178,7 +185,7 @@ const ComponentListSubTitle = (props)=>{
         <span className={props.className} style={{'position':'relative',  'left':`${props.positionLeft}rem`, fontSize: '0.8rem'}}>{props.name}</span>
         <span className={props.className} style={{'position':'relative', 'left':`${props.ratePositionLeft}rem`, fontSize: '0.8rem'}}>{props.rateType} 
         </span> 
-        {/* #todo - make title editable by user  <span className={props.className} > - {props.remaining}</span> */}
+        {/* #todo - make title editable by user */}
         <a href='#edit-title' className='border-0 text-primary text-nowrap p-0 nav-link fa fa-edit' style={{'position':'absolute', 'right':'0'}}></a>
     </div>
   );
@@ -188,6 +195,7 @@ class CCiLabComponentList extends Component {
     state = { greetings: undefined, 
               visible: true, 
               selected: 0, 
+              setupBOM: true,
               isDropToSameParentWarning: false, 
               isDropToItselfWarning: false};
 
@@ -283,7 +291,7 @@ class CCiLabComponentList extends Component {
       
       // trick - set default visible=true in constructor, set visible=false in componentWillMount
       // so when user clicks << component list will sliding back
-      this.setState( {greetings: currentSessionComponents, visible : false } );
+      this.setState( {greetings: currentSessionComponents, visible : false, setupBOM : currentSessionComponents.length <= 1 ? true : false } );
 
     }
   
@@ -599,7 +607,8 @@ class CCiLabComponentList extends Component {
                                           removeGreeting={this.removeGreeting} 
                                           showOrHideChildren={this.showOrHideChildren}
                                           selectedComponentHandler={this.selectedComponentHandler}
-                                          moveComponentHandler={this.moveComponentHandler}/> ;
+                                          moveComponentHandler={this.moveComponentHandler}
+                                          setBOM={this.state.setupBOM}/> ;
                 }
                 else
                   return null;
@@ -634,8 +643,6 @@ class CCiLabComponentList extends Component {
  
       let listTitleClassName='border-0 text-primary text-nowrap';
 
-      let setupBOM = this.state.greetings.length <= 1 ? true : false;
-
       return (
        
        
@@ -652,7 +659,7 @@ class CCiLabComponentList extends Component {
                           'width':`${this.componentListWidth}`}}
                   >
 
-                  { setupBOM ? <ComponentListTitle title='物料清单 - 设置部件之间的结构和数量关系:' 
+                  { this.state.setupBOM ? <ComponentListTitle title='物料清单 - 设置部件之间的结构关系:' 
                                       titleHeight={this.componentTitleHeight}
                                       titleWidth={this.componentListWidth}
                                       titlePositionLeft= {this.componentTitleLeft}
@@ -669,10 +676,9 @@ class CCiLabComponentList extends Component {
                   {/* https://iamsteve.me/blog/entry/using-flexbox-for-horizontal-scrolling-navigation
                       https://codepen.io/stevemckinney/pen/WvWrRX */}
                  
-                  { setupBOM ? <ComponentListSubTitle 
-                                         name='部件名:'
-                                         rateType='部件之间的数量关系：'
-                                        //  remaining= ''
+                  { this.state.setupBOM ? <ComponentListSubTitle 
+                                         name='编辑部件名:'
+                                         rateType='输入部件之间的数量关系：'
                                          height={this.componentTitleHeight}
                                          width={this.componentListWidth}
                                          className={listTitleClassName}
@@ -681,7 +687,6 @@ class CCiLabComponentList extends Component {
                                 <ComponentListSubTitle 
                                          name='部件名:'
                                          rateType='进度: (%) - 剩余时间: (天)'
-                                        //  remaining= ''
                                          height={this.componentTitleHeight}
                                          width={this.componentListWidth}
                                          className={listTitleClassName}
