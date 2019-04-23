@@ -1,17 +1,18 @@
 
 import React, { Component } from "react";
-import {I18n} from 'react-i18next';
 
 // Import a pre-configured insance of i18next
 // https://github.com/ccilab/react-i18next/tree/master/example/react
-import i18n_unused from './i18n';
+
 
 import "./../../dist/css/ccilab-component-list.css"
 import styles from "./../../dist/css/ccilab-component.css"
 
 import CCiLabComponent from "./CCiLabComponent";
 import DropComponentWarningModal from "./CCiLabDropComponentCheckFailedModal";
-import { setListHeight, setListWidth, getTextRect} from "./CCiLabUtility"
+import { setListHeight, setListWidth, getTextRect} from "./CCiLabUtility";
+import { useTranslation } from 'react-i18next';
+
 import {saveAs} from "./../file_save/FileSaver"
 
 
@@ -170,9 +171,10 @@ const setComponentSelected = ( component, selectedComponentKey ) =>{
 
 // titleName, titleHeight, titleWidth, titlePositionLeft, titleClassName
 const ComponentListTitle =(propos)=>{
+  const { t, i18n } = useTranslation();
   return (
     <div className='d-flex align-items-center bg-info fa' style={{ 'height': `${propos.titleHeight}rem`, 'width': `${propos.titleWidth}`}}>
-    <span className={propos.titleClassName} style={{'position':'relative', 'left':`${propos.titlePositionLeft}rem`, fontSize: '0.9rem'}}>{propos.title}
+    <span className={propos.titleClassName} style={{'position':'relative', 'left':`${propos.titlePositionLeft}rem`, fontSize: '0.9rem'}}>{t(`${propos.title}`)}
     {/* #todo - make title editable by user style={{'position':'absolute', 'right':'0'}} */}
     <a href='#submit-bom' className='px-1 border-0 text-primary text-nowrap p-0 nav-link fa fa-file-upload' ></a></span>
   </div>
@@ -180,6 +182,7 @@ const ComponentListTitle =(propos)=>{
 }
 
 const ComponentListSubTitle = (props)=>{
+  const { t, i18n } = useTranslation();
   return ( 
     <div className='d-flex align-items-center bg-info fa' style={{ 'height': `${props.height}rem`, 'width': `${props.width}`}}>
         <span className={props.className} style={{'position':'relative',  'left':`${props.positionLeft}rem`, fontSize: '0.8rem'}}>{props.name}</span>
