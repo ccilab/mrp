@@ -171,7 +171,8 @@ const setComponentSelected = ( component, selectedComponentKey ) =>{
 
 // titleName, titleHeight, titleWidth, titlePositionLeft, titleClassName
 const ComponentListTitle =(propos)=>{
-  const { t, i18n } = useTranslation();
+  // https://react.i18next.com/latest/usetranslation-hook
+  const { t, i18n, ready } = useTranslation('componentList', {useSuspense: false});
   return (
     <div className='d-flex align-items-center bg-info fa' style={{ 'height': `${propos.titleHeight}rem`, 'width': `${propos.titleWidth}`}}>
     <span className={propos.titleClassName} style={{'position':'relative', 'left':`${propos.titlePositionLeft}rem`, fontSize: '0.9rem'}}>{t(`${propos.title}`)}
@@ -182,7 +183,7 @@ const ComponentListTitle =(propos)=>{
 }
 
 const ComponentListSubTitle = (props)=>{
-  const { t, i18n } = useTranslation();
+  const { t, i18n } = useTranslation('componentList', {useSuspense: false});
   return ( 
     <div className='d-flex align-items-center bg-info fa' style={{ 'height': `${props.height}rem`, 'width': `${props.width}`}}>
         <span className={props.className} style={{'position':'relative',  'left':`${props.positionLeft}rem`, fontSize: '0.8rem'}}>{props.name}</span>
@@ -662,12 +663,12 @@ class CCiLabComponentList extends Component {
                           'width':`${this.componentListWidth}`}}
                   >
 
-                  { this.state.setupBOM ? <ComponentListTitle title='物料清单 - 设置部件之间的结构关系:' 
+                  { this.state.setupBOM ? <ComponentListTitle title='title-BOM' 
                                       titleHeight={this.componentTitleHeight}
                                       titleWidth={this.componentListWidth}
                                       titlePositionLeft= {this.componentTitleLeft}
                                       titleClassName = {listTitleClassName}/> :
-                                <ComponentListTitle title='生产进度:' 
+                                <ComponentListTitle title='title-Progress' 
                                       titleHeight={this.componentTitleHeight}
                                       titleWidth={this.componentListWidth}
                                       titlePositionLeft= {this.componentTitleLeft}
@@ -680,16 +681,16 @@ class CCiLabComponentList extends Component {
                       https://codepen.io/stevemckinney/pen/WvWrRX */}
                  
                   { this.state.setupBOM ? <ComponentListSubTitle 
-                                         name='编辑部件名:'
-                                         rateType='输入部件之间的数量关系：'
+                                         name='subTitle-BOM-create-component'
+                                         rateType='subTitle-BOM-setup-unit-quantity：'
                                          height={this.componentTitleHeight}
                                          width={this.componentListWidth}
                                          className={listTitleClassName}
                                          positionLeft={this.componentTitleLeft}
                                          ratePositionLeft={this.statusTitleLeft}/> :
                                 <ComponentListSubTitle 
-                                         name='部件名:'
-                                         rateType='进度: (%) - 剩余时间: (天)'
+                                         name='subTitle-Progress-component-name'
+                                         rateType='subTitle-Progress-status'
                                          height={this.componentTitleHeight}
                                          width={this.componentListWidth}
                                          className={listTitleClassName}

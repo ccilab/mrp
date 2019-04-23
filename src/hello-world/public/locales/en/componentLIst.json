@@ -1,0 +1,8 @@
+{
+    "title-BOM": "Setup BOM:",
+    "title-Progress": "Progress:",
+    "subTitle-BOM-create-component": "Create Component",
+    "subTitle-BOM-setup-unit-quantity": "Enter Component BOM Data",
+    "subTitle-Progress-component-name": "Component:",
+    "subTitle-Progress-status" : "Status: (%) - Remaining Time: (Day)"
+}
