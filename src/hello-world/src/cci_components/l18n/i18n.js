@@ -18,7 +18,7 @@ i18n
   .init({
     fallbackLng: 'en',
     debug: true,  // console log
-    //load: 'languageOnly',  // skipping resion code US, -CN, -TW
+    load: 'languageOnly',  // skipping resion code US, -CN, -TW
     interpolation: {
       escapeValue: false, // not needed for react as it escapes by default, https://www.i18next.com/translation-function/interpolation
     },

@@ -7,11 +7,13 @@ import React, { Component } from "react";
 
 import "./../../dist/css/ccilab-component-list.css"
 import styles from "./../../dist/css/ccilab-component.css"
+import './../../dist/css/popup-menu.css'
 
 import CCiLabComponent from "./CCiLabComponent";
 import DropComponentWarningModal from "./CCiLabDropComponentCheckFailedModal";
 import { setListHeight, setListWidth, getTextRect} from "./CCiLabUtility";
 import { useTranslation } from 'react-i18next';
+import Popup from '../popup_menu/Popup'
 
 import {saveAs} from "./../file_save/FileSaver"
 
@@ -175,9 +177,30 @@ const ComponentListTitle =(propos)=>{
   const { t, i18n, ready } = useTranslation('componentList', {useSuspense: false});
   return (
     <div className='d-flex align-items-center bg-info fa' style={{ 'height': `${propos.titleHeight}rem`, 'width': `${propos.titleWidth}`}}>
-    <span className={propos.titleClassName} style={{'position':'relative', 'left':`${propos.titlePositionLeft}rem`, fontSize: '0.9rem'}}>{t(`${propos.title}`)}
+    <span className={propos.titleClassName} style={{'position':'relative', 'left':`${propos.titlePositionLeft}rem`, fontSize: '1rem'}}>{t(`${propos.title}`)}
     {/* #todo - make title editable by user style={{'position':'absolute', 'right':'0'}} */}
     <a href='#submit-bom' className='px-1 border-0 text-primary text-nowrap p-0 nav-link fa fa-file-upload' ></a></span>
+    {/* <a href='#change-language' className='px-1 border-0 text-primary text-nowrap p-0 nav-link fa fa-bars' style={{'position':'absolute', 'right':'0'}} ></a> */}
+    <Popup
+      trigger={
+        <button 
+          type="button"
+          // 'btn rounded-circle align-self-center p-0 bg-primary '
+          className={'bg-primary border-0 fa fa-bars'}
+          style={{'position':'absolute', 'right':'0'}}></button>
+      }
+      closeOnDocumentClick
+      on="hover"
+      mouseLeaveDelay={400}
+      mouseEnterDelay={0}
+      contentStyle={{ padding: '0px', border: 'none' }}
+      >
+      <div className={' ccilab-menu-item bg-info'}>
+        <a href='#en' className={'nav-link '} style={{ 'fontSize': '0.8rem'}} onClick={()=>{i18n.changeLanguage('en')}}>English</a>
+        <a href='#zh-CN' className={'nav-link '} style={{ 'fontSize': '0.8rem'}} onClick={()=>{i18n.changeLanguage('zh-CN')}}>中文</a>
+      </div>
+    >
+    </Popup>
   </div>
   );
 }
@@ -186,8 +209,8 @@ const ComponentListSubTitle = (props)=>{
   const { t, i18n } = useTranslation('componentList', {useSuspense: false});
   return ( 
     <div className='d-flex align-items-center bg-info fa' style={{ 'height': `${props.height}rem`, 'width': `${props.width}`}}>
-        <span className={props.className} style={{'position':'relative',  'left':`${props.positionLeft}rem`, fontSize: '0.8rem'}}>{t(`${props.name}`)}</span>
-        <span className={props.className} style={{'position':'relative', 'left':`${props.ratePositionLeft}rem`, fontSize: '0.8rem'}}>{t(`${props.rateType}`)} 
+        <span className={props.className} style={{'position':'relative',  'left':`${props.positionLeft}rem`, fontSize: '0.9rem'}}>{t(`${props.name}`)}</span>
+        <span className={props.className} style={{'position':'relative', 'left':`${props.ratePositionLeft}rem`, fontSize: '0.9rem'}}>{t(`${props.rateType}`)} 
         </span> 
         {/* #todo - make title editable by user */}
         <a href='#edit-title' className='border-0 text-primary text-nowrap p-0 nav-link fa fa-edit' style={{'position':'absolute', 'right':'0'}}></a>
