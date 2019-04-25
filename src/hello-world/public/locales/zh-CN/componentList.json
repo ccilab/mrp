@@ -2,7 +2,7 @@
     "title-BOM": "创建物料清单(BOM) - 设置部件之间的结构关系:",
     "title-Progress": "生产进度:",
     "subTitle-BOM-create-component": "输入零部件图像和名称:",
-    "subTitle-BOM-setup-unit-quantity": "输入零部件BOM数据:",
+    "subTitle-BOM-data": "输入零部件BOM数据:",
     "subTitle-Progress-component-name": "零部件名称:",
-    "subTitle-Progress-status" : "进度: (%) - 剩余时间: (天)"
+    "subTitle-Progress-status" : "进度: - 剩余时间:"
 }

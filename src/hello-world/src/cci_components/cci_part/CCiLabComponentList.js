@@ -46,18 +46,18 @@ const getChildComponentsFromDataSource = (parentComponent)=>{
   }
 
     
-  // if( parentComponent.businessLogic.id === 2 )
-  // {
-  //   components= thirdComponents;  
-  //   return components;
-  // }
+  if( parentComponent.businessLogic.id === 2 )
+  {
+    components= thirdComponents;  
+    return components;
+  }
 
   
-  // if( parentComponent.businessLogic.id === 4 )
-  // {
-  //   components= forthComponents;
-  //   return components;
-  // }
+  if( parentComponent.businessLogic.id === 4 )
+  {
+    components= forthComponents;
+    return components;
+  }
 
   return components;
 }
@@ -186,14 +186,40 @@ const ComponentListSubTitle = (props)=>{
   const { t, i18n } = useTranslation('componentList', {useSuspense: false});
   return ( 
     <div className='d-flex align-items-center bg-info fa' style={{ 'height': `${props.height}rem`, 'width': `${props.width}`}}>
-        <span className={props.className} style={{'position':'relative',  'left':`${props.positionLeft}rem`, fontSize: '0.8rem'}}>{props.name}</span>
-        <span className={props.className} style={{'position':'relative', 'left':`${props.ratePositionLeft}rem`, fontSize: '0.8rem'}}>{props.rateType} 
+        <span className={props.className} style={{'position':'relative',  'left':`${props.positionLeft}rem`, fontSize: '0.8rem'}}>{t(`${props.name}`)}</span>
+        <span className={props.className} style={{'position':'relative', 'left':`${props.ratePositionLeft}rem`, fontSize: '0.8rem'}}>{t(`${props.rateType}`)} 
         </span> 
         {/* #todo - make title editable by user */}
         <a href='#edit-title' className='border-0 text-primary text-nowrap p-0 nav-link fa fa-edit' style={{'position':'absolute', 'right':'0'}}></a>
     </div>
   );
 }
+
+// const DroptoSameParentWarningModal = (props)=>{
+//   const { t, i18n } = useTranslation('warning', {useSuspense: false});
+//   return (
+//     props.isDropToSameParentWarning ? 
+//     <DropComponentWarningModal 
+//       title={t('title')} 
+//       // body={t('same-child',{ targetComponent: `${this.targetComponentName}`, movedComponent: `${this.movedComponentName}` })}
+//       body={t('same-child')}
+//       hideDropWarning={this.hideDropToSameParentWarning}/>
+//       : null
+//   );
+// }
+
+// const DroptoItselfWarningModal = (props)=>{
+//   const { t, i18n } = useTranslation('warning', {useSuspense: false});
+//   return (
+//       props.isDropToItselfWarning ? 
+//       <DropComponentWarningModal 
+//         title={t('title')} 
+//         // body={t('same-component', { targetComponentName: `${this.targetComponentName}`})}
+//         body={t('same-component')}
+//         hideDropWarning={this.hideDropToItselfWarning}/>
+//       : null
+//         );
+// }
 
 class CCiLabComponentList extends Component {
     state = { greetings: undefined, 
@@ -631,19 +657,21 @@ class CCiLabComponentList extends Component {
     render() {
       const droptoSameParentWarningModal = this.state.isDropToSameParentWarning ? 
                   <DropComponentWarningModal 
-                  title='Waring:' 
-                  body={`"${this.targetComponentName}" already has "${this.movedComponentName}" as its child component!`}
+                  title='title'
+                  key1='same-child'
+                  option = { `{"targetComponent": "${this.targetComponentName}", "movedComponent": "${this.movedComponentName}"}`}
                   hideDropWarning={this.hideDropToSameParentWarning}/>
                   : null;
 
       const droptoItselfWarningModal = this.state.isDropToItselfWarning ? 
                   <DropComponentWarningModal 
-                    title='Waring:' 
-                    body={`These two "${this.targetComponentName}" is the same component!`}
+                    title={'title'} 
+                    key1='same-component'
+                    option = { `{ "targetComponent": "${this.targetComponentName}"}`}
                     hideDropWarning={this.hideDropToItselfWarning}/>
                   : null;
 
-      console.log( 'componentTitleWidth (rem): ', this.componentTitleWidth);
+      // console.log( 'componentTitleWidth (rem): ', this.componentTitleWidth);
  
       let listTitleClassName='border-0 text-primary text-nowrap';
 
@@ -682,7 +710,7 @@ class CCiLabComponentList extends Component {
                  
                   { this.state.setupBOM ? <ComponentListSubTitle 
                                          name='subTitle-BOM-create-component'
-                                         rateType='subTitle-BOM-setup-unit-quantity：'
+                                         rateType='subTitle-BOM-data'
                                          height={this.componentTitleHeight}
                                          width={this.componentListWidth}
                                          className={listTitleClassName}
@@ -714,8 +742,8 @@ class CCiLabComponentList extends Component {
                 onClick={this.showHideComponentList} >
                 <span className={`badge-pill badge-info ${this.slidingComponentListIconClassName}`}></span>
               </a>
-            {droptoSameParentWarningModal}
-            {droptoItselfWarningModal}
+            {droptoSameParentWarningModal }
+            {droptoItselfWarningModal }
         </div>
       );
     };

@@ -1,12 +1,12 @@
 
 { 
 	"firstComponents": [ 	
-		{ "businessLogic": {"id": 0, "name": "table", "parentIds":[], "childIds":[1,5,6],  "imgFile": "table.png", "status": "danger", "progressPercent":0, "remainDays":180}}
-	],
-	"secondComponents": [
+		{ "businessLogic": {"id": 0, "name": "table", "parentIds":[], "childIds":[1,5,6],  "imgFile": "table.png", "status": "danger", "progressPercent":0, "remainDays":180}},
 		{ "businessLogic": {"id": 1, "name":"top", "parentIds":[0], "childIds":[2,3], "imgFile":"top.png", "status": "warning", "progressPercent": 40, "remainDays":100}},
 		{ "businessLogic": {"id": 5, "name":"nail", "parentIds":[0], "childIds":[],  "imgFile":"", "status": "success", "progressPercent": 100, "remainDays":0}},
-		{ "businessLogic": {"id": 6, "name":"glue", "parentIds":[0], "childIds":[], "imgFile":"", "status": "info", "progressPercent": 10, "remainDays":160}},
+		{ "businessLogic": {"id": 6, "name":"glue", "parentIds":[0], "childIds":[], "imgFile":"", "status": "info", "progressPercent": 10, "remainDays":160}}
+	],
+	"secondComponents": [
 		{ "businessLogic": {"id": 2, "name":"leg", "parentIds":[1], "childIds":[4], "imgFile":"", "status": "warning", "progressPercent": 10, "remainDays":50}},
 		{ "businessLogic": {"id": 3, "name":"upper_beam", "parentIds":[1], "childIds":[],  "imgFile":"", "status": "info", "progressPercent": 50, "remainDays":110}}
 	],

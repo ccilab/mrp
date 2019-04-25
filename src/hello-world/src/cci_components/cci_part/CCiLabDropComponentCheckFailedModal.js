@@ -1,5 +1,6 @@
 import React, { Component } from "react";
 import ReactDOM from "react-dom";
+import { useTranslation } from 'react-i18next';
 
 class Modal extends Component {
     el = document.createElement('div');
@@ -27,6 +28,7 @@ class Modal extends Component {
 }
 
 function DropComponentWarningModal(props) {
+    const { t, i18n } = useTranslation('warning', {useSuspense: false});
     return <Modal>
               <div className='modal' style={{'display':'inline'}}>
                   <div className='modal-dialog'>
@@ -36,7 +38,7 @@ function DropComponentWarningModal(props) {
                       <div className='modal-content'  style={{'backgroundColor': '#E5E5E5'}}>
                           {/* Modal Header */}
                           <div className='modal-header' >
-                              <h5 className='modal-title text-danger'>{props.title}</h5>
+                              <h5 className='modal-title text-danger'>{t(`${props.title}`)}</h5>
                               <button type='button' className='close' aria-label="Close" onClick={props.hideDropWarning}>
                                 <span aria-hidden="true">&times;</span>
                               </button>
@@ -44,13 +46,14 @@ function DropComponentWarningModal(props) {
 
                           {/* Modal body */}                 
                           <div className="modal-body">
-                           <h5> {props.body} </h5>
+                           {/* <h5>{t(props.body)} </h5> */}
+                           <h5>{t(`${props.key1}`,JSON.parse(`${props.option}`))} </h5>
                           </div>
 
                           {/* Modal footer */}
-                          <div className="modal-footer">
+                          {/* <div className="modal-footer">
                             <button type="button" className="btn btn-danger" onClick={props.hideDropWarning}>Close</button>
-                          </div>
+                          </div> */}
                       </div>
                   </div>
               </div>

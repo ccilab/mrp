@@ -1,0 +1,5 @@
+{
+    "title": "提示:",
+    "same-child": "'{{targetComponent}}' 已经有了子部件 '{{movedComponent}}'!",
+    "same-component": "这两个 '{{targetComponent}}' 是同一部件!"
+}
