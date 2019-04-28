@@ -4,5 +4,6 @@
     "subTitle-BOM-create-component": "Create Component:",
     "subTitle-BOM-data": "Enter Component BOM Data:",
     "subTitle-Progress-component-name": "Component:",
-    "subTitle-Progress-status" : "Status: - Remaining Time:"
+    "subTitle-Progress-status" : "Status: - Remaining Time:",
+    "remaining-time-unit": "day"
 }

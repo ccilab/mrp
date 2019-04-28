@@ -4,5 +4,6 @@
     "subTitle-BOM-create-component": "输入零部件图像和名称:",
     "subTitle-BOM-data": "输入零部件BOM数据:",
     "subTitle-Progress-component-name": "零部件名称:",
-    "subTitle-Progress-status" : "进度: - 剩余时间:"
+    "subTitle-Progress-status" : "进度: - 剩余时间:",
+    "remaining-time-unit": "天"
 }

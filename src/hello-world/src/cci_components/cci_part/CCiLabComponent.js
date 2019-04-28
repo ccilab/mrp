@@ -1,10 +1,27 @@
 import React, { Component } from 'react';
 import Popup from '../popup_menu/Popup'
+import { useTranslation } from 'react-i18next';
 
 
 import './../../dist/css/ccilab-component.css'
 import './../../dist/css/popup-menu.css'
  
+const ShowStatus=(props)=>{
+  const { t, i18n, ready } = useTranslation('componentList', {useSuspense: false});
+
+  return (
+    <span id={props.statusId} 
+        className={props.statusClassName} 
+        style={{'display':'inline-block','height': `auto`}} 
+        draggable={props.statusDraggable}
+        onClick={ props.onClickHandler }
+        onDragStart={ props.onDragStartHandler }
+        onDragOver={ props.onDragOverHandler }
+        onDrop={  props.onDropHandler }> 
+        {props.progress}% - {props.remainingTime} {t('remaining-time-unit')}
+    </span> 
+  );
+}
 class CCiLabComponent extends Component {
         state = {
             expended:  true,
@@ -269,14 +286,11 @@ class CCiLabComponent extends Component {
                       <button 
                         type="button"
                         // 'btn rounded-circle align-self-center p-0 bg-primary '
-                        className={`${inlineMenuClassName} cusor-default`}
+                        className={`${inlineMenuClassName} cusor-default fa fa-ellipsis-h`}
                         style={ {'visibility': `${inlineMenuIconVisiblity}`, 
                                   'height': `${this.inlineMenuHeight}rem`, 
                                   'width': `${this.inlineMenuWidth}rem`} }
                         > 
-                          <span className='fa fa-ellipsis-h'
-                                style={ {'visibility': `${inlineMenuIconVisiblity}`} }>
-                          </span>
                       </button>
                     }
                     id={`${this.currentComponent.displayLogic.key}-inline-menu`}
@@ -356,16 +370,17 @@ class CCiLabComponent extends Component {
                 </a>
                 
                 {/* tag's id is used to handle drop event */}
-                <span id={`${this.currentComponent.displayLogic.key}`} 
-                      className={`badge-pill badge-${this.progressStatus} ${statusBadgeIconClassName}`} 
-                      style={{'display':'inline-block','height': `auto`}} 
-                      draggable={`${draggableSetting}`}
-                      onClick={ this.componentSelected }
-                      onDragStart={ draggableSetting === 'true' ? this.dragStart : null}
-                      onDragOver={ this.dragOver }
-                      onDrop={  this.doDrop }> 
-                      {this.progressValue}% - {this.currentComponent.businessLogic.remainDays}天
-                </span>  
+                <ShowStatus 
+                  statusId={`${this.currentComponent.displayLogic.key}`} 
+                  statusClassName={`badge-pill badge-${this.progressStatus} ${statusBadgeIconClassName}`} 
+                  statusDraggable={`${draggableSetting}`}
+                  onClickHandler={ this.componentSelected }
+                  onDragStartHandler={ draggableSetting === 'true' ? this.dragStart : null}
+                  onDragOverHandler={ this.dragOver }
+                  onDropHandler={  this.doDrop } 
+                  progress={this.progressValue}
+                  remainingTime= {this.currentComponent.businessLogic.remainDays}
+                />
                 </div>
             </div>
         )

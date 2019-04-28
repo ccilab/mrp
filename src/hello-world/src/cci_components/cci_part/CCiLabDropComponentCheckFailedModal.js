@@ -28,7 +28,7 @@ class Modal extends Component {
 }
 
 function DropComponentWarningModal(props) {
-    const { t, i18n } = useTranslation('warning', {useSuspense: false});
+    const { t } = useTranslation('warning', {useSuspense: false});
     return <Modal>
               <div className='modal' style={{'display':'inline'}}>
                   <div className='modal-dialog'>
