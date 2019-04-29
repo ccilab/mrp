@@ -1,6 +1,6 @@
 import 'raf/polyfill'
-import 'core-js/es6/set'
-import 'core-js/es6/map'
+// import 'core-js/es6/set'
+// import 'core-js/es6/map'
 import React, { Component } from "react";
 import CCiLabComponentList from "./CCiLabComponentList";
 import {detectOSVersion} from "./CCiLabUtility";
@@ -63,6 +63,13 @@ class ComponentContainer extends Component {
           <div> OS version: {this.osVersion.os} {this.osVersion.osVersion} major: {this.osVersion.osMajorVersion}</div>
 
           <div> Browser font size: {this.state.fontSize}</div>
+
+          <div> Language: {window.navigator.language} </div>
+
+          <div> Languages: {window.navigator.languages[0]}, 
+                            {window.navigator.languages[1]}, 
+                            {window.navigator.languages[2]},
+                            {window.navigator.languages[3]} </div>
         </ul>
 
       </div>
