@@ -234,7 +234,7 @@ class CCiLabComponentList extends Component {
               setupBOM: true,
               isDropToSameParentWarning: false, 
               isDropToItselfWarning: false};
-    initialized = false;
+    initialized = false;  //needed to avoid render without DOM
     slidingComponentListIconClassName = this.state.visible? 'fa fa-angle-double-left' : 'fa fa-angle-double-right';
       
     componentListWidth= setListWidth(1.0); //in px or vw,  
@@ -303,36 +303,38 @@ class CCiLabComponentList extends Component {
     
 
     // initialize first component's childKeyIds, reorder in following order: the first component, alarm status, warning status, no_issue status
-    // componentWillMount=()=>{
-    //   let currentSessionComponents=[];
+    componentWillMount=()=>{
+      let currentSessionComponents=[];
  
-    //   //#todo: need to query server to get a new components
-    //   console.log("CCiLabComponentList - componentWillMount: query server to get root components")
-    //   let components = firstComponents;
+      //#todo: need to query server to get a new components
+      console.log("CCiLabComponentList - componentWillMount: query server to get root components")
+      let components = firstComponents;
 
-    //   //#todo: need to query server side to find the very top component 
-    //   let rootComponent = components.filter(component=>component.businessLogic.parentIds.length === 0)[0]
-    //   rootComponent.displayLogic = initializeDisplayLogic( 0, rootComponent.businessLogic.childIds.length !== 0 ? true : false );
+      //#todo: need to query server side to find the very top component 
+      let rootComponent = components.filter(component=>component.businessLogic.parentIds.length === 0)[0]
+      rootComponent.displayLogic = initializeDisplayLogic( 0, rootComponent.businessLogic.childIds.length !== 0 ? true : false );
        
-    //   initializeComponents(rootComponent, this.state.greetings, components, currentSessionComponents);
+      initializeComponents(rootComponent, this.state.greetings, components, currentSessionComponents);
     
-    //   //always show very top component
-    //   rootComponent.displayLogic.showMyself = true;
+      //always show very top component
+      rootComponent.displayLogic.showMyself = true;
    
-    //   if( rootComponent.businessLogic.childIds.length !== 0 ){
-    //     rootComponent.displayLogic.canExpend = true;
+      if( rootComponent.businessLogic.childIds.length !== 0 ){
+        rootComponent.displayLogic.canExpend = true;
 
-    //     // populate very top component's displayLogic.childKeyIds[], if it's not incluced yet
-    //     populateComponentChildKeyIds(rootComponent, currentSessionComponents);
-    //   }
+        // populate very top component's displayLogic.childKeyIds[], if it's not incluced yet
+        populateComponentChildKeyIds(rootComponent, currentSessionComponents);
+      }
 
-    //   this.positioningListTitle(rootComponent);
+      this.positioningListTitle(rootComponent);
       
-    //   // trick - set default visible=true in constructor, set visible=false in componentWillMount
-    //   // so when user clicks << component list will sliding back
-    //  this.setState( {greetings: currentSessionComponents, visible : false} );
+      // trick - set default visible=true in constructor, set visible=false in componentWillMount
+      // so when user clicks << component list will sliding back
+      this.state.greetings=currentSessionComponents;
+      this.state.visible = false;
+      this.state.setupBOM = this.state.greetings.length <= 1 ? true : false;
 
-    // }
+    }
   
     /**
    * bind to resize event, Calculate & Update state of new dimensions
@@ -359,38 +361,9 @@ class CCiLabComponentList extends Component {
     componentDidMount =()=> {
       console.log("CCiLabComponentList - componentDidMount");
       window.addEventListener("resize", this.updateDimensions);
-
-      let currentSessionComponents=[];
- 
-      //#todo: need to query server to get a new components
-      let components = firstComponents;
-
-      //#todo: need to query server side to find the very top component 
-      let rootComponent = components.filter(component=>component.businessLogic.parentIds.length === 0)[0]
-      rootComponent.displayLogic = initializeDisplayLogic( 0, rootComponent.businessLogic.childIds.length !== 0 ? true : false );
-       
-      initializeComponents(rootComponent, this.state.greetings, components, currentSessionComponents);
-    
-      //always show very top component
-      rootComponent.displayLogic.showMyself = true;
-   
-      if( rootComponent.businessLogic.childIds.length !== 0 ){
-        rootComponent.displayLogic.canExpend = true;
-
-        // populate very top component's displayLogic.childKeyIds[], if it's not incluced yet
-        populateComponentChildKeyIds(rootComponent, currentSessionComponents);
-      }
-
-      this.positioningListTitle(rootComponent);
-      
-      // trick - set default visible=true in constructor, set visible=false in componentWillMount
-      // so when user clicks << component list will sliding back
-     //this.setState( {greetings: currentSessionComponents, visible : false, setupBOM : currentSessionComponents.length <= 1 ? true : false} );
-      this.state.greetings=currentSessionComponents;
-
       this.initialized = true;
 
-      // this.setState( { setupBOM : this.state.greetings.length <= 1 ? true : false} );
+      // this.setState( {visible: false, setupBOM : this.state.greetings.length <= 1 ? true : false} );
     }
 
     // shouldComponentUpdate =(nextProps, nextState)=>{
@@ -477,12 +450,15 @@ class CCiLabComponentList extends Component {
 
      
 
-    selectedComponentHandler = ( selectedComponent ) =>{
+    selectedComponentHandler = ( selectedComponent, highlight=true ) =>{
       let currentSessionComponents=this.state.greetings;
       currentSessionComponents.forEach( (item)=>{setComponentSelected(item, selectedComponent.displayLogic.key);});
 
-      console.log("CCiLabComponentList - selectedComponentHandler");
-      this.setState( { greetings: currentSessionComponents });
+      if( highlight === true )
+      {
+        console.log("CCiLabComponentList - selectedComponentHandler");
+        this.setState( { greetings: currentSessionComponents });
+      }
     }
 
     

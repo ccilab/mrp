@@ -70,8 +70,6 @@ class CCiLabComponent extends Component {
       let componentRect = document.getElementById( `${this.currentComponent.displayLogic.key}-item` ).getBoundingClientRect();  
 
       this.currentComponent.displayLogic.rectLeft = componentRect.left/this.rootFontSize;  //convert to rem, 16px is default font size for browser
-
-      this.componentSelected()
     };
 
     expending = () => {
