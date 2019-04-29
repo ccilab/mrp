@@ -1,10 +1,27 @@
 import React, { Component } from 'react';
 import Popup from '../popup_menu/Popup'
+import { useTranslation } from 'react-i18next';
 
 
 import './../../dist/css/ccilab-component.css'
 import './../../dist/css/popup-menu.css'
  
+const ShowStatus=(props)=>{
+  const { t, i18n, ready } = useTranslation('componentList', {useSuspense: false});
+
+  return (
+    <span id={props.statusId} 
+        className={props.statusClassName} 
+        style={{'display':'inline-block','height': `auto`}} 
+        draggable={props.statusDraggable}
+        onClick={ props.onClickHandler }
+        onDragStart={ props.onDragStartHandler }
+        onDragOver={ props.onDragOverHandler }
+        onDrop={  props.onDropHandler }> 
+        {props.progress}% - {props.remainingTime} {t('remaining-time-unit')}
+    </span> 
+  );
+}
 class CCiLabComponent extends Component {
         state = {
             expended:  true,
@@ -53,8 +70,6 @@ class CCiLabComponent extends Component {
       let componentRect = document.getElementById( `${this.currentComponent.displayLogic.key}-item` ).getBoundingClientRect();  
 
       this.currentComponent.displayLogic.rectLeft = componentRect.left/this.rootFontSize;  //convert to rem, 16px is default font size for browser
-
-      this.componentSelected()
     };
 
     expending = () => {
@@ -269,14 +284,11 @@ class CCiLabComponent extends Component {
                       <button 
                         type="button"
                         // 'btn rounded-circle align-self-center p-0 bg-primary '
-                        className={`${inlineMenuClassName} cusor-default`}
+                        className={`${inlineMenuClassName} cusor-default fa fa-ellipsis-h`}
                         style={ {'visibility': `${inlineMenuIconVisiblity}`, 
                                   'height': `${this.inlineMenuHeight}rem`, 
                                   'width': `${this.inlineMenuWidth}rem`} }
                         > 
-                          <span className='fa fa-ellipsis-h'
-                                style={ {'visibility': `${inlineMenuIconVisiblity}`} }>
-                          </span>
                       </button>
                     }
                     id={`${this.currentComponent.displayLogic.key}-inline-menu`}
@@ -289,14 +301,16 @@ class CCiLabComponent extends Component {
                     >
                     {/* <div className='ccilab-menu '> */}
         							<div className={'d-flex ccilab-menu-item bg-info bg-faded align-items-center'}> 
-                        {/* copy is not supported for now
-                           { ( draggableSetting === 'true') ? <a href='#copy' className={'align-self-center nav-link px-1 fa fa-copy '}/> :null} */}
+                        {/* copy is not supported for now */}
+                        {/* { ( draggableSetting === 'true') ? <a href='#copy' className={'align-self-center nav-link px-1 fa fa-copy '}/> :null} */}
                         { ( draggableSetting === 'true') ? <a id={`${this.currentComponent.displayLogic.key}`}
                            href='#move' 
                            className={'align-self-center nav-link px-1 fa fa-arrows-alt'}
                            onClick={ this.moveStart }
                            /> :null}
+                        <a href='#addNew' className={'align-self-center nav-link px-1 fa fa-plus'}/>
                         <a href='#edit' className={'align-self-center nav-link px-1 fa fa-edit'}/>
+                        { ( draggableSetting === 'true') ? <a href='#delete' className={'align-self-center nav-link px-1 fa fa-trash-alt'}/>:null}
                       </div> 
         						
                    {/*  </div> */}
@@ -354,16 +368,17 @@ class CCiLabComponent extends Component {
                 </a>
                 
                 {/* tag's id is used to handle drop event */}
-                <span id={`${this.currentComponent.displayLogic.key}`} 
-                      className={`badge-pill badge-${this.progressStatus} ${statusBadgeIconClassName}`} 
-                      style={{'display':'inline-block','height': `auto`}} 
-                      draggable={`${draggableSetting}`}
-                      onClick={ this.componentSelected }
-                      onDragStart={ draggableSetting === 'true' ? this.dragStart : null}
-                      onDragOver={ this.dragOver }
-                      onDrop={  this.doDrop }> 
-                      {this.progressValue}%
-                </span>  
+                <ShowStatus 
+                  statusId={`${this.currentComponent.displayLogic.key}`} 
+                  statusClassName={`badge-pill badge-${this.progressStatus} ${statusBadgeIconClassName}`} 
+                  statusDraggable={`${draggableSetting}`}
+                  onClickHandler={ this.componentSelected }
+                  onDragStartHandler={ draggableSetting === 'true' ? this.dragStart : null}
+                  onDragOverHandler={ this.dragOver }
+                  onDropHandler={  this.doDrop } 
+                  progress={this.progressValue}
+                  remainingTime= {this.currentComponent.businessLogic.remainDays}
+                />
                 </div>
             </div>
         )

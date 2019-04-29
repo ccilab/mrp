@@ -1,11 +1,24 @@
 
 import React, { Component } from "react";
+
+// Import a pre-configured insance of i18next
+// https://github.com/ccilab/react-i18next/tree/master/example/react
+
+
 import "./../../dist/css/ccilab-component-list.css"
+import styles from "./../../dist/css/ccilab-component.css"
+import './../../dist/css/popup-menu.css'
+
 import CCiLabComponent from "./CCiLabComponent";
 import DropComponentWarningModal from "./CCiLabDropComponentCheckFailedModal";
+import { setListHeight, setListWidth, getTextRect} from "./CCiLabUtility";
+// // based on https://github.com/ccilab/react-i18next/blob/master/example/react/src/index.js
+// // import i18n (needs to be bundled ;))
+// import './../l18n/i18n'
+import { useTranslation } from 'react-i18next';
+import Popup from '../popup_menu/Popup'
 
-// import AddGreeter from "./AddGreeter";
-import { setListHeight, setListWidth, getTextRect} from "./CCiLabUtility"
+import {saveAs} from "./../file_save/FileSaver"
 
 
 
@@ -162,13 +175,66 @@ const setComponentSelected = ( component, selectedComponentKey ) =>{
 }
 
 
+
+// titleName, titleHeight, titleWidth, titlePositionLeft, titleClassName
+const ComponentListTitle =(props)=>{
+  console.log("call - ComponentListTitle:" + props.title );
+
+  // https://react.i18next.com/latest/usetranslation-hook
+  const { t, i18n, ready } = useTranslation('componentList', {useSuspense: false});
+
+  console.log("CCiLabComponentList - ComponentListTitle: i18n.language = " + i18n.language );
+   
+  return (
+    <div className='d-flex align-items-center bg-info fa' style={{ 'height': `${props.titleHeight}rem`, 'width': `${props.titleWidth}`}}>
+    <span className={props.titleClassName} style={{'position':'relative', 'left':`${props.titlePositionLeft}rem`, fontSize: '1rem'}}>{t(`${props.title}`)}
+    { props.setBOM ? <a href='#submit-bom' className='px-1 border-0 text-primary text-nowrap p-0 nav-link fa fa-file-upload' ></a>: null }</span> 
+    <Popup
+      trigger={
+        <button 
+          id='#selection-language'
+          type="button"
+          className={'bg-info text-primary border-0 py-0 px-1 fa fa-bars'}
+          style={{'position':'absolute', 'right':'0'}}></button>
+      }
+      closeOnDocumentClick
+      on="hover"
+      mouseLeaveDelay={400}
+      mouseEnterDelay={0}
+      contentStyle={{ padding: '0px', border: 'none' }}
+      arrow={true}
+      >
+      <div className={' bg-info'}>
+        <a href='#en' className={'nav-link px-1'} style={{ 'fontSize': '0.8rem'}} onClick={()=>{i18n.changeLanguage('en')}}>English</a>
+        <a href='#zh-CN' className={'nav-link px-1'} style={{ 'fontSize': '0.8rem'}} onClick={()=>{i18n.changeLanguage('zh-CN')}}>中文</a>
+      </div>
+    </Popup>
+  </div>
+  );
+}
+
+const ComponentListSubTitle = (props)=>{
+  const { t } = useTranslation('componentList', {useSuspense: false});
+  return ( 
+    <div className='d-flex align-items-center bg-info fa' style={{ 'height': `${props.height}rem`, 'width': `${props.width}`}}>
+        <span className={props.className} style={{'position':'relative',  'left':`${props.positionLeft}rem`, fontSize: '0.9rem'}}>{t(`${props.name}`)}</span>
+        <span className={props.className} style={{'position':'relative', 'left':`${props.ratePositionLeft}rem`, fontSize: '0.9rem'}}>{t(`${props.rateType}`)} 
+        </span> 
+        {/* #todo - make title editable by user */}
+        <a href='#edit-title' className='border-0 text-primary text-nowrap p-0 nav-link fa fa-edit' style={{'position':'absolute', 'right':'0'}}></a>
+    </div>
+  );
+}
+
+
 class CCiLabComponentList extends Component {
     state = { greetings: undefined, 
               visible: true, 
               selected: 0, 
+              setupBOM: true,
               isDropToSameParentWarning: false, 
               isDropToItselfWarning: false};
-
+    initialized = false;  //needed to avoid render without DOM
     slidingComponentListIconClassName = this.state.visible? 'fa fa-angle-double-left' : 'fa fa-angle-double-right';
       
     componentListWidth= setListWidth(1.0); //in px or vw,  
@@ -183,14 +249,12 @@ class CCiLabComponentList extends Component {
  
     fontSize = this.props.fontSize; //default browser medium font size in px
     componentTitleLeft; //rem  1.5625
-    componentTitleWidth;  //in rem
     componentTitleHeight; //rem 
-    statusTitleStickyLeft; 
-    statusTitleWidth;
-    statusUnitStickyLeft;
+    statusTitleLeft; 
     componentTitleTop;
     componentListMinHeight = ( 150/this.fontSize +'rem' );  
     componentListHeight= window.innerHeight <= 200 ? this.componentListMinHeight : 'auto';  //minimum height 
+    
 
     // rootComponentName;
 
@@ -198,28 +262,30 @@ class CCiLabComponentList extends Component {
       let rootComponentName = rootComponent.businessLogic.name; 
 
       //#todo: title is from server or user input, not hardcoded here
-      let titleRect=getTextRect('部件名:');
+      // this name gives approrated width 
+      let titleRect=getTextRect('部件名:'); //部件名
             
-      this.componentTitleWidth = titleRect.width/this.fontSize;  //in rem
-      this.componentTitleLeft = (typeof rootComponent.displayLogic.rectLeft === 'undefined' || rootComponent.displayLogic.rectLeft === 0)? this.componentTitleWidth * 0.8 : rootComponent.displayLogic.rectLeft; //90% of title width,in rem
+      let componentTitleWidth = titleRect.width/this.fontSize;  //in rem 
+       // console.log( 'CCiLabComponentList - componentTitleWidth (rem): ', componentTitleWidth);
+
+      this.componentTitleLeft = (typeof rootComponent.displayLogic.rectLeft === 'undefined' || rootComponent.displayLogic.rectLeft === 0)? componentTitleWidth * 0.8 : rootComponent.displayLogic.rectLeft; //90% of title width,in rem
 
       this.componentLeftOffset = this.componentTitleLeft;
 
       this.componentTitleHeight = (titleRect.height/this.fontSize)*1.4; //140% of title height, in rem
       this.componentTitleTop = (this.componentTitleHeight - titleRect.height/this.fontSize)/2; //in rem
      
-      let rootComponentNameWidth = typeof rootComponentName !== "undefined" ?  getTextRect(rootComponentName).width/this.fontSize : this.componentTitleWidth;  //in rem
+      let rootComponentNameWidth = typeof rootComponentName !== "undefined" ?  getTextRect(rootComponentName).width/this.fontSize : componentTitleWidth;  //in rem
       
-      let rootImgBtnWith = 45/this.fontSize;  //also used in CCiLabComponent.js
-      this.statusTitleStickyLeft = this.componentTitleLeft + this.componentTitleWidth + rootComponentNameWidth; //in rem + rootImgBtnWith
+      // let rootImgBtnWith = 45/this.fontSize;  //also used in CCiLabComponent.js
+      this.statusTitleLeft = this.componentTitleLeft + componentTitleWidth + rootComponentNameWidth; //in rem + rootImgBtnWith
       //alert("FontSize = " + this.fontSize + " The width = " + getTextRect(rootComponentName).width + " width/fontSize = "+ rootComponentNameWidth);
       // status tile is from server or user input
-      this.statusTitleWidth = getTextRect('进度: (%)').width/this.fontSize;  //in rem
-      this.statusUnitStickyLeft = this.statusTitleStickyLeft + this.statusTitleWidth;
     }
     
     toggleHideShowComponentList = () =>{
       // console.log('container: clicked before: - ', this.state.visible ? 'true' : 'false' );
+      console.log("CCiLabComponentList - toggleHideShowComponentList");
       this.setState( { visible: this.state.visible ? false : true } );
 
       this.compnentListTranslateStyle = this.state.visible ? `translate3d(0, 0, 0)`: `translate3d(-${this.hideListWidth}, 0, 0)`;
@@ -229,6 +295,7 @@ class CCiLabComponentList extends Component {
 
     // show or hide component list
     showHideComponentList=()=>{
+      console.log("CCiLabComponentList - showHideComponentList");
       this.toggleHideShowComponentList();
       //e.stopPropagation();
     };
@@ -240,7 +307,7 @@ class CCiLabComponentList extends Component {
       let currentSessionComponents=[];
  
       //#todo: need to query server to get a new components
-      console.log("query server to get root components")
+      console.log("CCiLabComponentList - componentWillMount: query server to get root components")
       let components = firstComponents;
 
       //#todo: need to query server side to find the very top component 
@@ -263,7 +330,9 @@ class CCiLabComponentList extends Component {
       
       // trick - set default visible=true in constructor, set visible=false in componentWillMount
       // so when user clicks << component list will sliding back
-      this.setState( {greetings: currentSessionComponents, visible : false } );
+      this.state.greetings=currentSessionComponents;
+      this.state.visible = false;
+      this.state.setupBOM = this.state.greetings.length <= 1 ? true : false;
 
     }
   
@@ -271,13 +340,16 @@ class CCiLabComponentList extends Component {
    * bind to resize event, Calculate & Update state of new dimensions
    */
     updateDimensions=()=>{
+     
       let updatedRect = estimateComponentListRect(this.state.greetings, this.fontSize);
 
       this.componentListHeight = setListHeight( updatedRect, this.fontSize );
 
       this.componentListWidth= setListWidth(1.0);
 
-      this.setState( { greetings: this.state.greetings })
+      // this.setState( {  })
+      console.log("CCiLabComponentList - updateDimensions");
+      this.setState( { greetings: this.state.greetings } );
     }
 
     
@@ -287,15 +359,23 @@ class CCiLabComponentList extends Component {
      * than component list rect height
      * */ 
     componentDidMount =()=> {
-        window.addEventListener("resize", this.updateDimensions);
+      console.log("CCiLabComponentList - componentDidMount");
+      window.addEventListener("resize", this.updateDimensions);
+      this.initialized = true;
+
+      // this.setState( {visible: false, setupBOM : this.state.greetings.length <= 1 ? true : false} );
     }
 
-    //called after render()
-    // componentDidUpdate = ()=>{
-    //   this.toggleHideShowComponentList();
+    // shouldComponentUpdate =(nextProps, nextState)=>{
+    //   console.log("CCiLabComponentList - shouldComponentUpdate")
+    //   return this.props.fontSize !== nextProps.fontSize || 
+    //         //  (typeof this.state.greetings !== "undefined" && this.state.greetings.length !== nextState.greetings.length ) ||
+    //          this.state.visible !== nextState.visible ||
+    //          this.state.selected !== nextState.selected
     // }
-  
+
     addGreeting = (newName, progressValue) =>{
+      console.log("CCiLabComponentList - addGreeting");
       this.setState({ greetings: [...this.state.greetings, 
         { businessLogic: {id: this.state.greetings.length + 1, name: newName, parentIds:[0], childIds:[], imgFile:'', status: "alarm", progressPercent: progressValue}}] });
     };
@@ -304,6 +384,7 @@ class CCiLabComponentList extends Component {
       const filteredGreetings = this.state.greetings.filter(component => {
         return component.businessLogic.name !== removeName;
       });
+      console.log("CCiLabComponentList - removeGreeting");
       this.setState({ greetings: filteredGreetings });
     };
 
@@ -357,7 +438,11 @@ class CCiLabComponentList extends Component {
           this.componentListWidth = setListWidth(1.0);
 
           if( isRending )
+          {
+            console.log("CCiLabComponentList - showOrHideChildren");
             this.setState( { greetings: currentSessionComponents })
+          }
+          
           
           return currentSessionComponents;
 
@@ -365,10 +450,15 @@ class CCiLabComponentList extends Component {
 
      
 
-    selectedComponentHandler = ( selectedComponent ) =>{
+    selectedComponentHandler = ( selectedComponent, highlight=true ) =>{
       let currentSessionComponents=this.state.greetings;
       currentSessionComponents.forEach( (item)=>{setComponentSelected(item, selectedComponent.displayLogic.key);});
-      this.setState( { greetings: currentSessionComponents });
+
+      if( highlight === true )
+      {
+        console.log("CCiLabComponentList - selectedComponentHandler");
+        this.setState( { greetings: currentSessionComponents });
+      }
     }
 
     
@@ -406,6 +496,7 @@ class CCiLabComponentList extends Component {
 
           this.lastScrollYPosition = scrollY;
 
+          console.log("CCiLabComponentList - setSelectedComponentStickDirection");
           this.setState({selected: selectedComponent.displayLogic.selected});
       }
     }
@@ -443,6 +534,9 @@ class CCiLabComponentList extends Component {
         {
           this.targetComponentName = targetComponent.businessLogic.name;
           this.movedComponentName = movedComponent.businessLogic.name;
+
+          console.log("CCiLabComponentList - moveComponentHandler 1");
+
           this.setState( {isDropToSameParentWarning: true} );
           return;
         }
@@ -452,6 +546,9 @@ class CCiLabComponentList extends Component {
         {
           this.targetComponentName = targetComponent.businessLogic.name;
           this.movedComponentName = movedComponent.businessLogic.name;
+
+          console.log("CCiLabComponentList - moveComponentHandler 2");
+
           this.setState( {isDropToItselfWarning: true} );
           return;
         }
@@ -461,6 +558,8 @@ class CCiLabComponentList extends Component {
         {
           this.targetComponentName = targetComponent.businessLogic.name;
           this.movedComponentName = movedComponent.businessLogic.name;
+
+          console.log("CCiLabComponentList - moveComponentHandler 3");
           this.setState( {isDropToSameParentWarning: true} );
           return;
         }
@@ -538,6 +637,7 @@ class CCiLabComponentList extends Component {
             //check if moved component progress status need to change (#todo)
  
             // update greetings list
+            console.log("CCiLabComponentList - moveComponentHandler 4 ")
             this.setState( { greetings: updatedSessionComponents });
         }
         
@@ -547,6 +647,7 @@ class CCiLabComponentList extends Component {
     //need to update showMyself to true after button is clicked to canExpend
     //need to update showMyself to false after button is clicked to collaps
     renderGreetings = () => {
+      console.log("CCiLabComponentList - renderGreetings")
       return ( (typeof this.state !== "undefined") && (typeof this.state.greetings !== "undefined" ) )? 
           this.state.greetings.map( (component) => {
                 if( component.displayLogic.showMyself === true )
@@ -579,7 +680,8 @@ class CCiLabComponentList extends Component {
                                           removeGreeting={this.removeGreeting} 
                                           showOrHideChildren={this.showOrHideChildren}
                                           selectedComponentHandler={this.selectedComponentHandler}
-                                          moveComponentHandler={this.moveComponentHandler}/> ;
+                                          moveComponentHandler={this.moveComponentHandler}
+                                          setBOM={this.state.setupBOM}/> ;
                 }
                 else
                   return null;
@@ -588,35 +690,39 @@ class CCiLabComponentList extends Component {
     };
 
     hideDropToSameParentWarning=()=>{
+      console.log("CCiLabComponentList - hideDropToSameParentWarning ")
       this.setState({isDropToSameParentWarning: false});
     }
 
     hideDropToItselfWarning=()=>{
+      console.log("CCiLabComponentList - hideDropToItselfWarning ")
       this.setState({isDropToItselfWarning: false});
     }
 
     render() {
+      if( this.initialized === false )
+        return null;
+
       const droptoSameParentWarningModal = this.state.isDropToSameParentWarning ? 
                   <DropComponentWarningModal 
-                  title='Waring:' 
-                  body={`"${this.targetComponentName}" already has "${this.movedComponentName}" as its child component!`}
+                  title='title'
+                  key1='same-child'
+                  option = { `{"targetComponent": "${this.targetComponentName}", "movedComponent": "${this.movedComponentName}"}`}
                   hideDropWarning={this.hideDropToSameParentWarning}/>
                   : null;
 
       const droptoItselfWarningModal = this.state.isDropToItselfWarning ? 
                   <DropComponentWarningModal 
-                    title='Waring:' 
-                    body={`These two "${this.targetComponentName}" is the same component!`}
+                    title={'title'} 
+                    key1='same-component'
+                    option = { `{ "targetComponent": "${this.targetComponentName}"}`}
                     hideDropWarning={this.hideDropToItselfWarning}/>
                   : null;
-
-      console.log( 'componentTitleWidth (rem): ', this.componentTitleWidth);
  
       let listTitleClassName='border-0 text-primary text-nowrap';
 
+      console.log( "CCiLabComponentList - call render() ");
       return (
-       
-       
         <div className={`d-flex align-items-center`} >
           {/* <AddGreeter addGreeting={this.addGreeting} /> */}
             {/* https://code.i-harness.com/en/q/27a5171 explains why vertical scroll bar won't appear for flex box 
@@ -629,16 +735,43 @@ class CCiLabComponentList extends Component {
                           'height':`${this.componentListHeight}`, 
                           'width':`${this.componentListWidth}`}}
                   >
+
+                  { this.state.setupBOM ? <ComponentListTitle title='title-BOM' 
+                                      titleHeight={this.componentTitleHeight}
+                                      titleWidth={this.componentListWidth}
+                                      titlePositionLeft= {this.componentTitleLeft}
+                                      titleClassName = {listTitleClassName}
+                                      setupBOM = {this.state.setupBOM} /> :
+                                <ComponentListTitle title='title-Progress' 
+                                      titleHeight={this.componentTitleHeight}
+                                      titleWidth={this.componentListWidth}
+                                      titlePositionLeft= {this.componentTitleLeft}
+                                      titleClassName = {listTitleClassName}
+                                      setupBOM = {this.state.setupBOM} />
+                  }
+                  <hr className='my-0 bg-info' style={{borderStyle:'groove', borderWidth: '0.08em', borderColor:`${styles.cciInfoBlue}`}}/>
+
                   {/*  sticky to top and left, https://gedd.ski/post/position-sticky/*/}
                   {/* https://iamsteve.me/blog/entry/using-flexbox-for-horizontal-scrolling-navigation
                       https://codepen.io/stevemckinney/pen/WvWrRX */}
-                  <div className='d-flex align-items-center bg-info fa' style={{ 'height': `auto`, 'width': `${this.componentListWidth}`}}>
-                    <span className={`${listTitleClassName}`} style={{'position':'relative',  'left':`${this.componentTitleLeft}rem`}}>部件名:</span>
-                    <span className={`${listTitleClassName}`} style={{'position':'relative', 'left':`${this.statusTitleStickyLeft}rem`}}>进度: 
-                    <span className='font-weight-normal text-primary' > (%)</span></span> 
-                    {/* #todo - make title editable by user */}
-                    <a href='#edit-title' className='border-0 text-primary text-nowrap p-0 nav-link fa fa-edit' style={{'position':'absolute', 'right':'0'}}></a>
-                  </div>
+                 
+                  { this.state.setupBOM ? <ComponentListSubTitle 
+                                         name='subTitle-BOM-create-component'
+                                         rateType='subTitle-BOM-data'
+                                         height={this.componentTitleHeight}
+                                         width={this.componentListWidth}
+                                         className={listTitleClassName}
+                                         positionLeft={this.componentTitleLeft}
+                                         ratePositionLeft={this.statusTitleLeft}/> :
+                                <ComponentListSubTitle 
+                                         name='subTitle-Progress-component-name'
+                                         rateType='subTitle-Progress-status'
+                                         height={this.componentTitleHeight}
+                                         width={this.componentListWidth}
+                                         className={listTitleClassName}
+                                         positionLeft={this.componentTitleLeft}
+                                         ratePositionLeft={this.statusTitleLeft}/> 
+                   }  
                   {/* https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_Flexible_Box_Layout/Controlling_Ratios_of_Flex_Items_Along_the_Main_Ax */}
                   <div className={'d-flex flex-column cci-flyout-component-list'} 
                        style={{ 'height':`${this.componentListHeight}`, 
@@ -656,8 +789,8 @@ class CCiLabComponentList extends Component {
                 onClick={this.showHideComponentList} >
                 <span className={`badge-pill badge-info ${this.slidingComponentListIconClassName}`}></span>
               </a>
-            {droptoSameParentWarningModal}
-            {droptoItselfWarningModal}
+            {droptoSameParentWarningModal }
+            {droptoItselfWarningModal }
         </div>
       );
     };
