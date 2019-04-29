@@ -188,10 +188,34 @@ const ComponentListTitle =(props)=>{
   return (
     <div className='d-flex align-items-center bg-info fa' style={{ 'height': `${props.titleHeight}rem`, 'width': `${props.titleWidth}`}}>
     <span className={props.titleClassName} style={{'position':'relative', 'left':`${props.titlePositionLeft}rem`, fontSize: '1rem'}}>{t(`${props.title}`)}
-    { props.setupBOM ? <a href='#submit-bom' className='px-1 border-0 text-primary text-nowrap p-0 nav-link fa fa-file-upload' ></a>: null }</span> 
+    { props.setupBOM ? <a key='submit-bom' href='#submit-bom' className='px-1 border-0 text-primary text-nowrap p-0 nav-link fa fa-file-upload' ></a>: null }
+    { props.setupBOM ? 
+      <Popup 
+        trigger={
+          <button 
+            key='show-progress' 
+            type='button'
+            className={'bg-info border-0 text-primary p-0 px-1 fa fa-chart-line'}
+            onClick={props.changeBOMHandler} ></button>
+        }
+        closeOnDocumentClick
+      on="hover"
+      mouseLeaveDelay={400}
+      mouseEnterDelay={0}
+      contentStyle={{ padding: '0px', border: 'none' }}
+      arrow={true}
+      >
+      <div className={' bg-info'}>
+        <p>show progress</p>
+      </div>
+      </Popup>    
+      : 
+      null }
+    </span> 
     <Popup
       trigger={
         <button 
+          key='selection-language'
           id='#selection-language'
           type="button"
           className={'bg-info text-primary border-0 py-0 px-1 fa fa-bars'}
@@ -205,8 +229,8 @@ const ComponentListTitle =(props)=>{
       arrow={true}
       >
       <div className={' bg-info'}>
-        <a href='#en' className={'nav-link px-1'} style={{ 'fontSize': '0.8rem'}} onClick={()=>{i18n.changeLanguage('en')}}>English</a>
-        <a href='#zh-CN' className={'nav-link px-1'} style={{ 'fontSize': '0.8rem'}} onClick={()=>{i18n.changeLanguage('zh-CN')}}>中文</a>
+        <a key='en' href='#en' className={'nav-link px-1'} style={{ 'fontSize': '0.8rem'}} onClick={()=>{i18n.changeLanguage('en')}}>English</a>
+        <a key='zh-CN' href='#zh-CN' className={'nav-link px-1'} style={{ 'fontSize': '0.8rem'}} onClick={()=>{i18n.changeLanguage('zh-CN')}}>中文</a>
       </div>
     </Popup>
   </div>
@@ -700,6 +724,11 @@ class CCiLabComponentList extends Component {
       this.setState({isDropToItselfWarning: false});
     }
 
+    showProgress=(e)=>{
+      e.preventDefault();
+      this.setState({setupBOM: false });
+    }
+
     render() {
       if( this.initialized === false )
         return null;
@@ -742,13 +771,15 @@ class CCiLabComponentList extends Component {
                                       titleWidth={this.componentListWidth}
                                       titlePositionLeft= {this.componentTitleLeft}
                                       titleClassName = {listTitleClassName}
-                                      setupBOM = {this.state.setupBOM} /> :
+                                      setupBOM = {this.state.setupBOM} 
+                                      changeBOMHandler = {this.showProgress}/> :
                                 <ComponentListTitle title='title-Progress' 
                                       titleHeight={this.componentTitleHeight}
                                       titleWidth={this.componentListWidth}
                                       titlePositionLeft= {this.componentTitleLeft}
                                       titleClassName = {listTitleClassName}
-                                      setupBOM = {this.state.setupBOM} />
+                                      setupBOM = {this.state.setupBOM} 
+                                      changeBOMHandler = {this.showProgress}/>
                   }
                   <hr className='my-0 bg-info' style={{borderStyle:'groove', borderWidth: '0.08em', borderColor:`${styles.cciInfoBlue}`}}/>
 
