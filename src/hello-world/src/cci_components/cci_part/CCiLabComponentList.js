@@ -188,7 +188,7 @@ const ComponentListTitle =(props)=>{
   return (
     <div className='d-flex align-items-center bg-info fa' style={{ 'height': `${props.titleHeight}rem`, 'width': `${props.titleWidth}`}}>
     <span className={props.titleClassName} style={{'position':'relative', 'left':`${props.titlePositionLeft}rem`, fontSize: '1rem'}}>{t(`${props.title}`)}
-    { props.setBOM ? <a href='#submit-bom' className='px-1 border-0 text-primary text-nowrap p-0 nav-link fa fa-file-upload' ></a>: null }</span> 
+    { props.setupBOM ? <a href='#submit-bom' className='px-1 border-0 text-primary text-nowrap p-0 nav-link fa fa-file-upload' ></a>: null }</span> 
     <Popup
       trigger={
         <button 
@@ -231,7 +231,7 @@ class CCiLabComponentList extends Component {
     state = { greetings: undefined, 
               visible: true, 
               selected: 0, 
-              setupBOM: true,
+              setupBOM: false,
               isDropToSameParentWarning: false, 
               isDropToItselfWarning: false};
     initialized = false;  //needed to avoid render without DOM
@@ -332,7 +332,7 @@ class CCiLabComponentList extends Component {
       // so when user clicks << component list will sliding back
       this.state.greetings=currentSessionComponents;
       this.state.visible = false;
-      this.state.setupBOM = this.state.greetings.length <= 1 ? true : false;
+      this.state.setupBOM = this.state.setupBOM ? this.state.setupBOM : (this.state.greetings.length <= 1 ? true : false);
 
     }
   
@@ -362,15 +362,13 @@ class CCiLabComponentList extends Component {
       console.log("CCiLabComponentList - componentDidMount");
       window.addEventListener("resize", this.updateDimensions);
       this.initialized = true;
-
-      // this.setState( {visible: false, setupBOM : this.state.greetings.length <= 1 ? true : false} );
     }
 
     // shouldComponentUpdate =(nextProps, nextState)=>{
     //   console.log("CCiLabComponentList - shouldComponentUpdate")
     //   return this.props.fontSize !== nextProps.fontSize || 
     //         //  (typeof this.state.greetings !== "undefined" && this.state.greetings.length !== nextState.greetings.length ) ||
-    //          this.state.visible !== nextState.visible ||
+    //          this.state.setupBOM !== nextState.setupBOM ||
     //          this.state.selected !== nextState.selected
     // }
 
@@ -644,6 +642,9 @@ class CCiLabComponentList extends Component {
       }
     };
 
+    showSetupBOM=( isShowSetupBOM )=>{
+      this.setState({setupBOM: isShowSetupBOM});
+    }
     //need to update showMyself to true after button is clicked to canExpend
     //need to update showMyself to false after button is clicked to collaps
     renderGreetings = () => {
@@ -681,7 +682,7 @@ class CCiLabComponentList extends Component {
                                           showOrHideChildren={this.showOrHideChildren}
                                           selectedComponentHandler={this.selectedComponentHandler}
                                           moveComponentHandler={this.moveComponentHandler}
-                                          setBOM={this.state.setupBOM}/> ;
+                                          showSetupBOM={this.showSetupBOM}/> ;
                 }
                 else
                   return null;

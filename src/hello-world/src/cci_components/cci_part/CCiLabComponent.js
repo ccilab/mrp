@@ -7,7 +7,7 @@ import './../../dist/css/ccilab-component.css'
 import './../../dist/css/popup-menu.css'
  
 const ShowStatus=(props)=>{
-  const { t, i18n, ready } = useTranslation('componentList', {useSuspense: false});
+  const { t } = useTranslation('componentList', {useSuspense: false});
 
   return (
     <span id={props.statusId} 
@@ -22,33 +22,40 @@ const ShowStatus=(props)=>{
     </span> 
   );
 }
+
+// setup DOM (not those time related data)
+const SetupComponentBOM=(props)=>{
+  // const { t } = useTranslation('componentList', {useSuspense: false});
+  return null;
+}
+
 class CCiLabComponent extends Component {
-        state = {
-            expended:  true,
-           
-        };
-
-        currentComponent = this.props.component;
-        rootFontSize=this.props.fontSize;
-        parents = this.currentComponent.businessLogic.parentIds;
-        children = this.currentComponent.businessLogic.childIds;
-        componentName = this.currentComponent.businessLogic.name;
-        imgName = (this.currentComponent.businessLogic.imgFile.length !==0 ) ? '/images/'+ this.currentComponent.businessLogic.imgFile : 
-                    (this.children.length !==0) ? '/images/cci_group_block.png' : '/images/cci_single_block_item.png';
+    state = {
+        expended:  true,
         
-        // size of component button, rem - 16px is default font size of browser
-        componentLableHeight =  (this.parents.length === 0 ) ? 45/this.rootFontSize : (this.children.length !==0) ? 25/this.rootFontSize: 25/this.rootFontSize;
-        componentLableWidth = this.componentLableHeight;
-        inlineMenuHeight = 25/this.rootFontSize;
-        inlineMenuWidth = 25/this.rootFontSize;
+    };
 
-        progressStatus = this.currentComponent.businessLogic.status;
-        progressValue = this.currentComponent.businessLogic.progressPercent;
+    currentComponent = this.props.component;
+    rootFontSize=this.props.fontSize;
+    parents = this.currentComponent.businessLogic.parentIds;
+    children = this.currentComponent.businessLogic.childIds;
+    componentName = this.currentComponent.businessLogic.name;
+    imgName = (this.currentComponent.businessLogic.imgFile.length !==0 ) ? '/images/'+ this.currentComponent.businessLogic.imgFile : 
+                (this.children.length !==0) ? '/images/cci_group_block.png' : '/images/cci_single_block_item.png';
+    
+    // size of component button, rem - 16px is default font size of browser
+    componentLableHeight =  (this.parents.length === 0 ) ? 45/this.rootFontSize : (this.children.length !==0) ? 25/this.rootFontSize: 25/this.rootFontSize;
+    componentLableWidth = this.componentLableHeight;
+    inlineMenuHeight = 25/this.rootFontSize;
+    inlineMenuWidth = 25/this.rootFontSize;
 
-        leftOffset =this.props.leftOffset  + ( (this.parents.length === 0 ) ? 0: this.componentLableWidth/2 );
+    progressStatus = this.currentComponent.businessLogic.status;
+    progressValue = this.currentComponent.businessLogic.progressPercent;
 
-        static inlineMenu ={ cmd: 'select',
-                             itemId: 'undefined'};
+    leftOffset =this.props.leftOffset  + ( (this.parents.length === 0 ) ? 0: this.componentLableWidth/2 );
+
+    static inlineMenu ={ cmd: 'select',
+                          itemId: 'undefined'};
 
       
     positioningComponentInfo=( )=>{
@@ -184,7 +191,14 @@ class CCiLabComponent extends Component {
       }
 
       console.log('droped from source: ', sourceId);
-    }
+    };
+
+    showSetupBOM=( e )=>{
+      e.preventDefault();
+      // this.props.setBOM = true;
+      console.log('CCiLabComponent - updateBOMState');
+      this.props.showSetupBOM( true );
+    };
 
     render=()=>{
         // console.log('CCiLabComponent::render() imgFile: ', this.imgName);
@@ -308,7 +322,7 @@ class CCiLabComponent extends Component {
                            className={'align-self-center nav-link px-1 fa fa-arrows-alt'}
                            onClick={ this.moveStart }
                            /> :null}
-                        <a href='#addNew' className={'align-self-center nav-link px-1 fa fa-plus'}/>
+                        <a href='#addNew' className={'align-self-center nav-link px-1 fa fa-plus'} onClick={ this.showSetupBOM}/>
                         <a href='#edit' className={'align-self-center nav-link px-1 fa fa-edit'}/>
                         { ( draggableSetting === 'true') ? <a href='#delete' className={'align-self-center nav-link px-1 fa fa-trash-alt'}/>:null}
                       </div> 
