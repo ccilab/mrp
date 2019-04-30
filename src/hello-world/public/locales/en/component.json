@@ -1,0 +1,12 @@
+{
+    "remaining-time-unit": "day",
+    "part-number": "Part number",
+    "unit-qty": "Quantity per assembly",
+    "unit-of-measure": "Unit of measure",
+    "reference-designators": "Reference designators",
+    "procurement-type": "Procurement type",
+    "rejection-rate": "Rejection rate (%)",
+    "phase": "Phase",
+    "description": "Description",
+    "note": "Note"
+}

@@ -7,7 +7,7 @@ import './../../dist/css/ccilab-component.css'
 import './../../dist/css/popup-menu.css'
  
 const ShowStatus=(props)=>{
-  const { t } = useTranslation('componentList', {useSuspense: false});
+  const { t } = useTranslation('component', {useSuspense: false});
 
   return (
     <span id={props.statusId} 
@@ -23,6 +23,33 @@ const ShowStatus=(props)=>{
   );
 }
 
+const SetupBOM=(props)=>{
+  const { t } = useTranslation('component', {useSuspense: false});
+  return (
+    <Popup
+      trigger={
+        <button 
+          key={`component-${props.displayLogicId}`}
+          id={`#component-${props.displayLogicId}`}
+          type="button"
+          className={'text-primary border-0 py-0 px-2 fa fw fa-edit'}
+          style={{'height': `auto`}}></button>
+      }
+      closeOnDocumentClick
+      on="hover"
+      mouseLeaveDelay={4000}
+      mouseEnterDelay={0}
+      contentStyle={{ padding: '0px', border: 'none' }}
+      arrow={true}
+      >
+      <div className={'bg-info'}>
+       <input type='text' name='part-number' value={t('part-number')}/>
+       <br/>
+       <input type='text' name='unit-qty' value={t('unit-qty')}/>
+      </div>
+    </Popup>
+  )
+}
 
 class CCiLabComponent extends Component {
     state = {
@@ -281,7 +308,8 @@ class CCiLabComponent extends Component {
               <div className={`${componentBase}`} style={{'left':`${this.leftOffset}rem`}}>
                 {/* a badge to show menu to move/copy/delete/edit component, only sole children component has move and copy option */}
                 {/* https://github.com/yjose/reactjs-popup/blob/master/docs/src/examples/Demo.js */}
-                { this.props.isSetupBOM ? <Popup 
+                { this.props.isSetupBOM ? 
+                  <Popup 
                     trigger={
                       <button 
                         type="button"
@@ -370,17 +398,23 @@ class CCiLabComponent extends Component {
                 </a>
                 
                 {/* tag's id is used to handle drop event */}
-                <ShowStatus 
-                  statusId={`${this.currentComponent.displayLogic.key}`} 
-                  statusClassName={`badge-pill badge-${this.progressStatus} ${statusBadgeIconClassName}`} 
-                  statusDraggable={`${draggableSetting}`}
-                  onClickHandler={ this.componentSelected }
-                  onDragStartHandler={ draggableSetting === 'true' ? this.dragStart : null}
-                  onDragOverHandler={ this.dragOver }
-                  onDropHandler={  this.doDrop } 
-                  progress={this.progressValue}
-                  remainingTime= {this.currentComponent.businessLogic.remainDays}
-                />
+                { this.props.isSetupBOM === false ? 
+                  <ShowStatus 
+                    statusId={`${this.currentComponent.displayLogic.key}`} 
+                    statusClassName={`badge-pill badge-${this.progressStatus} ${statusBadgeIconClassName}`} 
+                    statusDraggable={`${draggableSetting}`}
+                    onClickHandler={ this.componentSelected }
+                    onDragStartHandler={ draggableSetting === 'true' ? this.dragStart : null}
+                    onDragOverHandler={ this.dragOver }
+                    onDropHandler={  this.doDrop } 
+                    progress={this.progressValue}
+                    remainingTime= {this.currentComponent.businessLogic.remainDays}
+                  />
+                  :
+                  <SetupBOM
+                    displayLogicId={this.currentComponent.displayLogic.key}
+                  />
+                }
                 </div>
             </div>
         )
