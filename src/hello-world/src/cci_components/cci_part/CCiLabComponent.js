@@ -37,7 +37,7 @@ const SetupBOM=(props)=>{
       }
       closeOnDocumentClick
       on="hover"
-      mouseLeaveDelay={4000}
+      mouseLeaveDelay={400}
       mouseEnterDelay={0}
       contentStyle={{ padding: '0px', border: 'none' }}
       arrow={true}
