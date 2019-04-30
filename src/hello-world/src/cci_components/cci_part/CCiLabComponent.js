@@ -23,11 +23,6 @@ const ShowStatus=(props)=>{
   );
 }
 
-// setup DOM (not those time related data)
-const SetupComponentBOM=(props)=>{
-  // const { t } = useTranslation('componentList', {useSuspense: false});
-  return null;
-}
 
 class CCiLabComponent extends Component {
     state = {
@@ -193,13 +188,6 @@ class CCiLabComponent extends Component {
       console.log('droped from source: ', sourceId);
     };
 
-    showSetupBOM=( e )=>{
-      e.preventDefault();
-      // this.props.setBOM = true;
-      console.log('CCiLabComponent - updateBOMState');
-      this.props.showSetupBOM( true );
-    };
-
     render=()=>{
         // console.log('CCiLabComponent::render() imgFile: ', this.imgName);
         let componentBase='d-flex cci-component-lable_position  align-items-center '; //align-items-center 
@@ -293,7 +281,7 @@ class CCiLabComponent extends Component {
               <div className={`${componentBase}`} style={{'left':`${this.leftOffset}rem`}}>
                 {/* a badge to show menu to move/copy/delete/edit component, only sole children component has move and copy option */}
                 {/* https://github.com/yjose/reactjs-popup/blob/master/docs/src/examples/Demo.js */}
-                <Popup 
+                { this.props.isSetupBOM ? <Popup 
                     trigger={
                       <button 
                         type="button"
@@ -315,20 +303,20 @@ class CCiLabComponent extends Component {
                     >
                     {/* <div className='ccilab-menu '> */}
         							<div className={'d-flex ccilab-menu-item bg-info bg-faded align-items-center'}> 
-                        {/* copy is not supported for now */}
+                        {/* copy is not supported for now*/}
                         {/* { ( draggableSetting === 'true') ? <a href='#copy' className={'align-self-center nav-link px-1 fa fa-copy '}/> :null} */}
                         { ( draggableSetting === 'true') ? <a id={`${this.currentComponent.displayLogic.key}`}
                            href='#move' 
                            className={'align-self-center nav-link px-1 fa fa-arrows-alt'}
                            onClick={ this.moveStart }
                            /> :null}
-                        <a href='#addNew' className={'align-self-center nav-link px-1 fa fa-plus'} onClick={ this.showSetupBOM}/>
+                        <a href='#addNew' className={'align-self-center nav-link px-1 fa fa-plus'}/> 
                         <a href='#edit' className={'align-self-center nav-link px-1 fa fa-edit'}/>
                         { ( draggableSetting === 'true') ? <a href='#delete' className={'align-self-center nav-link px-1 fa fa-trash-alt'}/>:null}
                       </div> 
         						
                    {/*  </div> */}
-                </Popup> 
+                </Popup> : null}
                  
                  {/* show collapse icon 'v' for all expendable components,
                   show expendable icon '>' for those components have children except the top component

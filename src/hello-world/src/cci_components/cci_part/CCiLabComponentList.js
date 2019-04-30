@@ -180,38 +180,35 @@ const setComponentSelected = ( component, selectedComponentKey ) =>{
 const ComponentListTitle =(props)=>{
   console.log("call - ComponentListTitle:" + props.title );
 
+  const setupBOM=(e)=>{
+    props.changeBOMHandler(true)
+  }
+
+  const showProgress=(e)=>{
+    props.changeBOMHandler(false)
+  }
+
   // https://react.i18next.com/latest/usetranslation-hook
-  const { t, i18n, ready } = useTranslation('componentList', {useSuspense: false});
+  const { t, i18n } = useTranslation('componentList', {useSuspense: false});
 
   console.log("CCiLabComponentList - ComponentListTitle: i18n.language = " + i18n.language );
    
   return (
     <div className='d-flex align-items-center bg-info fa' style={{ 'height': `${props.titleHeight}rem`, 'width': `${props.titleWidth}`}}>
     <span className={props.titleClassName} style={{'position':'relative', 'left':`${props.titlePositionLeft}rem`, fontSize: '1rem'}}>{t(`${props.title}`)}
-    { props.setupBOM ? <a key='submit-bom' href='#submit-bom' className='px-1 border-0 text-primary text-nowrap p-0 nav-link fa fa-file-upload' ></a>: null }
-    { props.setupBOM ? 
-      <Popup 
-        trigger={
-          <button 
-            key='show-progress' 
-            type='button'
-            className={'bg-info border-0 text-primary p-0 px-1 fa fa-chart-line'}
-            onClick={props.changeBOMHandler} ></button>
-        }
-        closeOnDocumentClick
-      on="hover"
-      mouseLeaveDelay={400}
-      mouseEnterDelay={0}
-      contentStyle={{ padding: '0px', border: 'none' }}
-      arrow={true}
-      >
-      <div className={' bg-info'}>
-        <p>show progress</p>
-      </div>
-      </Popup>    
+
+    { props.setupBOM === false ? 
+      <a key='show-progress' href='#submit-bom' className={'px-1 border-0 text-primary p-0 nav-link fa fa-cog'} onClick={setupBOM} ></a> 
       : 
-      null }
+      <a key='show-progress' href='#submit-bom' className={'px-1 border-0 text-primary p-0 nav-link fa fa-chart-line'} onClick={showProgress} ></a> 
+     }
+     { props.setupBOM ? 
+        <a key='submit-bom' href='#submit-bom' className='px-1 border-0 text-primary p-0 nav-link fa fa-file-upload' ></a>
+        : 
+        null 
+     }
     </span> 
+    {/* popup menu to change language */}
     <Popup
       trigger={
         <button 
@@ -706,7 +703,7 @@ class CCiLabComponentList extends Component {
                                           showOrHideChildren={this.showOrHideChildren}
                                           selectedComponentHandler={this.selectedComponentHandler}
                                           moveComponentHandler={this.moveComponentHandler}
-                                          showSetupBOM={this.showSetupBOM}/> ;
+                                          isSetupBOM={this.state.setupBOM}/> ;
                 }
                 else
                   return null;
@@ -724,9 +721,8 @@ class CCiLabComponentList extends Component {
       this.setState({isDropToItselfWarning: false});
     }
 
-    showProgress=(e)=>{
-      e.preventDefault();
-      this.setState({setupBOM: false });
+    showSetupBOM=( isShowSetupBOM )=>{
+      this.setState({setupBOM: isShowSetupBOM });
     }
 
     render() {
@@ -772,14 +768,14 @@ class CCiLabComponentList extends Component {
                                       titlePositionLeft= {this.componentTitleLeft}
                                       titleClassName = {listTitleClassName}
                                       setupBOM = {this.state.setupBOM} 
-                                      changeBOMHandler = {this.showProgress}/> :
+                                      changeBOMHandler = {this.showSetupBOM}/> :
                                 <ComponentListTitle title='title-Progress' 
                                       titleHeight={this.componentTitleHeight}
                                       titleWidth={this.componentListWidth}
                                       titlePositionLeft= {this.componentTitleLeft}
                                       titleClassName = {listTitleClassName}
                                       setupBOM = {this.state.setupBOM} 
-                                      changeBOMHandler = {this.showProgress}/>
+                                      changeBOMHandler = {this.showSetupBOM}/>
                   }
                   <hr className='my-0 bg-info' style={{borderStyle:'groove', borderWidth: '0.08em', borderColor:`${styles.cciInfoBlue}`}}/>
 
