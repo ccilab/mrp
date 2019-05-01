@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import Popup from '../popup_menu/Popup'
 import { useTranslation } from 'react-i18next';
+import {SetupComponentBOM} from './CCiLabSetupComponentBOM';
 
 
 import './../../dist/css/ccilab-component.css'
@@ -43,9 +44,7 @@ const SetupBOM=(props)=>{
       arrow={true}
       >
       <div className={'bg-info'}>
-       <input type='text' name='part-number' value={t('part-number')}/>
-       <br/>
-       <input type='text' name='unit-qty' value={t('unit-qty')}/>
+       <SetupComponentBOM/>
       </div>
     </Popup>
   )
