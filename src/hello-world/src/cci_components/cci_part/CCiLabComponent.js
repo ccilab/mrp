@@ -4,7 +4,7 @@ import { useTranslation } from 'react-i18next';
 import {SetupComponentBOM} from './CCiLabSetupComponentBOM';
 
 
-import './../../dist/css/ccilab-component.css'
+import styles from './../../dist/css/ccilab-component.css'
 import './../../dist/css/popup-menu.css'
  
 const ShowStatus=(props)=>{
@@ -25,16 +25,40 @@ const ShowStatus=(props)=>{
 }
 
 const SetupBOM=(props)=>{
-  const { t } = useTranslation('component', {useSuspense: false});
+  const setPartNumber=(partNumber, props)=>{
+    if( typeof props.component.bom === 'undefined' )
+      props.component.bom = new initializeBOM();
+
+    props.component.bom.partNumber=partNumber;
+
+    console.log("SetupBOM - setPartNumber:" + props.component.bom.partNumber);
+  }
+  const _className = props.component.displayLogic.selected ? 'bg-info text-primary border-0 py-0 px-2 fa fw fa-edit' : 'text-primary border-0 py-0 px-2 fa fw fa-edit';
+  const bgColor = props.component.displayLogic.selected ? null : `${styles.cciBgColor}`;
+  const initializeBOM=()=>{
+     let bom={};
+     bom.OrderQty='';
+     bom.partNumber='';
+     bom.unitQty='';
+     bom.unitOfMeasure='';
+     bom.procurementType='';
+     bom.sku='';
+     bom.material='';
+     return bom;
+  }
+ 
+  if( typeof props.component.bom === 'undefined' )
+    props.component.bom = new initializeBOM();
+
   return (
     <Popup
       trigger={
         <button 
-          key={`component-${props.displayLogicId}`}
-          id={`#component-${props.displayLogicId}`}
+          key={`component-${props.component.displayLogic.key}`}
+          id={`#component-${props.component.displayLogic.key}`}
           type="button"
-          className={'text-primary border-0 py-0 px-2 fa fw fa-edit'}
-          style={{'height': `auto`}}></button>
+          className={`${_className}`}
+          style={{'height': `auto`, backgroundColor: `${bgColor}`}}></button>
       }
       closeOnDocumentClick
       on="hover"
@@ -43,8 +67,14 @@ const SetupBOM=(props)=>{
       contentStyle={{ padding: '0px', border: 'none' }}
       arrow={true}
       >
-      <div className={'bg-info'}>
-       <SetupComponentBOM/>
+      <div className={'bg-info d-flex flex-column'}>
+       <SetupComponentBOM 
+        title='part-name'
+        value={props.component.businessLogic.name}/>
+        <SetupComponentBOM 
+        title='part-number'
+        value={props.component.bom.partNumber}
+        handler={setPartNumber}/>
       </div>
     </Popup>
   )
@@ -411,7 +441,7 @@ class CCiLabComponent extends Component {
                   />
                   :
                   <SetupBOM
-                    displayLogicId={this.currentComponent.displayLogic.key}
+                    component={this.currentComponent}
                   />
                 }
                 </div>

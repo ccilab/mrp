@@ -5,8 +5,8 @@ import React, { Component } from "react";
 // https://github.com/ccilab/react-i18next/tree/master/example/react
 
 
-import "./../../dist/css/ccilab-component-list.css"
-import styles from "./../../dist/css/ccilab-component.css"
+import styles from "./../../dist/css/ccilab-component-list.css"
+
 import './../../dist/css/popup-menu.css'
 
 import CCiLabComponent from "./CCiLabComponent";
