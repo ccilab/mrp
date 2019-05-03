@@ -25,11 +25,12 @@ const ShowStatus=(props)=>{
 }
 
 const SetupBOM=(props)=>{
-  const setPartNumber=(partNumber, props)=>{
+
+  const setPartNumber=(value)=>{
     if( typeof props.component.bom === 'undefined' )
       props.component.bom = new initializeBOM();
 
-    props.component.bom.partNumber=partNumber;
+    props.component.bom.partNumber=value;
 
     console.log("SetupBOM - setPartNumber:" + props.component.bom.partNumber);
   }

@@ -5,10 +5,20 @@ export const SetupComponentBOM=(props)=>{
   const [input, setInput] = useState(`${props.value}`); // '' is the initial state value
   const { t } = useTranslation('component', {useSuspense: false});
 
+
+  const InputHandle=(value)=>{
+    if( typeof props.handler !=='undefined' )
+    {
+        console.log("SetupComponentBOM - InputHandle:" + value);
+        props.handler(value)
+    }
+     
+  };
+
   return (
     <div className='d-flex justify-content-between'>
         <label>{t(`${props.title}`)}:</label>
-        <input  type="text" value={input} onInput={(e) => setInput(e.target.value)}/> 
+        <input  type="text" value={input} onInput={ (e)=>{setInput(e.target.value);InputHandle({input})}}/> 
     </div>
   );
 }
