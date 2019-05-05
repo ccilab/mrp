@@ -25,30 +25,68 @@ const ShowStatus=(props)=>{
 }
 
 const SetupBOM=(props)=>{
-  const setPartNumber=(partNumber, props)=>{
-    if( typeof props.component.bom === 'undefined' )
-      props.component.bom = new initializeBOM();
 
-    props.component.bom.partNumber=partNumber;
 
-    console.log("SetupBOM - setPartNumber:" + props.component.bom.partNumber);
-  }
   const _className = props.component.displayLogic.selected ? 'bg-info text-primary border-0 py-0 px-2 fa fw fa-edit' : 'text-primary border-0 py-0 px-2 fa fw fa-edit';
   const bgColor = props.component.displayLogic.selected ? null : `${styles.cciBgColor}`;
+  
   const initializeBOM=()=>{
-     let bom={};
-     bom.OrderQty='';
-     bom.partNumber='';
-     bom.unitQty='';
-     bom.unitOfMeasure='';
-     bom.procurementType='';
-     bom.sku='';
-     bom.material='';
-     return bom;
+    let bom={};
+    bom.core=initializeBOMCore();
+    bom.extra=initializeBOMExtra();
+    return bom;
   }
  
+  const initializeBOMCore=()=>{
+     let core={};
+     core.OrderQty='';
+     core.partNumber='';
+     core.unitQty='';
+     core.unitOfMeasure='';
+     core.procurementType='';
+     core.warehouse='';
+     core.workshop='';
+     core.leadTime='';
+     core.rejectRate='';
+     core.supplier='';
+     core.supplierPartNumber='';
+     return core;
+  }
+
+  const initializeBOMExtra=()=>{
+    let extra={};
+    extra.SKU='';
+    extra.barcode='';
+    extra.revision='';
+    extra.refDesignator='';
+    extra.phase='';
+    extra.category='';
+    extra.material='';
+    extra.process='';
+    extra.unitCost='';
+    extra.assemblyLine='';
+    extra.description='';
+    extra.note='';
+    return extra;
+  }
+
+  const setPartName=(partName, component)=>{
+    component.businessLogic.name=partName;
+    console.log("SetupBOM - setPartName: " + component.businessLogic.name);
+  }
+  const setPartNumber=(partNumber, component)=>{
+    if( typeof component.bom === 'undefined' )
+      component.bom = new initializeBOM();
+
+    component.bom.core.partNumber=partNumber;
+
+    console.log("SetupBOM - setPartNumber: " + component.bom.core.partNumber);
+  }
+
+
   if( typeof props.component.bom === 'undefined' )
     props.component.bom = new initializeBOM();
+
 
   return (
     <Popup
@@ -62,19 +100,27 @@ const SetupBOM=(props)=>{
       }
       closeOnDocumentClick
       on="hover"
+      position='right center'
       mouseLeaveDelay={400}
       mouseEnterDelay={0}
-      contentStyle={{ padding: '0px', border: 'none' }}
+      contentStyle={{ padding: '0px', border: 'none', backgroundColor: `${bgColor}` }}
       arrow={true}
       >
       <div className={'bg-info d-flex flex-column'}>
        <SetupComponentBOM 
         title='part-name'
-        value={props.component.businessLogic.name}/>
+        value={props.component.businessLogic.name}
+        component={props.component}
+        handler={setPartName}
+        updateComponent={props.updateComponent}/>
+        <hr className='my-0 bg-info' style={{borderStyle:'insert', borderWidth: '0.08em', borderColor:`${styles.cciInfoBlue}`}}/>
+        
         <SetupComponentBOM 
         title='part-number'
-        value={props.component.bom.partNumber}
-        handler={setPartNumber}/>
+        value={props.component.bom.core.partNumber}
+        component={props.component}
+        handler={setPartNumber}
+        updateComponent={props.updateComponent}/>
       </div>
     </Popup>
   )
@@ -91,6 +137,7 @@ class CCiLabComponent extends Component {
     parents = this.currentComponent.businessLogic.parentIds;
     children = this.currentComponent.businessLogic.childIds;
     componentName = this.currentComponent.businessLogic.name;
+
     imgName = (this.currentComponent.businessLogic.imgFile.length !==0 ) ? '/images/'+ this.currentComponent.businessLogic.imgFile : 
                 (this.children.length !==0) ? '/images/cci_group_block.png' : '/images/cci_single_block_item.png';
     
@@ -315,6 +362,10 @@ class CCiLabComponent extends Component {
 
         let inlineMenuPosition = (this.parents.length === 0)? 'bottom left' : 'top left';
 
+        this.componentName = this.props.component.businessLogic.name;
+        console.log("CCiLabComponent: - render() - component name: "+this.componentName);
+        
+
         return (
           // https://developer.mozilla.org/en-US/docs/Web/API/HTML_Drag_and_Drop_API
           // https://developer.mozilla.org/en-US/docs/Web/API/HTML_Drag_and_Drop_API/Drag_operations#dragstart
@@ -442,6 +493,7 @@ class CCiLabComponent extends Component {
                   :
                   <SetupBOM
                     component={this.currentComponent}
+                    updateComponent={this.props.selectedComponentHandler}
                   />
                 }
                 </div>

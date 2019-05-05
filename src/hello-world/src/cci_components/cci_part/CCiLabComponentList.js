@@ -670,7 +670,6 @@ class CCiLabComponentList extends Component {
     //need to update showMyself to true after button is clicked to canExpend
     //need to update showMyself to false after button is clicked to collaps
     renderGreetings = () => {
-      console.log("CCiLabComponentList - renderGreetings")
       return ( (typeof this.state !== "undefined") && (typeof this.state.greetings !== "undefined" ) )? 
           this.state.greetings.map( (component) => {
                 if( component.displayLogic.showMyself === true )
@@ -694,6 +693,8 @@ class CCiLabComponentList extends Component {
                   // get parent's rectLeft as left offset of this component
                   if( typeof parentComponent !== "undefined" && typeof parentComponent.displayLogic.rectLeft !== "undefined" )
                       this.componentLeftOffset = parentComponent.displayLogic.rectLeft; //in rem
+
+                  console.log("CCiLabComponentList - renderGreetings - "+ component.businessLogic.name);
 
                   return <CCiLabComponent key={component.displayLogic.key} 
                                           component={component} 
