@@ -13,7 +13,8 @@ class ComponentContainer extends Component {
   osVersion = detectOSVersion();
 
   updateDimensions=()=>{
-    this.setState({width:`{window.innerWidth}`});
+    this.setState({width:`${window.innerWidth}`});
+    console.log("ComponentContainer - updateDimensions width: " + this.state.width);
   }
 
   componentDidMount =()=> {

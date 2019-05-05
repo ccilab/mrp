@@ -362,15 +362,31 @@ class CCiLabComponentList extends Component {
    * bind to resize event, Calculate & Update state of new dimensions
    */
     updateDimensions=()=>{
-     
+      const { t } = useTranslation('componentList', {useSuspense: false});
       let updatedRect = estimateComponentListRect(this.state.greetings, this.fontSize);
 
       this.componentListHeight = setListHeight( updatedRect, this.fontSize );
 
-      this.componentListWidth= setListWidth(1.0);
+      // find width of sub title 
+      let titleRect;
+      let subTitleRect;
+      if( this.state.setupBOM )
+      {
+        titleRect=getTextRect(t('subTitle-BOM-create-component'));
+        subTitleRect=getTextRect(t('subTitle-BOM-data'));
+      }
+      else
+      {
+        titleRect=getTextRect(t('subTitle-Progress-component-name'));
+        subTitleRect=getTextRect(t('subTitle-Progress-status'));
+      }
+
+      let listWidth = 2.8*titleRect.width + subTitleRect.width;
+
+      this.componentListWidth= setListWidth(1.0, listWidth );
 
       // this.setState( {  })
-      console.log("CCiLabComponentList - updateDimensions");
+      console.log("CCiLabComponentList - updateDimensions: list width: " + listWidth.toString() );
       this.setState( { greetings: this.state.greetings } );
     }
 
