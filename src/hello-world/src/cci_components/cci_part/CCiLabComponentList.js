@@ -15,7 +15,7 @@ import { setListHeight, setListWidth, getTextRect} from "./CCiLabUtility";
 // // based on https://github.com/ccilab/react-i18next/blob/master/example/react/src/index.js
 // // import i18n (needs to be bundled ;))
 // import './../l18n/i18n'
-import { useTranslation } from 'react-i18next';
+import { useTranslation, withTranslation } from 'react-i18next';
 import Popup from '../popup_menu/Popup'
 
 import {saveAs} from "./../file_save/FileSaver"
@@ -155,6 +155,7 @@ const hideChildren = (aComponent, aComponents, aShowStatus)=>{
 }
 
 
+
 const estimateComponentListRect = (componentLists, fontSize)=>{
   let componentListRect = document.getElementById( 'cciLabComponentListID' ).getBoundingClientRect();
   let updatedRect = {top: componentListRect.top, left: componentListRect.left, bottom: componentListRect.bottom, right: componentListRect.right*1.2 };
@@ -256,27 +257,45 @@ class CCiLabComponentList extends Component {
               setupBOM: false,
               isDropToSameParentWarning: false, 
               isDropToItselfWarning: false};
-    initialized = false;  //needed to avoid render without DOM
-    slidingComponentListIconClassName = this.state.visible? 'fa fa-angle-double-left' : 'fa fa-angle-double-right';
+
+    initialized=false;  //needed to avoid render without DOM
+    slidingComponentListIconClassName;
       
-    componentListWidth= setListWidth(1.0); //in px or vw,  
-    hideListWidth = setListWidth(0.99); //in px or vw
-    compnentListTranslateStyle=this.state.visible ? `translate3d(0, 0, 0)`: `translate3d(-${this.hideListWidth}, 0, 0)`;
-    lastScrollYPosition = 0;
+    componentListWidth; //in px or vw,  
+    hideListWidth; //in px or vw
+    compnentListTranslateStyle;
+    lastScrollYPosition;
 
-    movedComponentName='undefined';
-    targetComponentName='undefined';
+    movedComponentName;
+    targetComponentName;
 
-    componentLeftOffset = 1;  // in rem
+    componentLeftOffset;  // in rem
  
-    fontSize = this.props.fontSize; //default browser medium font size in px
+    fontSize; //default browser medium font size in px
     componentTitleLeft; //rem  1.5625
     componentTitleHeight; //rem 
     statusTitleLeft; 
     componentTitleTop;
-    componentListMinHeight = ( 150/this.fontSize +'rem' );  
-    componentListHeight= window.innerHeight <= 200 ? this.componentListMinHeight : 'auto';  //minimum height 
+    componentListMinHeight;  
+    componentListHeight;  //minimum height 
     
+    init=(props)=>{
+      this.slidingComponentListIconClassName = this.state.visible? 'fa fa-angle-double-left' : 'fa fa-angle-double-right';
+        
+      this.componentListWidth= setListWidth(1.0); //in px or vw,  
+      this.hideListWidth = setListWidth(0.99); //in px or vw
+      this.compnentListTranslateStyle=this.state.visible ? `translate3d(0, 0, 0)`: `translate3d(-${this.hideListWidth}, 0, 0)`;
+      this.lastScrollYPosition = 0;
+
+      this.movedComponentName='undefined';
+      this.targetComponentName='undefined';
+
+      this.componentLeftOffset = 1;  // in rem
+  
+      this.fontSize = props.fontSize; //default browser medium font size in px
+      this.componentListMinHeight = ( 150/this.fontSize +'rem' );  
+      this.componentListHeight= window.innerHeight <= 200 ? this.componentListMinHeight : 'auto';  //minimum height 
+    }
 
     // rootComponentName;
 
@@ -326,6 +345,7 @@ class CCiLabComponentList extends Component {
 
     // initialize first component's childKeyIds, reorder in following order: the first component, alarm status, warning status, no_issue status
     componentWillMount=()=>{
+      this.init(this.props);
       let currentSessionComponents=[];
  
       //#todo: need to query server to get a new components
@@ -358,30 +378,35 @@ class CCiLabComponentList extends Component {
 
     }
   
-    /**
-   * bind to resize event, Calculate & Update state of new dimensions
-   */
-    updateDimensions=()=>{
-      const { t } = useTranslation('componentList', {useSuspense: false});
-      let updatedRect = estimateComponentListRect(this.state.greetings, this.fontSize);
-
-      this.componentListHeight = setListHeight( updatedRect, this.fontSize );
-
+    getSubTitleWidth=()=>{
       // find width of sub title 
       let titleRect;
       let subTitleRect;
       if( this.state.setupBOM )
       {
-        titleRect=getTextRect(t('subTitle-BOM-create-component'));
-        subTitleRect=getTextRect(t('subTitle-BOM-data'));
+        titleRect=getTextRect('subTitle-BOM-create-component');
+        subTitleRect=getTextRect('subTitle-BOM-data');
       }
       else
       {
-        titleRect=getTextRect(t('subTitle-Progress-component-name'));
-        subTitleRect=getTextRect(t('subTitle-Progress-status'));
+        titleRect=getTextRect('subTitle-Progress-component-name');
+        subTitleRect=getTextRect('subTitle-Progress-status');
       }
-
+    
       let listWidth = 2.8*titleRect.width + subTitleRect.width;
+      return listWidth;
+    }
+    
+  
+    /**
+   * bind to resize event, Calculate & Update state of new dimensions
+   */
+    updateDimensions=()=>{
+      let updatedRect = estimateComponentListRect(this.state.greetings, this.fontSize);
+
+      this.componentListHeight = setListHeight( updatedRect, this.fontSize );
+
+      let listWidth = this.getSubTitleWidth();
 
       this.componentListWidth= setListWidth(1.0, listWidth );
 

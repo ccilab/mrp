@@ -132,29 +132,51 @@ class CCiLabComponent extends Component {
         
     };
 
-    currentComponent = this.props.component;
-    rootFontSize=this.props.fontSize;
-    parents = this.currentComponent.businessLogic.parentIds;
-    children = this.currentComponent.businessLogic.childIds;
-    componentName = this.currentComponent.businessLogic.name;
-
-    imgName = (this.currentComponent.businessLogic.imgFile.length !==0 ) ? '/images/'+ this.currentComponent.businessLogic.imgFile : 
-                (this.children.length !==0) ? '/images/cci_group_block.png' : '/images/cci_single_block_item.png';
     
-    // size of component button, rem - 16px is default font size of browser
-    componentLableHeight =  (this.parents.length === 0 ) ? 45/this.rootFontSize : (this.children.length !==0) ? 25/this.rootFontSize: 25/this.rootFontSize;
-    componentLableWidth = this.componentLableHeight;
-    inlineMenuHeight = 25/this.rootFontSize;
-    inlineMenuWidth = 25/this.rootFontSize;
-
-    progressStatus = this.currentComponent.businessLogic.status;
-    progressValue = this.currentComponent.businessLogic.progressPercent;
-
-    leftOffset =this.props.leftOffset  + ( (this.parents.length === 0 ) ? 0: this.componentLableWidth/2 );
-
     static inlineMenu ={ cmd: 'select',
                           itemId: 'undefined'};
 
+    currentComponent;
+    rootFontSize;
+    parents;
+    children;
+    componentName;
+
+    imgName;
+    
+    componentLableHeight;
+    componentLableWidth;
+    inlineMenuHeight;
+    inlineMenuWidth;
+
+    progressStatus;
+    progressValue;
+
+    leftOffset;
+
+
+
+    init=(props)=>{
+      this.currentComponent = props.component;
+      this.rootFontSize=props.fontSize;
+      this.parents = this.currentComponent.businessLogic.parentIds;
+      this.children = this.currentComponent.businessLogic.childIds;
+      this.componentName = this.currentComponent.businessLogic.name;
+
+      this.imgName = (this.currentComponent.businessLogic.imgFile.length !==0 ) ? '/images/'+ this.currentComponent.businessLogic.imgFile : 
+                  (this.children.length !==0) ? '/images/cci_group_block.png' : '/images/cci_single_block_item.png';
+      
+      // size of component button, rem - 16px is default font size of browser
+      this.componentLableHeight =  (this.parents.length === 0 ) ? 45/this.rootFontSize : (this.children.length !==0) ? 25/this.rootFontSize: 25/this.rootFontSize;
+      this.componentLableWidth = this.componentLableHeight;
+      this.inlineMenuHeight = 25/this.rootFontSize;
+      this.inlineMenuWidth = 25/this.rootFontSize;
+
+      this.progressStatus = this.currentComponent.businessLogic.status;
+      this.progressValue = this.currentComponent.businessLogic.progressPercent;
+
+      this.leftOffset =props.leftOffset  + ( (this.parents.length === 0 ) ? 0: this.componentLableWidth/2 );
+    }
       
     positioningComponentInfo=( )=>{
       
@@ -166,8 +188,8 @@ class CCiLabComponent extends Component {
     //   this.statusLabelLeft = getTextRect(this.componentName+':').width/this.rootFontSize;//this.nameLableLeft + getTextRect(this.componentName+':').width/this.rootFontSize + 3.5; // in rem, compnesate padding left for  ~ 4rem
     }
 
+    // life cycle function only calls once when class is created
     componentWillMount=()=>{
-      // this.positioningComponentInfo();
       this.setState({expended: this.props.component.displayLogic.canExpend});
     }
 
@@ -292,6 +314,8 @@ class CCiLabComponent extends Component {
     };
 
     render=()=>{
+        this.init(this.props);
+
         // console.log('CCiLabComponent::render() imgFile: ', this.imgName);
         let componentBase='d-flex cci-component-lable_position  align-items-center '; //align-items-center 
         let inlineMenuClassName ='btn rounded-circle align-self-center p-0 bg-primary ';
@@ -362,7 +386,7 @@ class CCiLabComponent extends Component {
 
         let inlineMenuPosition = (this.parents.length === 0)? 'bottom left' : 'top left';
 
-        this.componentName = this.props.component.businessLogic.name;
+        // this.componentName = this.props.component.businessLogic.name;
         console.log("CCiLabComponent: - render() - component name: "+this.componentName);
         
 
