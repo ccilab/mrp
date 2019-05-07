@@ -17,6 +17,7 @@ import { setListHeight, setListWidth, getTextRect} from "./CCiLabUtility";
 // import './../l18n/i18n'
 import { useTranslation, withTranslation } from 'react-i18next';
 import Popup from '../popup_menu/Popup'
+import {TextResizeDetector } from "./TextResizeDetector"
 
 import {saveAs} from "./../file_save/FileSaver"
 
@@ -158,7 +159,7 @@ const hideChildren = (aComponent, aComponents, aShowStatus)=>{
 
 const estimateComponentListRect = (componentLists, fontSize)=>{
   let componentListRect = document.getElementById( 'cciLabComponentListID' ).getBoundingClientRect();
-  let updatedRect = {top: componentListRect.top, left: componentListRect.left, bottom: componentListRect.bottom, right: componentListRect.right*1.2 };
+  let updatedRect = {top: componentListRect.top, left: componentListRect.left, bottom: componentListRect.bottom, right: componentListRect.right*1.2, width: componentListRect.width };
   
   let shownComponents = componentLists.filter(component=>component.displayLogic.showMyself === true)
   
@@ -228,8 +229,8 @@ const ComponentListTitle =(props)=>{
       arrow={true}
       >
       <div className={' bg-info'}>
-        <a key='en' href='#en' className={'nav-link px-1'} style={{ 'fontSize': '0.8rem'}} onClick={()=>{i18n.changeLanguage('en')}}>English</a>
-        <a key='zh-CN' href='#zh-CN' className={'nav-link px-1'} style={{ 'fontSize': '0.8rem'}} onClick={()=>{i18n.changeLanguage('zh-CN')}}>中文</a>
+        <a key='en' href='#en' className={'nav-link px-1 m-0 py-0'} style={{ 'fontSize': '0.8rem',  zIndex: 100}} onClick={()=>{i18n.changeLanguage('en')}}>English</a>
+        <a key='zh-CN' href='#zh-CN' className={'nav-link px-1 m-0 py-0'} style={{ 'fontSize': '0.8rem',  zIndex: 100}} onClick={()=>{i18n.changeLanguage('zh-CN')}}>中文</a>
       </div>
     </Popup>
   </div>
@@ -239,12 +240,12 @@ const ComponentListTitle =(props)=>{
 const ComponentListSubTitle = (props)=>{
   const { t } = useTranslation('componentList', {useSuspense: false});
   return ( 
-    <div className='d-flex align-items-center bg-info fa' style={{ 'height': `${props.height}rem`, 'width': `${props.width}`}}>
-        <span className={props.className} style={{'position':'relative',  'left':`${props.positionLeft}rem`, fontSize: '0.9rem'}}>{t(`${props.name}`)}</span>
-        <span className={props.className} style={{'position':'relative', 'left':`${props.ratePositionLeft}rem`, fontSize: '0.9rem'}}>{t(`${props.rateType}`)} 
+    <div  className='d-flex align-items-center bg-info fa' style={{ 'height': `${props.height}rem`, 'width': `${props.width}`}}>
+        <span id='subTitle-name' className={props.className} style={{'position':'relative',  'left':`${props.positionLeft}rem`, fontSize: '0.9rem'}}>{t(`${props.name}`)}</span>
+        <span id='subTitle-type' className={props.className} style={{'position':'relative', 'left':`${props.ratePositionLeft}rem`, fontSize: '0.9rem'}}>{t(`${props.rateType}`)} 
         </span> 
         {/* #todo - make title editable by user */}
-        <a href='#edit-title' className='border-0 text-primary text-nowrap p-0 nav-link fa fa-edit' style={{'position':'absolute', 'right':'0'}}></a>
+        {/* <a id='subTitle-edit' href='#edit-title' className='border-0 text-primary text-nowrap p-0 nav-link fa fa-edit' style={{'position':'absolute', 'right':'0'}}></a> */}
     </div>
   );
 }
@@ -254,7 +255,8 @@ class CCiLabComponentList extends Component {
     state = { greetings: undefined, 
               visible: true, 
               selected: 0, 
-              setupBOM: false,
+              setupBOM: false, 
+              fontSize: 23, //default browser medium font size in px
               isDropToSameParentWarning: false, 
               isDropToItselfWarning: false};
 
@@ -271,10 +273,10 @@ class CCiLabComponentList extends Component {
 
     componentLeftOffset;  // in rem
  
-    fontSize; //default browser medium font size in px
     componentTitleLeft; //rem  1.5625
     componentTitleHeight; //rem 
-    statusTitleLeft; 
+    statusTitleLeft;      //rem
+    rootComponentNameWidth;  //in rem
     componentTitleTop;
     componentListMinHeight;  
     componentListHeight;  //minimum height 
@@ -292,12 +294,22 @@ class CCiLabComponentList extends Component {
 
       this.componentLeftOffset = 1;  // in rem
   
-      this.fontSize = props.fontSize; //default browser medium font size in px
-      this.componentListMinHeight = ( 150/this.fontSize +'rem' );  
+      this.componentListMinHeight = ( 150/this.state.fontSize +'rem' );  
       this.componentListHeight= window.innerHeight <= 200 ? this.componentListMinHeight : 'auto';  //minimum height 
     }
 
-    // rootComponentName;
+    onFontResize=(e, args)=>{
+      this.setState( { fontSize: TextResizeDetector.getSize() } )
+      //alert("The width = " + this.state.fontSize);
+    }
+
+    
+
+    initTextResizeDetector=()=>{
+      let iBase = TextResizeDetector.addEventListener(this.onFontResize,null);
+      // alert("The base font size = " + iBase);
+      this.setState( { fontSize: iBase } )
+    }  
 
     positioningListTitle=(rootComponent)=>{ 
       let rootComponentName = rootComponent.businessLogic.name; 
@@ -306,21 +318,21 @@ class CCiLabComponentList extends Component {
       // this name gives approrated width 
       let titleRect=getTextRect('部件名:'); //部件名
             
-      let componentTitleWidth = titleRect.width/this.fontSize;  //in rem 
+      let componentTitleWidth = titleRect.width/this.state.fontSize;  //in rem 
        // console.log( 'CCiLabComponentList - componentTitleWidth (rem): ', componentTitleWidth);
 
       this.componentTitleLeft = (typeof rootComponent.displayLogic.rectLeft === 'undefined' || rootComponent.displayLogic.rectLeft === 0)? componentTitleWidth * 0.8 : rootComponent.displayLogic.rectLeft; //90% of title width,in rem
 
       this.componentLeftOffset = this.componentTitleLeft;
 
-      this.componentTitleHeight = (titleRect.height/this.fontSize)*1.4; //140% of title height, in rem
-      this.componentTitleTop = (this.componentTitleHeight - titleRect.height/this.fontSize)/2; //in rem
+      this.componentTitleHeight = (titleRect.height/this.state.fontSize)*1.4; //140% of title height, in rem
+      this.componentTitleTop = (this.componentTitleHeight - titleRect.height/this.state.fontSize)/2; //in rem
      
-      let rootComponentNameWidth = typeof rootComponentName !== "undefined" ?  getTextRect(rootComponentName).width/this.fontSize : componentTitleWidth;  //in rem
+      this.rootComponentNameWidth = typeof rootComponentName !== "undefined" ?  getTextRect(rootComponentName).width/this.state.fontSize : componentTitleWidth;  //in rem
       
-      // let rootImgBtnWith = 45/this.fontSize;  //also used in CCiLabComponent.js
-      this.statusTitleLeft = this.componentTitleLeft + componentTitleWidth + rootComponentNameWidth; //in rem + rootImgBtnWith
-      //alert("FontSize = " + this.fontSize + " The width = " + getTextRect(rootComponentName).width + " width/fontSize = "+ rootComponentNameWidth);
+      // let rootImgBtnWith = 45/this.state.fontSize;  //also used in CCiLabComponent.js
+      this.statusTitleLeft = this.componentTitleLeft + componentTitleWidth + this.rootComponentNameWidth; //in rem + rootImgBtnWith
+      //alert("FontSize = " + this.state.fontSize + " The width = " + getTextRect(rootComponentName).width + " width/fontSize = "+ rootComponentNameWidth);
       // status tile is from server or user input
     }
     
@@ -346,6 +358,10 @@ class CCiLabComponentList extends Component {
     // initialize first component's childKeyIds, reorder in following order: the first component, alarm status, warning status, no_issue status
     componentWillMount=()=>{
       this.init(this.props);
+
+      TextResizeDetector.TARGET_ELEMENT_ID = 'root';
+      TextResizeDetector.USER_INIT_FUNC = this.initTextResizeDetector;
+
       let currentSessionComponents=[];
  
       //#todo: need to query server to get a new components
@@ -380,21 +396,13 @@ class CCiLabComponentList extends Component {
   
     getSubTitleWidth=()=>{
       // find width of sub title 
-      let titleRect;
-      let subTitleRect;
-      if( this.state.setupBOM )
-      {
-        titleRect=getTextRect('subTitle-BOM-create-component');
-        subTitleRect=getTextRect('subTitle-BOM-data');
-      }
-      else
-      {
-        titleRect=getTextRect('subTitle-Progress-component-name');
-        subTitleRect=getTextRect('subTitle-Progress-status');
-      }
+      let subTitleNameRect =  document.getElementById( 'subTitle-name' ).getBoundingClientRect();
+      let subTitleTypeRect =  document.getElementById( 'subTitle-type' ).getBoundingClientRect();
+      // let subTitleEditIcon = document.getElementById( 'subTitle-edit' ).getBoundingClientRect();+ subTitleEditIcon.width
     
-      let listWidth = 2.8*titleRect.width + subTitleRect.width;
-      return listWidth;
+      let width = 2*(this.componentTitleLeft + this.rootComponentNameWidth )* this.state.fontSize + subTitleNameRect.width  + subTitleTypeRect.width ;
+   
+      return width;
     }
     
   
@@ -402,16 +410,23 @@ class CCiLabComponentList extends Component {
    * bind to resize event, Calculate & Update state of new dimensions
    */
     updateDimensions=()=>{
-      let updatedRect = estimateComponentListRect(this.state.greetings, this.fontSize);
+      let listRect = estimateComponentListRect(this.state.greetings, this.state.fontSize);
+      console.log('CCiLabComponentList - updateDimensions: list width '+ listRect.width);
 
-      this.componentListHeight = setListHeight( updatedRect, this.fontSize );
+      this.componentListHeight = setListHeight( listRect, this.state.fontSize );
 
-      let listWidth = this.getSubTitleWidth();
+      let titleWidth = this.getSubTitleWidth();
 
-      this.componentListWidth= setListWidth(1.0, listWidth );
+      console.log('CCiLabComponentList - updateDimensions: title width '+ titleWidth);
+
+      if( listRect.width <= titleWidth )
+        this.componentListWidth = titleWidth +'px';
+      else
+        this.componentListWidth = listRect.width +'px';
+        // this.componentListWidth= setListWidth(1.0, titleWidth );
 
       // this.setState( {  })
-      console.log("CCiLabComponentList - updateDimensions: list width: " + listWidth.toString() );
+      console.log("CCiLabComponentList - updateDimensions: used list width: " + this.componentListWidth );
       this.setState( { greetings: this.state.greetings } );
     }
 
@@ -429,7 +444,7 @@ class CCiLabComponentList extends Component {
 
     // shouldComponentUpdate =(nextProps, nextState)=>{
     //   console.log("CCiLabComponentList - shouldComponentUpdate")
-    //   return this.props.fontSize !== nextProps.fontSize || 
+    //   return 
     //         //  (typeof this.state.greetings !== "undefined" && this.state.greetings.length !== nextState.greetings.length ) ||
     //          this.state.setupBOM !== nextState.setupBOM ||
     //          this.state.selected !== nextState.selected
@@ -493,9 +508,9 @@ class CCiLabComponentList extends Component {
           });
           
           // create vertical scroll bar based on the height of component list dynamically
-          let updatedRect = estimateComponentListRect(currentSessionComponents, this.fontSize);
+          let updatedRect = estimateComponentListRect(currentSessionComponents, this.state.fontSize);
 
-          this.componentListHeight = setListHeight( updatedRect, this.fontSize );
+          this.componentListHeight = setListHeight( updatedRect, this.state.fontSize );
           this.componentListWidth = setListWidth(1.0);
 
           if( isRending )
@@ -707,6 +722,7 @@ class CCiLabComponentList extends Component {
 
     showSetupBOM=( isShowSetupBOM )=>{
       this.setState({setupBOM: isShowSetupBOM});
+      this.updateDimensions();
     }
     //need to update showMyself to true after button is clicked to canExpend
     //need to update showMyself to false after button is clicked to collaps
@@ -741,7 +757,7 @@ class CCiLabComponentList extends Component {
                                           component={component} 
                                           leftOffset={this.componentLeftOffset} 
                                           listWidth={this.componentListWidth}
-                                          fontSize={this.fontSize}
+                                          fontSize={this.state.fontSize}
                                           removeGreeting={this.removeGreeting} 
                                           showOrHideChildren={this.showOrHideChildren}
                                           selectedComponentHandler={this.selectedComponentHandler}
@@ -765,6 +781,7 @@ class CCiLabComponentList extends Component {
     }
 
     showSetupBOM=( isShowSetupBOM )=>{
+      this.updateDimensions();
       this.setState({setupBOM: isShowSetupBOM });
     }
 

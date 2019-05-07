@@ -96,14 +96,14 @@ const SetupBOM=(props)=>{
           id={`#component-${props.component.displayLogic.key}`}
           type="button"
           className={`${_className}`}
-          style={{'height': `auto`, backgroundColor: `${bgColor}`}}></button>
+          style={{'height': `auto`, backgroundColor: `${styles.cciBgColor}`}}></button>
       }
       closeOnDocumentClick
       on="hover"
       position='right center'
       mouseLeaveDelay={400}
       mouseEnterDelay={0}
-      contentStyle={{ padding: '0px', border: 'none', backgroundColor: `${bgColor}` }}
+      contentStyle={{ padding: '0px', border: 'none', backgroundColor: `${styles.cciBgColor}` }}
       arrow={true}
       >
       <div className={'bg-info d-flex flex-column'}>

@@ -5,10 +5,10 @@ import React, { Component } from "react";
 import CCiLabComponentList from "./CCiLabComponentList";
 import {detectOSVersion} from "./CCiLabUtility";
 
-import {TextResizeDetector } from "./TextResizeDetector"
+
 
 class ComponentContainer extends Component {
-  state = {  width: 0, fontSize: 23 };
+  state = {  width: 0 };
 
   osVersion = detectOSVersion();
 
@@ -18,22 +18,12 @@ class ComponentContainer extends Component {
   }
 
   componentDidMount =()=> {
-    window.addEventListener("resize", this.updateDimensions);
+  
   }
 
-  onFontResize=(e, args)=>{
-    this.setState( { fontSize: TextResizeDetector.getSize() } )
-    //alert("The width = " + this.state.fontSize);
-  }
 
-  initTextResizeDetector=()=>{
-    let iBase = TextResizeDetector.addEventListener(this.onFontResize,null);
-    // alert("The base font size = " + iBase);
-    this.setState( { fontSize: iBase } )
-  }  
   componentWillMount=()=>{
-    TextResizeDetector.TARGET_ELEMENT_ID = 'root';
-    TextResizeDetector.USER_INIT_FUNC = this.initTextResizeDetector;
+
   }
 
 
@@ -42,7 +32,7 @@ class ComponentContainer extends Component {
     return (
       <div className={`d-flex flex-row`}> 
         <div>
-            <CCiLabComponentList fontSize={this.state.fontSize}/>
+            <CCiLabComponentList />
         </div>     
 
 
