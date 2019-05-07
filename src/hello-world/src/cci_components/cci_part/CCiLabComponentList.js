@@ -300,14 +300,15 @@ class CCiLabComponentList extends Component {
 
     onFontResize=(e, args)=>{
       this.setState( { fontSize: TextResizeDetector.getSize() } )
-      //alert("The width = " + this.state.fontSize);
+      console.log("onFontResize: The new font size = " + this.state.fontSize);
+      this.updateDimensions();
     }
 
     
 
     initTextResizeDetector=()=>{
       let iBase = TextResizeDetector.addEventListener(this.onFontResize,null);
-      // alert("The base font size = " + iBase);
+      console.log("initTextResizeDetector: The base font size iBase: " + iBase);
       this.setState( { fontSize: iBase } )
     }  
 
@@ -359,7 +360,7 @@ class CCiLabComponentList extends Component {
     componentWillMount=()=>{
       this.init(this.props);
 
-      TextResizeDetector.TARGET_ELEMENT_ID = 'root';
+      TextResizeDetector.TARGET_ELEMENT_ID = 'temp-item';
       TextResizeDetector.USER_INIT_FUNC = this.initTextResizeDetector;
 
       let currentSessionComponents=[];
@@ -400,7 +401,7 @@ class CCiLabComponentList extends Component {
       let subTitleTypeRect =  document.getElementById( 'subTitle-type' ).getBoundingClientRect();
       // let subTitleEditIcon = document.getElementById( 'subTitle-edit' ).getBoundingClientRect();+ subTitleEditIcon.width
     
-      let width = 2*(this.componentTitleLeft + this.rootComponentNameWidth )* this.state.fontSize + subTitleNameRect.width  + subTitleTypeRect.width ;
+      let width = 3*(this.componentTitleLeft + this.rootComponentNameWidth )* this.state.fontSize + subTitleNameRect.width  + subTitleTypeRect.width ;
    
       return width;
     }
@@ -511,7 +512,7 @@ class CCiLabComponentList extends Component {
           let updatedRect = estimateComponentListRect(currentSessionComponents, this.state.fontSize);
 
           this.componentListHeight = setListHeight( updatedRect, this.state.fontSize );
-          this.componentListWidth = setListWidth(1.0);
+          this.componentListWidth = this.updateDimensions();
 
           if( isRending )
           {
