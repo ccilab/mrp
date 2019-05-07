@@ -421,10 +421,12 @@ class CCiLabComponentList extends Component {
       console.log('CCiLabComponentList - updateDimensions: title width '+ titleWidth);
 
       if( listRect.width <= titleWidth )
-        this.componentListWidth = titleWidth +'px';
+        this.componentListWidth = titleWidth;
       else
-        this.componentListWidth = listRect.width +'px';
-        // this.componentListWidth= setListWidth(1.0, titleWidth );
+        this.componentListWidth = listRect.width;
+        
+      this.hideListWidth = this.componentListWidth*0.99 +'px';
+      this.componentListWidth += 'px';
 
       // this.setState( {  })
       console.log("CCiLabComponentList - updateDimensions: used list width: " + this.componentListWidth );
