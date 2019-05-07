@@ -229,8 +229,8 @@ const ComponentListTitle =(props)=>{
       arrow={true}
       >
       <div className={' bg-info'}>
-        <a key='en' href='#en' className={'nav-link px-1 m-0 py-0'} style={{ 'fontSize': '0.8rem',  zIndex: 100}} onClick={()=>{i18n.changeLanguage('en')}}>English</a>
-        <a key='zh-CN' href='#zh-CN' className={'nav-link px-1 m-0 py-0'} style={{ 'fontSize': '0.8rem',  zIndex: 100}} onClick={()=>{i18n.changeLanguage('zh-CN')}}>中文</a>
+        <a key='en' href='#en' className={'nav-link px-1'} style={{ 'fontSize': '0.8rem'}} onClick={()=>{i18n.changeLanguage('en')}}>English</a>
+        <a key='zh-CN' href='#zh-CN' className={'nav-link px-1'} style={{ 'fontSize': '0.8rem'}} onClick={()=>{i18n.changeLanguage('zh-CN')}}>中文</a>
       </div>
     </Popup>
   </div>

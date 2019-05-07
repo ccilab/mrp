@@ -338,7 +338,7 @@ class CCiLabComponent extends Component {
         let draggableSetting = false;
         let  stickyWidth =  this.currentComponent.displayLogic.selected !== 0 ? `${this.props.listWidth}`:'auto';
 
-        let componentStyle = {'width': `${stickyWidth}`, 'left': `0rem`}
+        let componentStyle = {'width': `${stickyWidth}`, 'left': `0rem`, zIndex: 0} //z-index=0 so it's not block language dropdown list
 
         // very top component or component has children can't be moved 
         if ( this.parents.length === 0 || this.children.length !== 0 ) 
