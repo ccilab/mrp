@@ -421,7 +421,8 @@ class CCiLabComponent extends Component {
                         className={`${inlineMenuClassName} cusor-default fa fa-ellipsis-h`}
                         style={ {'visibility': `${inlineMenuIconVisiblity}`, 
                                   'height': `${this.inlineMenuHeight}rem`, 
-                                  'width': `${this.inlineMenuWidth}rem`} }
+                                  'width': `${this.inlineMenuWidth}rem`,
+                                  fontSize:  `${this.inlineMenuWidth*0.8}rem`}}
                         > 
                       </button>
                     }
@@ -443,7 +444,6 @@ class CCiLabComponent extends Component {
                            onClick={ this.moveStart }
                            /> :null}
                         <a href='#addNew' className={'align-self-center nav-link px-1 fa fa-plus'}/>
-                        <a href='#edit' className={'align-self-center nav-link px-1 fa fa-edit'}/>
                         { ( draggableSetting === 'true') ? <a href='#delete' className={'align-self-center nav-link px-1 fa fa-trash-alt'}/>:null}
                       </div> 
         						
