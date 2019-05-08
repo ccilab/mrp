@@ -1,0 +1,7 @@
+{
+    "delete" : "删除",
+    "add" : "添加",
+    "edit" : "编辑",
+    "move"  : "移动",
+    "select-component-name": "select component: '{{targetComponent}}'" 
+}

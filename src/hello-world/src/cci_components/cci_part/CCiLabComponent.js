@@ -7,6 +7,34 @@ import {SetupComponentBOM} from './CCiLabSetupComponentBOM';
 import styles from './../../dist/css/ccilab-component.css'
 import './../../dist/css/popup-menu.css'
  
+const InLineMenu=(props)=>{
+  const { t } = useTranslation('commands', {useSuspense: false});
+  return (
+    <div className={'d-flex ccilab-menu-item bg-info bg-faded align-items-center'}> 
+      {/* copy is not supported for now */}
+      {/* { ( draggableSetting === 'true') ? <a href='#copy' className={'align-self-center nav-link px-1 fa fa-copy '}/> :null} */}
+      { ( props.isDraggable === 'true') ? 
+        <a id={`${props.displayLogickey}`}
+          href={`#${t('move')}`}
+          className={'align-self-center nav-link px-1 fa fa-arrows-alt'}
+          onClick={ props.moveStartHandler }/> 
+          :
+          null
+      }
+      <a href={`#${t('add')}`} 
+        className={'align-self-center nav-link px-1 m-0 py-0 fa fa-plus'}/>
+      { ( props.isDraggable === 'true') ? 
+          <a id={`${props.key}`}
+            href={`#${t('delete')}`} 
+            className={'align-self-center nav-link px-1 fa fa-trash-alt'}
+            onClick={props.deleteCompnentHandler}/>
+          :
+          null
+      }
+    </div> 
+  );
+}
+
 const ShowStatus=(props)=>{
   const { t } = useTranslation('component', {useSuspense: false});
 
@@ -25,8 +53,6 @@ const ShowStatus=(props)=>{
 }
 
 const SetupBOM=(props)=>{
-
-
   const _className = props.component.displayLogic.selected ? 'bg-info text-primary border-0 py-0 px-2 fa fw fa-edit' : 'text-primary border-0 py-0 px-2 fa fw fa-edit';
   const bgColor = props.component.displayLogic.selected ? null : `${styles.cciBgColor}`;
   
@@ -341,14 +367,13 @@ class CCiLabComponent extends Component {
         let componentStyle = {'width': `${stickyWidth}`, 'left': `0rem`, zIndex: 0} //z-index=0 so it's not block language dropdown list
 
         // very top component or component has children can't be moved 
-        if ( this.parents.length === 0 || this.children.length !== 0 ) 
+        if ( this.parents.length === 0 || this.children.length !== 0 || this.props.isSetupBOM === false) 
         {
           draggableSetting= false;
           Component = ( this.currentComponent.displayLogic.selected !== 0 ) ? 'bg-info component_opacity ccilab-component-sticky-top' :'';  
 
-          if( this.currentComponent.displayLogic.selected !== 0 )
+          if( this.currentComponent.displayLogic.selected !== 0  )
           {
-           
             componentBase +=  ' cusor-default';
             btnClassName +=  ' cusor-default';
             imamgeClassName += ' cusor-default';
@@ -366,7 +391,7 @@ class CCiLabComponent extends Component {
           if( this.currentComponent.displayLogic.selected !== 0 )
           {
             
-            componentBase +=  (permissionEabled && this.currentComponent.displayLogic.selected !== 0 )? ' move':' cusor-default';
+            componentBase +=  (permissionEabled && this.currentComponent.displayLogic.selected !== 0 && this.props.isSetupBOM )? ' move':' cusor-default';
             btnClassName +=  (permissionEabled && this.currentComponent.displayLogic.selected !== 0 )? ' move':' cusor-default';
             imamgeClassName += (permissionEabled && this.currentComponent.displayLogic.selected !== 0 )? ' move':' cusor-default';
             componentNameClassName += (permissionEabled && this.currentComponent.displayLogic.selected !== 0 )? ' move':' cusor-default';
@@ -434,20 +459,11 @@ class CCiLabComponent extends Component {
                     mouseEnterDelay={0}
   						      contentStyle={{ padding: '0px', border: 'none' }}
                     >
-                    {/* <div className='ccilab-menu '> */}
-        							<div className={'d-flex ccilab-menu-item bg-info bg-faded align-items-center'}> 
-                        {/* copy is not supported for now */}
-                        {/* { ( draggableSetting === 'true') ? <a href='#copy' className={'align-self-center nav-link px-1 fa fa-copy '}/> :null} */}
-                        { ( draggableSetting === 'true') ? <a id={`${this.currentComponent.displayLogic.key}`}
-                           href='#move' 
-                           className={'align-self-center nav-link px-1 fa fa-arrows-alt'}
-                           onClick={ this.moveStart }
-                           /> :null}
-                        <a href='#addNew' className={'align-self-center nav-link px-1 fa fa-plus'}/>
-                        { ( draggableSetting === 'true') ? <a href='#delete' className={'align-self-center nav-link px-1 fa fa-trash-alt'}/>:null}
-                      </div> 
-        						
-                   {/*  </div> */}
+                    <InLineMenu  displayLogickey={this.currentComponent.displayLogic.key}
+                                 isDraggable={draggableSetting}
+                                 moveStartHandler={ this.moveStart }
+                                 deleteCompnentHandler={ this.props.deleteCompoent }
+                    />
                 </Popup> : null}
                  
                  {/* show collapse icon 'v' for all expendable components,
@@ -491,7 +507,7 @@ class CCiLabComponent extends Component {
                 </button>
                 {/* tag's id is used to handle drop event */}
                 <a  id={`${this.currentComponent.displayLogic.key}`} 
-                    href='#select-component-name' className={`${componentNameClassName}`} 
+                    href='#select-component' className={`${componentNameClassName}`} 
                     style={{ 'height': `auto` }} 
                     draggable={`${draggableSetting}`}
                     onClick={ this.componentSelected }

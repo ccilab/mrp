@@ -1,0 +1,7 @@
+{
+    "delete" : "delete",
+    "add" : "add",
+    "edit" : "edit",
+    "move"  : "move",
+    "select-component-name": "select component: '{{targetComponent}}'" 
+}
