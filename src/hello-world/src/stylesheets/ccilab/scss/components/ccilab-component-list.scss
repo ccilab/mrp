@@ -19,6 +19,8 @@
 // @import "./../../../vendors/fontawesome-5.6.1/scss/fontawesome";
 // @import "./../../../vendors/fontawesome-5.6.1/scss/solid";
 
+@import "./../utils/variables";
+
 .ccilab-rp-root{
   @import "./ccilab-component-list";
 }
