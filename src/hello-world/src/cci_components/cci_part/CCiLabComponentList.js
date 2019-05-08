@@ -179,7 +179,10 @@ const setComponentSelected = ( component, selectedComponentKey ) =>{
 
 // titleName, titleHeight, titleWidth, titlePositionLeft, titleClassName
 const ComponentListTitle =(props)=>{
-  console.log("call - ComponentListTitle:" + props.title );
+  // console.log("call - ComponentListTitle:" + props.title );
+  // https://react.i18next.com/latest/usetranslation-hook fa-spinner
+  // https://stackoverflow.com/questions/17737182/how-can-i-overlay-a-number-on-top-of-a-fontawesome-glyph
+  const { t, i18n } = useTranslation('componentList', {useSuspense: false});
 
   const setupBOM=(e)=>{
     props.changeBOMHandler(true)
@@ -189,11 +192,13 @@ const ComponentListTitle =(props)=>{
     props.changeBOMHandler(false)
   }
 
-  // https://react.i18next.com/latest/usetranslation-hook fa-spinner
-  // https://stackoverflow.com/questions/17737182/how-can-i-overlay-a-number-on-top-of-a-fontawesome-glyph
-  const { t, i18n } = useTranslation('componentList', {useSuspense: false});
+  const languageChangeHandler=(language)=>(e)=>{
+    i18n.changeLanguage(language);
+    props.titleWidthChangeHandler();
+  }
 
-  console.log("CCiLabComponentList - ComponentListTitle: i18n.language = " + i18n.language );
+  // console.log("CCiLabComponentList - ComponentListTitle: i18n.language = " + i18n.language );
+
    
   return (
     <div className='d-flex align-items-center bg-info fa' style={{ 'height': `${props.titleHeight}rem`, 'width': `${props.titleWidth}`}}>
@@ -228,8 +233,8 @@ const ComponentListTitle =(props)=>{
       arrow={true}
       >
       <div className={' bg-info'}>
-        <a key='en' href='#en' className={'nav-link px-1'} style={{ 'fontSize': '0.8rem'}} onClick={()=>{i18n.changeLanguage('en')}}>English</a>
-        <a key='zh-CN' href='#zh-CN' className={'nav-link px-1'} style={{ 'fontSize': '0.8rem'}} onClick={()=>{i18n.changeLanguage('zh-CN')}}>中文</a>
+        <a key='en' href='#en' className={'nav-link px-1'} style={{ 'fontSize': '0.8rem'}} onClick={languageChangeHandler('en')}>English</a>
+        <a key='zh-CN' href='#zh-CN' className={'nav-link px-1'} style={{ 'fontSize': '0.8rem'}} onClick={languageChangeHandler('zh-CN')}>中文</a>
       </div>
     </Popup>
   </div>
@@ -298,7 +303,7 @@ class CCiLabComponentList extends Component {
 
     onFontResize=(e, args)=>{
       this.setState( { fontSize: TextResizeDetector.getSize() } )
-      console.log("onFontResize: The new font size = " + this.state.fontSize);
+      // console.log("onFontResize: The new font size = " + this.state.fontSize);
       this.updateDimensions();
     }
 
@@ -306,8 +311,9 @@ class CCiLabComponentList extends Component {
 
     initTextResizeDetector=()=>{
       let iBase = TextResizeDetector.addEventListener(this.onFontResize,null);
-      console.log("initTextResizeDetector: The base font size iBase: " + iBase);
+      // console.log("initTextResizeDetector: The base font size iBase: " + iBase);
       this.setState( { fontSize: iBase } )
+      this.updateDimensions();
     }  
 
     positioningListTitle=(rootComponent)=>{ 
@@ -337,7 +343,7 @@ class CCiLabComponentList extends Component {
     
     toggleHideShowComponentList = () =>{
       // console.log('container: clicked before: - ', this.state.visible ? 'true' : 'false' );
-      console.log("CCiLabComponentList - toggleHideShowComponentList");
+      // console.log("CCiLabComponentList - toggleHideShowComponentList");
       this.setState( { visible: this.state.visible ? false : true } );
 
       this.compnentListTranslateStyle = this.state.visible ? `translate3d(0, 0, 0)`: `translate3d(-${this.hideListWidth}, 0, 0)`;
@@ -347,7 +353,7 @@ class CCiLabComponentList extends Component {
 
     // show or hide component list
     showHideComponentList=()=>{
-      console.log("CCiLabComponentList - showHideComponentList");
+      // console.log("CCiLabComponentList - showHideComponentList");
       this.toggleHideShowComponentList();
       //e.stopPropagation();
     };
@@ -410,13 +416,13 @@ class CCiLabComponentList extends Component {
    */
     updateDimensions=()=>{
       let listRect = estimateComponentListRect(this.state.greetings, this.state.fontSize);
-      console.log('CCiLabComponentList - updateDimensions: list width '+ listRect.width);
+      // console.log('CCiLabComponentList - updateDimensions: list width '+ listRect.width);
 
       this.componentListHeight = setListHeight( listRect, this.state.fontSize );
      
       let titleWidth = this.getSubTitleWidth();
 
-      console.log('CCiLabComponentList - updateDimensions: title width '+ titleWidth);
+      // console.log('CCiLabComponentList - updateDimensions: title width '+ titleWidth);
 
       if( listRect.width <= titleWidth )
         this.componentListWidth = titleWidth;
@@ -427,7 +433,7 @@ class CCiLabComponentList extends Component {
       this.componentListWidth += 'px';
 
       // this.setState( {  })
-      console.log("CCiLabComponentList - updateDimensions: used list width: " + this.componentListWidth );
+      // console.log("CCiLabComponentList - updateDimensions: used list width: " + this.componentListWidth );
       this.setState( { greetings: this.state.greetings } );
     }
 
@@ -516,7 +522,7 @@ class CCiLabComponentList extends Component {
 
           if( isRending )
           {
-            console.log("CCiLabComponentList - showOrHideChildren");
+            // console.log("CCiLabComponentList - showOrHideChildren");
             this.setState( { greetings: currentSessionComponents })
           }
           
@@ -533,7 +539,7 @@ class CCiLabComponentList extends Component {
 
       if( highlight === true )
       {
-        console.log("CCiLabComponentList - selectedComponentHandler");
+        // console.log("CCiLabComponentList - selectedComponentHandler");
         this.setState( { greetings: currentSessionComponents });
       }
     }
@@ -586,7 +592,7 @@ class CCiLabComponentList extends Component {
     moveComponentHandler = ( movedComponentDisplayKey, targetComponent ) =>{
       if( typeof movedComponentDisplayKey !== "undefined" && typeof( movedComponentDisplayKey) === "string" )
       {
-        console.log('moved component key: ', movedComponentDisplayKey);
+        // console.log('moved component key: ', movedComponentDisplayKey);
 
 
         let currentSessionComponents = this.state.greetings;
@@ -603,8 +609,8 @@ class CCiLabComponentList extends Component {
           return;
         }
         
-        console.log('source component name: ', movedComponent.businessLogic.name);
-        console.log('target component name: ', targetComponent.businessLogic.name);
+        // console.log('source component name: ', movedComponent.businessLogic.name);
+        // console.log('target component name: ', targetComponent.businessLogic.name);
  
         //component can't drop to its own parent, 
         if( targetComponent.displayLogic.childKeyIds.find( (key)=>{ return key === sourceId}) )
@@ -612,7 +618,7 @@ class CCiLabComponentList extends Component {
           this.targetComponentName = targetComponent.businessLogic.name;
           this.movedComponentName = movedComponent.businessLogic.name;
 
-          console.log("CCiLabComponentList - moveComponentHandler 1");
+          // console.log("CCiLabComponentList - moveComponentHandler 1");
 
           this.setState( {isDropToSameParentWarning: true} );
           return;
@@ -624,7 +630,7 @@ class CCiLabComponentList extends Component {
           this.targetComponentName = targetComponent.businessLogic.name;
           this.movedComponentName = movedComponent.businessLogic.name;
 
-          console.log("CCiLabComponentList - moveComponentHandler 2");
+          // console.log("CCiLabComponentList - moveComponentHandler 2");
 
           this.setState( {isDropToItselfWarning: true} );
           return;
@@ -636,7 +642,7 @@ class CCiLabComponentList extends Component {
           this.targetComponentName = targetComponent.businessLogic.name;
           this.movedComponentName = movedComponent.businessLogic.name;
 
-          console.log("CCiLabComponentList - moveComponentHandler 3");
+          // console.log("CCiLabComponentList - moveComponentHandler 3");
           this.setState( {isDropToSameParentWarning: true} );
           return;
         }
@@ -714,7 +720,7 @@ class CCiLabComponentList extends Component {
             //check if moved component progress status need to change (#todo)
  
             // update greetings list
-            console.log("CCiLabComponentList - moveComponentHandler 4 ")
+            // console.log("CCiLabComponentList - moveComponentHandler 4 ")
             this.setState( { greetings: updatedSessionComponents });
         }
         
@@ -808,7 +814,7 @@ class CCiLabComponentList extends Component {
  
       let listTitleClassName='border-0 text-primary text-nowrap';
 
-      console.log( "CCiLabComponentList - call render() ");
+      // console.log( "CCiLabComponentList - call render() ");
       return (
         <div className={`d-flex align-items-center`} >
           {/* <AddGreeter addGreeting={this.addGreeting} /> */}
@@ -829,14 +835,16 @@ class CCiLabComponentList extends Component {
                                       titlePositionLeft= {this.componentTitleLeft}
                                       titleClassName = {listTitleClassName}
                                       setupBOM = {this.state.setupBOM} 
-                                      changeBOMHandler = {this.showSetupBOM}/> :
+                                      changeBOMHandler = {this.showSetupBOM}
+                                      titleWidthChangeHandler = {this.updateDimensions}/> :
                                 <ComponentListTitle title='title-Progress' 
                                       titleHeight={this.componentTitleHeight}
                                       titleWidth={this.componentListWidth}
                                       titlePositionLeft= {this.componentTitleLeft}
                                       titleClassName = {listTitleClassName}
                                       setupBOM = {this.state.setupBOM} 
-                                      changeBOMHandler = {this.showSetupBOM}/>
+                                      changeBOMHandler = {this.showSetupBOM}
+                                      titleWidthChangeHandler = {this.updateDimensions}/>
                   }
                   <hr className='my-0 bg-info' style={{borderStyle:'groove', borderWidth: '0.08em', borderColor:`${styles.cciInfoBlue}`}}/>
 
