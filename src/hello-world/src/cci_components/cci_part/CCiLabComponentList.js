@@ -15,7 +15,7 @@ import { setListHeight, setListWidth, getTextRect} from "./CCiLabUtility";
 // // based on https://github.com/ccilab/react-i18next/blob/master/example/react/src/index.js
 // // import i18n (needs to be bundled ;))
 // import './../l18n/i18n'
-import { useTranslation, withTranslation } from 'react-i18next';
+import { useTranslation } from 'react-i18next';
 import Popup from '../popup_menu/Popup'
 import {TextResizeDetector } from "./TextResizeDetector"
 
@@ -156,7 +156,6 @@ const hideChildren = (aComponent, aComponents, aShowStatus)=>{
 }
 
 
-
 const estimateComponentListRect = (componentLists, fontSize)=>{
   let componentListRect = document.getElementById( 'cciLabComponentListID' ).getBoundingClientRect();
   let updatedRect = {top: componentListRect.top, left: componentListRect.left, bottom: componentListRect.bottom, right: componentListRect.right*1.2, width: componentListRect.width };
@@ -240,7 +239,7 @@ const ComponentListTitle =(props)=>{
 const ComponentListSubTitle = (props)=>{
   const { t } = useTranslation('componentList', {useSuspense: false});
   return ( 
-    <div  className='d-flex align-items-center bg-info fa' style={{ 'height': `${props.height}rem`, 'width': `${props.width}`}}>
+    <div className='d-flex align-items-center bg-info fa' style={{ 'height': `${props.height}rem`, 'width': `${props.width}`}}>
         <span id='subTitle-name' className={props.className} style={{'position':'relative',  'left':`${props.positionLeft}rem`, fontSize: '0.9rem'}}>{t(`${props.name}`)}</span>
         <span id='subTitle-type' className={props.className} style={{'position':'relative', 'left':`${props.ratePositionLeft}rem`, fontSize: '0.9rem'}}>{t(`${props.rateType}`)} 
         </span> 
@@ -259,8 +258,7 @@ class CCiLabComponentList extends Component {
               fontSize: 23, //default browser medium font size in px
               isDropToSameParentWarning: false, 
               isDropToItselfWarning: false};
-
-    initialized=false;  //needed to avoid render without DOM
+    initialized = false;  //needed to avoid render without DOM
     slidingComponentListIconClassName;
       
     componentListWidth; //in px or vw,  
@@ -402,10 +400,10 @@ class CCiLabComponentList extends Component {
       // let subTitleEditIcon = document.getElementById( 'subTitle-edit' ).getBoundingClientRect();+ subTitleEditIcon.width
     
       let width = 3*(this.componentTitleLeft + this.rootComponentNameWidth )* this.state.fontSize + subTitleNameRect.width  + subTitleTypeRect.width ;
-   
+
       return width;
     }
-    
+  
   
     /**
    * bind to resize event, Calculate & Update state of new dimensions
@@ -415,7 +413,7 @@ class CCiLabComponentList extends Component {
       console.log('CCiLabComponentList - updateDimensions: list width '+ listRect.width);
 
       this.componentListHeight = setListHeight( listRect, this.state.fontSize );
-
+     
       let titleWidth = this.getSubTitleWidth();
 
       console.log('CCiLabComponentList - updateDimensions: title width '+ titleWidth);

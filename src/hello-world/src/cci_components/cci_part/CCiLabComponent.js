@@ -127,10 +127,10 @@ const SetupBOM=(props)=>{
 }
 
 class CCiLabComponent extends Component {
-    state = {
-        expended:  true,
-        
-    };
+        state = {
+            expended:  true,
+           
+        };
 
     
     static inlineMenu ={ cmd: 'select',
@@ -164,9 +164,9 @@ class CCiLabComponent extends Component {
       this.componentName = this.currentComponent.businessLogic.name;
 
       this.imgName = (this.currentComponent.businessLogic.imgFile.length !==0 ) ? '/images/'+ this.currentComponent.businessLogic.imgFile : 
-                  (this.children.length !==0) ? '/images/cci_group_block.png' : '/images/cci_single_block_item.png';
-      
-      // size of component button, rem - 16px is default font size of browser
+                    (this.children.length !==0) ? '/images/cci_group_block.png' : '/images/cci_single_block_item.png';
+        
+        // size of component button, rem - 16px is default font size of browser
       this.componentLableHeight =  (this.parents.length === 0 ) ? 45/this.rootFontSize : (this.children.length !==0) ? 25/this.rootFontSize: 25/this.rootFontSize;
       this.componentLableWidth = this.componentLableHeight;
       this.inlineMenuHeight = 25/this.rootFontSize;
@@ -413,7 +413,7 @@ class CCiLabComponent extends Component {
                 {/* a badge to show menu to move/copy/delete/edit component, only sole children component has move and copy option */}
                 {/* https://github.com/yjose/reactjs-popup/blob/master/docs/src/examples/Demo.js */}
                 { this.props.isSetupBOM ? 
-                  <Popup 
+                <Popup 
                     trigger={
                       <button 
                         type="button"
@@ -435,14 +435,14 @@ class CCiLabComponent extends Component {
                     >
                     {/* <div className='ccilab-menu '> */}
         							<div className={'d-flex ccilab-menu-item bg-info bg-faded align-items-center'}> 
-                        {/* copy is not supported for now*/}
+                        {/* copy is not supported for now */}
                         {/* { ( draggableSetting === 'true') ? <a href='#copy' className={'align-self-center nav-link px-1 fa fa-copy '}/> :null} */}
                         { ( draggableSetting === 'true') ? <a id={`${this.currentComponent.displayLogic.key}`}
                            href='#move' 
                            className={'align-self-center nav-link px-1 fa fa-arrows-alt'}
                            onClick={ this.moveStart }
                            /> :null}
-                        <a href='#addNew' className={'align-self-center nav-link px-1 fa fa-plus'}/> 
+                        <a href='#addNew' className={'align-self-center nav-link px-1 fa fa-plus'}/>
                         <a href='#edit' className={'align-self-center nav-link px-1 fa fa-edit'}/>
                         { ( draggableSetting === 'true') ? <a href='#delete' className={'align-self-center nav-link px-1 fa fa-trash-alt'}/>:null}
                       </div> 
@@ -503,17 +503,17 @@ class CCiLabComponent extends Component {
                 
                 {/* tag's id is used to handle drop event */}
                 { this.props.isSetupBOM === false ? 
-                  <ShowStatus 
-                    statusId={`${this.currentComponent.displayLogic.key}`} 
-                    statusClassName={`badge-pill badge-${this.progressStatus} ${statusBadgeIconClassName}`} 
-                    statusDraggable={`${draggableSetting}`}
-                    onClickHandler={ this.componentSelected }
-                    onDragStartHandler={ draggableSetting === 'true' ? this.dragStart : null}
-                    onDragOverHandler={ this.dragOver }
-                    onDropHandler={  this.doDrop } 
-                    progress={this.progressValue}
-                    remainingTime= {this.currentComponent.businessLogic.remainDays}
-                  />
+                <ShowStatus 
+                  statusId={`${this.currentComponent.displayLogic.key}`} 
+                  statusClassName={`badge-pill badge-${this.progressStatus} ${statusBadgeIconClassName}`} 
+                  statusDraggable={`${draggableSetting}`}
+                  onClickHandler={ this.componentSelected }
+                  onDragStartHandler={ draggableSetting === 'true' ? this.dragStart : null}
+                  onDragOverHandler={ this.dragOver }
+                  onDropHandler={  this.doDrop } 
+                  progress={this.progressValue}
+                  remainingTime= {this.currentComponent.businessLogic.remainDays}
+                />
                   :
                   <SetupBOM
                     component={this.currentComponent}
