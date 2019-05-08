@@ -24,15 +24,28 @@ export  const setListHeight = (rect, fondSize) => {
   }
   
 // in vw
-export  const setListWidth = (factor) =>{
-    let osVersion = detectOSVersion();
+export  const setListWidth = (factor, width) =>{
     let ListWidth;
-    // on iphone 4S, os is 9.3.5 needs workaround to hide list
-    if( osVersion.os === 'iOS' && osVersion.osMajorVersion < 10 )
-        ListWidth = window.innerWidth*(window.innerWidth <= 330 ? 0.8 : window.innerWidth <= 600 ? 0.6 : window.innerWidth <= 800 ? 0.50 : 0.4 );
-    else
-        ListWidth = window.innerWidth <= 330 ? 90 : window.innerWidth <= 600 ? 70 : window.innerWidth <= 800 ? 50 : window.innerWidth <= 1000 ? 40 : window.innerWidth <= 1500 ? 30:30;
-    return (ListWidth * factor).toString() + ((osVersion.os === 'iOS' && osVersion.osMajorVersion < 10)? 'px':'vw' );
+
+    if( typeof width !== 'undefined')
+    {
+        if( window.innerWidth <= width ) 
+        {
+            ListWidth = width;
+            return (ListWidth * factor).toString() + 'px';
+        }
+    }
+    else 
+    {
+        let osVersion = detectOSVersion();
+       
+        // on iphone 4S, os is 9.3.5 needs workaround to hide list
+        if( osVersion.os === 'iOS' && osVersion.osMajorVersion < 10 )
+            ListWidth = window.innerWidth*(window.innerWidth <= 330 ? 0.8 : window.innerWidth <= 600 ? 0.6 : window.innerWidth <= 800 ? 0.50 : 0.4 );
+        else
+            ListWidth = window.innerWidth <= 330 ? 90 : window.innerWidth <= 600 ? 70 : window.innerWidth <= 800 ? 50 : window.innerWidth <= 1000 ? 40 : window.innerWidth <= 1500 ? 30:30;
+        return (ListWidth * factor).toString() + ((osVersion.os === 'iOS' && osVersion.osMajorVersion < 10)? 'px':'vw' );
+    }
 }
   
   

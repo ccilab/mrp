@@ -1,13 +1,14 @@
 import React, { Component } from 'react';
 import Popup from '../popup_menu/Popup'
 import { useTranslation } from 'react-i18next';
+import {SetupComponentBOM} from './CCiLabSetupComponentBOM';
 
 
-import './../../dist/css/ccilab-component.css'
+import styles from './../../dist/css/ccilab-component.css'
 import './../../dist/css/popup-menu.css'
  
 const ShowStatus=(props)=>{
-  const { t, i18n, ready } = useTranslation('componentList', {useSuspense: false});
+  const { t } = useTranslation('component', {useSuspense: false});
 
   return (
     <span id={props.statusId} 
@@ -22,34 +23,160 @@ const ShowStatus=(props)=>{
     </span> 
   );
 }
+
+const SetupBOM=(props)=>{
+
+
+  const _className = props.component.displayLogic.selected ? 'bg-info text-primary border-0 py-0 px-2 fa fw fa-edit' : 'text-primary border-0 py-0 px-2 fa fw fa-edit';
+  const bgColor = props.component.displayLogic.selected ? null : `${styles.cciBgColor}`;
+  
+  const initializeBOM=()=>{
+    let bom={};
+    bom.core=initializeBOMCore();
+    bom.extra=initializeBOMExtra();
+    return bom;
+  }
+ 
+  const initializeBOMCore=()=>{
+     let core={};
+     core.OrderQty='';
+     core.partNumber='';
+     core.unitQty='';
+     core.unitOfMeasure='';
+     core.procurementType='';
+     core.warehouse='';
+     core.workshop='';
+     core.leadTime='';
+     core.rejectRate='';
+     core.supplier='';
+     core.supplierPartNumber='';
+     return core;
+  }
+
+  const initializeBOMExtra=()=>{
+    let extra={};
+    extra.SKU='';
+    extra.barcode='';
+    extra.revision='';
+    extra.refDesignator='';
+    extra.phase='';
+    extra.category='';
+    extra.material='';
+    extra.process='';
+    extra.unitCost='';
+    extra.assemblyLine='';
+    extra.description='';
+    extra.note='';
+    return extra;
+  }
+
+  const setPartName=(partName, component)=>{
+    component.businessLogic.name=partName;
+    console.log("SetupBOM - setPartName: " + component.businessLogic.name);
+  }
+  const setPartNumber=(partNumber, component)=>{
+    if( typeof component.bom === 'undefined' )
+      component.bom = new initializeBOM();
+
+    component.bom.core.partNumber=partNumber;
+
+    console.log("SetupBOM - setPartNumber: " + component.bom.core.partNumber);
+  }
+
+
+  if( typeof props.component.bom === 'undefined' )
+    props.component.bom = new initializeBOM();
+
+
+  return (
+    <Popup
+      trigger={
+        <button 
+          key={`component-${props.component.displayLogic.key}`}
+          id={`#component-${props.component.displayLogic.key}`}
+          type="button"
+          className={`${_className}`}
+          style={{'height': `auto`, backgroundColor: `${styles.cciBgColor}`}}></button>
+      }
+      closeOnDocumentClick
+      on="hover"
+      position='right center'
+      mouseLeaveDelay={400}
+      mouseEnterDelay={0}
+      contentStyle={{ padding: '0px', border: 'none', backgroundColor: `${styles.cciBgColor}` }}
+      arrow={true}
+      >
+      <div className={'bg-info d-flex flex-column'}>
+       <SetupComponentBOM 
+        title='part-name'
+        value={props.component.businessLogic.name}
+        component={props.component}
+        handler={setPartName}
+        updateComponent={props.updateComponent}/>
+        <hr className='my-0 bg-info' style={{borderStyle:'insert', borderWidth: '0.08em', borderColor:`${styles.cciInfoBlue}`}}/>
+        
+        <SetupComponentBOM 
+        title='part-number'
+        value={props.component.bom.core.partNumber}
+        component={props.component}
+        handler={setPartNumber}
+        updateComponent={props.updateComponent}/>
+      </div>
+    </Popup>
+  )
+}
+
 class CCiLabComponent extends Component {
         state = {
             expended:  true,
            
         };
 
-        currentComponent = this.props.component;
-        rootFontSize=this.props.fontSize;
-        parents = this.currentComponent.businessLogic.parentIds;
-        children = this.currentComponent.businessLogic.childIds;
-        componentName = this.currentComponent.businessLogic.name;
-        imgName = (this.currentComponent.businessLogic.imgFile.length !==0 ) ? '/images/'+ this.currentComponent.businessLogic.imgFile : 
+        
+    static inlineMenu ={ cmd: 'select',
+                          itemId: 'undefined'};
+
+    currentComponent;
+    rootFontSize;
+    parents;
+    children;
+    componentName;
+
+    imgName;
+
+    componentLableHeight;
+    componentLableWidth;
+    inlineMenuHeight;
+    inlineMenuWidth;
+
+    progressStatus;
+    progressValue;
+
+    leftOffset;
+
+
+
+    init=(props)=>{
+      this.currentComponent = props.component;
+      this.rootFontSize=props.fontSize;
+      this.parents = this.currentComponent.businessLogic.parentIds;
+      this.children = this.currentComponent.businessLogic.childIds;
+      this.componentName = this.currentComponent.businessLogic.name;
+
+      this.imgName = (this.currentComponent.businessLogic.imgFile.length !==0 ) ? '/images/'+ this.currentComponent.businessLogic.imgFile : 
                     (this.children.length !==0) ? '/images/cci_group_block.png' : '/images/cci_single_block_item.png';
         
         // size of component button, rem - 16px is default font size of browser
-        componentLableHeight =  (this.parents.length === 0 ) ? 45/this.rootFontSize : (this.children.length !==0) ? 25/this.rootFontSize: 25/this.rootFontSize;
-        componentLableWidth = this.componentLableHeight;
-        inlineMenuHeight = 25/this.rootFontSize;
-        inlineMenuWidth = 25/this.rootFontSize;
+      this.componentLableHeight =  (this.parents.length === 0 ) ? 45/this.rootFontSize : (this.children.length !==0) ? 25/this.rootFontSize: 25/this.rootFontSize;
+      this.componentLableWidth = this.componentLableHeight;
+      this.inlineMenuHeight = 25/this.rootFontSize;
+      this.inlineMenuWidth = 25/this.rootFontSize;
 
-        progressStatus = this.currentComponent.businessLogic.status;
-        progressValue = this.currentComponent.businessLogic.progressPercent;
+      this.progressStatus = this.currentComponent.businessLogic.status;
+      this.progressValue = this.currentComponent.businessLogic.progressPercent;
 
-        leftOffset =this.props.leftOffset  + ( (this.parents.length === 0 ) ? 0: this.componentLableWidth/2 );
-
-        static inlineMenu ={ cmd: 'select',
-                             itemId: 'undefined'};
-
+      this.leftOffset =props.leftOffset  + ( (this.parents.length === 0 ) ? 0: this.componentLableWidth/2 );
+    }
       
     positioningComponentInfo=( )=>{
       
@@ -61,8 +188,8 @@ class CCiLabComponent extends Component {
     //   this.statusLabelLeft = getTextRect(this.componentName+':').width/this.rootFontSize;//this.nameLableLeft + getTextRect(this.componentName+':').width/this.rootFontSize + 3.5; // in rem, compnesate padding left for  ~ 4rem
     }
 
+    // life cycle function only calls once when class is created
     componentWillMount=()=>{
-      // this.positioningComponentInfo();
       this.setState({expended: this.props.component.displayLogic.canExpend});
     }
 
@@ -184,9 +311,11 @@ class CCiLabComponent extends Component {
       }
 
       console.log('droped from source: ', sourceId);
-    }
+    };
 
     render=()=>{
+        this.init(this.props);
+
         // console.log('CCiLabComponent::render() imgFile: ', this.imgName);
         let componentBase='d-flex cci-component-lable_position  align-items-center '; //align-items-center 
         let inlineMenuClassName ='btn rounded-circle align-self-center p-0 bg-primary ';
@@ -209,7 +338,7 @@ class CCiLabComponent extends Component {
         let draggableSetting = false;
         let  stickyWidth =  this.currentComponent.displayLogic.selected !== 0 ? `${this.props.listWidth}`:'auto';
 
-        let componentStyle = {'width': `${stickyWidth}`, 'left': `0rem`}
+        let componentStyle = {'width': `${stickyWidth}`, 'left': `0rem`, zIndex: 0} //z-index=0 so it's not block language dropdown list
 
         // very top component or component has children can't be moved 
         if ( this.parents.length === 0 || this.children.length !== 0 ) 
@@ -257,6 +386,10 @@ class CCiLabComponent extends Component {
 
         let inlineMenuPosition = (this.parents.length === 0)? 'bottom left' : 'top left';
 
+        // this.componentName = this.props.component.businessLogic.name;
+        console.log("CCiLabComponent: - render() - component name: "+this.componentName);
+        
+
         return (
           // https://developer.mozilla.org/en-US/docs/Web/API/HTML_Drag_and_Drop_API
           // https://developer.mozilla.org/en-US/docs/Web/API/HTML_Drag_and_Drop_API/Drag_operations#dragstart
@@ -279,6 +412,7 @@ class CCiLabComponent extends Component {
               <div className={`${componentBase}`} style={{'left':`${this.leftOffset}rem`}}>
                 {/* a badge to show menu to move/copy/delete/edit component, only sole children component has move and copy option */}
                 {/* https://github.com/yjose/reactjs-popup/blob/master/docs/src/examples/Demo.js */}
+                { this.props.isSetupBOM ? 
                 <Popup 
                     trigger={
                       <button 
@@ -314,7 +448,7 @@ class CCiLabComponent extends Component {
                       </div> 
         						
                    {/*  </div> */}
-                </Popup> 
+                </Popup> : null}
                  
                  {/* show collapse icon 'v' for all expendable components,
                   show expendable icon '>' for those components have children except the top component
@@ -368,6 +502,7 @@ class CCiLabComponent extends Component {
                 </a>
                 
                 {/* tag's id is used to handle drop event */}
+                { this.props.isSetupBOM === false ? 
                 <ShowStatus 
                   statusId={`${this.currentComponent.displayLogic.key}`} 
                   statusClassName={`badge-pill badge-${this.progressStatus} ${statusBadgeIconClassName}`} 
@@ -379,6 +514,12 @@ class CCiLabComponent extends Component {
                   progress={this.progressValue}
                   remainingTime= {this.currentComponent.businessLogic.remainDays}
                 />
+                  :
+                  <SetupBOM
+                    component={this.currentComponent}
+                    updateComponent={this.props.selectedComponentHandler}
+                  />
+                }
                 </div>
             </div>
         )

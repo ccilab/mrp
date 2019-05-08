@@ -3,7 +3,7 @@
    overflow-y: auto;  //have to set y to scroll otherwise Edge horizontal scroll will no resonse in all the components are within the viewport
    overflow-x: auto;
    border: thin solid #00D8FF;
-   background-color: #DDEEFF;   
+   background-color: $cci-bg-color;   
    z-index: 0; 
  }
   
