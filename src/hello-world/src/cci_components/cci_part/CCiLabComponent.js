@@ -6,7 +6,43 @@ import {SetupComponentBOM} from './CCiLabSetupComponentBOM';
 
 import styles from './../../dist/css/ccilab-component.css'
 import './../../dist/css/popup-menu.css'
- 
+
+const ShowImage=(props)=>{
+  const { t } = useTranslation('commands', {useSuspense: false});
+
+  return (
+    //  {/* no style for top element so the button can host the image, other elements need style to set image position  */}
+    <span>
+     { ( props.isSetupBOM === true ) ? 
+        <a id={`${props.displayLogickey}`} 
+        className={`${props.className}`} src={props.name} alt={`${t('upload-image')}`}
+        style={{'height': `${props.height}rem`, 'width': `${props.width}rem`}} 
+        draggable={`${props.isDraggable}`}
+        onDragStart={ props.isDraggable === 'true' ? props.dragStartHandler : null}
+        onDragOver={ props.dragOverHandler }
+        onDrop={  props.doDropHander }/>
+      :
+        <span>
+       { (props.name.length !== 0 ) ? 
+        // {/* tag's id used to handle drop event float-left*/}
+        // className: 'cci-component__img rounded-circle align-self-center  cusor-default or move'
+        <img id={`${props.displayLogickey}`} 
+             className={`${props.className}`} src={props.name} alt={`${t('upload-image')}`}
+             style={{'height': `${props.height}rem`, 'width': `${props.width}rem`}} 
+             draggable={`${props.isDraggable}`}
+             onDragStart={ props.isDraggable === 'true' ? props.dragStartHandler : null}
+             onDragOver={ props.dragOverHandler }
+             onDrop={  props.doDropHander }>
+        </img>
+        // need to replace with + icon single "fa fa-stop", group "fa fa-th-large"
+        :null
+       }
+       </span>
+     }  
+    </span>
+  );
+}
+
 const InLineMenu=(props)=>{
   const { t } = useTranslation('commands', {useSuspense: false});
   return (
@@ -54,7 +90,7 @@ const ShowStatus=(props)=>{
 
 const SetupBOM=(props)=>{
   const _className = props.component.displayLogic.selected ? 'bg-info text-primary border-0 py-0 px-2 fa fw fa-edit' : 'text-primary border-0 py-0 px-2 fa fw fa-edit';
-  const bgColor = props.component.displayLogic.selected ? null : `${styles.cciBgColor}`;
+  // const bgColor = props.component.displayLogic.selected ? null : `${styles.cciBgColor}`;
   
   const initializeBOM=()=>{
     let bom={};
@@ -490,20 +526,18 @@ class CCiLabComponent extends Component {
                   onDragStart={ draggableSetting === 'true' ? this.dragStart : null}
                   onDragOver={ this.dragOver }
                   onDrop={  this.doDrop }>
-                  
-                  {/* no style for top element so the button can host the image, other elements need style to set image position  */}
-                  { (this.imgName.length !== 0 ) ? 
-                      // {/* tag's id used to handle drop event float-left*/}
-                      <img id={`${this.currentComponent.displayLogic.key}`} 
-                           className={`${imamgeClassName}`} src={this.imgName} alt=''
-                           style={{'height': `${this.componentLableHeight}rem`, 'width': `${this.componentLableWidth}rem`}} 
-                           draggable={`${draggableSetting}`}
-                           onDragStart={ draggableSetting === 'true' ? this.dragStart : null}
-                           onDragOver={ this.dragOver }
-                           onDrop={  this.doDrop }>
-                      </img>
-                      :null
-                   }
+                  <ShowImage 
+                    name={this.imgName}
+                    className={imamgeClassName}
+                    height={this.componentLableHeight}
+                    width={this.componentLableWidth}
+                    isDraggable={draggableSetting}
+                    isSetupBOM={this.props.isSetupBOM}
+                    dragStartHandler={this.dragStart}
+                    dragOverHandler={this.dragOver}
+                    doDropHander={this.doDrop }
+
+                  />
                 </button>
                 {/* tag's id is used to handle drop event */}
                 <a  id={`${this.currentComponent.displayLogic.key}`} 
