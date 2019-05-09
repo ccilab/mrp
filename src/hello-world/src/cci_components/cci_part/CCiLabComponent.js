@@ -14,26 +14,34 @@ const ShowImage=(props)=>{
     //  {/* no style for top element so the button can host the image, other elements need style to set image position  */}
     <span>
      { ( props.isSetupBOM === true ) ? 
-        <a id={`${props.displayLogickey}`} 
-        className={`${props.className}`} src={props.name} alt={`${t('upload-image')}`}
-        style={{'height': `${props.height}rem`, 'width': `${props.width}rem`}} 
-        draggable={`${props.isDraggable}`}
-        onDragStart={ props.isDraggable === 'true' ? props.dragStartHandler : null}
-        onDragOver={ props.dragOverHandler }
-        onDrop={  props.doDropHander }/>
+        <span>
+          { (typeof props.name !== 'undefined' && props.name.length !== 0 ) ? 
+            <img id={`${props.displayLogickey}`} 
+            className={`${props.className} cci-component__img rounded-circle align-self-center`} src={props.name} alt={`${t('upload-image')}`}
+            style={{'height': `${props.height}rem`, 'width': `${props.width}rem`}} 
+            draggable={`${props.isDraggable}`}
+            onDragStart={ props.isDraggable === 'true' ? props.dragStartHandler : null}
+            onDragOver={ props.dragOverHandler }
+            onDrop={  props.doDropHander }/>
+            :
+            <i id={`${props.displayLogickey}`} 
+            className={`${props.className} text-primary fa fa-plus-circle`} 
+            style={{'height': `${props.height}rem`, 'width': `${props.width}rem`}} 
+            draggable={`${props.isDraggable}`}
+            onDragStart={ props.isDraggable === 'true' ? props.dragStartHandler : null}
+            onDragOver={ props.dragOverHandler }
+            onDrop={  props.doDropHander }/>
+          }
+        </span>
       :
         <span>
-       { (props.name.length !== 0 ) ? 
+       { (typeof props.name !== 'undefined' && props.name.length !== 0 ) ? 
         // {/* tag's id used to handle drop event float-left*/}
         // className: 'cci-component__img rounded-circle align-self-center  cusor-default or move'
         <img id={`${props.displayLogickey}`} 
-             className={`${props.className}`} src={props.name} alt={`${t('upload-image')}`}
+             className={`${props.className} cci-component__img rounded-circle align-self-center`} src={props.name} alt={`${t('upload-image')}`}
              style={{'height': `${props.height}rem`, 'width': `${props.width}rem`}} 
-             draggable={`${props.isDraggable}`}
-             onDragStart={ props.isDraggable === 'true' ? props.dragStartHandler : null}
-             onDragOver={ props.dragOverHandler }
-             onDrop={  props.doDropHander }>
-        </img>
+        />
         // need to replace with + icon single "fa fa-stop", group "fa fa-th-large"
         :null
        }
@@ -383,7 +391,7 @@ class CCiLabComponent extends Component {
         let inlineMenuClassName ='btn rounded-circle align-self-center p-0 bg-primary ';
         let btnClassNameBase = 'btn rounded-circle align-self-center cci-component-btn ml-1 '; 
         let btnClassName = btnClassNameBase;
-        let imamgeClassName = 'cci-component__img rounded-circle align-self-center '; 
+        let imamgeClassName = ' '; 
         let expendCollapseBadgeIconClassNameBase ='align-self-center nav-link p-0  '; // component-label_sticky_horizontal
         let expendCollapseBadgeIconClassName= 'fa fa-angle-right';
         let componentNameClassNameBase = 'lead align-self-center font-weight-normal text-primary text-truncate nav-link px-2 ';//component-label_sticky_horizontal
@@ -446,6 +454,8 @@ class CCiLabComponent extends Component {
         let inlineMenuIconVisiblity =  ( this.currentComponent.displayLogic.selected !== 0 ) ? 'visible' : 'hidden';
 
         let inlineMenuPosition = (this.parents.length === 0)? 'bottom left' : 'top left';
+
+        imamgeClassName += (this.parents.length === 0) && ( this.props.isSetupBOM )? 'fa-1x' : '';
 
         // this.componentName = this.props.component.businessLogic.name;
         console.log("CCiLabComponent: - render() - component name: "+this.componentName);
@@ -519,15 +529,17 @@ class CCiLabComponent extends Component {
                 </a>
 
                 {/* tag's id is used to get component's rect and handle drop event */}
-                <button id={`${this.currentComponent.displayLogic.key}-item`} className={`${btnClassName}`} 
-                  style={ { 'height': `${this.componentLableHeight}rem`, 'width': `${this.componentLableWidth}rem`}}
-                  draggable={`${draggableSetting}`}
-                  onClick={ this.componentSelected } 
-                  onDragStart={ draggableSetting === 'true' ? this.dragStart : null}
-                  onDragOver={ this.dragOver }
-                  onDrop={  this.doDrop }>
+                {/* <button id={`${this.currentComponent.displayLogic.key}-item`} /> //className={`${btnClassName}`} 
+                  // style={ { 'height': `${this.componentLableHeight}rem`, 'width': `${this.componentLableWidth}rem`}}
+                  // draggable={`${draggableSetting}`}
+                  // onClick={ this.componentSelected } 
+                  // onDragStart={ draggableSetting === 'true' ? this.dragStart : null}
+                  // onDragOver={ this.dragOver }
+                  // onDrop={  this.doDrop }> */}
+                  <span id={`${this.currentComponent.displayLogic.key}-item`} className={`${btnClassName}`} >
                   <ShowImage 
-                    name={this.imgName}
+                    displayLogickey={this.currentComponent.displayLogic.key}
+                    // name={this.imgName} //this.imgName
                     className={imamgeClassName}
                     height={this.componentLableHeight}
                     width={this.componentLableWidth}
@@ -536,9 +548,8 @@ class CCiLabComponent extends Component {
                     dragStartHandler={this.dragStart}
                     dragOverHandler={this.dragOver}
                     doDropHander={this.doDrop }
-
                   />
-                </button>
+                </span>
                 {/* tag's id is used to handle drop event */}
                 <a  id={`${this.currentComponent.displayLogic.key}`} 
                     href='#select-component' className={`${componentNameClassName}`} 

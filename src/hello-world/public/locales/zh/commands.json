@@ -3,5 +3,6 @@
     "add" : "添加",
     "edit" : "编辑",
     "move"  : "移动",
-    "select-component": "selected: '{{targetComponent}}'" 
+    "select-component": "selected: '{{targetComponent}}'",
+    "upload-image": "upload image" 
 }
