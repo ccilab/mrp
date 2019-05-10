@@ -205,15 +205,15 @@ const ComponentListTitle =(props)=>{
     <span className={props.titleClassName} style={{'position':'relative', 'left':`${props.titlePositionLeft}rem`, fontSize: '1rem'}}>{t(`${props.title}`)}
 
     { props.setupBOM ? 
-       <a key='submit-bom' href='#submit-bom' className='px-1 border-0 text-primary p-0 nav-link fa fa-file-upload' ></a>
+       <i key='submit-bom' href='#submit-bom' className='px-1 border-0 text-primary p-0 nav-link fa fa-file-upload' />
       : 
       null
      }
     </span> 
     { props.setupBOM === false ? 
-      <a key='show-progress' href='#submit-bom' className={'px-1 border-0 text-primary p-0 nav-link fa fa-cog'} style={{'position':'absolute', 'right':'1.5rem'}} onClick={setupBOM} ></a> 
+      <i key='show-progress' href='#submit-bom' className={'px-1 border-0 text-primary p-0 nav-link fa fa-cog'} style={{'position':'absolute', 'right':'1.5rem'}} onClick={setupBOM} /> 
       : 
-      <a key='show-progress' href='#submit-bom' className={'px-1 border-0 text-primary p-0 nav-link fa fa-chart-line'} style={{'position':'absolute', 'right':'1.5rem'}} onClick={showProgress} ></a > 
+      <i key='show-progress' href='#submit-bom' className={'px-1 border-0 text-primary p-0 nav-link fa fa-chart-line'} style={{'position':'absolute', 'right':'1.5rem'}} onClick={showProgress} /> 
      }
     {/* popup menu to change language */}
     <Popup
@@ -393,8 +393,11 @@ class CCiLabComponentList extends Component {
       
       // trick - set default visible=true in constructor, set visible=false in componentWillMount
       // so when user clicks << component list will sliding back
+      // eslint-disable-next-line
       this.state.greetings=currentSessionComponents;
+      // eslint-disable-next-line
       this.state.visible = false;
+      // eslint-disable-next-line
       this.state.setupBOM = this.state.setupBOM ? this.state.setupBOM : (this.state.greetings.length <= 1 ? true : false);
 
     }
