@@ -3,6 +3,6 @@
     "add" : "add",
     "edit" : "edit",
     "move"  : "move",
-    "select-component-name": "select component: '{{targetComponent}}'" ,
-    "upload-image": "upload image"
+    "select-component": "select-component" ,
+    "upload-image": "upload-image"
 }

@@ -24,13 +24,26 @@ const ShowImage=(props)=>{
             onDragOver={ props.dragOverHandler }
             onDrop={  props.doDropHander }/>
             :
-            <i id={`${props.displayLogickey}`} 
-            className={`${props.className} text-primary fa fa-plus-circle`} 
-            style={{'cursor':'pointer'}} 
-            draggable={`${props.isDraggable}`}
-            onDragStart={ props.isDraggable === 'true' ? props.dragStartHandler : null}
-            onDragOver={ props.dragOverHandler }
-            onDrop={  props.doDropHander }/>
+            <Popup 
+              trigger={
+                <i id={`${props.displayLogickey}`} 
+                  type="icon"
+                  className={`${props.className} text-primary fa fa-plus-circle`} 
+                  style={{'cursor':'pointer'}} 
+                  draggable={`${props.isDraggable}`}
+                  onDragStart={ props.isDraggable === 'true' ? props.dragStartHandler : null}
+                  onDragOver={ props.dragOverHandler }
+                  onDrop={  props.doDropHander }/>
+              }
+              closeOnDocumentClick
+              on="hover"
+              mouseLeaveDelay={100}
+              mouseEnterDelay={0}
+              arrow={true}
+              arrowStyle={{backgroundColor: `${styles.cciBgColor}`}}
+              contentStyle={{ padding: '0px', border: 'none', backgroundColor: `${styles.cciBgColor}`, fontSize:'0.8em' } }>
+              <span className={'text-info'} >{t('upload-image')}</span>
+            </Popup>
           }
         </span>
       :
@@ -59,17 +72,17 @@ const InLineMenu=(props)=>{
       {/* copy is not supported for now */}
       {/* { ( draggableSetting === 'true') ? <a href='#copy' className={'align-self-center nav-link px-1 fa fa-copy '}/> :null} */}
       { ( props.isDraggable === 'true') ? 
-        <i id={`${props.displayLogickey}`}
+        <a id={`${props.displayLogickey}`}
           href={`#${t('move')}`}
           className={'align-self-center nav-link px-1 fa fa-arrows-alt'}
           onClick={ props.moveStartHandler }/> 
           :
           null
       }
-      <i href={`#${t('add')}`} 
+      <a href={`#${t('add')}`} 
         className={'align-self-center nav-link px-1 m-0 py-0 fa fa-plus'}/>
       { ( props.isDraggable === 'true') ? 
-          <i id={`${props.key}`}
+          <a id={`${props.key}`}
             href={`#${t('delete')}`} 
             className={'align-self-center nav-link px-1 fa fa-trash-alt'}
             onClick={props.deleteCompnentHandler}/>
@@ -77,6 +90,23 @@ const InLineMenu=(props)=>{
           null
       }
     </div> 
+  );
+}
+
+const ComponentName=(props)=>{
+  const { t } = useTranslation('commands', {useSuspense: false});
+  return (
+    <a  id={`${props.displayLogickey}`} 
+        href={`#${t('select-component')}`} 
+        className={`${props.className}`} 
+        style={{ 'height': `auto` }} 
+        draggable={`${props.isDraggable}`}
+        onClick={ props.componentSelectedHandler }
+        onDragStart={ props.dragStartHandler }
+        onDragOver={ props.dragOverHandler }
+        onDrop={ props.doDropHandler }>
+        {props.componentName}
+    </a>
   );
 }
 
@@ -174,8 +204,9 @@ const SetupBOM=(props)=>{
       position='right center'
       mouseLeaveDelay={400}
       mouseEnterDelay={0}
-      contentStyle={{ padding: '0px', border: 'none', backgroundColor: `${styles.cciBgColor}` }}
+      contentStyle={{ padding: '0px', border: 'none', backgroundColor: `${styles.cciBgColor}`}}
       arrow={true}
+      arrowStyle={{backgroundColor: `${styles.cciBgColor}`}}
       >
       <div className={'bg-info d-flex flex-column'}>
        <SetupComponentBOM 
@@ -390,13 +421,10 @@ class CCiLabComponent extends Component {
         // console.log('CCiLabComponent::render() imgFile: ', this.imgName);
         let componentBase='d-flex cci-component-lable_position  align-items-center '; //align-items-center 
         let inlineMenuClassName ='btn rounded-circle align-self-center p-0 bg-primary ';
-        let btnClassNameBase = 'btn rounded-circle align-self-center cci-component-btn ml-1 '; 
-        let btnClassName = btnClassNameBase;
         let imamgeClassName = ' '; 
         let expendCollapseBadgeIconClassNameBase ='align-self-center nav-link p-0  '; // component-label_sticky_horizontal
         let expendCollapseBadgeIconClassName= 'fa fa-angle-right';
-        let componentNameClassNameBase = 'lead align-self-center font-weight-normal text-primary text-truncate nav-link px-2 ';//component-label_sticky_horizontal
-        let componentNameClassName=  componentNameClassNameBase; //+ ' py-0' to remove space between components
+        let componentNameClassName = 'lead align-self-center font-weight-normal text-primary text-truncate nav-link px-2 ';//component-label_sticky_horizontal
 
         // .align-self-center to make fa and badge height the same as font height
         let statusBadgetIconClassNameBase = 'align-self-center text-nowrap ml-0 px-1   '; //component-label_sticky_horizontal 
@@ -420,7 +448,6 @@ class CCiLabComponent extends Component {
           if( this.currentComponent.displayLogic.selected !== 0  )
           {
             componentBase +=  ' cursor-default';
-            btnClassName +=  ' cursor-default';
             imamgeClassName += ' cursor-pointer';
             componentNameClassName += ' cursor-default';
             statusBadgeIconClassName += ' cursor-default';
@@ -437,7 +464,6 @@ class CCiLabComponent extends Component {
           {
             
             componentBase +=  (permissionEabled && this.currentComponent.displayLogic.selected !== 0 && this.props.isSetupBOM )? ' move':' cursor-default';
-            btnClassName +=  (permissionEabled && this.currentComponent.displayLogic.selected !== 0 )? ' move':' cursor-default';
             imamgeClassName += (permissionEabled && this.currentComponent.displayLogic.selected !== 0 )? ' move':' cursor-pointer';
             componentNameClassName += (permissionEabled && this.currentComponent.displayLogic.selected !== 0 )? ' move':' cursor-default';
             statusBadgeIconClassName += (permissionEabled && this.currentComponent.displayLogic.selected !== 0 )? ' move':' cursor-default';
@@ -528,13 +554,6 @@ class CCiLabComponent extends Component {
                 </i>
 
                 {/* tag's id is used to get component's rect and handle drop event */}
-                {/* <button id={`${this.currentComponent.displayLogic.key}-item`} /> //className={`${btnClassName}`} 
-                  // style={ { 'height': `${this.componentLableHeight}rem`, 'width': `${this.componentLableWidth}rem`}}
-                  // draggable={`${draggableSetting}`}
-                  // onClick={ this.componentSelected } 
-                  // onDragStart={ draggableSetting === 'true' ? this.dragStart : null}
-                  // onDragOver={ this.dragOver }
-                  // onDrop={  this.doDrop }> */}
                   <span id={`${this.currentComponent.displayLogic.key}-item`} 
                   className={imamgeClassName} 
                   draggable={`${draggableSetting}`}
@@ -544,7 +563,7 @@ class CCiLabComponent extends Component {
                   onDrop={  this.doDrop }>
                   <ShowImage 
                     displayLogickey={this.currentComponent.displayLogic.key}
-                    name={'this.imgName'} //this.imgName
+                    // name={this.imgName} //this.imgName
                     className={imamgeClassName}
                     height={this.componentLableHeight}
                     width={this.componentLableWidth}
@@ -556,16 +575,16 @@ class CCiLabComponent extends Component {
                   />
                 </span>
                 {/* tag's id is used to handle drop event */}
-                <a  id={`${this.currentComponent.displayLogic.key}`} 
-                    href='#select-component' className={`${componentNameClassName}`} 
-                    style={{ 'height': `auto` }} 
-                    draggable={`${draggableSetting}`}
-                    onClick={ this.componentSelected }
-                    onDragStart={ draggableSetting === 'true' ? this.dragStart : null}
-                    onDragOver={ this.dragOver }
-                    onDrop={  this.doDrop }>
-                    {this.componentName}:
-                </a>
+                <ComponentName  
+                    displayLogickey={`${this.currentComponent.displayLogic.key}`} 
+                    className={`${componentNameClassName}`} 
+                    isDraggable={`${draggableSetting}`}
+                    componentSelectedHandler={ this.componentSelected }
+                    dragStartHandler={ draggableSetting === 'true' ? this.dragStart : null}
+                    dragOverHandler={ this.props.isSetupBOM ? this.dragOver :null }
+                    doDropHandler={ this.props.isSetupBOM ? this.doDrop : null }
+                    componentName={this.componentName}
+                />
                 
                 {/* tag's id is used to handle drop event */}
                 { this.props.isSetupBOM === false ? 

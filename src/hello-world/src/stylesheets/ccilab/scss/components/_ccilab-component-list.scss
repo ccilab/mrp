@@ -13,6 +13,18 @@
    transition: transform 1s cubic-bezier(0, .52, 0, 1);
  }
 
+ ::placeholder {
+  color:$cci-info-blue;
+  opacity: 1; /* Firefox */
+}
+
+:-ms-input-placeholder { /* Internet Explorer 10-11 */
+ color:$cci-info-blue;
+}
+
+::-ms-input-placeholder { /* Microsoft Edge */
+ color:$cci-info-blue;
+}
 //// controlled using inline style 
 //  .flyout-menu_hide {
 //    // -webkit-transform: translate3d(-10vw, 0, 0);

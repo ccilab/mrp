@@ -205,15 +205,15 @@ const ComponentListTitle =(props)=>{
     <span className={props.titleClassName} style={{'position':'relative', 'left':`${props.titlePositionLeft}rem`, fontSize: '1rem'}}>{t(`${props.title}`)}
 
     { props.setupBOM ? 
-       <i key='submit-bom' href='#submit-bom' className='px-1 border-0 text-primary p-0 nav-link fa fa-file-upload' />
+       <a key='submit-bom' href='#submit-bom' className='px-1 border-0 text-primary p-0 nav-link fa fa-file-upload' />
       : 
       null
      }
     </span> 
     { props.setupBOM === false ? 
-      <i key='show-progress' href='#submit-bom' className={'px-1 border-0 text-primary p-0 nav-link fa fa-cog'} style={{'position':'absolute', 'right':'1.5rem'}} onClick={setupBOM} /> 
+      <a key='show-progress' href='#submit-bom' className={'px-1 border-0 text-primary p-0 nav-link fa fa-cog'} style={{'cursor': 'pointer', 'position':'absolute', 'right':'1.5rem'}} onClick={setupBOM} /> 
       : 
-      <i key='show-progress' href='#submit-bom' className={'px-1 border-0 text-primary p-0 nav-link fa fa-chart-line'} style={{'position':'absolute', 'right':'1.5rem'}} onClick={showProgress} /> 
+      <a key='show-progress' href='#submit-bom' className={'px-1 border-0 text-primary p-0 nav-link fa fa-chart-line'} style={{'cursor': 'pointer', 'position':'absolute', 'right':'1.5rem'}} onClick={showProgress} /> 
      }
     {/* popup menu to change language */}
     <Popup
@@ -223,18 +223,18 @@ const ComponentListTitle =(props)=>{
           id='#selection-language'
           type="button"
           className={'bg-info text-primary border-0 py-0 px-1 fa fa-language'}
-          style={{'position':'absolute', 'right':'0'}}></button>
+          style={{'cursor': 'pointer','position':'absolute', 'right':'0'}}></button>
       }
       closeOnDocumentClick
       on="hover"
       mouseLeaveDelay={400}
       mouseEnterDelay={0}
-      contentStyle={{ padding: '0px', border: 'none' }}
+      contentStyle={{ padding: '0px', border: 'none', 'fontSize': '0.6em'}}
       arrow={true}
       >
       <div className={' bg-info'}>
-        <a key='en' href='#en' className={'nav-link px-1'} style={{ 'fontSize': '0.8rem'}} onClick={languageChangeHandler('en')}>English</a>
-        <a key='zh-CN' href='#zh-CN' className={'nav-link px-1'} style={{ 'fontSize': '0.8rem'}} onClick={languageChangeHandler('zh-CN')}>中文</a>
+        <a key='en' href='#English' className={'nav-link px-1'} onClick={languageChangeHandler('en')}>English</a>
+        <a key='zh-CN' href='#中文' className={'nav-link px-1'} onClick={languageChangeHandler('zh-CN')}>中文</a>
       </div>
     </Popup>
   </div>

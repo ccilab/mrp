@@ -22,7 +22,7 @@ export const SetupComponentBOM=(props)=>{
   return (
     <div className='d-flex justify-content-between' style={{backgroundColor: `${styles.cciBgColor}`}}>
         {/* <label className='m-0 p-0'>{t(`${props.title}`)}: </label> */}
-        <input className='m-0 p-0 border-0' 
+        <input className='m-0 p-0 border-0 text-primary' 
                type="text" 
                style={{backgroundColor: `${styles.cciBgColor}`}} 
                placeholder={t(`${props.title}`)}
