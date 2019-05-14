@@ -2,10 +2,12 @@ import React, { Component } from 'react';
 import Popup from '../popup_menu/Popup'
 import { useTranslation } from 'react-i18next';
 import {SetupComponentBOM} from './CCiLabSetupComponentBOM';
+import {saveAs, loadFile} from "../file_save/CCiLabLocalFileAccess"
 
 
 import styles from './../../dist/css/ccilab-component.css'
 import './../../dist/css/popup-menu.css'
+
 
 const ShowImage=(props)=>{
   const { t } = useTranslation('commands', {useSuspense: false});
@@ -33,7 +35,8 @@ const ShowImage=(props)=>{
                   draggable={`${props.isDraggable}`}
                   onDragStart={ props.isDraggable === 'true' ? props.dragStartHandler : null}
                   onDragOver={ props.dragOverHandler }
-                  onDrop={  props.doDropHander }/>
+                  onDrop={  props.doDropHander }
+                  onclick={loadFile('test.txt')}/>
               }
               closeOnDocumentClick
               on="hover"

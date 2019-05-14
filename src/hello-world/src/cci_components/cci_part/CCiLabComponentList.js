@@ -19,9 +19,6 @@ import { useTranslation } from 'react-i18next';
 import Popup from '../popup_menu/Popup'
 import {TextResizeDetector } from "./TextResizeDetector"
 
-import {saveAs} from "../file_save/CCiLabLocalFileAccess"
-
-
 
 //json-loader load the *.json file
 import components from './../../data/components.json';

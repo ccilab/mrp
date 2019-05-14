@@ -237,19 +237,49 @@ const destroyClickedElement = (e)=> {
 //   let fileNameToSaveAs = "myconfigFile-"+month.toString()+date.toString()+hour.toString()+".json";
 
 
-export const loadFile =( fileName )=>{
-  let input, file, fr;
+// https://developer.mozilla.org/en-US/docs/Web/API/File/Using_files_from_web_applications
+const creatImgInput=()=>{
+   if (typeof window.FileReader !== 'function') {
+        alert("The file API isn't supported on this browser yet.");
+        return;
+    }
 
-  if (typeof window.FileReader !== 'function') {
-      alert("The file API isn't supported on this browser yet.");
-      return;
+    // create input element for our script to 'click'
+    let input=  document.createElement('input');
+    input.type='file';
+    input.stype.display='none';
+    input.onchange=loadFile(e)
+    // add input to the DOM
+    document.body.appendChild(input);
+    input.click();
+}
+
+const removeImgInput=(e)=>{
+  document.body.removeChild(e.target);
+}
+
+export const loadFile =( e )=>{
+ 
+  let file, fr;
+
+  
+  if (!e.target.files) {
+      alert("Um, couldn't find the fileinput element.");
+  }
+  else if (!input.files) {
+      alert("This browser doesn't seem to support the `files` property of file inputs.");
+  }
+  else if (!input.files[0]) {
+      alert("Please select a file before clicking 'Load'");
+  }
+  else {
+    file = input.files[0];
+    fr = new FileReader();
+    fr.onload = receivedText;
+    fr.readAsText(fileName);
   }
 
- 
-  file = input.files[0];
-  fr = new FileReader();
-  fr.onload = receivedText;
-  fr.readAsText(fileName);
+  removeImgInput(e)
 }
 
 const receivedText =(e)=>{
