@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import Popup from '../popup_menu/Popup'
 import { useTranslation } from 'react-i18next';
 import {SetupComponentBOM} from './CCiLabSetupComponentBOM';
-import {saveAs, loadFile} from "../file_save/CCiLabLocalFileAccess"
+import {saveAs, creatHiddenImgInputTag} from "../file_save/CCiLabLocalFileAccess"
 
 
 import styles from './../../dist/css/ccilab-component.css'
@@ -36,7 +36,7 @@ const ShowImage=(props)=>{
                   onDragStart={ props.isDraggable === 'true' ? props.dragStartHandler : null}
                   onDragOver={ props.dragOverHandler }
                   onDrop={  props.doDropHander }
-                  onclick={loadFile('test.txt')}/>
+                  onClick={creatHiddenImgInputTag}/>
               }
               closeOnDocumentClick
               on="hover"
