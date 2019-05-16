@@ -12,6 +12,12 @@ import './../../dist/css/popup-menu.css'
 const ShowImage=(props)=>{
   const { t } = useTranslation('commands', {useSuspense: false});
 
+  let imageFilename= props.component.businessLogic.imageFilename;
+
+  const addImage=(e)=>(component)=>{
+    creatHiddenImgInputTag(e, component );
+  };
+
   return (
     //  {/* no style for top element so the button can host the image, other elements need style to set image position  */}
     <span>
@@ -36,7 +42,7 @@ const ShowImage=(props)=>{
                   onDragStart={ props.isDraggable === 'true' ? props.dragStartHandler : null}
                   onDragOver={ props.dragOverHandler }
                   onDrop={  props.doDropHander }
-                  onClick={creatHiddenImgInputTag}/>
+                  onClick={creatHiddenImgInputTag(props.comonent)}/>
               }
               closeOnDocumentClick
               on="hover"
@@ -567,6 +573,7 @@ class CCiLabComponent extends Component {
                   <ShowImage 
                     displayLogickey={this.currentComponent.displayLogic.key}
                     // name={this.imgName} //this.imgName
+                    component={this.currentComponent}
                     className={imamgeClassName}
                     height={this.componentLableHeight}
                     width={this.componentLableWidth}

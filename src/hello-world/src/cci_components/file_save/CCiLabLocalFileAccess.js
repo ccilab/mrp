@@ -238,7 +238,7 @@ const destroyClickedElement = (e)=> {
 
 
 // https://developer.mozilla.org/en-US/docs/Web/API/File/Using_files_from_web_applications
-export const creatHiddenImgInputTag=(e)=>{
+export const creatHiddenImgInputTag=(e, component)=>{
    if (typeof window.FileReader !== 'function') {
         alert("The file API isn't supported on this browser yet.");
         return;
@@ -247,33 +247,34 @@ export const creatHiddenImgInputTag=(e)=>{
     // create input element for our script to 'click'
     let input=  document.createElement('input');
     input.type='file';
-    //input.style.display='none';
-    input.onchange=loadFile()
+    input.style.display='none';
+    input.onchange=loadFile(input);
     // add input to the DOM
-    document.body.appendChild(input);
+    document.body.appendChild(input, component);
     input.click();
 }
 
-const removeImgInputTag=(e)=>{
-  document.body.removeChild(e);
+const removeImgInputTag=(element)=>{
+  document.body.removeChild(element);
 }
 
-const loadFile =(input)=>{
-  if (!input.files) {
+const loadFile=(e)=>(input, component )=>{
+  if (!input.target.files) {
       alert("This browser doesn't seem to support the `files` property of file inputs.");
   }
-  else if ( input.files.length === 0) {
+  else if ( input.target.files.length === 0) {
       alert("Please select a file before clicking 'Load'");
   }
   else {  
     let file, fr;
-    file = input.files[0];
+    file = input.target.files[0];
+    component.businessLogic.imageFilename = file.name;
     fr = new FileReader();
     // fr.onload = receivedText;
     // fr.readAsText(fileName);
   }
 
-  removeImgInputTag(input)
+  removeImgInputTag(input.target)
 }
 
 const receivedText =(e)=>{
