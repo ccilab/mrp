@@ -12,10 +12,8 @@ import './../../dist/css/popup-menu.css'
 const ShowImage=(props)=>{
   const { t } = useTranslation('commands', {useSuspense: false});
 
-  let imageFilename= props.component.businessLogic.imageFilename;
-
-  const addImage=(e)=>(component)=>{
-    creatHiddenImgInputTag(e, component );
+  const addImage=(props)=>(e)=>{
+    creatHiddenImgInputTag(e, props);
   };
 
   return (
@@ -42,7 +40,7 @@ const ShowImage=(props)=>{
                   onDragStart={ props.isDraggable === 'true' ? props.dragStartHandler : null}
                   onDragOver={ props.dragOverHandler }
                   onDrop={  props.doDropHander }
-                  onClick={creatHiddenImgInputTag(props.comonent)}/>
+                  onClick={addImage(props)}/>
               }
               closeOnDocumentClick
               on="hover"
@@ -56,7 +54,7 @@ const ShowImage=(props)=>{
           }
         </span>
       :
-        <span>
+      <span>
        { (typeof props.name !== 'undefined' && props.name.length !== 0 ) ? 
         // {/* tag's id used to handle drop event float-left*/}
         // className: 'cci-component__img rounded-circle align-self-center  cursor-default or move'
@@ -274,8 +272,7 @@ class CCiLabComponent extends Component {
       this.children = this.currentComponent.businessLogic.childIds;
       this.componentName = this.currentComponent.businessLogic.name;
 
-      this.imgName = (this.currentComponent.businessLogic.imgFile.length !==0 ) ? '/images/'+ this.currentComponent.businessLogic.imgFile : 
-                    (this.children.length !==0) ? '/images/cci_group_block.png' : '/images/cci_single_block_item.png';
+      this.imgName = (this.currentComponent.businessLogic.imgFile.length !==0 ) ? '/images/'+ this.currentComponent.businessLogic.imgFile : '';
         
         // size of component button, rem - 16px is default font size of browser
       this.componentLableHeight =  (this.parents.length === 0 ) ? 45/this.rootFontSize : (this.children.length !==0) ? 25/this.rootFontSize: 25/this.rootFontSize;
@@ -572,7 +569,7 @@ class CCiLabComponent extends Component {
                   onDrop={  this.doDrop }>
                   <ShowImage 
                     displayLogickey={this.currentComponent.displayLogic.key}
-                    // name={this.imgName} //this.imgName
+                    name={this.imgName} //this.imgName
                     component={this.currentComponent}
                     className={imamgeClassName}
                     height={this.componentLableHeight}
