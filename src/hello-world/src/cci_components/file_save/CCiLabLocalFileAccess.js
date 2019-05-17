@@ -270,6 +270,7 @@ const loadFile=(input, props)=>( e )=>{
     let file = input.files[0];
     // https://www.w3schools.com/jsref/tryit.asp?filename=tryjsref_fileupload_value
     props.component.businessLogic.imgFile=file.name;
+    props.addImageHandler();
 
     // fr = new FileReader();
     // fr.onload = receivedText;

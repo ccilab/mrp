@@ -28,7 +28,8 @@ const ShowImage=(props)=>{
             draggable={`${props.isDraggable}`}
             onDragStart={ props.isDraggable === 'true' ? props.dragStartHandler : null}
             onDragOver={ props.dragOverHandler }
-            onDrop={  props.doDropHander }/>
+            onDrop={  props.doDropHander }
+            onClick={addImage(props)}/>
             :
             <Popup 
               trigger={
@@ -238,7 +239,7 @@ const SetupBOM=(props)=>{
 class CCiLabComponent extends Component {
         state = {
             expended:  true,
-           
+            updateImg: false,
         };
 
     
@@ -421,6 +422,10 @@ class CCiLabComponent extends Component {
       console.log('droped from source: ', sourceId);
     };
 
+    updateImage=()=>{ 
+      this.setState({updateImg:true});
+    };
+    
     render=()=>{
         this.init(this.props);
 
@@ -579,6 +584,7 @@ class CCiLabComponent extends Component {
                     dragStartHandler={this.dragStart}
                     dragOverHandler={this.dragOver}
                     doDropHander={this.doDrop }
+                    addImageHandler={this.updateImage}
                   />
                 </span>
                 {/* tag's id is used to handle drop event */}
