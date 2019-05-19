@@ -463,11 +463,39 @@ class CCiLabComponentList extends Component {
         { businessLogic: {id: this.state.greetings.length + 1, name: newName, parentIds:[0], childIds:[], imgFile:'', status: "alarm", progressPercent: progressValue}}] });
     };
 
-    removeGreeting = (removeName) =>{
-      const filteredGreetings = this.state.greetings.filter(component => {
-        return component.businessLogic.name !== removeName;
+    deleteCompoent = ( deletedComponent ) =>{
+      console.log("CCiLabComponentList - deleteCompoent displayLogic key:" + deletedComponent.displayLogic.key);
+
+      let currentSessionComponents = this.state.greetings;
+
+      let deletedComponentId = deletedComponent.displayLogic.key;
+
+      // find current parent components of deleted component, have to use displayLogic.Key that is unique, to search  
+      let parentComponents = currentSessionComponents.filter(  (component)=>{
+        return component.displayLogic.childKeyIds.length && component.displayLogic.childKeyIds.find( (childKey)=>{return childKey === deletedComponentId } ) 
+      } );
+
+      parentComponents.map( (component)=>{return console.log('parent component name of deleted component: ', component.businessLogic.name) } );
+
+      //remove deleted component id and displayLogicKey from prevous parent's businessLogic and displayLogic childId list
+      parentComponents.map( (component)=>{
+        if( component.businessLogic.childIds.length || component.displayLogic.childKeyIds.length )
+        {
+            let idxBusinessLogicId = component.businessLogic.childIds.indexOf( deletedComponent.businessLogic.id );
+            if( idxBusinessLogicId >= 0 )
+              component.businessLogic.childIds.splice( idxBusinessLogicId,1);
+
+            let idxDisplayLogicId = component.displayLogic.childKeyIds.indexOf( deletedComponent.displayLogic.key );
+            if( idxDisplayLogicId >= 0 )
+              component.displayLogic.childKeyIds.splice( idxDisplayLogicId, 1 );
+        }
+        return component;
+      } );
+
+      const filteredGreetings = currentSessionComponents.filter(component => {
+        return component.displayLogic.key !== deletedComponentId;
       });
-      console.log("CCiLabComponentList - removeGreeting");
+
       this.setState({ greetings: filteredGreetings });
     };
 
@@ -653,7 +681,6 @@ class CCiLabComponentList extends Component {
            currentSessionComponents = this.showOrHideChildren( targetComponent, true, false);
            targetComponent.displayLogic.canExpend = false;
         }
-         
 
         // find current parent components of source/moved component, have to use displayLogic.Key that is unique, to search  
         let parentComponents = currentSessionComponents.filter(  (component)=>{
@@ -682,46 +709,43 @@ class CCiLabComponentList extends Component {
         let idxMovedComponent = currentSessionComponents.findIndex( (component)=>{return component.displayLogic.key === sourceId; });
         if( idxMovedComponent >= 0 )
         {
-            let rmMovedComponent = currentSessionComponents.splice( idxMovedComponent, 1);
+          let rmMovedComponent = currentSessionComponents.splice( idxMovedComponent, 1);
 
-            //update parent id of moved component (source) as target Component id
-            rmMovedComponent[0].businessLogic.parentIds.length=0;
-            rmMovedComponent[0].businessLogic.parentIds.push(targetComponent.businessLogic.id);
+          //update parent id of moved component (source) as target Component id
+          rmMovedComponent[0].businessLogic.parentIds.length=0;
+          rmMovedComponent[0].businessLogic.parentIds.push(targetComponent.businessLogic.id);
 
-            //reset display key and childKeys
-            delete rmMovedComponent[0].displayLogic;
+          //reset display key and childKeys
+          delete rmMovedComponent[0].displayLogic;
 
-            let newDisplayKey = findMaxDisplayKey(currentSessionComponents);
+          let newDisplayKey = findMaxDisplayKey(currentSessionComponents);
 
-            rmMovedComponent[0].displayLogic = initializeDisplayLogic(++newDisplayKey, false, targetComponent.displayLogic.rectLeft)
+          rmMovedComponent[0].displayLogic = initializeDisplayLogic(++newDisplayKey, false, targetComponent.displayLogic.rectLeft)
 
-            //update businessLogic and displayLogic childIds of target component (target) as moved component ( source )
-            targetComponent.businessLogic.childIds.push(rmMovedComponent[0].businessLogic.id);
+          //update businessLogic and displayLogic childIds of target component (target) as moved component ( source )
+          targetComponent.businessLogic.childIds.push(rmMovedComponent[0].businessLogic.id);
 
-            //rebuild the component list
-            let updatedSessionComponents = [];
-            
-            
-            
-            //initialize the updated session components
-            initializeComponents(targetComponent, currentSessionComponents, rmMovedComponent, updatedSessionComponents);
+          //rebuild the component list
+          let updatedSessionComponents = [];
+          
+          //initialize the updated session components
+          initializeComponents(targetComponent, currentSessionComponents, rmMovedComponent, updatedSessionComponents);
 
-            // populate target component's displayLogic.childKeyIds[]
-            populateComponentChildKeyIds(targetComponent, updatedSessionComponents);
-            
+          // populate target component's displayLogic.childKeyIds[]
+          populateComponentChildKeyIds(targetComponent, updatedSessionComponents);
 
-            rmMovedComponent[0].displayLogic.showMyself = true;
+          rmMovedComponent[0].displayLogic.showMyself = true;
 
-            // update selected status so the moved component or its parent will be highlighted 
-            updatedSessionComponents.forEach( (item)=>{
-                    setComponentSelected( item, rmMovedComponent[0].displayLogic.key ); 
-                  });
+          // update selected status so the moved component or its parent will be highlighted 
+          updatedSessionComponents.forEach( (item)=>{
+                  setComponentSelected( item, rmMovedComponent[0].displayLogic.key ); 
+                });
 
-            //check if moved component progress status need to change (#todo)
- 
-            // update greetings list
-            // console.log("CCiLabComponentList - moveComponentHandler 4 ")
-            this.setState( { greetings: updatedSessionComponents });
+          //check if moved component progress status need to change (#todo)
+
+          // update greetings list
+          // console.log("CCiLabComponentList - moveComponentHandler 4 ")
+          this.setState( { greetings: updatedSessionComponents });
         }
         
       }
@@ -765,7 +789,7 @@ class CCiLabComponentList extends Component {
                                           leftOffset={this.componentLeftOffset} 
                                           listWidth={this.componentListWidth}
                                           fontSize={this.state.fontSize}
-                                          removeGreeting={this.removeGreeting} 
+                                          deleteCompoent={this.deleteCompoent} 
                                           showOrHideChildren={this.showOrHideChildren}
                                           selectedComponentHandler={this.selectedComponentHandler}
                                           moveComponentHandler={this.moveComponentHandler}

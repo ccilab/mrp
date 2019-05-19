@@ -244,7 +244,7 @@ class CCiLabComponent extends Component {
 
     
     static inlineMenu ={ cmd: 'select',
-                          itemId: 'undefined'};
+                         itemId: 'undefined'};
 
     currentComponent;
     rootFontSize;
@@ -337,8 +337,10 @@ class CCiLabComponent extends Component {
       }
     }
 
-    removeGreeting = () => {
-        this.props.removeGreeting(this.component.businessLogic.imgName);
+    deleteCompoent = () => {
+        this.props.deleteCompoent(this.currentComponent);
+        CCiLabComponent.inlineMenu.itemId='undefined';
+        CCiLabComponent.inlineMenu.cmd = 'select';
     };
 
     showOrHideChildren = (isShow) =>{
@@ -544,7 +546,7 @@ class CCiLabComponent extends Component {
                     <InLineMenu  displayLogickey={this.currentComponent.displayLogic.key}
                                  isDraggable={draggableSetting}
                                  moveStartHandler={ this.moveStart }
-                                 deleteCompnentHandler={ this.props.deleteCompoent }
+                                 deleteCompnentHandler={ this.deleteCompoent }
                     />
                 </Popup> : null}
                  
