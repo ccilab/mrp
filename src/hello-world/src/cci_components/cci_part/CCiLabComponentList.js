@@ -65,6 +65,18 @@ const getChildComponentsFromDataSource = (parentComponent)=>{
   return components;
 }
 
+// initialize businessLogic object
+const initializeBusinessLogic = (parentComponent)=>{
+  let businessLogic={id: 0, 
+                     name: 'part-name', 
+                     parentIds:[parentComponent.businessLogic.id], 
+                     childIds :[],  
+                     imgFile: '', 
+                     status: 'info', 
+                     progressPercent:0, 
+                     remainDays:180};
+  return businessLogic;
+}
 // initialize displayLogic object
 const initializeDisplayLogic = (key, canExpend, rectLeft ) =>{
   let displayLogic = {};
@@ -457,14 +469,19 @@ class CCiLabComponentList extends Component {
     //          this.state.selected !== nextState.selected
     // }
 
-    addGreeting = (newName, progressValue) =>{
-      console.log("CCiLabComponentList - addGreeting");
-      this.setState({ greetings: [...this.state.greetings, 
-        { businessLogic: {id: this.state.greetings.length + 1, name: newName, parentIds:[0], childIds:[], imgFile:'', status: "alarm", progressPercent: progressValue}}] });
+    addComponent = ( parentComponent ) =>{
+      console.log("CCiLabComponentList - addComponent to: " + parentComponent.businessLogic.name );
+      
+      let currentSessionComponents = this.state.greetings;
+      let newComponent;
+
+      newComponent.businessLogic = new initializeBusinessLogic(parentComponent);
+      
+      this.setState({ greetings: currentSessionComponents});
     };
 
     deleteCompoent = ( deletedComponent ) =>{
-      console.log("CCiLabComponentList - deleteCompoent displayLogic key:" + deletedComponent.displayLogic.key);
+      // console.log("CCiLabComponentList - deleteCompoent displayLogic key:" + deletedComponent.displayLogic.key);
 
       let currentSessionComponents = this.state.greetings;
 
