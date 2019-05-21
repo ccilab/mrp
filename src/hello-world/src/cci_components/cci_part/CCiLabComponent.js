@@ -107,6 +107,12 @@ const InLineMenu=(props)=>{
 
 const ComponentName=(props)=>{
   const { t } = useTranslation('commands', {useSuspense: false});
+  let componentName = props.componentName;
+
+  if( props.componentName === 'add-part')
+    componentName = t('add-part');
+
+
   return (
     <a  id={`${props.displayLogickey}`} 
         href={`#${t('select-component')}`} 
@@ -117,7 +123,7 @@ const ComponentName=(props)=>{
         onDragStart={ props.dragStartHandler }
         onDragOver={ props.dragOverHandler }
         onDrop={ props.doDropHandler }>
-        {props.componentName}
+        {`${componentName}`}
     </a>
   );
 }
@@ -627,7 +633,7 @@ class CCiLabComponent extends Component {
                   :
                   <SetupBOM
                     component={this.currentComponent}
-                    updateComponent={this.props.selectedComponentHandler}
+                    updateComponent={this.props.updateComponentHandler}
                   />
                 }
                 </div>

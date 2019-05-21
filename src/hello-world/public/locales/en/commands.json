@@ -4,5 +4,7 @@
     "edit" : "edit",
     "move"  : "move",
     "select-component": "select-component" ,
-    "upload-image": "upload image"
+    "upload-image": "upload image",
+    "add-part": "create part",
+    "add-part-name": "add part name"
 }

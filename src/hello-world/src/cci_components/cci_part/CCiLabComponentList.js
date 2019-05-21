@@ -68,7 +68,7 @@ const getChildComponentsFromDataSource = (parentComponent)=>{
 // initialize businessLogic object
 const initializeBusinessLogic = (parentComponent)=>{
   let businessLogic={id: 0, 
-                     name: 'add-part-name', 
+                     name: 'add-part', 
                      parentIds:[parentComponent.businessLogic.id], 
                      childIds :[],  
                      imgFile: '', 
@@ -481,13 +481,12 @@ class CCiLabComponentList extends Component {
     //  2 - updated component can't be the same as its siblings 
     //  3 - if the updated component exists - using the same businessLogic id from existing one
     //  4 - if the updated component doesn't exist - create a new businessLogic
-    // shouldComponentUpdate =(nextProps, nextState)=>{
-    //   console.log("CCiLabComponentList - shouldComponentUpdate")
-    //   return 
-    //         //  (typeof this.state.greetings !== "undefined" && this.state.greetings.length !== nextState.greetings.length ) ||
-    //          this.state.setupBOM !== nextState.setupBOM ||
-    //          this.state.selected !== nextState.selected
-    // }
+    updateComponent =( component )=>{
+      console.log("CCiLabComponentList - updateComponent")
+      let currentSessionComponents=this.state.greetings;
+      currentSessionComponents.forEach( (item)=>{setComponentSelected(item, component.displayLogic.key);});
+      this.setState( { greetings: currentSessionComponents });
+    }
 
     // need to have following features
     // 1 - check if the added component exists - if yes using the same id from existing one
@@ -533,6 +532,12 @@ class CCiLabComponentList extends Component {
           setComponentSelected( item, newComponent.displayLogic.key ); 
         });
 
+      // need to check vertical scroll bar doesn't show
+      // create vertical scroll bar based on the height of component list dynamically
+      let updatedRect = estimateComponentListRect(updatedSessionComponents, this.state.fontSize);
+
+      this.componentListHeight = setListHeight( updatedRect, this.state.fontSize );
+      this.componentListWidth = this.updateDimensions();
       
       this.setState({ greetings: updatedSessionComponents});
     };
@@ -868,6 +873,7 @@ class CCiLabComponentList extends Component {
                                           showOrHideChildren={this.showOrHideChildren}
                                           selectedComponentHandler={this.selectedComponentHandler}
                                           moveComponentHandler={this.moveComponentHandler}
+                                          updateComponentHandler={this.updateComponent}
                                           isSetupBOM={this.state.setupBOM}/> ;
                 }
                 else

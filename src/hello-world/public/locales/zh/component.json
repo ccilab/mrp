@@ -1,9 +1,9 @@
 {
     "remaining-time-unit": "天",
-    "part-name": "Part Name",
-    "part-number": "Part Number",
+    "part-name": "零部件名",
+    "part-number": "零部件编号",
     "SKU": "SKU code",
-    "barcode": "barcode",
+    "barcode": "条型码",
     "unit-qty": "Quantity per Assembly",
     "unit-of-measure": "Unit of Measure",
     "reference-designators": "Reference Designators",

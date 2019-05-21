@@ -4,13 +4,21 @@ import { useTranslation } from 'react-i18next';
 import styles from "./../../dist/css/ccilab-component-list.css"
 
 export const SetupComponentBOM=(props)=>{
-  const [input, setInput] = useState(`${props.value}`); // '' is the initial state value
-  const { t } = useTranslation('component', {useSuspense: false});
+  const { t } = useTranslation(['component','commands'], {useSuspense: false});
+  let componentName = props.value;
+  if( props.value === 'add-part')
+    componentName = t('commands:add-part-name');
+  const [input, setInput] = useState(`${componentName}`); // '' is the initial state value
  
   // https://blog.bitsrc.io/understanding-currying-in-javascript-ceb2188c339
   const updateValue=(props)=>(e)=>{
       if( typeof props.handler !== 'undefined')
-        props.handler(e.target.value, props.component)
+      {
+        if( e.target.value === '' )
+          e.target.value = 'add-part';
+
+        props.handler(e.target.value, props.component);
+      }
   }
 
   const updateComponent=(props)=>(e)=>{
@@ -25,7 +33,7 @@ export const SetupComponentBOM=(props)=>{
         <input className='m-0 p-0 border-0 text-primary' 
                type="text" 
                style={{backgroundColor: `${styles.cciBgColor}`}} 
-               placeholder={t(`${props.title}`)}
+               placeholder={t(`component:${props.title}`)}
                value={input} 
                onChange={updateValue(props)}
                onInput={(e) => setInput(e.target.value)}
