@@ -461,6 +461,11 @@ class CCiLabComponentList extends Component {
       this.initialized = true;
     }
 
+    // need to check following:
+    //  1 - updated component can't be the same as its own parent 
+    //  2 - updated component can't be the same as its siblings 
+    //  3 - if the updated component exists - using the same businessLogic id from existing one
+    //  4 - if the updated component doesn't exist - create a new businessLogic
     // shouldComponentUpdate =(nextProps, nextState)=>{
     //   console.log("CCiLabComponentList - shouldComponentUpdate")
     //   return 
@@ -469,15 +474,50 @@ class CCiLabComponentList extends Component {
     //          this.state.selected !== nextState.selected
     // }
 
+    // need to have following features
+    // 1 - check if the added component exists - if yes using the same id from existing one
     addComponent = ( parentComponent ) =>{
       console.log("CCiLabComponentList - addComponent to: " + parentComponent.businessLogic.name );
       
       let currentSessionComponents = this.state.greetings;
-      let newComponent;
+
+      // if parent component's children are hidden, expending all the children first without calling setState to rend the list
+      if( parentComponent.displayLogic.canExpend )
+      {
+         currentSessionComponents = this.showOrHideChildren( parentComponent, true, false);
+         parentComponent.displayLogic.canExpend = false;
+      }
+
+      let newComponent={};
 
       newComponent.businessLogic = new initializeBusinessLogic(parentComponent);
+
+      let displayKeyValue = findMaxDisplayKey(currentSessionComponents)
+      newComponent.displayLogic = new initializeDisplayLogic( ++displayKeyValue, false, parentComponent.displayLogic.rectLeft )
+
+      //update businessLogic and displayLogic childIds of parent component 
+      parentComponent.businessLogic.childIds.push( newComponent.businessLogic.id );
+
+       //rebuild the component list
+       let updatedSessionComponents = [];
+
+       let components =[newComponent];
+
+       //initialize the updated session components
+       initializeComponents(parentComponent, currentSessionComponents, components, updatedSessionComponents);
+
+       // populate target component's displayLogic.childKeyIds[]
+       populateComponentChildKeyIds(parentComponent, updatedSessionComponents);
+
+       newComponent.displayLogic.showMyself = true;
+
+        // update selected status so the added component or its parent will be highlighted 
+        updatedSessionComponents.forEach( (item)=>{
+          setComponentSelected( item, newComponent.displayLogic.key ); 
+        });
+
       
-      this.setState({ greetings: currentSessionComponents});
+      this.setState({ greetings: updatedSessionComponents});
     };
 
     deleteCompoent = ( deletedComponent ) =>{
@@ -806,7 +846,8 @@ class CCiLabComponentList extends Component {
                                           leftOffset={this.componentLeftOffset} 
                                           listWidth={this.componentListWidth}
                                           fontSize={this.state.fontSize}
-                                          deleteCompoent={this.deleteCompoent} 
+                                          deleteCompoent={this.deleteCompoent}
+                                          addComponent={this.addComponent} 
                                           showOrHideChildren={this.showOrHideChildren}
                                           selectedComponentHandler={this.selectedComponentHandler}
                                           moveComponentHandler={this.moveComponentHandler}

@@ -73,6 +73,8 @@ const ShowImage=(props)=>{
   );
 }
 
+// only single component can have add, delete and move menu
+// parent component only can add component
 const InLineMenu=(props)=>{
   const { t } = useTranslation('commands', {useSuspense: false});
   return (
@@ -88,7 +90,9 @@ const InLineMenu=(props)=>{
           null
       }
       <a href={`#${t('add')}`} 
-        className={'align-self-center nav-link px-1 m-0 py-0 fa fa-plus'}/>
+        className={'align-self-center nav-link px-1 m-0 py-0 fa fa-plus'}
+        onClick={ props.addComponentHandler}
+        />
       { ( props.isDraggable === 'true') ? 
           <a id={`${props.key}`}
             href={`#${t('delete')}`} 
@@ -343,6 +347,11 @@ class CCiLabComponent extends Component {
         CCiLabComponent.inlineMenu.cmd = 'select';
     };
 
+    addComponent = () =>{
+      this.props.addComponent(this.currentComponent);
+      CCiLabComponent.inlineMenu.itemId='undefined';
+      CCiLabComponent.inlineMenu.cmd = 'select';
+    }
     showOrHideChildren = (isShow) =>{
       this.props.showOrHideChildren(this.currentComponent, isShow)
     }
@@ -547,6 +556,7 @@ class CCiLabComponent extends Component {
                                  isDraggable={draggableSetting}
                                  moveStartHandler={ this.moveStart }
                                  deleteCompnentHandler={ this.deleteCompoent }
+                                 addComponentHandler={this.addComponent}
                     />
                 </Popup> : null}
                  
