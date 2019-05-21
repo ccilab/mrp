@@ -68,7 +68,7 @@ const getChildComponentsFromDataSource = (parentComponent)=>{
 // initialize businessLogic object
 const initializeBusinessLogic = (parentComponent)=>{
   let businessLogic={id: 0, 
-                     name: 'part-name', 
+                     name: 'add-part-name', 
                      parentIds:[parentComponent.businessLogic.id], 
                      childIds :[],  
                      imgFile: '', 
@@ -77,6 +77,21 @@ const initializeBusinessLogic = (parentComponent)=>{
                      remainDays:180};
   return businessLogic;
 }
+
+// find maximum displayLogic.key
+const findMaxBusinessId = ( componentList )=>{
+  let newBusinessId = 0;
+  let idList =[];
+  if( typeof componentList !== "undefined") {
+    componentList.forEach( (component)=>{ idList.push( component.businessLogic.id ) } );
+    // https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Function/apply#Using_apply_and_built-in_functions
+    // The consequences of applying a function with too many arguments (think more than tens of thousands of arguments) vary across engines 
+    // (JavaScriptCore has hard-coded argument limit of 65536), because the limit (indeed even the nature of any excessively-large-stack behavior) is unspecified. 
+    newBusinessId = Math.max( ...idList);
+  }
+  return newBusinessId;
+};
+
 // initialize displayLogic object
 const initializeDisplayLogic = (key, canExpend, rectLeft ) =>{
   let displayLogic = {};
@@ -491,8 +506,10 @@ class CCiLabComponentList extends Component {
       let newComponent={};
 
       newComponent.businessLogic = new initializeBusinessLogic(parentComponent);
+      let maxBusinessLigicId = findMaxBusinessId(currentSessionComponents);
+      newComponent.businessLogic.id = ++maxBusinessLigicId;
 
-      let displayKeyValue = findMaxDisplayKey(currentSessionComponents)
+      let displayKeyValue = findMaxDisplayKey(currentSessionComponents);
       newComponent.displayLogic = new initializeDisplayLogic( ++displayKeyValue, false, parentComponent.displayLogic.rectLeft )
 
       //update businessLogic and displayLogic childIds of parent component 

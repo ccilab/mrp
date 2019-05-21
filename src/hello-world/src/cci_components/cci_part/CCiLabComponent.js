@@ -536,7 +536,7 @@ class CCiLabComponent extends Component {
                       <button 
                         type="button"
                         // 'btn rounded-circle align-self-center p-0 bg-primary '
-                        className={`${inlineMenuClassName} cursor-default fa fa-ellipsis-h`}
+                        className={`${inlineMenuClassName} cursor-pointer fa fa-ellipsis-h`}
                         style={ {'visibility': `${inlineMenuIconVisiblity}`, 
                                   'height': `${this.inlineMenuHeight}rem`, 
                                   'width': `${this.inlineMenuWidth}rem`,
@@ -567,7 +567,7 @@ class CCiLabComponent extends Component {
                 <i  id={`${this.currentComponent.displayLogic.key}-show-hide`} 
                     href='#expend-collapse-badge' 
                     // 'align-self-center nav-link p-0  ' + 'fa fa-angle-right'
-                    className={`${expendCollapseBadgeIconClassNameBase} ${expendCollapseBadgeIconClassName} pl-2 `} 
+                    className={`${expendCollapseBadgeIconClassNameBase} ${expendCollapseBadgeIconClassName} pl-2 cursor-pointer`} 
                     style={expendableIconStyle} 
                     draggable={`${draggableSetting}`}
                     onClick={ this.expending }
