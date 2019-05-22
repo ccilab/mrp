@@ -223,7 +223,7 @@ const ComponentListTitle =(props)=>{
 
   const languageChangeHandler=(language)=>(e)=>{
     i18n.changeLanguage(language);
-    props.titleWidthChangeHandler();
+    props.titleWidthChangeHandler("undefined");
   }
 
   // console.log("CCiLabComponentList - ComponentListTitle: i18n.language = " + i18n.language );
@@ -452,7 +452,9 @@ class CCiLabComponentList extends Component {
 
     //  handles component list increase due to add/remove components
     updateDimensions=( componentList, isRender = true )=>{
-      
+      if( componentList === "undefined")
+        componentList = this.state.greetings;
+
       let listRect = estimateComponentListRect( componentList, this.state.fontSize); //this.state.greetings
       // console.log('CCiLabComponentList - updateDimensions: list width '+ listRect.width);
 
