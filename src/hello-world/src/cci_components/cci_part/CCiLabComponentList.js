@@ -186,7 +186,12 @@ const estimateComponentListRect = (componentLists, fontSize)=>{
   
   let shownComponents = componentLists.filter(component=>component.displayLogic.showMyself === true)
   
-  updatedRect.bottom = shownComponents.length * (45+16)/fontSize; //55px - 3.4375rem assuming rem is 24px defined in CCiLabComponent.js as max button height
+  let listCalculatedHight = shownComponents.length * (45+16); //in px
+
+  if( listCalculatedHight > (componentListRect.bottom-componentListRect.top) )
+    document.getElementById( 'cciLabComponentListID' ).style.overflow = 'auto';
+
+  updatedRect.bottom = listCalculatedHight;
   return updatedRect;
 }
 
@@ -325,10 +330,10 @@ class CCiLabComponentList extends Component {
       this.componentListHeight= window.innerHeight <= 200 ? this.componentListMinHeight : 'auto';  //minimum height 
     }
 
-    onFontResize=(e, args)=>{
+    onFontResize=( args)=>(e)=>{
       this.setState( { fontSize: TextResizeDetector.getSize() } )
       // console.log("onFontResize: The new font size = " + this.state.fontSize);
-      this.updateDimensions();
+      this.updateDimensions(this.state.greetings);
     }
 
     
@@ -337,7 +342,7 @@ class CCiLabComponentList extends Component {
       let iBase = TextResizeDetector.addEventListener(this.onFontResize,null);
       // console.log("initTextResizeDetector: The base font size iBase: " + iBase);
       this.setState( { fontSize: iBase } )
-      this.updateDimensions();
+      this.updateDimensions( this.state.greetings );
     }  
 
     positioningListTitle=(rootComponent)=>{ 
@@ -441,8 +446,14 @@ class CCiLabComponentList extends Component {
     /**
    * bind to resize event, Calculate & Update state of new dimensions
    */
-    updateDimensions=()=>{
-      let listRect = estimateComponentListRect(this.state.greetings, this.state.fontSize);
+    onResizeHandler=(e)=>{
+      this.updateDimensions(this.state.greetings);
+    }
+
+    //  handles component list increase due to add/remove components
+    updateDimensions=( componentList, isRender = true )=>{
+      
+      let listRect = estimateComponentListRect( componentList, this.state.fontSize); //this.state.greetings
       // console.log('CCiLabComponentList - updateDimensions: list width '+ listRect.width);
 
       this.componentListHeight = setListHeight( listRect, this.state.fontSize );
@@ -461,7 +472,8 @@ class CCiLabComponentList extends Component {
 
       // this.setState( {  })
       // console.log("CCiLabComponentList - updateDimensions: used list width: " + this.componentListWidth );
-      this.setState( { greetings: this.state.greetings } );
+      if( isRender === true )
+        this.setState( { greetings: componentList } );
     }
 
     
@@ -472,7 +484,7 @@ class CCiLabComponentList extends Component {
      * */ 
     componentDidMount =()=> {
       console.log("CCiLabComponentList - componentDidMount");
-      window.addEventListener("resize", this.updateDimensions);
+      window.addEventListener("resize", this.onResizeHandler);
       this.initialized = true;
     }
 
@@ -534,12 +546,7 @@ class CCiLabComponentList extends Component {
 
       // need to check vertical scroll bar doesn't show
       // create vertical scroll bar based on the height of component list dynamically
-      let updatedRect = estimateComponentListRect(updatedSessionComponents, this.state.fontSize);
-
-      this.componentListHeight = setListHeight( updatedRect, this.state.fontSize );
-      this.componentListWidth = this.updateDimensions();
-      
-      this.setState({ greetings: updatedSessionComponents});
+      this.updateDimensions( updatedSessionComponents);
     };
 
     deleteCompoent = ( deletedComponent ) =>{
@@ -622,10 +629,7 @@ class CCiLabComponentList extends Component {
           });
           
           // create vertical scroll bar based on the height of component list dynamically
-          let updatedRect = estimateComponentListRect(currentSessionComponents, this.state.fontSize);
-
-          this.componentListHeight = setListHeight( updatedRect, this.state.fontSize );
-          this.componentListWidth = this.updateDimensions();
+          this.updateDimensions( currentSessionComponents, false);
 
           if( isRending )
           {
@@ -832,7 +836,7 @@ class CCiLabComponentList extends Component {
 
     showSetupBOM=( isShowSetupBOM )=>{
       this.setState({setupBOM: isShowSetupBOM});
-      this.updateDimensions();
+      this.updateDimensions(this.state.greetings);
     }
     //need to update showMyself to true after button is clicked to canExpend
     //need to update showMyself to false after button is clicked to collaps
@@ -893,7 +897,7 @@ class CCiLabComponentList extends Component {
     }
 
     showSetupBOM=( isShowSetupBOM )=>{
-      this.updateDimensions();
+      this.updateDimensions(this.state.greetings);
       this.setState({setupBOM: isShowSetupBOM });
     }
 
