@@ -13,17 +13,19 @@
    transition: transform 1s cubic-bezier(0, .52, 0, 1);
  }
 
+//  https://developer.mozilla.org/en-US/docs/Web/CSS/:placeholder-shown
+// https://www.w3schools.com/howto/howto_css_placeholder.asp
  ::placeholder {
-  color:$cci-info-blue;
+  color:$cci-hint-red;
   opacity: 1; /* Firefox */
 }
 
 :-ms-input-placeholder { /* Internet Explorer 10-11 */
- color:$cci-info-blue;
+ color:$cci-hint-red;
 }
 
 ::-ms-input-placeholder { /* Microsoft Edge */
- color:$cci-info-blue;
+ color:$cci-hint-red;
 }
 //// controlled using inline style 
 //  .flyout-menu_hide {

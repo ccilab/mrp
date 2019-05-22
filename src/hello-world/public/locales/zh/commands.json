@@ -4,7 +4,5 @@
     "edit" : "编辑",
     "move"  : "移动",
     "select-component": "选择零部件",
-    "upload-image": "添加照片",
-    "add-part": "添加零部件",
-    "add-part-name": "添加零部件名" 
+    "upload-image": "添加照片"
 }

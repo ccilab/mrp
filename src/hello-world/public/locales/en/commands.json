@@ -5,6 +5,5 @@
     "move"  : "move",
     "select-component": "select-component" ,
     "upload-image": "upload image",
-    "add-part": "create part",
-    "add-part-name": "add part name"
+    "add-part": "create part"
 }

@@ -6,20 +6,26 @@ import styles from "./../../dist/css/ccilab-component-list.css"
 export const SetupComponentBOM=(props)=>{
   const { t } = useTranslation(['component','commands'], {useSuspense: false});
   let componentName = props.value;
+  let textColorClass = 'text-primary';
   if( props.value === 'add-part')
-    componentName = t('commands:add-part-name');
+  {
+    componentName = '';
+  }
+
+    
   const [input, setInput] = useState(`${componentName}`); // '' is the initial state value
  
   // https://blog.bitsrc.io/understanding-currying-in-javascript-ceb2188c339
   const updateValue=(props)=>(e)=>{
       if( typeof props.handler !== 'undefined')
       {
-        if( e.target.value === '' )
+        if( e.target.value === '' && props.title ==='part-name')
           e.target.value = 'add-part';
 
         props.handler(e.target.value, props.component);
       }
   }
+
 
   const updateComponent=(props)=>(e)=>{
     if( typeof props.updateComponent !== 'undefined')
@@ -28,9 +34,10 @@ export const SetupComponentBOM=(props)=>{
 
   // https://medium.freecodecamp.org/reactjs-pass-parameters-to-event-handlers-ca1f5c422b9
   return (
-    <div className='d-flex justify-content-between' style={{backgroundColor: `${styles.cciBgColor}`}}>
+    <div className='d-flex justify-content-between' 
+         style={{backgroundColor: `${styles.cciBgColor}`}}>
         {/* <label className='m-0 p-0'>{t(`${props.title}`)}: </label> */}
-        <input className='m-0 p-0 border-0 text-primary' 
+        <input className={`${textColorClass} m-0 p-0 border-0`} 
                type="text" 
                style={{backgroundColor: `${styles.cciBgColor}`}} 
                placeholder={t(`component:${props.title}`)}
