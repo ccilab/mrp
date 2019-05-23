@@ -570,17 +570,17 @@ class CCiLabComponent extends Component {
                   show expendable icon '>' for those components have children except the top component
                 */}
                 {/* tag's id used to handle drop event */}
-                <i  id={`${this.currentComponent.displayLogic.key}-show-hide`} 
+                <a  id={`${this.currentComponent.displayLogic.key}-show-hide`} 
                     href='#expend-collapse-badge' 
                     // 'align-self-center nav-link p-0  ' + 'fa fa-angle-right'
-                    className={`${expendCollapseBadgeIconClassNameBase} ${expendCollapseBadgeIconClassName} pl-2 cursor-pointer`} 
+                    className={`${expendCollapseBadgeIconClassNameBase} ${expendCollapseBadgeIconClassName} pl-2`} 
                     style={expendableIconStyle} 
                     draggable={`${draggableSetting}`}
                     onClick={ this.expending }
                     onDragStart={ draggableSetting === 'true' ? this.dragStart : null}
                     onDragOver={ this.dragOver }
                     onDrop={  this.doDrop }>
-                </i>
+                </a>
 
                 {/* tag's id is used to get component's rect and handle drop event */}
                   <span id={`${this.currentComponent.displayLogic.key}-item`} 
