@@ -6,6 +6,7 @@
     "barcode": "barcode",
     "unit-qty": "Quantity per Assembly",
     "unit-of-measure": "Unit of Measure",
+    "required-quantity": "Required Quantity",
     "reference-designators": "Reference Designators",
     "procurement-type": "Procurement Type",
     "supplier": "Supplier",

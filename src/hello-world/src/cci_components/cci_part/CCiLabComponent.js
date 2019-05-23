@@ -162,6 +162,7 @@ const SetupBOM=(props)=>{
      core.partNumber='';
      core.unitQty='';
      core.unitOfMeasure='';
+     core.Qty='';
      core.procurementType='';
      core.warehouse='';
      core.workshop='';
@@ -187,12 +188,13 @@ const SetupBOM=(props)=>{
     extra.description='';
     extra.note='';
     return extra;
-  }
+  };
 
   const setPartName=(partName, component)=>{
     component.businessLogic.name=partName;
     console.log("SetupBOM - setPartName: " + component.businessLogic.name);
-  }
+  };
+
   const setPartNumber=(partNumber, component)=>{
     if( typeof component.bom === 'undefined' )
       component.bom = new initializeBOM();
@@ -200,8 +202,15 @@ const SetupBOM=(props)=>{
     component.bom.core.partNumber=partNumber;
 
     console.log("SetupBOM - setPartNumber: " + component.bom.core.partNumber);
-  }
+  };
 
+  const setUnitQty=(unitQty, component)=>{
+    if( typeof component.bom === 'undefined' )
+      component.bom = new initializeBOM();
+
+    component.bom.core.unitQty=unitQty;
+
+  }
 
   if( typeof props.component.bom === 'undefined' )
     props.component.bom = new initializeBOM();
@@ -215,32 +224,44 @@ const SetupBOM=(props)=>{
           id={`#component-${props.component.displayLogic.key}`}
           type="button"
           className={`${_className}`}
-          style={{'height': `auto`, backgroundColor: `${styles.cciBgColor}`}}></button>
+          style={{'height': `auto`, zIndex : 555, backgroundColor: `${styles.cciBgColor}`}}></button>
       }
       closeOnDocumentClick
       on="hover"
       position='right center'
       mouseLeaveDelay={400}
       mouseEnterDelay={0}
-      contentStyle={{ padding: '0px', border: 'none', backgroundColor: `${styles.cciBgColor}`}}
+      contentStyle={{  zIndex: 555,  padding: '0px', border: 'none', backgroundColor: `${styles.cciBgColor}`}}
       arrow={true}
       arrowStyle={{backgroundColor: `${styles.cciBgColor}`}}
       >
-      <div className={'bg-info d-flex flex-column'}>
+      <div className={'bg-info d-flex flex-column'} style={{ zIndex : 555} }>
        <SetupComponentBOM 
         title='part-name'
         value={props.component.businessLogic.name}
         component={props.component}
         handler={setPartName}
         updateComponent={props.updateComponent}/>
-        <hr className='my-0 bg-info' style={{borderStyle:'insert', borderWidth: '0.08em', borderColor:`${styles.cciInfoBlue}`}}/>
+
+        <hr className='my-0 bg-info' 
+            style={{borderStyle:'insert', borderWidth: '0.08em', borderColor:`${styles.cciInfoBlue}`}}/>
         
         <SetupComponentBOM 
-        title='part-number'
-        value={props.component.bom.core.partNumber}
-        component={props.component}
-        handler={setPartNumber}
-        updateComponent={props.updateComponent}/>
+          title='part-number'
+          value={props.component.bom.core.partNumber}
+          component={props.component}
+          handler={setPartNumber}
+          updateComponent={props.updateComponent}/>
+
+        <hr className='my-0 bg-info' 
+            style={{borderStyle:'insert', borderWidth: '0.08em', borderColor:`${styles.cciInfoBlue}`}}/>
+
+        <SetupComponentBOM 
+          title='unit-qty'
+          value={props.component.bom.core.unitQty}
+          component={props.component}
+          handler={setUnitQty}
+          updateComponent={props.updateComponent}/>
       </div>
     </Popup>
   )

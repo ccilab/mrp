@@ -231,7 +231,7 @@ const ComponentListTitle =(props)=>{
    
   return (
     <div className='d-flex align-items-center bg-info fa' style={{ 'height': `${props.titleHeight}rem`, 'width': `${props.titleWidth}`}}>
-    <span className={props.titleClassName} style={{'position':'relative', 'left':`${props.titlePositionLeft}rem`, fontSize: '1rem'}}>{t(`${props.title}`)}
+    <span  id='title-name' className={props.titleClassName} style={{'position':'relative', 'left':`${props.titlePositionLeft}rem`, fontSize: '1rem'}}>{t(`${props.title}`)}
 
     { props.setupBOM ? 
        <a key='submit-bom' href='#submit-bom' className='px-1 border-0 text-primary p-0 nav-link fa fa-file-upload' />
@@ -431,15 +431,20 @@ class CCiLabComponentList extends Component {
 
     }
   
-    getSubTitleWidth=()=>{
+    getMaxTitleWidth=()=>{
+      let titleNameRect =  document.getElementById( 'title-name' ).getBoundingClientRect();
+
       // find width of sub title 
       let subTitleNameRect =  document.getElementById( 'subTitle-name' ).getBoundingClientRect();
       let subTitleTypeRect =  document.getElementById( 'subTitle-type' ).getBoundingClientRect();
-      // let subTitleEditIcon = document.getElementById( 'subTitle-edit' ).getBoundingClientRect();+ subTitleEditIcon.width
-    
-      let width = 3*(this.componentTitleLeft + this.rootComponentNameWidth )* this.state.fontSize + subTitleNameRect.width  + subTitleTypeRect.width ;
+     
+      let width = Math.max(titleNameRect.width, (subTitleNameRect.width  + subTitleTypeRect.width));
+      if( titleNameRect.width >= width )
+        width = (this.componentTitleLeft + this.rootComponentNameWidth )* this.state.fontSize + width ;
+      else  // title name is much longer the sub title in Chinese
+        width = (this.componentTitleLeft + this.rootComponentNameWidth )* this.state.fontSize + 2* width ;
 
-      return width;
+      return width;  // in px
     }
   
   
@@ -460,7 +465,7 @@ class CCiLabComponentList extends Component {
 
       this.componentListHeight = setListHeight( listRect, this.state.fontSize );
      
-      let titleWidth = this.getSubTitleWidth();
+      let titleWidth = this.getMaxTitleWidth();
 
       // console.log('CCiLabComponentList - updateDimensions: title width '+ titleWidth);
 
@@ -837,9 +842,10 @@ class CCiLabComponentList extends Component {
     };
 
     showSetupBOM=( isShowSetupBOM )=>{
+      this.updateDimensions("undefined");  //title-name hasn't changed yet (from progress to setupBOM)
       this.setState({setupBOM: isShowSetupBOM});
-      this.updateDimensions(this.state.greetings);
     }
+
     //need to update showMyself to true after button is clicked to canExpend
     //need to update showMyself to false after button is clicked to collaps
     renderGreetings = () => {
