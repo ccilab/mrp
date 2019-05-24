@@ -223,19 +223,20 @@ const SetupBOM=(props)=>{
           key={`component-${props.component.displayLogic.key}`}
           id={`#component-${props.component.displayLogic.key}`}
           type="button"
+          // 'bg-info text-primary border-0 py-0 px-2 fa fw fa-edit' : 'text-primary border-0 py-0 px-2 fa fw fa-edit';
           className={`${_className}`}
-          style={{'height': `auto`, zIndex : 555, backgroundColor: `${styles.cciBgColor}`}}></button>
+          style={{'height': `auto`, backgroundColor: `${styles.cciBgColor}`}}></button>
       }
       closeOnDocumentClick
       on="hover"
       position='right center'
-      mouseLeaveDelay={400}
+      mouseLeaveDelay={200}
       mouseEnterDelay={0}
-      contentStyle={{  zIndex: 555,  padding: '0px', border: 'none', backgroundColor: `${styles.cciBgColor}`}}
+      contentStyle={{ padding: '0px', border: 'none', backgroundColor: `${styles.cciBgColor}`}} //zIndex: 5,
       arrow={true}
       arrowStyle={{backgroundColor: `${styles.cciBgColor}`}}
       >
-      <div className={'bg-info d-flex flex-column'} style={{ zIndex : 555} }>
+      <div className={'bg-info d-flex flex-column'} >
        <SetupComponentBOM 
         title='part-name'
         value={props.component.businessLogic.name}

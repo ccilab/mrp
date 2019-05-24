@@ -35,11 +35,11 @@ export const SetupComponentBOM=(props)=>{
   // https://medium.freecodecamp.org/reactjs-pass-parameters-to-event-handlers-ca1f5c422b9
   return (
     <div className='d-flex justify-content-between' 
-         style={{backgroundColor: `${styles.cciBgColor}`, zIndex: 555 }}>
+         style={{backgroundColor: `${styles.cciBgColor}`}}>
         {/* <label className='m-0 p-0'>{t(`${props.title}`)}: </label> */}
         <input className={`${textColorClass} m-0 p-0 border-0`} 
                type="text" 
-               style={{backgroundColor: `${styles.cciBgColor}`, zIndex: 555}} 
+               style={{backgroundColor: `${styles.cciBgColor}`}} 
                placeholder={t(`component:${props.title}`)}
                value={input} 
                onChange={updateValue(props)}
