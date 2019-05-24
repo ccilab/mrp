@@ -462,7 +462,7 @@ class CCiLabComponentList extends Component {
         if( titleNameRect.width > subTitlewidth )
           width = (this.componentTitleLeft + this.rootComponentNameWidth )* this.state.fontSize + titleNameRect.width;
         else  // title name is much longer the sub title in Chinese
-          width = (this.componentTitleLeft + this.rootComponentNameWidth )* this.state.fontSize + 2* subTitlewidth ;
+          width = (this.componentTitleLeft + this.rootComponentNameWidth )* this.state.fontSize + 1.8 * subTitlewidth ;
       }
       else
         width = this.componentListWidth;
@@ -1021,8 +1021,7 @@ class CCiLabComponentList extends Component {
                   <div className={'d-flex flex-column cci-flyout-component-list'} 
                        style={{ 'height':`${this.componentListHeight}`, 
                                 'minHeight': `${this.componentListMinHeight}`,
-                                'width':`${this.componentListWidth}`,
-                                zIndex: 5}}
+                                'width':`${this.componentListWidth}`}}
                        onScroll={this.setSelectedComponentStickDirection}>
                     {/* <hr className='m-0'></hr> */}
                     {this.renderGreetings()}
