@@ -998,6 +998,7 @@ class CCiLabComponentList extends Component {
                   {/*  sticky to top and left, https://gedd.ski/post/position-sticky/*/}
                   {/* https://iamsteve.me/blog/entry/using-flexbox-for-horizontal-scrolling-navigation
                       https://codepen.io/stevemckinney/pen/WvWrRX */}
+                  {/* https://sevenspark.com/diagnosis/z-index-submenu-hidden-behind-content popup menu chip behind d-flex row*/}
                  
                   { this.state.setupBOM ? <ComponentListSubTitle 
                                          name='subTitle-BOM-create-component'
