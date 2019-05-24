@@ -1,38 +1,323 @@
 import React, { Component } from 'react';
 import Popup from '../popup_menu/Popup'
+import { useTranslation } from 'react-i18next';
+import {SetupComponentBOM} from './CCiLabSetupComponentBOM';
+import {saveAs, creatHiddenImgInputTag} from "../file_save/CCiLabLocalFileAccess"
 
 
-import './../../dist/css/ccilab-component.css'
+import styles from './../../dist/css/ccilab-component.css'
 import './../../dist/css/popup-menu.css'
+
+
+const ShowImage=(props)=>{
+  const { t } = useTranslation('commands', {useSuspense: false});
+
+  const addImage=(props)=>(e)=>{
+    creatHiddenImgInputTag(e, props);
+  };
+
+  return (
+    //  {/* no style for top element so the button can host the image, other elements need style to set image position  */}
+    <span>
+     { ( props.isSetupBOM === true ) ? 
+        <span>
+          { (typeof props.name !== 'undefined' && props.name.length !== 0 ) ? 
+            <img id={`${props.displayLogickey}`} 
+            className={`${props.className} cci-component__img rounded-circle align-self-center`} src={props.name} alt={`${t('upload-image')}`}
+            style={{'height': `${props.height}rem`, 'width': `${props.width}rem`, 'cursor':'pointer'}} 
+            draggable={`${props.isDraggable}`}
+            onDragStart={ props.isDraggable === 'true' ? props.dragStartHandler : null}
+            onDragOver={ props.dragOverHandler }
+            onDrop={  props.doDropHander }
+            onClick={addImage(props)}/>
+            :
+            <Popup 
+              trigger={
+                <i id={`${props.displayLogickey}`} 
+                  type="icon"
+                  className={`${props.className} text-primary fa fa-plus-circle`} 
+                  style={{'cursor':'pointer'}} 
+                  draggable={`${props.isDraggable}`}
+                  onDragStart={ props.isDraggable === 'true' ? props.dragStartHandler : null}
+                  onDragOver={ props.dragOverHandler }
+                  onDrop={  props.doDropHander }
+                  onClick={addImage(props)}/>
+              }
+              closeOnDocumentClick
+              on="hover"
+              mouseLeaveDelay={100}
+              mouseEnterDelay={0}
+              arrow={true}
+              arrowStyle={{backgroundColor: `${styles.cciBgColor}`}}
+              contentStyle={{ padding: '0px', border: 'none', backgroundColor: `${styles.cciBgColor}`, fontSize:'0.8em' } }>
+              <span className={'text-info'} >{t('upload-image')}</span>
+            </Popup>
+          }
+        </span>
+      :
+      <span>
+       { (typeof props.name !== 'undefined' && props.name.length !== 0 ) ? 
+        // {/* tag's id used to handle drop event float-left*/}
+        // className: 'cci-component__img rounded-circle align-self-center  cursor-default or move'
+        <img id={`${props.displayLogickey}`} 
+             className={`${props.className} cci-component__img rounded-circle align-self-center`} src={props.name} alt={`${t('upload-image')}`}
+             style={{'height': `${props.height}rem`, 'width': `${props.width}rem`, 'cursor':'pointer'}} 
+        />
+        // need to replace with + icon single "fa fa-stop", group "fa fa-th-large"
+        :
+        null
+       }
+       </span>
+     }  
+    </span>
+  );
+}
+
+// only single component can have add, delete and move menu
+// parent component only can add component
+const InLineMenu=(props)=>{
+  const { t } = useTranslation('commands', {useSuspense: false});
+  return (
+    <div className={'d-flex ccilab-menu-item bg-info bg-faded align-items-center'}> 
+      {/* copy is not supported for now */}
+      {/* { ( draggableSetting === 'true') ? <a href='#copy' className={'align-self-center nav-link px-1 fa fa-copy '}/> :null} */}
+      { ( props.isDraggable === 'true') ? 
+        <a id={`${props.displayLogickey}`}
+          href={`#${t('move')}`}
+          className={'align-self-center nav-link px-1 fa fa-arrows-alt'}
+          onClick={ props.moveStartHandler }/> 
+          :
+          null
+      }
+      <a href={`#${t('add')}`} 
+        className={'align-self-center nav-link px-1 m-0 py-0 fa fa-plus'}
+        onClick={ props.addComponentHandler}
+        />
+      { ( props.isDraggable === 'true') ? 
+          <a id={`${props.key}`}
+            href={`#${t('delete')}`} 
+            className={'align-self-center nav-link px-1 fa fa-trash-alt'}
+            onClick={props.deleteCompnentHandler}/>
+          :
+          null
+      }
+    </div> 
+  );
+}
+
+const ComponentName=(props)=>{
+  const { t } = useTranslation('commands', {useSuspense: false});
+  let componentName = props.componentName;
+
+  if( props.componentName === 'add-part')
+    componentName = t('add-part');
+
+
+  return (
+    <a  id={`${props.displayLogickey}`} 
+        href={`#${t('select-component')}`} 
+        className={`${props.className}`} 
+        style={{ 'height': `auto` }} 
+        draggable={`${props.isDraggable}`}
+        onClick={ props.componentSelectedHandler }
+        onDragStart={ props.dragStartHandler }
+        onDragOver={ props.dragOverHandler }
+        onDrop={ props.doDropHandler }>
+        {`${componentName}`}
+    </a>
+  );
+}
+
+const ShowStatus=(props)=>{
+  const { t } = useTranslation('component', {useSuspense: false});
+
+  return (
+    <span id={props.statusId} 
+        className={props.statusClassName} 
+        style={{'display':'inline-block','height': `auto`}} 
+        draggable={props.statusDraggable}
+        onClick={ props.onClickHandler }
+        onDragStart={ props.onDragStartHandler }
+        onDragOver={ props.onDragOverHandler }
+        onDrop={  props.onDropHandler }> 
+        {props.progress}% - {props.remainingTime} {t('remaining-time-unit')}
+    </span> 
+  );
+}
+
+const SetupBOM=(props)=>{
+  const _className = props.component.displayLogic.selected ? 'bg-info text-primary border-0 py-0 px-2 fa fw fa-edit' : 'text-primary border-0 py-0 px-2 fa fw fa-edit';
+  // const bgColor = props.component.displayLogic.selected ? null : `${styles.cciBgColor}`;
+  
+  const initializeBOM=()=>{
+    let bom={};
+    bom.core=initializeBOMCore();
+    bom.extra=initializeBOMExtra();
+    return bom;
+  }
  
+  const initializeBOMCore=()=>{
+     let core={};
+     core.OrderQty='';
+     core.partNumber='';
+     core.unitQty='';
+     core.unitOfMeasure='';
+     core.Qty='';
+     core.procurementType='';
+     core.warehouse='';
+     core.workshop='';
+     core.leadTime='';
+     core.rejectRate='';
+     core.supplier='';
+     core.supplierPartNumber='';
+     return core;
+  }
+
+  const initializeBOMExtra=()=>{
+    let extra={};
+    extra.SKU='';
+    extra.barcode='';
+    extra.revision='';
+    extra.refDesignator='';
+    extra.phase='';
+    extra.category='';
+    extra.material='';
+    extra.process='';
+    extra.unitCost='';
+    extra.assemblyLine='';
+    extra.description='';
+    extra.note='';
+    return extra;
+  };
+
+  const setPartName=(partName, component)=>{
+    component.businessLogic.name=partName;
+    console.log("SetupBOM - setPartName: " + component.businessLogic.name);
+  };
+
+  const setPartNumber=(partNumber, component)=>{
+    if( typeof component.bom === 'undefined' )
+      component.bom = new initializeBOM();
+
+    component.bom.core.partNumber=partNumber;
+
+    console.log("SetupBOM - setPartNumber: " + component.bom.core.partNumber);
+  };
+
+  const setUnitQty=(unitQty, component)=>{
+    if( typeof component.bom === 'undefined' )
+      component.bom = new initializeBOM();
+
+    component.bom.core.unitQty=unitQty;
+
+  }
+
+  if( typeof props.component.bom === 'undefined' )
+    props.component.bom = new initializeBOM();
+
+
+  return (
+    <Popup
+      trigger={
+        <button 
+          key={`component-${props.component.displayLogic.key}`}
+          id={`#component-${props.component.displayLogic.key}`}
+          type="button"
+          // 'bg-info text-primary border-0 py-0 px-2 fa fw fa-edit' : 'text-primary border-0 py-0 px-2 fa fw fa-edit';
+          className={`${_className}`}
+          style={{'height': `auto`, backgroundColor: `${styles.cciBgColor}`}}></button>
+      }
+      closeOnDocumentClick
+      on="hover"
+      position='right center'
+      mouseLeaveDelay={200}
+      mouseEnterDelay={0}
+      contentStyle={{ padding: '0px', border: 'none', backgroundColor: `${styles.cciBgColor}`}} //zIndex: 5,
+      arrow={true}
+      arrowStyle={{backgroundColor: `${styles.cciBgColor}`}}
+      >
+      <div className={'bg-info d-flex flex-column'} >
+       <SetupComponentBOM 
+        title='part-name'
+        value={props.component.businessLogic.name}
+        component={props.component}
+        handler={setPartName}
+        updateComponent={props.updateComponent}/>
+
+        <hr className='my-0 bg-info' 
+            style={{borderStyle:'insert', borderWidth: '0.08em', borderColor:`${styles.cciInfoBlue}`}}/>
+        
+        <SetupComponentBOM 
+          title='part-number'
+          value={props.component.bom.core.partNumber}
+          component={props.component}
+          handler={setPartNumber}
+          updateComponent={props.updateComponent}/>
+
+        <hr className='my-0 bg-info' 
+            style={{borderStyle:'insert', borderWidth: '0.08em', borderColor:`${styles.cciInfoBlue}`}}/>
+
+        <SetupComponentBOM 
+          title='unit-qty'
+          value={props.component.bom.core.unitQty}
+          component={props.component}
+          handler={setUnitQty}
+          updateComponent={props.updateComponent}/>
+      </div>
+    </Popup>
+  )
+}
+
 class CCiLabComponent extends Component {
         state = {
             expended:  true,
-           
+            updateImg: false,
         };
 
-        currentComponent = this.props.component;
-        rootFontSize=this.props.fontSize;
-        parents = this.currentComponent.businessLogic.parentIds;
-        children = this.currentComponent.businessLogic.childIds;
-        componentName = this.currentComponent.businessLogic.name;
-        imgName = (this.currentComponent.businessLogic.imgFile.length !==0 ) ? '/images/'+ this.currentComponent.businessLogic.imgFile : 
-                    (this.children.length !==0) ? '/images/cci_group_block.png' : '/images/cci_single_block_item.png';
+    
+    static inlineMenu ={ cmd: 'select',
+                         itemId: 'undefined'};
+
+    currentComponent;
+    rootFontSize;
+    parents;
+    children;
+    componentName;
+
+    imgName;
+    
+    componentLableHeight;
+    componentLableWidth;
+    inlineMenuHeight;
+    inlineMenuWidth;
+
+    progressStatus;
+    progressValue;
+
+    leftOffset;
+
+
+
+    init=(props)=>{
+      this.currentComponent = props.component;
+      this.rootFontSize=props.fontSize;
+      this.parents = this.currentComponent.businessLogic.parentIds;
+      this.children = this.currentComponent.businessLogic.childIds;
+      this.componentName = this.currentComponent.businessLogic.name;
+
+      this.imgName = (this.currentComponent.businessLogic.imgFile.length !==0 ) ? '/images/'+ this.currentComponent.businessLogic.imgFile : '';
         
         // size of component button, rem - 16px is default font size of browser
-        componentLableHeight =  (this.parents.length === 0 ) ? 45/this.rootFontSize : (this.children.length !==0) ? 25/this.rootFontSize: 25/this.rootFontSize;
-        componentLableWidth = this.componentLableHeight;
-        inlineMenuHeight = 25/this.rootFontSize;
-        inlineMenuWidth = 25/this.rootFontSize;
+      this.componentLableHeight =  (this.parents.length === 0 ) ? 45/this.rootFontSize : (this.children.length !==0) ? 25/this.rootFontSize: 25/this.rootFontSize;
+      this.componentLableWidth = this.componentLableHeight;
+      this.inlineMenuHeight = 25/this.rootFontSize;
+      this.inlineMenuWidth = 25/this.rootFontSize;
 
-        progressStatus = this.currentComponent.businessLogic.status;
-        progressValue = this.currentComponent.businessLogic.progressPercent;
+      this.progressStatus = this.currentComponent.businessLogic.status;
+      this.progressValue = this.currentComponent.businessLogic.progressPercent;
 
-        leftOffset =this.props.leftOffset  + ( (this.parents.length === 0 ) ? 0: this.componentLableWidth/2 );
-
-        static inlineMenu ={ cmd: 'select',
-                             itemId: 'undefined'};
-
+      this.leftOffset =props.leftOffset  + ( (this.parents.length === 0 ) ? 0: this.componentLableWidth/2 );
+    }
       
     positioningComponentInfo=( )=>{
       
@@ -44,8 +329,8 @@ class CCiLabComponent extends Component {
     //   this.statusLabelLeft = getTextRect(this.componentName+':').width/this.rootFontSize;//this.nameLableLeft + getTextRect(this.componentName+':').width/this.rootFontSize + 3.5; // in rem, compnesate padding left for  ~ 4rem
     }
 
+    // life cycle function only calls once when class is created
     componentWillMount=()=>{
-      // this.positioningComponentInfo();
       this.setState({expended: this.props.component.displayLogic.canExpend});
     }
 
@@ -53,8 +338,6 @@ class CCiLabComponent extends Component {
       let componentRect = document.getElementById( `${this.currentComponent.displayLogic.key}-item` ).getBoundingClientRect();  
 
       this.currentComponent.displayLogic.rectLeft = componentRect.left/this.rootFontSize;  //convert to rem, 16px is default font size for browser
-
-      this.componentSelected()
     };
 
     expending = () => {
@@ -86,10 +369,17 @@ class CCiLabComponent extends Component {
       }
     }
 
-    removeGreeting = () => {
-        this.props.removeGreeting(this.component.businessLogic.imgName);
+    deleteCompoent = () => {
+        this.props.deleteCompoent(this.currentComponent);
+        CCiLabComponent.inlineMenu.itemId='undefined';
+        CCiLabComponent.inlineMenu.cmd = 'select';
     };
 
+    addComponent = () =>{
+      this.props.addComponent(this.currentComponent);
+      CCiLabComponent.inlineMenu.itemId='undefined';
+      CCiLabComponent.inlineMenu.cmd = 'select';
+    }
     showOrHideChildren = (isShow) =>{
       this.props.showOrHideChildren(this.currentComponent, isShow)
     }
@@ -169,19 +459,22 @@ class CCiLabComponent extends Component {
       }
 
       console.log('droped from source: ', sourceId);
-    }
+    };
 
+    updateImage=()=>{ 
+      this.setState({updateImg:true});
+    };
+    
     render=()=>{
+        this.init(this.props);
+
         // console.log('CCiLabComponent::render() imgFile: ', this.imgName);
         let componentBase='d-flex cci-component-lable_position  align-items-center '; //align-items-center 
         let inlineMenuClassName ='btn rounded-circle align-self-center p-0 bg-primary ';
-        let btnClassNameBase = 'btn rounded-circle align-self-center cci-component-btn ml-1 '; 
-        let btnClassName = btnClassNameBase;
-        let imamgeClassName = 'cci-component__img rounded-circle align-self-center '; 
+        let imamgeClassName = ' '; 
         let expendCollapseBadgeIconClassNameBase ='align-self-center nav-link p-0  '; // component-label_sticky_horizontal
         let expendCollapseBadgeIconClassName= 'fa fa-angle-right';
-        let componentNameClassNameBase = 'lead align-self-center font-weight-normal text-primary text-truncate nav-link px-2 ';//component-label_sticky_horizontal
-        let componentNameClassName=  componentNameClassNameBase; //+ ' py-0' to remove space between components
+        let componentNameClassName = 'lead align-self-center font-weight-normal text-primary text-truncate nav-link px-2 ';//component-label_sticky_horizontal
 
         // .align-self-center to make fa and badge height the same as font height
         let statusBadgetIconClassNameBase = 'align-self-center text-nowrap ml-0 px-1   '; //component-label_sticky_horizontal 
@@ -194,22 +487,20 @@ class CCiLabComponent extends Component {
         let draggableSetting = false;
         let  stickyWidth =  this.currentComponent.displayLogic.selected !== 0 ? `${this.props.listWidth}`:'auto';
 
-        let componentStyle = {'width': `${stickyWidth}`, 'left': `0rem`}
+        let componentStyle = {'width': `${stickyWidth}`, 'left': `0rem`, zIndex: 5} //z-index=0 so it's not block language dropdown list
 
         // very top component or component has children can't be moved 
-        if ( this.parents.length === 0 || this.children.length !== 0 ) 
+        if ( this.parents.length === 0 || this.children.length !== 0 || this.props.isSetupBOM === false) 
         {
           draggableSetting= false;
           Component = ( this.currentComponent.displayLogic.selected !== 0 ) ? 'bg-info component_opacity ccilab-component-sticky-top' :'';  
 
-          if( this.currentComponent.displayLogic.selected !== 0 )
+          if( this.currentComponent.displayLogic.selected !== 0  )
           {
-           
-            componentBase +=  ' cusor-default';
-            btnClassName +=  ' cusor-default';
-            imamgeClassName += ' cusor-default';
-            componentNameClassName += ' cusor-default';
-            statusBadgeIconClassName += ' cusor-default';
+            componentBase +=  ' cursor-default';
+            imamgeClassName += ' cursor-pointer';
+            componentNameClassName += ' cursor-default';
+            statusBadgeIconClassName += ' cursor-default';
           }
         }
         else
@@ -222,11 +513,10 @@ class CCiLabComponent extends Component {
           if( this.currentComponent.displayLogic.selected !== 0 )
           {
             
-            componentBase +=  (permissionEabled && this.currentComponent.displayLogic.selected !== 0 )? ' move':' cusor-default';
-            btnClassName +=  (permissionEabled && this.currentComponent.displayLogic.selected !== 0 )? ' move':' cusor-default';
-            imamgeClassName += (permissionEabled && this.currentComponent.displayLogic.selected !== 0 )? ' move':' cusor-default';
-            componentNameClassName += (permissionEabled && this.currentComponent.displayLogic.selected !== 0 )? ' move':' cusor-default';
-            statusBadgeIconClassName += (permissionEabled && this.currentComponent.displayLogic.selected !== 0 )? ' move':' cusor-default';
+            componentBase +=  (permissionEabled && this.currentComponent.displayLogic.selected !== 0 && this.props.isSetupBOM )? ' move':' cursor-default';
+            imamgeClassName += (permissionEabled && this.currentComponent.displayLogic.selected !== 0 )? ' move':' cursor-pointer';
+            componentNameClassName += (permissionEabled && this.currentComponent.displayLogic.selected !== 0 )? ' move':' cursor-default';
+            statusBadgeIconClassName += (permissionEabled && this.currentComponent.displayLogic.selected !== 0 )? ' move':' cursor-default';
           }
         }
 
@@ -241,6 +531,10 @@ class CCiLabComponent extends Component {
         let inlineMenuIconVisiblity =  ( this.currentComponent.displayLogic.selected !== 0 ) ? 'visible' : 'hidden';
 
         let inlineMenuPosition = (this.parents.length === 0)? 'bottom left' : 'top left';
+
+        // this.componentName = this.props.component.businessLogic.name;
+        console.log("CCiLabComponent: - render() - component name: "+this.componentName);
+        
 
         return (
           // https://developer.mozilla.org/en-US/docs/Web/API/HTML_Drag_and_Drop_API
@@ -264,19 +558,18 @@ class CCiLabComponent extends Component {
               <div className={`${componentBase}`} style={{'left':`${this.leftOffset}rem`}}>
                 {/* a badge to show menu to move/copy/delete/edit component, only sole children component has move and copy option */}
                 {/* https://github.com/yjose/reactjs-popup/blob/master/docs/src/examples/Demo.js */}
+                { this.props.isSetupBOM ? 
                 <Popup 
                     trigger={
                       <button 
                         type="button"
                         // 'btn rounded-circle align-self-center p-0 bg-primary '
-                        className={`${inlineMenuClassName} cusor-default`}
+                        className={`${inlineMenuClassName} cursor-pointer fa fa-ellipsis-h`}
                         style={ {'visibility': `${inlineMenuIconVisiblity}`, 
                                   'height': `${this.inlineMenuHeight}rem`, 
-                                  'width': `${this.inlineMenuWidth}rem`} }
+                                  'width': `${this.inlineMenuWidth}rem`,
+                                  fontSize:  `${this.inlineMenuWidth*0.8}rem`}}
                         > 
-                          <span className='fa fa-ellipsis-h'
-                                style={ {'visibility': `${inlineMenuIconVisiblity}`} }>
-                          </span>
                       </button>
                     }
                     id={`${this.currentComponent.displayLogic.key}-inline-menu`}
@@ -287,20 +580,13 @@ class CCiLabComponent extends Component {
                     mouseEnterDelay={0}
   						      contentStyle={{ padding: '0px', border: 'none' }}
                     >
-                    {/* <div className='ccilab-menu '> */}
-        							<div className={'d-flex ccilab-menu-item bg-info bg-faded align-items-center'}> 
-                        {/* copy is not supported for now
-                           { ( draggableSetting === 'true') ? <a href='#copy' className={'align-self-center nav-link px-1 fa fa-copy '}/> :null} */}
-                        { ( draggableSetting === 'true') ? <a id={`${this.currentComponent.displayLogic.key}`}
-                           href='#move' 
-                           className={'align-self-center nav-link px-1 fa fa-arrows-alt'}
-                           onClick={ this.moveStart }
-                           /> :null}
-                        <a href='#edit' className={'align-self-center nav-link px-1 fa fa-edit'}/>
-                      </div> 
-        						
-                   {/*  </div> */}
-                </Popup> 
+                    <InLineMenu  displayLogickey={this.currentComponent.displayLogic.key}
+                                 isDraggable={draggableSetting}
+                                 moveStartHandler={ this.moveStart }
+                                 deleteCompnentHandler={ this.deleteCompoent }
+                                 addComponentHandler={this.addComponent}
+                    />
+                </Popup> : null}
                  
                  {/* show collapse icon 'v' for all expendable components,
                   show expendable icon '>' for those components have children except the top component
@@ -309,7 +595,7 @@ class CCiLabComponent extends Component {
                 <a  id={`${this.currentComponent.displayLogic.key}-show-hide`} 
                     href='#expend-collapse-badge' 
                     // 'align-self-center nav-link p-0  ' + 'fa fa-angle-right'
-                    className={`${expendCollapseBadgeIconClassNameBase} ${expendCollapseBadgeIconClassName} pl-2 `} 
+                    className={`${expendCollapseBadgeIconClassNameBase} ${expendCollapseBadgeIconClassName} pl-2`} 
                     style={expendableIconStyle} 
                     draggable={`${draggableSetting}`}
                     onClick={ this.expending }
@@ -319,51 +605,59 @@ class CCiLabComponent extends Component {
                 </a>
 
                 {/* tag's id is used to get component's rect and handle drop event */}
-                <button id={`${this.currentComponent.displayLogic.key}-item`} className={`${btnClassName}`} 
-                  style={ { 'height': `${this.componentLableHeight}rem`, 'width': `${this.componentLableWidth}rem`}}
+                  <span id={`${this.currentComponent.displayLogic.key}-item`} 
+                  className={imamgeClassName} 
                   draggable={`${draggableSetting}`}
                   onClick={ this.componentSelected } 
                   onDragStart={ draggableSetting === 'true' ? this.dragStart : null}
                   onDragOver={ this.dragOver }
                   onDrop={  this.doDrop }>
-                  
-                  {/* no style for top element so the button can host the image, other elements need style to set image position  */}
-                  { (this.imgName.length !== 0 ) ? 
-                      // {/* tag's id used to handle drop event float-left*/}
-                      <img id={`${this.currentComponent.displayLogic.key}`} 
-                           className={`${imamgeClassName}`} src={this.imgName} alt=''
-                           style={{'height': `${this.componentLableHeight}rem`, 'width': `${this.componentLableWidth}rem`}} 
-                           draggable={`${draggableSetting}`}
-                           onDragStart={ draggableSetting === 'true' ? this.dragStart : null}
-                           onDragOver={ this.dragOver }
-                           onDrop={  this.doDrop }>
-                      </img>
-                      :null
-                   }
-                </button>
+                  <ShowImage 
+                    displayLogickey={this.currentComponent.displayLogic.key}
+                    name={this.imgName} //this.imgName
+                    component={this.currentComponent}
+                    className={imamgeClassName}
+                    height={this.componentLableHeight}
+                    width={this.componentLableWidth}
+                    isDraggable={draggableSetting}
+                    isSetupBOM={this.props.isSetupBOM}
+                    dragStartHandler={this.dragStart}
+                    dragOverHandler={this.dragOver}
+                    doDropHander={this.doDrop }
+                    addImageHandler={this.updateImage}
+                  />
+                </span>
                 {/* tag's id is used to handle drop event */}
-                <a  id={`${this.currentComponent.displayLogic.key}`} 
-                    href='#select-component-name' className={`${componentNameClassName}`} 
-                    style={{ 'height': `auto` }} 
-                    draggable={`${draggableSetting}`}
-                    onClick={ this.componentSelected }
-                    onDragStart={ draggableSetting === 'true' ? this.dragStart : null}
-                    onDragOver={ this.dragOver }
-                    onDrop={  this.doDrop }>
-                    {this.componentName}:
-                </a>
+                <ComponentName  
+                    displayLogickey={`${this.currentComponent.displayLogic.key}`} 
+                    className={`${componentNameClassName}`} 
+                    isDraggable={`${draggableSetting}`}
+                    componentSelectedHandler={ this.componentSelected }
+                    dragStartHandler={ draggableSetting === 'true' ? this.dragStart : null}
+                    dragOverHandler={ this.props.isSetupBOM ? this.dragOver :null }
+                    doDropHandler={ this.props.isSetupBOM ? this.doDrop : null }
+                    componentName={this.componentName}
+                />
                 
                 {/* tag's id is used to handle drop event */}
-                <span id={`${this.currentComponent.displayLogic.key}`} 
-                      className={`badge-pill badge-${this.progressStatus} ${statusBadgeIconClassName}`} 
-                      style={{'display':'inline-block','height': `auto`}} 
-                      draggable={`${draggableSetting}`}
-                      onClick={ this.componentSelected }
-                      onDragStart={ draggableSetting === 'true' ? this.dragStart : null}
-                      onDragOver={ this.dragOver }
-                      onDrop={  this.doDrop }> 
-                      {this.progressValue}%
-                </span>  
+                { this.props.isSetupBOM === false ? 
+                <ShowStatus 
+                  statusId={`${this.currentComponent.displayLogic.key}`} 
+                  statusClassName={`badge-pill badge-${this.progressStatus} ${statusBadgeIconClassName}`} 
+                  statusDraggable={`${draggableSetting}`}
+                  onClickHandler={ this.componentSelected }
+                  onDragStartHandler={ draggableSetting === 'true' ? this.dragStart : null}
+                  onDragOverHandler={ this.dragOver }
+                  onDropHandler={  this.doDrop } 
+                  progress={this.progressValue}
+                  remainingTime= {this.currentComponent.businessLogic.remainDays}
+                />
+                  :
+                  <SetupBOM
+                    component={this.currentComponent}
+                    updateComponent={this.props.updateComponentHandler}
+                  />
+                }
                 </div>
             </div>
         )

@@ -1,38 +1,29 @@
 import 'raf/polyfill'
-import 'core-js/es6/set'
-import 'core-js/es6/map'
+// import 'core-js/es6/set'
+// import 'core-js/es6/map'
 import React, { Component } from "react";
 import CCiLabComponentList from "./CCiLabComponentList";
 import {detectOSVersion} from "./CCiLabUtility";
 
-import {TextResizeDetector } from "./TextResizeDetector"
+
 
 class ComponentContainer extends Component {
-  state = {  width: 0, fontSize: 23 };
+  state = {  width: 0 };
 
   osVersion = detectOSVersion();
 
   updateDimensions=()=>{
-    this.setState({width:`{window.innerWidth}`});
+    this.setState({width:`${window.innerWidth}`});
+    console.log("ComponentContainer - updateDimensions width: " + this.state.width);
   }
 
   componentDidMount =()=> {
-    window.addEventListener("resize", this.updateDimensions);
+  
   }
 
-  onFontResize=(e, args)=>{
-    this.setState( { fontSize: TextResizeDetector.getSize() } )
-    //alert("The width = " + this.state.fontSize);
-  }
 
-  initTextResizeDetector=()=>{
-    let iBase = TextResizeDetector.addEventListener(this.onFontResize,null);
-    // alert("The base font size = " + iBase);
-    this.setState( { fontSize: iBase } )
-  }  
   componentWillMount=()=>{
-    TextResizeDetector.TARGET_ELEMENT_ID = 'root';
-    TextResizeDetector.USER_INIT_FUNC = this.initTextResizeDetector;
+
   }
 
 
@@ -41,7 +32,7 @@ class ComponentContainer extends Component {
     return (
       <div className={`d-flex flex-row`}> 
         <div>
-            <CCiLabComponentList fontSize={this.state.fontSize}/>
+            <CCiLabComponentList />
         </div>     
 
 
@@ -63,6 +54,13 @@ class ComponentContainer extends Component {
           <div> OS version: {this.osVersion.os} {this.osVersion.osVersion} major: {this.osVersion.osMajorVersion}</div>
 
           <div> Browser font size: {this.state.fontSize}</div>
+
+          <div> Language: {window.navigator.language} </div>
+
+          <div> Languages: {window.navigator.languages[0]}, 
+                            {window.navigator.languages[1]}, 
+                            {window.navigator.languages[2]},
+                            {window.navigator.languages[3]} </div>
         </ul>
 
       </div>

@@ -3,7 +3,7 @@
    overflow-y: auto;  //have to set y to scroll otherwise Edge horizontal scroll will no resonse in all the components are within the viewport
    overflow-x: auto;
    border: thin solid #00D8FF;
-   background-color: #DDEEFF;   
+   background-color: $cci-bg-color;   
    z-index: 0; 
  }
   
@@ -13,6 +13,20 @@
    transition: transform 1s cubic-bezier(0, .52, 0, 1);
  }
 
+//  https://developer.mozilla.org/en-US/docs/Web/CSS/:placeholder-shown
+// https://www.w3schools.com/howto/howto_css_placeholder.asp
+ ::placeholder {
+  color:$cci-hint-red;
+  opacity: 1; /* Firefox */
+}
+
+:-ms-input-placeholder { /* Internet Explorer 10-11 */
+ color:$cci-hint-red;
+}
+
+::-ms-input-placeholder { /* Microsoft Edge */
+ color:$cci-hint-red;
+}
 //// controlled using inline style 
 //  .flyout-menu_hide {
 //    // -webkit-transform: translate3d(-10vw, 0, 0);
