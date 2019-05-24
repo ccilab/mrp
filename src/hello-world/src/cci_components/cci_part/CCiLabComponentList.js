@@ -180,20 +180,7 @@ const hideChildren = (aComponent, aComponents, aShowStatus)=>{
 }
 
 
-const estimateComponentListRect = (componentLists, fontSize)=>{
-  let componentListRect = document.getElementById( 'cciLabComponentListID' ).getBoundingClientRect();
-  let updatedRect = {top: componentListRect.top, left: componentListRect.left, bottom: componentListRect.bottom, right: componentListRect.right*1.2, width: componentListRect.width };
-  
-  let shownComponents = componentLists.filter(component=>component.displayLogic.showMyself === true)
-  
-  let listCalculatedHight = shownComponents.length * (45+16); //in px
 
-  if( listCalculatedHight > (componentListRect.bottom-componentListRect.top) )
-    document.getElementById( 'cciLabComponentListID' ).style.overflow = 'auto';
-
-  updatedRect.bottom = listCalculatedHight;
-  return updatedRect;
-}
 
 // setSelectedComponentStickDirection(e), changes the direction of sticky element
 const setComponentSelected = ( component, selectedComponentKey ) =>{
@@ -313,11 +300,16 @@ class CCiLabComponentList extends Component {
     componentListMinHeight;  
     componentListHeight;  //minimum height 
     
-    init=(props)=>{
-      this.slidingComponentListIconClassName = this.state.visible? 'fa fa-angle-double-left' : 'fa fa-angle-double-right';
-        
+    setDefaultListDimension=()=>{
       this.componentListWidth= setListWidth(1.0); //in px or vw,  
       this.hideListWidth = setListWidth(0.99); //in px or vw
+      this.componentListMinHeight = ( 150/this.state.fontSize +'rem' );  
+      this.componentListHeight= window.innerHeight <= 200 ? this.componentListMinHeight : 'auto';  //minimum height 
+    }
+
+    init=(props)=>{
+      this.slidingComponentListIconClassName = this.state.visible? 'fa fa-angle-double-left' : 'fa fa-angle-double-right';
+      
       this.compnentListTranslateStyle=this.state.visible ? `translate3d(0, 0, 0)`: `translate3d(-${this.hideListWidth}, 0, 0)`;
       this.lastScrollYPosition = 0;
 
@@ -326,14 +318,38 @@ class CCiLabComponentList extends Component {
 
       this.componentLeftOffset = 1;  // in rem
   
-      this.componentListMinHeight = ( 150/this.state.fontSize +'rem' );  
-      this.componentListHeight= window.innerHeight <= 200 ? this.componentListMinHeight : 'auto';  //minimum height 
+      this.setDefaultListDimension();  
     }
 
-    onFontResize=( args)=>(e)=>{
-      this.setState( { fontSize: TextResizeDetector.getSize() } )
-      // console.log("onFontResize: The new font size = " + this.state.fontSize);
+    estimateComponentListRect = (componentLists, fontSize)=>{
+      let updatedRect;
+      let componentListRect;
+      let componentListElement = document.getElementById( 'cciLabComponentListID' );
+      if( typeof componentListElement !== "undefined" && componentListElement !== null )
+      {
+        componentListRect = componentListElement.getBoundingClientRect();
+        updatedRect = {top: componentListRect.top, left: componentListRect.left, bottom: componentListRect.bottom, right: componentListRect.right*1.2, width: componentListRect.width };
+      }
+      else{
+        updatedRect = { top: 0, left: 0, bottom: this.componentListHeight, right: this.componentListWidth, width: this.componentListWidth,  }
+      }
+      
+      let shownComponents = componentLists.filter(component=>component.displayLogic.showMyself === true)
+      
+      let listCalculatedHight = shownComponents.length * (45+16); //in px
+    
+      if( listCalculatedHight > (updatedRect.bottom-updatedRect.top) )
+        document.getElementById( 'cciLabComponentListID' ).style.overflow = 'auto';
+    
+      updatedRect.bottom = listCalculatedHight;
+      return updatedRect;
+    }
+
+    // eName is 'textSizeChanged' defined TextResizeDetector.js
+    onFontResize=( eName, args)=>{
+      this.state.fontSize = args[0].iSize;
       this.updateDimensions(this.state.greetings);
+      console.log("onFontResize: The font size changed from " + args[0].iBase + " to " + this.state.fontSize);
     }
 
     
@@ -342,7 +358,7 @@ class CCiLabComponentList extends Component {
       let iBase = TextResizeDetector.addEventListener(this.onFontResize,null);
       // console.log("initTextResizeDetector: The base font size iBase: " + iBase);
       this.setState( { fontSize: iBase } )
-      this.updateDimensions( this.state.greetings );
+      this.updateDimensions( "undefined" );
     }  
 
     positioningListTitle=(rootComponent)=>{ 
@@ -432,17 +448,24 @@ class CCiLabComponentList extends Component {
     }
   
     getMaxTitleWidth=()=>{
-      let titleNameRect =  document.getElementById( 'title-name' ).getBoundingClientRect();
+      let width;
+      let titleNameElement = document.getElementById( 'title-name' );
+      if( typeof titleNameElement !== "undefined" && titleNameElement !== null )
+      {
+         let titleNameRect =  titleNameElement.getBoundingClientRect();
 
-      // find width of sub title 
-      let subTitleNameRect =  document.getElementById( 'subTitle-name' ).getBoundingClientRect();
-      let subTitleTypeRect =  document.getElementById( 'subTitle-type' ).getBoundingClientRect();
-     
-      let width = Math.max(titleNameRect.width, (subTitleNameRect.width  + subTitleTypeRect.width));
-      if( titleNameRect.width >= width )
-        width = (this.componentTitleLeft + this.rootComponentNameWidth )* this.state.fontSize + width ;
-      else  // title name is much longer the sub title in Chinese
-        width = (this.componentTitleLeft + this.rootComponentNameWidth )* this.state.fontSize + 2* width ;
+        // find width of sub title 
+        let subTitleNameRect =  document.getElementById( 'subTitle-name' ).getBoundingClientRect();
+        let subTitleTypeRect =  document.getElementById( 'subTitle-type' ).getBoundingClientRect();
+       
+        let subTitlewidth = subTitleNameRect.width  + subTitleTypeRect.width;
+        if( titleNameRect.width > subTitlewidth )
+          width = (this.componentTitleLeft + this.rootComponentNameWidth )* this.state.fontSize + titleNameRect.width;
+        else  // title name is much longer the sub title in Chinese
+          width = (this.componentTitleLeft + this.rootComponentNameWidth )* this.state.fontSize + 2* subTitlewidth ;
+      }
+      else
+        width = this.componentListWidth;
 
       return width;  // in px
     }
@@ -457,26 +480,31 @@ class CCiLabComponentList extends Component {
 
     //  handles component list increase due to add/remove components
     updateDimensions=( componentList, isRender = true )=>{
-      if( componentList === "undefined")
-        componentList = this.state.greetings;
+      if( this.state.greetings === "undefined")
+      {
+          this.setDefaultListDimension(); 
+      }
+      else{
+          if( componentList === "undefined")
+            componentList = this.state.greetings;
 
-      let listRect = estimateComponentListRect( componentList, this.state.fontSize); //this.state.greetings
-      // console.log('CCiLabComponentList - updateDimensions: list width '+ listRect.width);
+          let listRect = this.estimateComponentListRect( componentList, this.state.fontSize); //this.state.greetings
+          // console.log('CCiLabComponentList - updateDimensions: list width '+ listRect.width);
 
-      this.componentListHeight = setListHeight( listRect, this.state.fontSize );
-     
-      let titleWidth = this.getMaxTitleWidth();
+          this.componentListHeight = setListHeight( listRect, this.state.fontSize );
+         
+          let titleWidth = this.getMaxTitleWidth();
 
-      // console.log('CCiLabComponentList - updateDimensions: title width '+ titleWidth);
+          // console.log('CCiLabComponentList - updateDimensions: title width '+ titleWidth);
 
-      if( listRect.width <= titleWidth )
-        this.componentListWidth = titleWidth;
-      else
-        this.componentListWidth = listRect.width;
-        
-      this.hideListWidth = this.componentListWidth*0.99 +'px';
-      this.componentListWidth += 'px';
-
+          if( listRect.width <= titleWidth )
+            this.componentListWidth = titleWidth;
+          else
+            this.componentListWidth = listRect.width;
+            
+          this.hideListWidth = this.componentListWidth*0.99 +'px';
+          this.componentListWidth += 'px';
+      }
       // this.setState( {  })
       // console.log("CCiLabComponentList - updateDimensions: used list width: " + this.componentListWidth );
       if( isRender === true )
@@ -905,6 +933,8 @@ class CCiLabComponentList extends Component {
     }
 
     showSetupBOM=( isShowSetupBOM )=>{
+      // the setup BOM title isn't change yet at this point, 
+      // the title is still progress so the width is cal using progress
       this.updateDimensions(this.state.greetings);
       this.setState({setupBOM: isShowSetupBOM });
     }
