@@ -26,7 +26,6 @@ export const SetupComponentBOM=(props)=>{
       }
   }
 
-
   const updateComponent=(props)=>(e)=>{
     if( typeof props.updateComponent !== 'undefined')
       props.updateComponent(props.component);

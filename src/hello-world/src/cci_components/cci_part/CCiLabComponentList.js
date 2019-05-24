@@ -180,7 +180,7 @@ const hideChildren = (aComponent, aComponents, aShowStatus)=>{
 }
 
 
-
+  
 
 // setSelectedComponentStickDirection(e), changes the direction of sticky element
 const setComponentSelected = ( component, selectedComponentKey ) =>{
@@ -260,7 +260,7 @@ const ComponentListTitle =(props)=>{
 const ComponentListSubTitle = (props)=>{
   const { t } = useTranslation('componentList', {useSuspense: false});
   return ( 
-    <div className='d-flex align-items-center bg-info fa' style={{ 'height': `${props.height}rem`, 'width': `${props.width}` }}>
+    <div className='d-flex align-items-center bg-info fa' style={{ 'height': `${props.height}rem`, 'width': `${props.width}`}}>
         <span id='subTitle-name' className={props.className} style={{'position':'relative',  'left':`${props.positionLeft}rem`, fontSize: '0.9rem'}}>{t(`${props.name}`)}</span>
         <span id='subTitle-type' className={props.className} style={{'position':'relative', 'left':`${props.ratePositionLeft}rem`, fontSize: '0.9rem'}}>{t(`${props.rateType}`)} 
         </span> 
@@ -309,7 +309,7 @@ class CCiLabComponentList extends Component {
 
     init=(props)=>{
       this.slidingComponentListIconClassName = this.state.visible? 'fa fa-angle-double-left' : 'fa fa-angle-double-right';
-      
+        
       this.compnentListTranslateStyle=this.state.visible ? `translate3d(0, 0, 0)`: `translate3d(-${this.hideListWidth}, 0, 0)`;
       this.lastScrollYPosition = 0;
 
@@ -454,10 +454,10 @@ class CCiLabComponentList extends Component {
       {
          let titleNameRect =  titleNameElement.getBoundingClientRect();
 
-        // find width of sub title 
-        let subTitleNameRect =  document.getElementById( 'subTitle-name' ).getBoundingClientRect();
-        let subTitleTypeRect =  document.getElementById( 'subTitle-type' ).getBoundingClientRect();
-       
+      // find width of sub title 
+      let subTitleNameRect =  document.getElementById( 'subTitle-name' ).getBoundingClientRect();
+      let subTitleTypeRect =  document.getElementById( 'subTitle-type' ).getBoundingClientRect();
+    
         let subTitlewidth = subTitleNameRect.width  + subTitleTypeRect.width;
         if( titleNameRect.width > subTitlewidth )
           width = (this.componentTitleLeft + this.rootComponentNameWidth )* this.state.fontSize + titleNameRect.width;
@@ -489,21 +489,21 @@ class CCiLabComponentList extends Component {
             componentList = this.state.greetings;
 
           let listRect = this.estimateComponentListRect( componentList, this.state.fontSize); //this.state.greetings
-          // console.log('CCiLabComponentList - updateDimensions: list width '+ listRect.width);
+      // console.log('CCiLabComponentList - updateDimensions: list width '+ listRect.width);
 
-          this.componentListHeight = setListHeight( listRect, this.state.fontSize );
-         
+      this.componentListHeight = setListHeight( listRect, this.state.fontSize );
+     
           let titleWidth = this.getMaxTitleWidth();
 
-          // console.log('CCiLabComponentList - updateDimensions: title width '+ titleWidth);
+      // console.log('CCiLabComponentList - updateDimensions: title width '+ titleWidth);
 
-          if( listRect.width <= titleWidth )
-            this.componentListWidth = titleWidth;
-          else
-            this.componentListWidth = listRect.width;
-            
-          this.hideListWidth = this.componentListWidth*0.99 +'px';
-          this.componentListWidth += 'px';
+      if( listRect.width <= titleWidth )
+        this.componentListWidth = titleWidth;
+      else
+        this.componentListWidth = listRect.width;
+        
+      this.hideListWidth = this.componentListWidth*0.99 +'px';
+      this.componentListWidth += 'px';
       }
       // this.setState( {  })
       // console.log("CCiLabComponentList - updateDimensions: used list width: " + this.componentListWidth );
@@ -799,6 +799,7 @@ class CCiLabComponentList extends Component {
            currentSessionComponents = this.showOrHideChildren( targetComponent, true, false);
            targetComponent.displayLogic.canExpend = false;
         }
+         
 
         // find current parent components of source/moved component, have to use displayLogic.Key that is unique, to search  
         let parentComponents = currentSessionComponents.filter(  (component)=>{
@@ -827,43 +828,44 @@ class CCiLabComponentList extends Component {
         let idxMovedComponent = currentSessionComponents.findIndex( (component)=>{return component.displayLogic.key === sourceId; });
         if( idxMovedComponent >= 0 )
         {
-          let rmMovedComponent = currentSessionComponents.splice( idxMovedComponent, 1);
+            let rmMovedComponent = currentSessionComponents.splice( idxMovedComponent, 1);
 
-          //update parent id of moved component (source) as target Component id
-          rmMovedComponent[0].businessLogic.parentIds.length=0;
-          rmMovedComponent[0].businessLogic.parentIds.push(targetComponent.businessLogic.id);
+            //update parent id of moved component (source) as target Component id
+            rmMovedComponent[0].businessLogic.parentIds.length=0;
+            rmMovedComponent[0].businessLogic.parentIds.push(targetComponent.businessLogic.id);
 
-          //reset display key and childKeys
-          delete rmMovedComponent[0].displayLogic;
+            //reset display key and childKeys
+            delete rmMovedComponent[0].displayLogic;
 
-          let newDisplayKey = findMaxDisplayKey(currentSessionComponents);
+            let newDisplayKey = findMaxDisplayKey(currentSessionComponents);
 
-          rmMovedComponent[0].displayLogic = initializeDisplayLogic(++newDisplayKey, false, targetComponent.displayLogic.rectLeft)
+            rmMovedComponent[0].displayLogic = initializeDisplayLogic(++newDisplayKey, false, targetComponent.displayLogic.rectLeft)
 
-          //update businessLogic and displayLogic childIds of target component (target) as moved component ( source )
-          targetComponent.businessLogic.childIds.push(rmMovedComponent[0].businessLogic.id);
+            //update businessLogic and displayLogic childIds of target component (target) as moved component ( source )
+            targetComponent.businessLogic.childIds.push(rmMovedComponent[0].businessLogic.id);
 
-          //rebuild the component list
-          let updatedSessionComponents = [];
-          
-          //initialize the updated session components
-          initializeComponents(targetComponent, currentSessionComponents, rmMovedComponent, updatedSessionComponents);
+            //rebuild the component list
+            let updatedSessionComponents = [];
+            
+            //initialize the updated session components
+            initializeComponents(targetComponent, currentSessionComponents, rmMovedComponent, updatedSessionComponents);
 
-          // populate target component's displayLogic.childKeyIds[]
-          populateComponentChildKeyIds(targetComponent, updatedSessionComponents);
+            // populate target component's displayLogic.childKeyIds[]
+            populateComponentChildKeyIds(targetComponent, updatedSessionComponents);
+            
 
-          rmMovedComponent[0].displayLogic.showMyself = true;
+            rmMovedComponent[0].displayLogic.showMyself = true;
 
-          // update selected status so the moved component or its parent will be highlighted 
-          updatedSessionComponents.forEach( (item)=>{
-                  setComponentSelected( item, rmMovedComponent[0].displayLogic.key ); 
-                });
+            // update selected status so the moved component or its parent will be highlighted 
+            updatedSessionComponents.forEach( (item)=>{
+                    setComponentSelected( item, rmMovedComponent[0].displayLogic.key ); 
+                  });
 
-          //check if moved component progress status need to change (#todo)
-
-          // update greetings list
-          // console.log("CCiLabComponentList - moveComponentHandler 4 ")
-          this.setState( { greetings: updatedSessionComponents });
+            //check if moved component progress status need to change (#todo)
+ 
+            // update greetings list
+            // console.log("CCiLabComponentList - moveComponentHandler 4 ")
+            this.setState( { greetings: updatedSessionComponents });
         }
         
       }
@@ -873,7 +875,6 @@ class CCiLabComponentList extends Component {
       this.updateDimensions("undefined");  //title-name hasn't changed yet (from progress to setupBOM)
       this.setState({setupBOM: isShowSetupBOM});
     }
-
     //need to update showMyself to true after button is clicked to canExpend
     //need to update showMyself to false after button is clicked to collaps
     renderGreetings = () => {

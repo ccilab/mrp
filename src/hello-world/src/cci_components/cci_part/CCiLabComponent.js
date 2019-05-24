@@ -7,7 +7,7 @@ import {saveAs, creatHiddenImgInputTag} from "../file_save/CCiLabLocalFileAccess
 
 import styles from './../../dist/css/ccilab-component.css'
 import './../../dist/css/popup-menu.css'
-
+ 
 
 const ShowImage=(props)=>{
   const { t } = useTranslation('commands', {useSuspense: false});
@@ -146,6 +146,8 @@ const ShowStatus=(props)=>{
 }
 
 const SetupBOM=(props)=>{
+
+
   const _className = props.component.displayLogic.selected ? 'bg-info text-primary border-0 py-0 px-2 fa fw fa-edit' : 'text-primary border-0 py-0 px-2 fa fw fa-edit';
   // const bgColor = props.component.displayLogic.selected ? null : `${styles.cciBgColor}`;
   
@@ -212,6 +214,7 @@ const SetupBOM=(props)=>{
 
   }
 
+
   if( typeof props.component.bom === 'undefined' )
     props.component.bom = new initializeBOM();
 
@@ -236,7 +239,7 @@ const SetupBOM=(props)=>{
       arrow={true}
       arrowStyle={{backgroundColor: `${styles.cciBgColor}`}}
       >
-      <div className={'bg-info d-flex flex-column'} >
+      <div className={'bg-info d-flex flex-column'}>
        <SetupComponentBOM 
         title='part-name'
         value={props.component.businessLogic.name}
@@ -248,11 +251,11 @@ const SetupBOM=(props)=>{
             style={{borderStyle:'insert', borderWidth: '0.08em', borderColor:`${styles.cciInfoBlue}`}}/>
         
         <SetupComponentBOM 
-          title='part-number'
-          value={props.component.bom.core.partNumber}
-          component={props.component}
-          handler={setPartNumber}
-          updateComponent={props.updateComponent}/>
+        title='part-number'
+        value={props.component.bom.core.partNumber}
+        component={props.component}
+        handler={setPartNumber}
+        updateComponent={props.updateComponent}/>
 
         <hr className='my-0 bg-info' 
             style={{borderStyle:'insert', borderWidth: '0.08em', borderColor:`${styles.cciInfoBlue}`}}/>
@@ -276,7 +279,7 @@ class CCiLabComponent extends Component {
 
     
     static inlineMenu ={ cmd: 'select',
-                         itemId: 'undefined'};
+                          itemId: 'undefined'};
 
     currentComponent;
     rootFontSize;
@@ -495,7 +498,7 @@ class CCiLabComponent extends Component {
           draggableSetting= false;
           Component = ( this.currentComponent.displayLogic.selected !== 0 ) ? 'bg-info component_opacity ccilab-component-sticky-top' :'';  
 
-          if( this.currentComponent.displayLogic.selected !== 0  )
+          if( this.currentComponent.displayLogic.selected !== 0 )
           {
             componentBase +=  ' cursor-default';
             imamgeClassName += ' cursor-pointer';
@@ -595,7 +598,7 @@ class CCiLabComponent extends Component {
                 <a  id={`${this.currentComponent.displayLogic.key}-show-hide`} 
                     href='#expend-collapse-badge' 
                     // 'align-self-center nav-link p-0  ' + 'fa fa-angle-right'
-                    className={`${expendCollapseBadgeIconClassNameBase} ${expendCollapseBadgeIconClassName} pl-2`} 
+                    className={`${expendCollapseBadgeIconClassNameBase} ${expendCollapseBadgeIconClassName} pl-2 `} 
                     style={expendableIconStyle} 
                     draggable={`${draggableSetting}`}
                     onClick={ this.expending }
