@@ -1021,7 +1021,8 @@ class CCiLabComponentList extends Component {
                   <div className={'d-flex flex-column cci-flyout-component-list'} 
                        style={{ 'height':`${this.componentListHeight}`, 
                                 'minHeight': `${this.componentListMinHeight}`,
-                                'width':`${this.componentListWidth}`}}
+                                'width':`${this.componentListWidth}`,
+                                zIndex: 5}}
                        onScroll={this.setSelectedComponentStickDirection}>
                     {/* <hr className='m-0'></hr> */}
                     {this.renderGreetings()}
