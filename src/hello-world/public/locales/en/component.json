@@ -13,7 +13,7 @@
     "supplier-part-number": "Supplier Part Number",
     "order-qty": "Order Quantity",
     "rejection-rate": "Rejection Rate (%)",
-    "wastage-rate": "Wastage Rate (%)",
+    "scrap-rate": "Scrap Rate (%)",
     "revision": "Revision",
     "phase": "Phase",
     "category": "Category",

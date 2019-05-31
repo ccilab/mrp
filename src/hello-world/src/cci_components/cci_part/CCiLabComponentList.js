@@ -303,7 +303,7 @@ class CCiLabComponentList extends Component {
     setDefaultListDimension=()=>{
       this.componentListWidth= setListWidth(1.0); //in px or vw,  
       this.hideListWidth = setListWidth(0.99); //in px or vw
-      this.componentListMinHeight = ( 150/this.state.fontSize +'rem' );  
+      this.componentListMinHeight = ( 300/this.state.fontSize +'rem' );  
       this.componentListHeight= window.innerHeight <= 200 ? this.componentListMinHeight : 'auto';  //minimum height 
     }
 
@@ -530,9 +530,7 @@ class CCiLabComponentList extends Component {
     //  4 - if the updated component doesn't exist - create a new businessLogic
     updateComponent =( component )=>{
       console.log("CCiLabComponentList - updateComponent")
-      let currentSessionComponents=this.state.greetings;
-      currentSessionComponents.forEach( (item)=>{setComponentSelected(item, component.displayLogic.key);});
-      this.setState( { greetings: currentSessionComponents });
+      //this.selectedComponentHandler( component );
     }
 
     // need to have following features
@@ -1000,22 +998,23 @@ class CCiLabComponentList extends Component {
                       https://codepen.io/stevemckinney/pen/WvWrRX */}
                   {/* https://sevenspark.com/diagnosis/z-index-submenu-hidden-behind-content popup menu chip behind d-flex row*/}
                  
-                  { this.state.setupBOM ? <ComponentListSubTitle 
-                                         name='subTitle-BOM-create-component'
-                                         rateType='subTitle-BOM-data'
-                                         height={this.componentTitleHeight}
-                                         width={this.componentListWidth}
-                                         className={listTitleClassName}
-                                         positionLeft={this.componentTitleLeft}
-                                         ratePositionLeft={this.statusTitleLeft}/> :
-                                <ComponentListSubTitle 
-                                         name='subTitle-Progress-component-name'
-                                         rateType='subTitle-Progress-status'
-                                         height={this.componentTitleHeight}
-                                         width={this.componentListWidth}
-                                         className={listTitleClassName}
-                                         positionLeft={this.componentTitleLeft}
-                                         ratePositionLeft={this.statusTitleLeft}/> 
+                  { this.state.setupBOM ? 
+                      <ComponentListSubTitle 
+                        name='subTitle-BOM-create-component'
+                        rateType='subTitle-BOM-data'
+                        height={this.componentTitleHeight}
+                        width={this.componentListWidth}
+                        className={listTitleClassName}
+                        positionLeft={this.componentTitleLeft}
+                        ratePositionLeft={this.statusTitleLeft}/> :
+                      <ComponentListSubTitle 
+                        name='subTitle-Progress-component-name'
+                        rateType='subTitle-Progress-status'
+                        height={this.componentTitleHeight}
+                        width={this.componentListWidth}
+                        className={listTitleClassName}
+                        positionLeft={this.componentTitleLeft}
+                        ratePositionLeft={this.statusTitleLeft}/> 
                    }  
                   {/* https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_Flexible_Box_Layout/Controlling_Ratios_of_Flex_Items_Along_the_Main_Ax */}
                   <div className={'d-flex flex-column cci-flyout-component-list'} 

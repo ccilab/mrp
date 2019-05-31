@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import Popup from '../popup_menu/Popup'
 import { useTranslation } from 'react-i18next';
-import {SetupComponentBOM} from './CCiLabSetupComponentBOM';
+import {SetupBOM, SetupComponentBOM} from './CCiLabSetupComponentBOM';
 import {saveAs, creatHiddenImgInputTag} from "../file_save/CCiLabLocalFileAccess"
 
 
@@ -145,128 +145,7 @@ const ShowStatus=(props)=>{
   );
 }
 
-const SetupBOM=(props)=>{
-  const _className = props.component.displayLogic.selected ? 'bg-info text-primary border-0 py-0 px-2 fa fw fa-edit' : 'text-primary border-0 py-0 px-2 fa fw fa-edit';
-  // const bgColor = props.component.displayLogic.selected ? null : `${styles.cciBgColor}`;
-  
-  const initializeBOM=()=>{
-    let bom={};
-    bom.core=initializeBOMCore();
-    bom.extra=initializeBOMExtra();
-    return bom;
-  }
- 
-  const initializeBOMCore=()=>{
-     let core={};
-     core.OrderQty='';
-     core.partNumber='';
-     core.unitQty='';
-     core.unitOfMeasure='';
-     core.Qty='';
-     core.procurementType='';
-     core.warehouse='';
-     core.workshop='';
-     core.leadTime='';
-     core.rejectRate='';
-     core.supplier='';
-     core.supplierPartNumber='';
-     return core;
-  }
 
-  const initializeBOMExtra=()=>{
-    let extra={};
-    extra.SKU='';
-    extra.barcode='';
-    extra.revision='';
-    extra.refDesignator='';
-    extra.phase='';
-    extra.category='';
-    extra.material='';
-    extra.process='';
-    extra.unitCost='';
-    extra.assemblyLine='';
-    extra.description='';
-    extra.note='';
-    return extra;
-  };
-
-  const setPartName=(partName, component)=>{
-    component.businessLogic.name=partName;
-    console.log("SetupBOM - setPartName: " + component.businessLogic.name);
-  };
-
-  const setPartNumber=(partNumber, component)=>{
-    if( typeof component.bom === 'undefined' )
-      component.bom = new initializeBOM();
-
-    component.bom.core.partNumber=partNumber;
-
-    console.log("SetupBOM - setPartNumber: " + component.bom.core.partNumber);
-  };
-
-  const setUnitQty=(unitQty, component)=>{
-    if( typeof component.bom === 'undefined' )
-      component.bom = new initializeBOM();
-
-    component.bom.core.unitQty=unitQty;
-
-  }
-
-  if( typeof props.component.bom === 'undefined' )
-    props.component.bom = new initializeBOM();
-
-
-  return (
-    <Popup
-      trigger={
-        <button 
-          key={`component-${props.component.displayLogic.key}`}
-          id={`#component-${props.component.displayLogic.key}`}
-          type="button"
-          // 'bg-info text-primary border-0 py-0 px-2 fa fw fa-edit' : 'text-primary border-0 py-0 px-2 fa fw fa-edit';
-          className={`${_className}`}
-          style={{'height': `auto`, backgroundColor: `${styles.cciBgColor}`}}></button>
-      }
-      closeOnDocumentClick
-      on="hover"
-      position='right center'
-      mouseLeaveDelay={200}
-      mouseEnterDelay={0}
-      contentStyle={{ padding: '0px', border: 'none', backgroundColor: `${styles.cciBgColor}`}} //zIndex: 5,
-      arrow={true}
-      arrowStyle={{backgroundColor: `${styles.cciBgColor}`}}
-      >
-      <div className={'bg-info d-flex flex-column'} >
-       <SetupComponentBOM 
-        title='part-name'
-        value={props.component.businessLogic.name}
-        component={props.component}
-        handler={setPartName}
-        updateComponent={props.updateComponent}/>
-
-        <hr className='my-0 bg-info' 
-            style={{borderStyle:'insert', borderWidth: '0.08em', borderColor:`${styles.cciInfoBlue}`}}/>
-        
-        <SetupComponentBOM 
-          title='part-number'
-          value={props.component.bom.core.partNumber}
-          component={props.component}
-          handler={setPartNumber}
-          updateComponent={props.updateComponent}/>
-
-        <hr className='my-0 bg-info' 
-            style={{borderStyle:'insert', borderWidth: '0.08em', borderColor:`${styles.cciInfoBlue}`}}/>
-
-        <SetupComponentBOM 
-          title='unit-qty'
-          value={props.component.bom.core.unitQty}
-          component={props.component}
-          handler={setUnitQty}
-          updateComponent={props.updateComponent}/>
-      </div>
-    </Popup>
-  )
-}
 
 class CCiLabComponent extends Component {
         state = {
