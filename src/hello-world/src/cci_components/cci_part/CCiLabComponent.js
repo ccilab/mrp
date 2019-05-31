@@ -78,7 +78,7 @@ const ShowImage=(props)=>{
 const InLineMenu=(props)=>{
   const { t } = useTranslation('commands', {useSuspense: false});
   return (
-    <div className={'d-flex ccilab-menu-item bg-info bg-faded align-items-center'}> 
+    <div className={'d-flex cursor-pointer bg-info bg-faded align-items-center'}> 
       {/* copy is not supported for now */}
       {/* { ( draggableSetting === 'true') ? <a href='#copy' className={'align-self-center nav-link px-1 fa fa-copy '}/> :null} */}
       { ( props.isDraggable === 'true') ? 
