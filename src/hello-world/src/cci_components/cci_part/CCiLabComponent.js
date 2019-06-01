@@ -372,7 +372,7 @@ class CCiLabComponent extends Component {
         if ( this.parents.length === 0 || this.children.length !== 0 || this.props.isSetupBOM === false) 
         {
           draggableSetting= false;
-          Component = ( this.currentComponent.displayLogic.selected !== 0 ) ? 'bg-info component_opacity ccilab-component-sticky-top' :'';  
+          Component = ( this.currentComponent.displayLogic.selected !== 0 ) ? 'bg-info component_opacity ccilab-component-sticky-top' :' ';  
 
           if( this.currentComponent.displayLogic.selected !== 0  )
           {
@@ -385,8 +385,8 @@ class CCiLabComponent extends Component {
         else
         { 
             // draggable for elements bellow the very top one, if use has the permission (#todo need to implement the check)inline-menu_sticky_horizontal inline-menu_sticky_horizontal inline-menu_sticky_horizontal
-            Component =  this.currentComponent.displayLogic.selected > 0 ? 'bg-info component_opacity ccilab-component-sticky-top ' + (permissionEabled? ' move':' ' ):
-                         this.currentComponent.displayLogic.selected < 0 ? 'bg-info component_opacity ccilab-component-sticky-bottom ' + (permissionEabled? ' move':' ' ):' ';
+            Component =  this.currentComponent.displayLogic.selected > 0 ? 'bg-info component_opacity ccilab-component-sticky-top' + (permissionEabled? ' move':' ' ):
+                         this.currentComponent.displayLogic.selected < 0 ? 'bg-info component_opacity ccilab-component-sticky-bottom' + (permissionEabled? ' move':' ' ):' ';
             draggableSetting = ( permissionEabled && this.currentComponent.displayLogic.selected !== 0 &&  this.parents.length !== 0 )? 'true':'false';
 
           if( this.currentComponent.displayLogic.selected !== 0 )

@@ -52,9 +52,7 @@ export const SetupComponentBOM=(props)=>{
 
 
 export const SetupBOM=(props)=>{
-  const _className = props.component.displayLogic.selected ? 'bg-info text-primary border-0 py-0 px-2 fa fw fa-edit' : 'text-primary border-0 py-0 px-2 fa fw fa-edit';
-  
-  // const bgColor = props.component.displayLogic.selected ? null : `${styles.cciBgColor}`;
+  const _className = 'cursor-pointer text-primary border-0 py-0 px-2 fa fw fa-edit' + (props.component.displayLogic.selected ? ' bg-info' : ' ');
   
   const initializeBOM=()=>{
     let bom={};
