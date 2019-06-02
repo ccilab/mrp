@@ -30,29 +30,29 @@
  }
 
 .cci-component__alarm_0{
-@include bg-linear-gradient($brand-danger, 0)
+@include bg-linear-gradient($brand-danger, 0);
 }
 
 .cci-component__alarm_10{
-  @include bg-linear-gradient($brand-danger, 10%)
+  @include bg-linear-gradient($brand-danger, 10%);
 }
 
 
 .cci-component__warning_0{
-  @include bg-linear-gradient($brand-warning, 0)
+  @include bg-linear-gradient($brand-warning, 0);
 }
 
 .cci-component__warning_10{
-  @include bg-linear-gradient($brand-warning, 10%)
+  @include bg-linear-gradient($brand-warning, 10%);
 }
 
 
 .cci-component__green_0{
-  @include bg-linear-gradient($brand-success, 0%)
+  @include bg-linear-gradient($brand-success, 0%);
 }
 
 .cci-component__green_10{
-  @include bg-linear-gradient($brand-success, 10%)
+  @include bg-linear-gradient($brand-success, 10%);
 }
  
 
@@ -66,7 +66,8 @@
 }
 
 .component_opacity{
-  filter:opacity(70%)
+  filter:opacity(70%);
+  -ms-filter: opacity(70%);
 } 
 
 
