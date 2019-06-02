@@ -524,17 +524,17 @@ class CCiLabComponent extends Component {
                 
                 {/* tag's id is used to handle drop event */}
                 { this.props.isSetupBOM === false ? 
-                <ShowStatus 
-                  statusId={`${this.currentComponent.displayLogic.key}`} 
-                  statusClassName={`badge-pill badge-${this.progressStatus} ${statusBadgeIconClassName}`} 
-                  statusDraggable={`${draggableSetting}`}
-                  onClickHandler={ this.componentSelected }
-                  onDragStartHandler={ draggableSetting === 'true' ? this.dragStart : null}
-                  onDragOverHandler={ this.dragOver }
-                  onDropHandler={  this.doDrop } 
-                  progress={this.progressValue}
-                  remainingTime= {this.currentComponent.businessLogic.remainDays}
-                />
+                  <ShowStatus 
+                    statusId={`${this.currentComponent.displayLogic.key}`} 
+                    statusClassName={`badge-pill badge-${this.progressStatus} ${statusBadgeIconClassName}`} 
+                    statusDraggable={`${draggableSetting}`}
+                    onClickHandler={ this.componentSelected }
+                    onDragStartHandler={ draggableSetting === 'true' ? this.dragStart : null}
+                    onDragOverHandler={ this.dragOver }
+                    onDropHandler={  this.doDrop } 
+                    progress={this.progressValue}
+                    remainingTime= {this.currentComponent.businessLogic.remainDays}
+                  />
                   :
                   <SetupBOM
                     component={this.currentComponent}
