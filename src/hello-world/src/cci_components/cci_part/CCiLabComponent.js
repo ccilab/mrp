@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import Popup from '../popup_menu/Popup'
 import { useTranslation } from 'react-i18next';
-import {SetupBOM, SetupComponentBOM} from './CCiLabSetupComponentBOM';
+import {SetupBOM} from './CCiLabSetupComponentBOM';
 import {saveAs, creatHiddenImgInputTag} from "../file_save/CCiLabLocalFileAccess"
 
 
@@ -386,9 +386,6 @@ class CCiLabComponent extends Component {
         else
         { 
             // draggable for elements bellow the very top one, if use has the permission (#todo need to implement the check)inline-menu_sticky_horizontal inline-menu_sticky_horizontal inline-menu_sticky_horizontal
-            //fix: Component =  this.currentComponent.displayLogic.selected > 0 ? 'bg-info component_opacity ' + (permissionEabled? ' move':' ' ):
-                      //  this.currentComponent.displayLogic.selected < 0 ? 'bg-info component_opacity ' + (permissionEabled? ' move':' ' ):' ';
-
             Component =  this.currentComponent.displayLogic.selected > 0 ? 'bg-info component_opacity ccilab-component-sticky-top ' + (permissionEabled? ' move':' ' ):
                        this.currentComponent.displayLogic.selected < 0 ? 'bg-info component_opacity ccilab-component-sticky-bottom ' + (permissionEabled? ' move':' ' ):' ';
 

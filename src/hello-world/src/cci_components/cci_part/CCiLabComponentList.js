@@ -242,8 +242,9 @@ const ComponentListTitle =(props)=>{
           style={{'cursor': 'pointer','position':'absolute', 'right':'0'}}></button>
       }
       closeOnDocumentClick
-      on="hover"
-      mouseLeaveDelay={400}
+      on={['click', 'focus','hover']}
+      position={ 'right top' }
+      mouseLeaveDelay={100}
       mouseEnterDelay={0}
       contentStyle={{ padding: '0px', border: 'none', 'fontSize': '0.6em'}}
       arrow={true}
@@ -530,7 +531,7 @@ class CCiLabComponentList extends Component {
     //  4 - if the updated component doesn't exist - create a new businessLogic
     updateComponent =( component )=>{
       console.log("CCiLabComponentList - updateComponent")
-      //this.selectedComponentHandler( component );
+      this.selectedComponentHandler( component );
     }
 
     // need to have following features
