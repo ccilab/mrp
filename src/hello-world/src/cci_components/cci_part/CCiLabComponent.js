@@ -136,10 +136,7 @@ const ShowStatus=(props)=>{
         className={props.statusClassName} 
         style={{'display':'inline-block','height': `auto`}} 
         draggable={props.statusDraggable}
-        onClick={ props.onClickHandler }
-        onDragStart={ props.onDragStartHandler }
-        onDragOver={ props.onDragOverHandler }
-        onDrop={  props.onDropHandler }> 
+        onClick={ props.onClickHandler }>
         {props.progress}% - {props.remainingTime} {t('remaining-time-unit')}
     </span> 
   );
@@ -526,9 +523,6 @@ class CCiLabComponent extends Component {
                     statusClassName={`badge-pill badge-${this.progressStatus} ${statusBadgeIconClassName}`} 
                     statusDraggable={`${draggableSetting}`}
                     onClickHandler={ this.componentSelected }
-                    onDragStartHandler={ draggableSetting === 'true' ? this.dragStart : null}
-                    onDragOverHandler={ this.dragOver }
-                    onDropHandler={  this.doDrop } 
                     progress={this.progressValue}
                     remainingTime= {this.currentComponent.businessLogic.remainDays}
                   />

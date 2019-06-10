@@ -242,7 +242,7 @@ const ComponentListTitle =(props)=>{
           style={{'cursor': 'pointer','position':'absolute', 'right':'0'}}></button>
       }
       closeOnDocumentClick
-      on={['click', 'focus','hover']}
+      on={'hover'} //['click', 'focus','hover']
       position={ 'right top' }
       mouseLeaveDelay={100}
       mouseEnterDelay={0}

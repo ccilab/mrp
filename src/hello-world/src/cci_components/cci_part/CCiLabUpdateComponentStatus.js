@@ -5,7 +5,7 @@ import { useTranslation } from 'react-i18next';
 import styles from "./../../dist/css/ccilab-component-list.css"
 
 
-const SetupComponentBOM=(props)=>{
+const UpdateComponentStatus=(props)=>{
   const { t } = useTranslation(['component','commands'], {useSuspense: false});
   let componentName = props.value;
   let textColorClass = 'text-primary';
@@ -45,7 +45,7 @@ const SetupComponentBOM=(props)=>{
         if( e.target.value === '' && props.title ==='part-name')
           e.target.value = 'add-part';
 
-        console.log("SetupComponentBOM - updateValue: " + e.target.value);
+        console.log("UpdateComponentStatus - updateValue: " + e.target.value);
         props.handler(e.target.value, props.component);
         updateComponent(props);
       }
@@ -55,7 +55,7 @@ const SetupComponentBOM=(props)=>{
   const updateComponent=(props)=>{
     if( typeof props.updateComponent !== 'undefined')
     {
-      console.log("SetupComponentBOM - updateComponent: " + props.component.businessLogic.name);
+      console.log("UpdateComponentStatus - updateComponent: " + props.component.businessLogic.name);
       props.updateComponent(props.component);
     }
   }
@@ -95,7 +95,7 @@ const SetupComponentBOM=(props)=>{
 }
 
 
-export const SetupBOM=(props)=>{
+export const UpdateComponentStatus=(props)=>{
   const _className = 'cursor-pointer text-primary border-0 py-0 px-2 fa fw fa-edit' + (props.component.displayLogic.selected ? ' bg-info' : ' ');
 
   const initializeBOM=()=>{
@@ -198,13 +198,13 @@ export const SetupBOM=(props)=>{
     ( props.component.displayLogic.selected ? 
       <Popup
         trigger={
-          <button 
-            key={`component-${props.component.displayLogic.key}`}
-            id={`#component-${props.component.displayLogic.key}`}
-            type="button"
-            // 'bg-info text-primary border-0 py-0 px-2 fa fw fa-edit' : 'text-primary border-0 py-0 px-2 fa fw fa-edit';
-            className={`${_className}`}
-            style={{'height': `auto`, backgroundColor: `${styles.cciBgColor}`}}/>
+          <span 
+          key={`component-${props.component.displayLogic.key}`}
+          id={`#component-${props.component.displayLogic.key}`} 
+          className={props.statusClassName} 
+          style={{'display':'inline-block','height': `auto`}} 
+          onClick={ props.onClickHandler }>
+          {props.progress}% - {props.remainingTime} {t('remaining-time-unit')}/>
         }
       closeOnDocumentClick
       on={['click', 'focus']}
@@ -216,9 +216,9 @@ export const SetupBOM=(props)=>{
       {close => (
         <div className={'bg-info d-flex flex-column'} >
           <div className={'bg-info d-flex'}>
-          <SetupComponentBOM 
-            title='part-name'
-            value={props.component.businessLogic.name}
+          <UpdateComponentStatus 
+            title='team-name'
+            value={props.component.production.teamName}
             component={props.component}
             handler={setPartName}
             updateComponent={props.updateComponent}/>
@@ -230,61 +230,42 @@ export const SetupBOM=(props)=>{
         </div>    
         <hr className='my-0 bg-info' 
               style={{borderStyle:'insert', borderWidth: '0.08em', borderColor:`${styles.cciInfoBlue}`}}/>
+  
+        <UpdateComponentStatus 
+              title='shift'
+              value={props.component.production.shift}
+              component={props.component}
+              handler={setShiftName}
+              updateComponent={props.updateComponent}/>
 
-          <SetupComponentBOM 
-            title='part-number'
-            value={props.component.bom.core.partNumber}
+        <hr className='my-0 bg-info' 
+              style={{borderStyle:'insert', borderWidth: '0.08em', borderColor:`${styles.cciInfoBlue}`}}/>
+
+          <UpdateComponentStatus 
+            title='updated-by'
+            value={props.component.production.updatedBy}
             component={props.component}
-            handler={setPartNumber}
+            handler={setUpdatedBy}
             updateComponent={props.updateComponent}/>
 
         <hr className='my-0 bg-info' 
               style={{borderStyle:'insert', borderWidth: '0.08em', borderColor:`${styles.cciInfoBlue}`}}/>
 
-          { props.component.businessLogic.parentIds.length === 0 ?
-            <SetupComponentBOM 
-            title='required-quantity'
-              value={props.component.bom.core.Qty}
+            <UpdateComponentStatus 
+            title='quantity-per-shift'
+              value={props.component.production.Qty}
               component={props.component}
-              handler={setTotalRequiredQty}
-              updateComponent={props.updateComponent}/>
-            :
-            <SetupComponentBOM 
-              title='unit-quantity'
-              value={props.component.bom.core.unitQty}
-              component={props.component}
-              handler={setUnitQty}
-              updateComponent={props.updateComponent}/>
-          }
-
-        <hr className='my-0 bg-info' 
-              style={{borderStyle:'insert', borderWidth: '0.08em', borderColor:`${styles.cciInfoBlue}`}}/>
-
-          <SetupComponentBOM 
-              title='unit-of-measure'
-              value={props.component.bom.core.unitOfMeasure}
-              component={props.component}
-              handler={setUnitOfMeasure}
+              handler={setShifProductedQty}
               updateComponent={props.updateComponent}/>
 
         <hr className='my-0 bg-info' 
               style={{borderStyle:'insert', borderWidth: '0.08em', borderColor:`${styles.cciInfoBlue}`}}/>
 
-          <SetupComponentBOM 
-              title='start-product-date'
-              value={props.component.bom.core.startDate}
+          <UpdateComponentStatus 
+              title='shift-product-record-time'
+              value={props.component.production.recordDateTime}
               component={props.component}
-              handler={setStartDate}
-              updateComponent={props.updateComponent}/>
-
-          <hr className='my-0 bg-info' 
-              style={{borderStyle:'insert', borderWidth: '0.08em', borderColor:`${styles.cciInfoBlue}`}}/>
-
-          <SetupComponentBOM 
-              title='product-complete-date'
-              value={props.component.bom.core.completeDate}
-              component={props.component}
-              handler={setCompleteDate}
+              handler={setRecordDateTime}
               updateComponent={props.updateComponent}/>
           </div>
         )}
