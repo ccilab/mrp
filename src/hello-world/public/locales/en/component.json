@@ -27,5 +27,10 @@
     "workshop": "Workshop",
     "lead-time": "Lead Time",
     "description": "Description",
-    "note": "Note"
+    "note": "Note",
+    "team-name": "Add team name",
+    "shift":"Add shift name",
+    "updated-by-user": "logged by",
+    "quantity-per-shift": "Quantity by this shift",
+    "shift-product-record-date-time": "recorded date and time"
 }

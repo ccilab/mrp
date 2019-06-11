@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import Popup from '../popup_menu/Popup'
 import { useTranslation } from 'react-i18next';
 import {SetupBOM} from './CCiLabSetupComponentBOM';
-import {UpdateComponentStatus} from './CCiLabUpdateComponentStatus.js'
+import {UpdateStatus} from './CCiLabUpdateComponentStatus.js'
 import {saveAs, creatHiddenImgInputTag} from "../file_save/CCiLabLocalFileAccess"
 
 
@@ -129,21 +129,6 @@ const ComponentName=(props)=>{
   );
 }
 
-const ShowStatus=(props)=>{
-  const { t } = useTranslation('component', {useSuspense: false});
-
-  return (
-    <span id={props.statusId} 
-        className={props.statusClassName} 
-        style={{'display':'inline-block','height': `auto`}} 
-        draggable={props.statusDraggable}
-        onClick={ props.onClickHandler }>
-        {props.progress}% - {props.remainingTime} {t('remaining-time-unit')}
-    </span> 
-  );
-}
-
-
 
 class CCiLabComponent extends Component {
         state = {
@@ -173,7 +158,7 @@ class CCiLabComponent extends Component {
 
     leftOffset;
 
-
+    permissionEabled = true; // #todo: need to add check later
 
     init=(props)=>{
       this.currentComponent = props.component;
@@ -358,8 +343,7 @@ class CCiLabComponent extends Component {
         let statusBadgeIconClassName = statusBadgetIconClassNameBase + (this.progressStatus === 'info' ? 'fa ':
             this.progressStatus === 'success' ? 'fa fa-check-circle' :
             this.progressStatus === 'warning' ? 'fa fa-exclamation-circle' : 'fa fa-exclamation-triangle');
-    
-        let permissionEabled = true; // #todo: need to add check later
+  
         let  Component=' ';
         let draggableSetting = false;
         let  stickyWidth =  this.currentComponent.displayLogic.selected !== 0 ? `${this.props.listWidth}`:'auto';
@@ -384,17 +368,17 @@ class CCiLabComponent extends Component {
         else
         { 
             // draggable for elements bellow the very top one, if use has the permission (#todo need to implement the check)inline-menu_sticky_horizontal inline-menu_sticky_horizontal inline-menu_sticky_horizontal
-            Component =  this.currentComponent.displayLogic.selected > 0 ? 'bg-info component_opacity ccilab-component-sticky-top ' + (permissionEabled? ' move':' ' ):
-                       this.currentComponent.displayLogic.selected < 0 ? 'bg-info component_opacity ccilab-component-sticky-bottom ' + (permissionEabled? ' move':' ' ):' ';
+            Component =  this.currentComponent.displayLogic.selected > 0 ? 'bg-info component_opacity ccilab-component-sticky-top ' + (this.permissionEabled? ' move':' ' ):
+                       this.currentComponent.displayLogic.selected < 0 ? 'bg-info component_opacity ccilab-component-sticky-bottom ' + (this.permissionEabled? ' move':' ' ):' ';
 
-            draggableSetting = ( permissionEabled && this.currentComponent.displayLogic.selected !== 0 &&  this.parents.length !== 0 )? 'true':'false';
+            draggableSetting = ( this.permissionEabled && this.currentComponent.displayLogic.selected !== 0 &&  this.parents.length !== 0 )? 'true':'false';
 
             if( this.currentComponent.displayLogic.selected !== 0 )
             {
-              componentBase +=  (permissionEabled && this.currentComponent.displayLogic.selected !== 0 && this.props.isSetupBOM )? ' move':' cursor-default';
-              imamgeClassName += (permissionEabled && this.currentComponent.displayLogic.selected !== 0 )? ' move':' cursor-pointer';
-              componentNameClassName += (permissionEabled && this.currentComponent.displayLogic.selected !== 0 )? ' move':' cursor-default';
-              statusBadgeIconClassName += (permissionEabled && this.currentComponent.displayLogic.selected !== 0 )? ' move':' cursor-default';
+              componentBase +=  (this.permissionEabled && this.currentComponent.displayLogic.selected !== 0 && this.props.isSetupBOM )? ' move':' cursor-default';
+              imamgeClassName += (this.permissionEabled && this.currentComponent.displayLogic.selected !== 0 )? ' move':' cursor-pointer';
+              componentNameClassName += (this.permissionEabled && this.currentComponent.displayLogic.selected !== 0 )? ' move':' cursor-default';
+              statusBadgeIconClassName += (this.permissionEabled && this.currentComponent.displayLogic.selected !== 0 )? ' move':' cursor-default';
             }
         }
 
@@ -519,19 +503,15 @@ class CCiLabComponent extends Component {
                 
                 {/* tag's id is used to handle drop event */}
                 { this.props.isSetupBOM === false ? 
-                  { permissionEabled ?
-                    < UpdateComponentStatus
-                    />
-                    :
-                    <ShowStatus 
-                      statusId={`${this.currentComponent.displayLogic.key}`} 
+                    <UpdateStatus
+                      component={this.currentComponent}
+                      updateComponent={this.props.updateComponentHandler}
+                      permissionStatus={this.permissionEabled}
                       statusClassName={`badge-pill badge-${this.progressStatus} ${statusBadgeIconClassName}`} 
-                      statusDraggable={`${draggableSetting}`}
                       onClickHandler={ this.componentSelected }
                       progress={this.progressValue}
                       remainingTime= {this.currentComponent.businessLogic.remainDays}
                     />
-                  }
                   :
                   <SetupBOM
                     component={this.currentComponent}

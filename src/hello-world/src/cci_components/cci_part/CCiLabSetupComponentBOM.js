@@ -7,14 +7,14 @@ import styles from "./../../dist/css/ccilab-component-list.css"
 
 const SetupComponentBOM=(props)=>{
   const { t } = useTranslation(['component','commands'], {useSuspense: false});
-  let componentName = props.value;
+  let inputValue = props.value;
   let textColorClass = 'text-primary';
   let inputType='text';
   let isRequired=false;
 
   if( props.value === 'add-part')
   {
-    componentName = '';
+    inputValue = '';
     isRequired = true;
   }
 
@@ -36,7 +36,7 @@ const SetupComponentBOM=(props)=>{
 
 
     
-  const [input, setInput] = useState(`${componentName}`); // '' is the initial state value
+  const [input, setInput] = useState(`${inputValue}`); // '' is the initial state value
  
   // https://blog.bitsrc.io/understanding-currying-in-javascript-ceb2188c339
   const updateValue=(props)=>(e)=>{

@@ -4,28 +4,41 @@ import { useTranslation } from 'react-i18next';
 
 import styles from "./../../dist/css/ccilab-component-list.css"
 
+const ShowStatus=(props)=>{
+  const { t } = useTranslation('component', {useSuspense: false});
+
+  return (
+    <span 
+        key={`component-${props.component.displayLogic.key}`}
+        id={`#component-${props.component.displayLogic.key}`} 
+        className={props.statusClassName} 
+        style={{'display':'inline-block','height': `auto`}} 
+        draggable={props.statusDraggable}
+        onClick={ props.onClickHandler }>
+        {props.progress}% - {props.remainingTime} {t('remaining-time-unit')}
+    </span> 
+  );
+}
 
 const UpdateComponentStatus=(props)=>{
   const { t } = useTranslation(['component','commands'], {useSuspense: false});
-  let componentName = props.value;
+  let inputValue = props.value;
   let textColorClass = 'text-primary';
   let inputType='text';
+  let input2ndType='text';
   let isRequired=false;
 
-  if( props.value === 'add-part')
-  {
-    componentName = '';
-    isRequired = true;
-  }
-
-  if( props.title.includes('-date') )
+  // https://www.w3schools.com/bootstrap4/bootstrap_forms_input_group.asp
+  // type="datetime-local" is not supported in Firefox, Safari 
+  if( props.title.includes('-date-time') )
   {
     inputType='date';
+    input2ndType='time'
     isRequired = true;
   }
     
 
-  if( props.title.includes('-quantity') )
+  if( props.title.includes('quantity-') )
   {
      inputType='number';
      isRequired = true;
@@ -36,15 +49,12 @@ const UpdateComponentStatus=(props)=>{
 
 
     
-  const [input, setInput] = useState(`${componentName}`); // '' is the initial state value
+  const [input, setInput] = useState(`${inputValue}`); // '' is the initial state value
  
   // https://blog.bitsrc.io/understanding-currying-in-javascript-ceb2188c339
   const updateValue=(props)=>(e)=>{
       if( typeof props.handler !== 'undefined')
       {
-        if( e.target.value === '' && props.title ==='part-name')
-          e.target.value = 'add-part';
-
         console.log("UpdateComponentStatus - updateValue: " + e.target.value);
         props.handler(e.target.value, props.component);
         updateComponent(props);
@@ -95,7 +105,8 @@ const UpdateComponentStatus=(props)=>{
 }
 
 
-export const UpdateComponentStatus=(props)=>{
+export const UpdateStatus=(props)=>{
+  const { t } = useTranslation('component', {useSuspense: false});
   const _className = 'cursor-pointer text-primary border-0 py-0 px-2 fa fw fa-edit' + (props.component.displayLogic.selected ? ' bg-info' : ' ');
 
   const initializeProduction=()=>{
@@ -108,7 +119,7 @@ export const UpdateComponentStatus=(props)=>{
   }
  
 
-  if( typeof props.production === 'undefined' )
+  if( typeof props.component.production === 'undefined' )
     props.component.production = new initializeProduction();
 
   const setTeamName=(teamName, component)=>{
@@ -116,7 +127,7 @@ export const UpdateComponentStatus=(props)=>{
       props.component.production = new initializeProduction();
 
     component.production.teamName=teamName;
-    console.log("UpdateComponentStatus - setTeamName: " + component.production.teamName);
+    console.log("UpdateStatus - setTeamName: " + component.production.teamName);
   };
 
   const setShiftName=(shift, component)=>{
@@ -125,7 +136,7 @@ export const UpdateComponentStatus=(props)=>{
 
     component.production.shift=shift;
 
-    console.log("UpdateComponentStatus - setShiftName: " + component.production.shift);
+    console.log("UpdateStatus - setShiftName: " + component.production.shift);
   };
 
   //should get this information from login, doesn't need user input here
@@ -155,16 +166,16 @@ export const UpdateComponentStatus=(props)=>{
 
  
   return (
-    ( props.component.displayLogic.selected ? 
+    ( ( props.permissionStatus && props.component.displayLogic.selected ) ? 
       <Popup
         trigger={
           <span 
-          key={`component-${props.component.displayLogic.key}`}
-          id={`#component-${props.component.displayLogic.key}`} 
-          className={props.statusClassName} 
-          style={{'display':'inline-block','height': `auto`}} 
-          onClick={ props.onClickHandler }>
-          {props.progress}% - {props.remainingTime} {t('remaining-time-unit')}/>
+            key={`component-${props.component.displayLogic.key}`}
+            id={`#component-${props.component.displayLogic.key}`} 
+            className={props.statusClassName} 
+            style={{'display':'inline-block','height': `auto`}} >
+            {props.progress}% - {props.remainingTime} {t('remaining-time-unit')}
+          </span>  
         }
       closeOnDocumentClick
       on={['click', 'focus']}
@@ -202,7 +213,7 @@ export const UpdateComponentStatus=(props)=>{
               style={{borderStyle:'insert', borderWidth: '0.08em', borderColor:`${styles.cciInfoBlue}`}}/>
 
           <UpdateComponentStatus 
-            title='updated-by'
+            title='updated-by-user'
             value={props.component.production.updatedBy}
             component={props.component}
             handler={setUpdatedBy}
@@ -222,16 +233,21 @@ export const UpdateComponentStatus=(props)=>{
               style={{borderStyle:'insert', borderWidth: '0.08em', borderColor:`${styles.cciInfoBlue}`}}/>
 
           <UpdateComponentStatus 
-              title='shift-product-record-time'
+              title='shift-product-record-date-time'
               value={props.component.production.recordDateTime}
               component={props.component}
               handler={setRecordDateTime}
               updateComponent={props.updateComponent}/>
           </div>
-        )}
+        )} 
       </Popup>
       :
-      null
+      <ShowStatus 
+        component={props.component}
+        statusClassName={props.statusClassName} 
+        onClickHandler={ props.onClickHandler }
+        progress = {props.progress}
+        remainingTime = {props.remainingTime}/> 
     )
   )
 }
