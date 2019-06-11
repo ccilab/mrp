@@ -98,102 +98,62 @@ const UpdateComponentStatus=(props)=>{
 export const UpdateComponentStatus=(props)=>{
   const _className = 'cursor-pointer text-primary border-0 py-0 px-2 fa fw fa-edit' + (props.component.displayLogic.selected ? ' bg-info' : ' ');
 
-  const initializeBOM=()=>{
-    let bom={};
-    bom.core=initializeBOMCore();
-    bom.extra=initializeBOMExtra();
-    return bom;
+  const initializeProduction=()=>{
+    let production={};
+    production.teamName='';
+    production.shift='';
+    production.updatedBy={};  //first name, family name
+
+    return production;
   }
  
-  const initializeBOMCore=()=>{
-     let core={};
-     core.OrderQty='';
-     core.partNumber='';
-     core.unitQty='';
-     core.unitOfMeasure='';
-     core.Qty='';
-     core.startDate='';
-     core.completeDate='';
-     core.Scrap='';
-     core.procurementType='';
-     core.warehouse='';
-     core.workshop='';
-     core.leadTime='';
-     core.rejectRate='';
-     core.supplier='';
-     core.supplierPartNumber='';
-     return core;
-  }
 
-  const initializeBOMExtra=()=>{
-    let extra={};
-    extra.SKU='';
-    extra.barcode='';
-    extra.revision='';
-    extra.refDesignator='';
-    extra.phase='';
-    extra.category='';
-    extra.material='';
-    extra.process='';
-    extra.unitCost='';
-    extra.assemblyLine='';
-    extra.description='';
-    extra.note='';
-    return extra;
+  if( typeof props.production === 'undefined' )
+    props.component.production = new initializeProduction();
+
+  const setTeamName=(teamName, component)=>{
+    if( typeof props.production === 'undefined' )
+      props.component.production = new initializeProduction();
+
+    component.production.teamName=teamName;
+    console.log("UpdateComponentStatus - setTeamName: " + component.production.teamName);
   };
 
-  if( typeof props.component.bom === 'undefined' )
-    props.component.bom = new initializeBOM();
+  const setShiftName=(shift, component)=>{
+    if( typeof component.production === 'undefined' )
+      component.production = new initializeProduction();
 
-  const setPartName=(partName, component)=>{
-    component.businessLogic.name=partName;
-    console.log("SetupBOM - setPartName: " + component.businessLogic.name);
+    component.production.shift=shift;
+
+    console.log("UpdateComponentStatus - setShiftName: " + component.production.shift);
   };
 
-  const setPartNumber=(partNumber, component)=>{
-    if( typeof component.bom === 'undefined' )
-      component.bom = new initializeBOM();
+  //should get this information from login, doesn't need user input here
+  const setUpdatedBy=(firstName, familyName, component)=>{
+    if( typeof component.production === 'undefined' )
+      component.production = new initializeProduction();
 
-    component.bom.core.partNumber=partNumber;
-
-    console.log("SetupBOM - setPartNumber: " + component.bom.core.partNumber);
-  };
-
-  const setUnitQty=(unitQty, component)=>{
-    if( typeof component.bom === 'undefined' )
-      component.bom = new initializeBOM();
-
-    component.bom.core.unitQty=unitQty;
+    component.production.updatedBy={'firstName':firstName, 'familyName':familyName};
 
   }
 
-  const setTotalRequiredQty=(qty, component)=>{
-    if( typeof component.bom === 'undefined' )
-      component.bom = new initializeBOM();
+  // get unit from bom core
+  const setShifProductedQty=(qty, component)=>{
+    if( typeof component.production === 'undefined' )
+      component.production = new initializeProduction();
 
-    component.bom.core.Qty=qty;
+    component.production.Qty=qty;
   }
 
-  const setUnitOfMeasure=(unitOfMeasure, component)=>{
-    if( typeof component.bom === 'undefined' )
-      component.bom = new initializeBOM();
+  //DD/MM/YYYY HH - 0-24hr
+  const setRecordDateTime=(dateTime, component)=>{
+    if( typeof component.production === 'undefined' )
+      component.production = new initializeProduction();
 
-    component.bom.core.unitOfMeasure=unitOfMeasure;
+    component.production.recordDateTime=dateTime;
   }
 
-  const setStartDate=(startDate, component)=>{
-    if( typeof component.bom === 'undefined' )
-      component.bom = new initializeBOM();
-
-    component.bom.core.startDate=startDate;
-  }
-
-  const setCompleteDate=(completeDate, component)=>{
-    if( typeof component.bom === 'undefined' )
-      component.bom = new initializeBOM();
-
-    component.bom.core.completeDate=completeDate;
-  }
+ 
   return (
     ( props.component.displayLogic.selected ? 
       <Popup
@@ -209,8 +169,8 @@ export const UpdateComponentStatus=(props)=>{
       closeOnDocumentClick
       on={['click', 'focus']}
       position={'right top'}
-      defaultOpen={false}  //don't show setupBOM menu unless user click the edit icon
-      contentStyle={{ padding: '0px', border: 'none', backgroundColor: `${styles.cciBgColor}`}} //
+      defaultOpen={false}  //don't show updateComponent menu unless user click the edit icon
+      contentStyle={{ padding: '0px', border: 'none', backgroundColor: `${styles.cciBgColor}`}} 
       arrow={true}
       arrowStyle={{backgroundColor: `${styles.cciBgColor}`}}>
       {close => (
@@ -220,9 +180,9 @@ export const UpdateComponentStatus=(props)=>{
             title='team-name'
             value={props.component.production.teamName}
             component={props.component}
-            handler={setPartName}
+            handler={setTeamName}
             updateComponent={props.updateComponent}/>
-          <a id={`${props.component.displayLogic.key}-setupBOM`} 
+          <a id={`${props.component.displayLogic.key}-updateProductStatus`} 
             href={`#${props.component.displayLogic.key}`} 
             className='text-danger m-0 py-1 px-1 fas fw fa-times-circle cursor-pointer' 
             style={{backgroundColor: `${styles.cciBgColor}`}}

@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import Popup from '../popup_menu/Popup'
 import { useTranslation } from 'react-i18next';
 import {SetupBOM} from './CCiLabSetupComponentBOM';
+import {UpdateComponentStatus} from './CCiLabUpdateComponentStatus.js'
 import {saveAs, creatHiddenImgInputTag} from "../file_save/CCiLabLocalFileAccess"
 
 
@@ -518,14 +519,19 @@ class CCiLabComponent extends Component {
                 
                 {/* tag's id is used to handle drop event */}
                 { this.props.isSetupBOM === false ? 
-                  <ShowStatus 
-                    statusId={`${this.currentComponent.displayLogic.key}`} 
-                    statusClassName={`badge-pill badge-${this.progressStatus} ${statusBadgeIconClassName}`} 
-                    statusDraggable={`${draggableSetting}`}
-                    onClickHandler={ this.componentSelected }
-                    progress={this.progressValue}
-                    remainingTime= {this.currentComponent.businessLogic.remainDays}
-                  />
+                  { permissionEabled ?
+                    < UpdateComponentStatus
+                    />
+                    :
+                    <ShowStatus 
+                      statusId={`${this.currentComponent.displayLogic.key}`} 
+                      statusClassName={`badge-pill badge-${this.progressStatus} ${statusBadgeIconClassName}`} 
+                      statusDraggable={`${draggableSetting}`}
+                      onClickHandler={ this.componentSelected }
+                      progress={this.progressValue}
+                      remainingTime= {this.currentComponent.businessLogic.remainDays}
+                    />
+                  }
                   :
                   <SetupBOM
                     component={this.currentComponent}
