@@ -229,11 +229,10 @@ const ComponentListTitle =(props)=>{
       null
      }
     </span> 
-    {( ()=>{
-       switch(props.permissionStatus) {
-        
-        case 'setup-bom':
-        return ( !props.setupBOM ? 
+    {/* https://www.robinwieruch.de/conditional-rendering-react/ */}
+    {{
+       'setup-bom':
+         ( !props.setupBOM ? 
           <a  key='show-bom' 
               href={'#submit-bom'}
               className={'px-1 border-0 text-primary p-0 nav-link fa fa-cog'} 
@@ -244,15 +243,11 @@ const ComponentListTitle =(props)=>{
             href= {'#submit-progress'}
             className={'px-1 border-0 text-primary p-0 nav-link fa fa-chart-line'} 
             style={cursorStyle}
-            onClick={showProgress} />); 
-        case 'update-progress':
-        case 'read-only':
-        default:
-          return null;
-        }
-      }) () }
+            onClick={showProgress} />),
+        'update-progress': null,
+        'read-only':null
+        } [props.permissionStatus]}
      
-
      {/* popup menu to change language */}
      <Popup
       trigger={
@@ -299,7 +294,7 @@ class CCiLabComponentList extends Component {
               visible: true, 
               selected: 0, 
               setupBOM: false, 
-              permissionEnabled: 'update-progress', // based logged in user to set permission: 'read-only', 'update-progress', 'setup-bom'
+              permissionEnabled: 'setup-bom', // based logged in user to set permission: 'read-only', 'update-progress', 'setup-bom'
               fontSize: 23, //default browser medium font size in px
               isDropToSameParentWarning: false, 
               isDropToItselfWarning: false};
