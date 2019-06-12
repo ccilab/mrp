@@ -172,15 +172,19 @@ export const UpdateStatus=(props)=>{
     ( ( (props.permissionStatus.includes('update-progress') ||
           props.permissionStatus.includes('setup-bom')) 
       && props.component.displayLogic.selected ) ? 
+      <span 
+      key={`component-${props.component.displayLogic.key}`}
+      id={`#component-${props.component.displayLogic.key}`} 
+      className={props.statusClassName} 
+      style={{'display':'inline-block','height': `auto`}} >
+      {props.progress}% - {props.remainingTime} {t('remaining-time-unit')}
+    
       <Popup
         trigger={
-          <span 
-            key={`component-${props.component.displayLogic.key}`}
-            id={`#component-${props.component.displayLogic.key}`} 
-            className={props.statusClassName} 
-            style={{'display':'inline-block','height': `auto`}} >
-            {props.progress}% - {props.remainingTime} {t('remaining-time-unit')}
-          </span>  
+          <a key='show-progress' 
+          href= {'#submit-progress'}
+          className={'px-1 border-0 text-primary p-0 nav-link fa fw fa-edit'} 
+          style={{'cursor': 'pointer'}}/>  
         }
       closeOnDocumentClick
       on={['click', 'focus']}
@@ -246,6 +250,7 @@ export const UpdateStatus=(props)=>{
           </div>
         )} 
       </Popup>
+      </span>
       :
       <ShowStatus 
         component={props.component}
