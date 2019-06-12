@@ -215,7 +215,9 @@ const ComponentListTitle =(props)=>{
 
   // console.log("CCiLabComponentList - ComponentListTitle: i18n.language = " + i18n.language );
 
-  let cursorStyle = {'cursor': props.permissionStatus ? 'pointer': 'not-allowed', 'position':'absolute', 'right':'1.5rem' };
+  let cursorStyle = {'cursor': 'pointer', 
+                      'position':'absolute', 
+                      'right':'1.5rem' };
    
   return (
     <div className='d-flex align-items-center bg-info fa' style={{ 'height': `${props.titleHeight}rem`, 'width': `${props.titleWidth}`}}>
@@ -227,21 +229,32 @@ const ComponentListTitle =(props)=>{
       null
      }
     </span> 
-    { !props.setupBOM ? 
-      <a  key='show-bom' 
-          href='#submit-bom' 
-          className={'px-1 border-0 text-primary p-0 nav-link fa fa-cog'} 
-          style={cursorStyle} 
-          onClick={setupBOM} /> 
-      : 
-      <a key='show-progress' 
-        href= { props.permissionStatus ? '#submit-progress' : '' }
-        className={'px-1 border-0 text-primary p-0 nav-link fa fa-chart-line'} 
-        style={cursorStyle}
-        onClick={showProgress} /> 
-     }
-    {/* popup menu to change language */}
-    <Popup
+    {( ()=>{
+       switch(props.permissionStatus) {
+        
+        case 'setup-bom':
+        return ( !props.setupBOM ? 
+          <a  key='show-bom' 
+              href={'#submit-bom'}
+              className={'px-1 border-0 text-primary p-0 nav-link fa fa-cog'} 
+              style={cursorStyle} 
+              onClick={setupBOM} /> 
+          : 
+          <a key='show-progress' 
+            href= {'#submit-progress'}
+            className={'px-1 border-0 text-primary p-0 nav-link fa fa-chart-line'} 
+            style={cursorStyle}
+            onClick={showProgress} />); 
+        case 'update-progress':
+        case 'read-only':
+        default:
+          return null;
+        }
+      }) () }
+     
+
+     {/* popup menu to change language */}
+     <Popup
       trigger={
         <button 
           key='selection-language'
@@ -262,7 +275,7 @@ const ComponentListTitle =(props)=>{
         <a key='en' href='#English' className={'nav-link px-1'} onClick={languageChangeHandler('en')}>English</a>
         <a key='zh-CN' href='#中文' className={'nav-link px-1'} onClick={languageChangeHandler('zh-CN')}>中文</a>
       </div>
-    </Popup>
+     </Popup>
   </div>
   );
 }
@@ -286,7 +299,7 @@ class CCiLabComponentList extends Component {
               visible: true, 
               selected: 0, 
               setupBOM: false, 
-              permissionEnabled: true,
+              permissionEnabled: 'update-progress', // based logged in user to set permission: 'read-only', 'update-progress', 'setup-bom'
               fontSize: 23, //default browser medium font size in px
               isDropToSameParentWarning: false, 
               isDropToItselfWarning: false};
@@ -987,6 +1000,7 @@ class CCiLabComponentList extends Component {
                                       titlePositionLeft= {this.componentTitleLeft}
                                       titleClassName = {listTitleClassName}
                                       setupBOM = {this.state.setupBOM} 
+                                      permissionStatus = {this.state.permissionEnabled}
                                       changeBOMHandler = {this.showSetupBOM}
                                       titleWidthChangeHandler = {this.updateDimensions}/> :
                                 <ComponentListTitle title='title-Progress' 

@@ -169,7 +169,9 @@ export const UpdateStatus=(props)=>{
 
  
   return (
-    ( ( props.permissionStatus && props.component.displayLogic.selected ) ? 
+    ( ( (props.permissionStatus.includes('update-progress') ||
+          props.permissionStatus.includes('setup-bom')) 
+      && props.component.displayLogic.selected ) ? 
       <Popup
         trigger={
           <span 
