@@ -11,6 +11,7 @@ const SetupComponentBOM=(props)=>{
   let textColorClass = 'text-primary';
   let inputType='text';
   let isRequired=false;
+  let tooltipOnMode='hover';
 
   if( props.value === 'add-part')
   {
@@ -18,6 +19,11 @@ const SetupComponentBOM=(props)=>{
     isRequired = true;
   }
 
+  if( props.title.includes('part-name'))
+  {
+    tooltipOnMode='click';
+    isRequired = true;
+  }
   if( props.title.includes('-date') )
   {
     inputType='date';
@@ -30,12 +36,7 @@ const SetupComponentBOM=(props)=>{
      inputType='number';
      isRequired = true;
   }
-   
-
-
-
-
-    
+       
   const [input, setInput] = useState(`${inputValue}`); // '' is the initial state value
  
   // https://blog.bitsrc.io/understanding-currying-in-javascript-ceb2188c339
@@ -80,7 +81,7 @@ const SetupComponentBOM=(props)=>{
               id={`${props.component.displayLogic.key}-tooltip`}
               position={'right center'}
               closeOnDocumentClick
-              on="hover"
+              on={tooltipOnMode}
               arrow={false}
               mouseLeaveDelay={0}
               mouseEnterDelay={0}

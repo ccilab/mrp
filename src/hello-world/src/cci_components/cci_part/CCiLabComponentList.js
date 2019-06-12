@@ -194,7 +194,7 @@ const setComponentSelected = ( component, selectedComponentKey ) =>{
 
 
 // titleName, titleHeight, titleWidth, titlePositionLeft, titleClassName
-const ComponentListTitle =(props)=>{
+const ComponentListTitle =(props)=>{ 
   // console.log("call - ComponentListTitle:" + props.title );
   // https://react.i18next.com/latest/usetranslation-hook fa-spinner
   // https://stackoverflow.com/questions/17737182/how-can-i-overlay-a-number-on-top-of-a-fontawesome-glyph
@@ -215,6 +215,7 @@ const ComponentListTitle =(props)=>{
 
   // console.log("CCiLabComponentList - ComponentListTitle: i18n.language = " + i18n.language );
 
+  let cursorStyle = {'cursor': props.permissionStatus ? 'pointer': 'not-allowed', 'position':'absolute', 'right':'1.5rem' };
    
   return (
     <div className='d-flex align-items-center bg-info fa' style={{ 'height': `${props.titleHeight}rem`, 'width': `${props.titleWidth}`}}>
@@ -226,10 +227,18 @@ const ComponentListTitle =(props)=>{
       null
      }
     </span> 
-    { props.setupBOM === false ? 
-      <a key='show-progress' href='#submit-bom' className={'px-1 border-0 text-primary p-0 nav-link fa fa-cog'} style={{'cursor': 'pointer', 'position':'absolute', 'right':'1.5rem'}} onClick={setupBOM} /> 
+    { !props.setupBOM ? 
+      <a  key='show-bom' 
+          href='#submit-bom' 
+          className={'px-1 border-0 text-primary p-0 nav-link fa fa-cog'} 
+          style={cursorStyle} 
+          onClick={setupBOM} /> 
       : 
-      <a key='show-progress' href='#submit-bom' className={'px-1 border-0 text-primary p-0 nav-link fa fa-chart-line'} style={{'cursor': 'pointer', 'position':'absolute', 'right':'1.5rem'}} onClick={showProgress} /> 
+      <a key='show-progress' 
+        href= { props.permissionStatus ? '#submit-progress' : '' }
+        className={'px-1 border-0 text-primary p-0 nav-link fa fa-chart-line'} 
+        style={cursorStyle}
+        onClick={showProgress} /> 
      }
     {/* popup menu to change language */}
     <Popup
@@ -277,9 +286,11 @@ class CCiLabComponentList extends Component {
               visible: true, 
               selected: 0, 
               setupBOM: false, 
+              permissionEnabled: true,
               fontSize: 23, //default browser medium font size in px
               isDropToSameParentWarning: false, 
               isDropToItselfWarning: false};
+
     initialized = false;  //needed to avoid render without DOM
     slidingComponentListIconClassName;
       
@@ -913,7 +924,8 @@ class CCiLabComponentList extends Component {
                                           selectedComponentHandler={this.selectedComponentHandler}
                                           moveComponentHandler={this.moveComponentHandler}
                                           updateComponentHandler={this.updateComponent}
-                                          isSetupBOM={this.state.setupBOM}/> ;
+                                          isSetupBOM={this.state.setupBOM}
+                                          permissionStatus={this.state.permissionEnabled}/> ;
                 }
                 else
                   return null;
@@ -929,13 +941,6 @@ class CCiLabComponentList extends Component {
     hideDropToItselfWarning=()=>{
       console.log("CCiLabComponentList - hideDropToItselfWarning ")
       this.setState({isDropToItselfWarning: false});
-    }
-
-    showSetupBOM=( isShowSetupBOM )=>{
-      // the setup BOM title isn't change yet at this point, 
-      // the title is still progress so the width is cal using progress
-      this.updateDimensions(this.state.greetings);
-      this.setState({setupBOM: isShowSetupBOM });
     }
 
     render() {
@@ -975,7 +980,8 @@ class CCiLabComponentList extends Component {
                           'width':`${this.componentListWidth}`}}
                   >
 
-                  { this.state.setupBOM ? <ComponentListTitle title='title-BOM' 
+                  { this.state.setupBOM ? 
+                                <ComponentListTitle title='title-BOM' 
                                       titleHeight={this.componentTitleHeight}
                                       titleWidth={this.componentListWidth}
                                       titlePositionLeft= {this.componentTitleLeft}
@@ -989,6 +995,7 @@ class CCiLabComponentList extends Component {
                                       titlePositionLeft= {this.componentTitleLeft}
                                       titleClassName = {listTitleClassName}
                                       setupBOM = {this.state.setupBOM} 
+                                      permissionStatus = {this.state.permissionEnabled}
                                       changeBOMHandler = {this.showSetupBOM}
                                       titleWidthChangeHandler = {this.updateDimensions}/>
                   }

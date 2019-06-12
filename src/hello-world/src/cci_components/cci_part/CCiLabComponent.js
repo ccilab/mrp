@@ -158,7 +158,7 @@ class CCiLabComponent extends Component {
 
     leftOffset;
 
-    permissionEabled = true; // #todo: need to add check later
+    permissionEabled = this.props.permissionStatus; // #todo: need to add check later
 
     init=(props)=>{
       this.currentComponent = props.component;

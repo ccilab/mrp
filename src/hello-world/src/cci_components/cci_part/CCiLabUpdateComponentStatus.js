@@ -27,6 +27,13 @@ const UpdateComponentStatus=(props)=>{
   let inputType='text';
   let input2ndType='text';
   let isRequired=false;
+  let tooltipOnMode='hover';
+
+  if( props.title.includes('team-name') )
+  {
+    tooltipOnMode='click';
+    isRequired = true;
+  }
 
   // https://www.w3schools.com/bootstrap4/bootstrap_forms_input_group.asp
   // type="datetime-local" is not supported in Firefox, Safari 
@@ -44,10 +51,6 @@ const UpdateComponentStatus=(props)=>{
      isRequired = true;
   }
    
-
-
-
-
     
   const [input, setInput] = useState(`${inputValue}`); // '' is the initial state value
  
@@ -90,7 +93,7 @@ const UpdateComponentStatus=(props)=>{
               id={`${props.component.displayLogic.key}-tooltip`}
               position={'right center'}
               closeOnDocumentClick
-              on="hover"
+              on={tooltipOnMode}
               arrow={false}
               mouseLeaveDelay={0}
               mouseEnterDelay={0}
