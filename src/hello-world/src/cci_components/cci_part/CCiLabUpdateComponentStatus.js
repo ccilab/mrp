@@ -4,21 +4,6 @@ import { useTranslation } from 'react-i18next';
 
 import styles from "./../../dist/css/ccilab-component-list.css"
 
-const ShowStatus=(props)=>{
-  const { t } = useTranslation('component', {useSuspense: false});
-
-  return (
-    <span 
-        key={`component-${props.component.displayLogic.key}`}
-        id={`#component-${props.component.displayLogic.key}`} 
-        className={props.statusClassName} 
-        style={{'display':'inline-block','height': `auto`}} 
-        draggable={props.statusDraggable}
-        onClick={ props.onClickHandler }>
-        {props.progress}% - {props.remainingTime} {t('remaining-time-unit')}
-    </span> 
-  );
-}
 
 const UpdateComponentStatus=(props)=>{
   const { t } = useTranslation(['component','commands'], {useSuspense: false});
@@ -75,7 +60,7 @@ const UpdateComponentStatus=(props)=>{
 
   // https://medium.freecodecamp.org/reactjs-pass-parameters-to-event-handlers-ca1f5c422b9
   return (
-    <div className='d-flex justify-content-between' 
+    <div className='d-flex justify-content-between cusor-pointer' 
          style={{backgroundColor: `${styles.cciBgColor}`}}>
         {/* <label className='m-0 p-0'>{t(`${props.title}`)}: </label> */}
         <Popup 
@@ -88,7 +73,6 @@ const UpdateComponentStatus=(props)=>{
                       value={input} 
                       onChange={updateValue(props)}
                       onInput={(e) => setInput(e.target.value)}/>
-                      // onMouseLeave={updateComponent(props)}/> 
               }
               id={`${props.component.displayLogic.key}-tooltip`}
               position={'right center'}
@@ -97,12 +81,11 @@ const UpdateComponentStatus=(props)=>{
               arrow={false}
               mouseLeaveDelay={0}
               mouseEnterDelay={0}
-              contentStyle={{ padding: '0px', border: 'thin solid black' }}
-              >
+              contentStyle={{ padding: '0px', border: 'thin solid black' }}>
               <div className='text-nowrap m-0 p-0'>
                 {t(`component:${props.title}`)}
               </div>
-              </Popup>
+        </Popup>
     </div>
   );
 }
@@ -169,95 +152,91 @@ export const UpdateStatus=(props)=>{
 
  
   return (
-    ( ( (props.permissionStatus.includes('update-progress') ||
-          props.permissionStatus.includes('setup-bom')) 
-      && props.component.displayLogic.selected ) ? 
       <span 
-      key={`component-${props.component.displayLogic.key}`}
-      id={`#component-${props.component.displayLogic.key}`} 
-      className={props.statusClassName} 
-      style={{'display':'inline-block','height': `auto`}} >
-      {props.progress}% - {props.remainingTime} {t('remaining-time-unit')}
-    
-      <Popup
-        trigger={
-          <a key='show-progress' 
-          href= {'#submit-progress'}
-          className={'px-1 border-0 text-primary p-0 nav-link fa fw fa-edit'} 
-          style={{'cursor': 'pointer'}}/>  
-        }
-      closeOnDocumentClick
-      on={['click', 'focus']}
-      position={'right top'}
-      defaultOpen={false}  //don't show updateComponent menu unless user click the edit icon
-      contentStyle={{ padding: '0px', border: 'none', backgroundColor: `${styles.cciBgColor}`}} 
-      arrow={true}
-      arrowStyle={{backgroundColor: `${styles.cciBgColor}`}}>
-      {close => (
-        <div className={'bg-info d-flex flex-column'} >
-          <div className={'bg-info d-flex'}>
-          <UpdateComponentStatus 
-            title='team-name'
-            value={props.component.production.teamName}
-            component={props.component}
-            handler={setTeamName}
-            updateComponent={props.updateComponent}/>
-          <a id={`${props.component.displayLogic.key}-updateProductStatus`} 
-            href={`#${props.component.displayLogic.key}`} 
-            className='text-danger m-0 py-1 px-1 fas fw fa-times-circle cursor-pointer' 
-            style={{backgroundColor: `${styles.cciBgColor}`}}
-            onClick={close}/>
-        </div>    
-        <hr className='my-0 bg-info' 
-              style={{borderStyle:'insert', borderWidth: '0.08em', borderColor:`${styles.cciInfoBlue}`}}/>
-  
-        <UpdateComponentStatus 
-              title='shift'
-              value={props.component.production.shift}
-              component={props.component}
-              handler={setShiftName}
-              updateComponent={props.updateComponent}/>
+        key={`component-${props.component.displayLogic.key}`}
+        id={`#component-${props.component.displayLogic.key}`} 
+        className={props.statusClassName} 
+        style={{'display':'inline-block','height': `auto`}} 
+        onClick={ props.onClickHandler }>
+        {props.progress}% - {props.remainingTime} {t('remaining-time-unit')}
 
-        <hr className='my-0 bg-info' 
-              style={{borderStyle:'insert', borderWidth: '0.08em', borderColor:`${styles.cciInfoBlue}`}}/>
-
-          <UpdateComponentStatus 
-            title='updated-by-user'
-            value={props.component.production.updatedBy}
-            component={props.component}
-            handler={setUpdatedBy}
-            updateComponent={props.updateComponent}/>
-
-        <hr className='my-0 bg-info' 
-              style={{borderStyle:'insert', borderWidth: '0.08em', borderColor:`${styles.cciInfoBlue}`}}/>
-
+        { ( (props.permissionStatus.includes('update-progress') ||
+            props.permissionStatus.includes('setup-bom')) &&
+          props.component.displayLogic.selected ) ? 
+          <Popup
+            trigger={
+              <a key='show-progress' 
+              href= {'#submit-progress'}
+              className={'px-1 border-0 text-primary p-0 nav-link fa fw fa-edit'} 
+              style={{'cursor': 'pointer'}}/>  
+            }
+          closeOnDocumentClick
+          on={['click', 'focus']}
+          position={'right top'}
+          defaultOpen={false}  //don't show updateComponent menu unless user click the edit icon
+          contentStyle={{ padding: '0px', border: 'none', backgroundColor: `${styles.cciBgColor}`}} 
+          arrow={true}
+          arrowStyle={{backgroundColor: `${styles.cciBgColor}`}}>
+          {close => (
+            <div className={'bg-info d-flex flex-column'} >
+              <div className={'bg-info d-flex'}>
+              <UpdateComponentStatus 
+                title='team-name'
+                value={props.component.production.teamName}
+                component={props.component}
+                handler={setTeamName}
+                updateComponent={props.updateComponent}/>
+                <a id={`${props.component.displayLogic.key}-updateProductStatus`} 
+                  href={`#${props.component.displayLogic.key}`} 
+                  className='text-danger m-0 py-1 px-1 fas fw fa-times-circle cursor-pointer' 
+                  style={{backgroundColor: `${styles.cciBgColor}`}}
+                  onClick={close}/>
+            </div>    
+            <hr className='my-0 bg-info' 
+                  style={{borderStyle:'insert', borderWidth: '0.08em', borderColor:`${styles.cciInfoBlue}`}}/>
+      
             <UpdateComponentStatus 
-            title='quantity-per-shift'
-              value={props.component.production.Qty}
-              component={props.component}
-              handler={setShifProductedQty}
-              updateComponent={props.updateComponent}/>
+                  title='shift'
+                  value={props.component.production.shift}
+                  component={props.component}
+                  handler={setShiftName}
+                  updateComponent={props.updateComponent}/>
 
-        <hr className='my-0 bg-info' 
-              style={{borderStyle:'insert', borderWidth: '0.08em', borderColor:`${styles.cciInfoBlue}`}}/>
+            <hr className='my-0 bg-info' 
+                  style={{borderStyle:'insert', borderWidth: '0.08em', borderColor:`${styles.cciInfoBlue}`}}/>
 
-          <UpdateComponentStatus 
-              title='shift-product-record-date-time'
-              value={props.component.production.recordDateTime}
-              component={props.component}
-              handler={setRecordDateTime}
-              updateComponent={props.updateComponent}/>
-          </div>
-        )} 
-      </Popup>
+              <UpdateComponentStatus 
+                title='updated-by-user'
+                value={props.component.production.updatedBy}
+                component={props.component}
+                handler={setUpdatedBy}
+                updateComponent={props.updateComponent}/>
+
+            <hr className='my-0 bg-info' 
+                  style={{borderStyle:'insert', borderWidth: '0.08em', borderColor:`${styles.cciInfoBlue}`}}/>
+
+                <UpdateComponentStatus 
+                title='quantity-per-shift'
+                  value={props.component.production.Qty}
+                  component={props.component}
+                  handler={setShifProductedQty}
+                  updateComponent={props.updateComponent}/>
+
+            <hr className='my-0 bg-info' 
+                  style={{borderStyle:'insert', borderWidth: '0.08em', borderColor:`${styles.cciInfoBlue}`}}/>
+
+              <UpdateComponentStatus 
+                  title='shift-product-record-date-time'
+                  value={props.component.production.recordDateTime}
+                  component={props.component}
+                  handler={setRecordDateTime}
+                  updateComponent={props.updateComponent}/>
+              </div>
+            )} 
+          </Popup>
+          :
+          null
+        }
       </span>
-      :
-      <ShowStatus 
-        component={props.component}
-        statusClassName={props.statusClassName} 
-        onClickHandler={ props.onClickHandler }
-        progress = {props.progress}
-        remainingTime = {props.remainingTime}/> 
     )
-  )
 }

@@ -339,7 +339,7 @@ class CCiLabComponent extends Component {
         let componentNameClassName = 'lead align-self-center font-weight-normal text-primary text-truncate nav-link px-2 ';//component-label_sticky_horizontal
 
         // .align-self-center to make fa and badge height the same as font height
-        let statusBadgetIconClassNameBase = 'align-self-center text-nowrap ml-0 px-1   '; //component-label_sticky_horizontal 
+        let statusBadgetIconClassNameBase = 'align-self-center text-nowrap ml-0 px-1 '; //component-label_sticky_horizontal 
         let statusBadgeIconClassName = statusBadgetIconClassNameBase + (this.progressStatus === 'info' ? 'fa ':
             this.progressStatus === 'success' ? 'fa fa-check-circle' :
             this.progressStatus === 'warning' ? 'fa fa-exclamation-circle' : 'fa fa-exclamation-triangle');
@@ -357,10 +357,10 @@ class CCiLabComponent extends Component {
           // Component = ( this.currentComponent.displayLogic.selected !== 0 ) ? 'bg-info component_opacity ccilab-component-sticky-top' :' ';  
           Component = ( this.currentComponent.displayLogic.selected !== 0 ) ? 'bg-info component_opacity ccilab-component-sticky-top' :' ';  
 
-          if( this.currentComponent.displayLogic.selected !== 0  )
+          if( this.currentComponent.displayLogic.selected )
           {
             componentBase +=  ' cursor-default';
-            imamgeClassName += ' cursor-pointer';
+            imamgeClassName += ' cursor-default';
             componentNameClassName += ' cursor-default';
             statusBadgeIconClassName += ' cursor-default';
           }
