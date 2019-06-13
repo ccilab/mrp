@@ -13,20 +13,23 @@ const UpdateComponentStatus=(props)=>{
   let input2ndType='text';
   let isRequired=false;
   let tooltipOnMode='hover';
+  let inputName=props.title;
+  let inputCheckboxPlaceholder;
+  let inputStyle={'backgroundColor': `${styles.cciBgColor}`}
 
   if( props.title.includes('team-name') )
   {
-    tooltipOnMode='click';
+    tooltipOnMode='hover';
     isRequired = true;
   }
 
   // https://www.w3schools.com/bootstrap4/bootstrap_forms_input_group.asp
   // type="datetime-local" is not supported in Firefox, Safari 
-  if( props.title.includes('-date-time') )
+  if( props.title.includes('-completed') )
   {
-    inputType='date';
-    input2ndType='time'
-    isRequired = true;
+    inputType='checkbox';
+    inputCheckboxPlaceholder=t(`component:${props.title}`);
+    inputStyle={'backgroundColor': `${styles.cciBgColor}`, 'height':'1em','width':'1em'};
   }
     
 
@@ -43,8 +46,15 @@ const UpdateComponentStatus=(props)=>{
   const updateValue=(props)=>(e)=>{
       if( typeof props.handler !== 'undefined')
       {
-        console.log("UpdateComponentStatus - updateValue: " + e.target.value);
-        props.handler(e.target.value, props.component);
+        if( e.target.value.includes('production-completed')){
+          console.log("UpdateComponentStatus - updateValue: checked " + e.target.checked);
+          props.handler(e.target.checked, props.component);
+        }
+        else {
+          console.log("UpdateComponentStatus - updateValue: " + e.target.value);
+          props.handler(e.target.value, props.component);
+        }
+        
         updateComponent(props);
       }
   }
@@ -65,14 +75,26 @@ const UpdateComponentStatus=(props)=>{
         {/* <label className='m-0 p-0'>{t(`${props.title}`)}: </label> */}
         <Popup 
               trigger={
-                <input className={`${textColorClass} m-0 p-0 border-0 cursor-default`} 
+                <div>
+                <input className={`${textColorClass} m-0 p-1 border-0 cursor-default`} 
                       type={`${inputType}`} 
                       required={isRequired}
-                      style={{backgroundColor: `${styles.cciBgColor}`}} 
+                      style={inputStyle} 
                       placeholder={t(`component:${props.title}`)}
-                      value={input} 
+                      name={inputName}
+                      value={ (typeof inputCheckboxPlaceholder !== 'undefined') ? `${props.title}`: input} 
                       onChange={updateValue(props)}
                       onInput={(e) => setInput(e.target.value)}/>
+                  { (typeof inputCheckboxPlaceholder !== 'undefined') ?
+                      <input className={`${textColorClass} m-0 p-0 border-0 cursor-default`} 
+                        type='text'
+                        readonly
+                        style={{backgroundColor: `${styles.cciBgColor}`}} 
+                        placeholder={t(`component:production-completed-placeholder`)}/>
+                        :
+                        null
+                  }
+                  </div>
               }
               id={`${props.component.displayLogic.key}-tooltip`}
               position={'right center'}
@@ -81,8 +103,8 @@ const UpdateComponentStatus=(props)=>{
               arrow={false}
               mouseLeaveDelay={0}
               mouseEnterDelay={0}
-              contentStyle={{ padding: '0px', border: 'thin solid black' }}>
-              <div className='text-nowrap m-0 p-0'>
+              contentStyle={{  padding: '0px', border: 'thin solid black' }}>
+              <div className='font-weight-normal text-nowrap m-0 p-1'>
                 {t(`component:${props.title}`)}
               </div>
         </Popup>
@@ -100,6 +122,8 @@ export const UpdateStatus=(props)=>{
     production.teamName='';
     production.shift='';
     production.updatedBy={};  //first name, family name
+    production.recordDateTime={};
+    production.completed=false;
 
     return production;
   }
@@ -134,20 +158,24 @@ export const UpdateStatus=(props)=>{
 
   }
 
-  // get unit from bom core
+  // set the producted quantity for the shift
+  // also create the record date and time
   const setShifProductedQty=(qty, component)=>{
     if( typeof component.production === 'undefined' )
       component.production = new initializeProduction();
 
     component.production.Qty=qty;
+    component.production.recordDateTime=new Date();
+    console.log( 'setShifProductedQty - record time: ' + component.production.recordDateTime );
   }
 
-  //DD/MM/YYYY HH - 0-24hr
-  const setRecordDateTime=(dateTime, component)=>{
+  //
+  const setProductionCompleted=(isCompleted, component)=>{
     if( typeof component.production === 'undefined' )
       component.production = new initializeProduction();
 
-    component.production.recordDateTime=dateTime;
+    component.production.completed=isCompleted;
+    console.log( 'setProductionCompleted - checked: ' + component.production.completed );
   }
 
  
@@ -226,10 +254,10 @@ export const UpdateStatus=(props)=>{
                   style={{borderStyle:'insert', borderWidth: '0.08em', borderColor:`${styles.cciInfoBlue}`}}/>
 
               <UpdateComponentStatus 
-                  title='shift-product-record-date-time'
-                  value={props.component.production.recordDateTime}
+                  title='production-completed'
+                  value={props.component.production.completed}
                   component={props.component}
-                  handler={setRecordDateTime}
+                  handler={setProductionCompleted}
                   updateComponent={props.updateComponent}/>
               </div>
             )} 

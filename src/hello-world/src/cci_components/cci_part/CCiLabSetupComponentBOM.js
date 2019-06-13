@@ -21,7 +21,7 @@ const SetupComponentBOM=(props)=>{
 
   if( props.title.includes('part-name'))
   {
-    tooltipOnMode='click';
+    tooltipOnMode='hover';
     isRequired = true;
   }
   if( props.title.includes('-date') )
@@ -87,7 +87,7 @@ const SetupComponentBOM=(props)=>{
               mouseEnterDelay={0}
               contentStyle={{ padding: '0px', border: 'thin solid black' }}
               >
-              <div className='text-nowrap m-0 p-0'>
+              <div className='text-nowrap m-0 px-1'>
                 {t(`component:${props.title}`)}
               </div>
               </Popup>
