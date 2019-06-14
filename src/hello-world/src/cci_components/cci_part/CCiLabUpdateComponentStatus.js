@@ -18,7 +18,7 @@ const UpdateComponentStatus=(props)=>{
 
   if( props.title.includes('team-name') )
   {
-    tooltipOnMode='hover';
+    tooltipOnMode=['click','hover'];
     isRequired = true;
   }
 
@@ -75,21 +75,25 @@ const UpdateComponentStatus=(props)=>{
         <Popup 
               trigger={
                 <div>
-                <input className={`${textColorClass} m-0 p-1 border-0 cursor-default`} 
+                <input className={`${textColorClass} m-0 p-1 border-0 cursor-pointer`} 
+                      id={props.title}
                       type={`${inputType}`} 
                       required={isRequired}
                       style={inputStyle} 
                       placeholder={t(`component:${props.title}`)}
                       name={inputName}
                       value={ (typeof inputCheckboxPlaceholder !== 'undefined') ? `${props.title}`: input} 
+                      defaultChecked = { (typeof inputCheckboxPlaceholder === 'undefined') ? null : props.component.production.completed } 
+                      min = { inputType.includes('number') ? 0 : null}
                       onChange={updateValue(props)}
-                      onInput={ (typeof inputCheckboxPlaceholder !== 'undefined') ? (e) =>{ setInput(e.target.value) } : null }/>
+                      onClose={updateValue(props)}
+                      onInput={ (typeof inputCheckboxPlaceholder === 'undefined') ? (e) =>{ setInput(e.target.value) } : null }/>
                   { (typeof inputCheckboxPlaceholder !== 'undefined') ?
-                      <input className={`${textColorClass} m-0 p-0 border-0 cursor-default`} 
-                        type='text'
-                        readOnly={true}
-                        style={{backgroundColor: `${styles.cciBgColor}`}} 
-                        placeholder={t(`component:production-completed-placeholder`)}/>
+                      <label className={`${textColorClass} m-0 p-0 border-0 cursor-pointer font-weight-normal`} 
+                        for={props.title}
+                        style={{backgroundColor: `${styles.cciBgColor}`}}>
+                        {t(`component:production-completed-placeholder`)}
+                        </label>
                         :
                         null
                   }
