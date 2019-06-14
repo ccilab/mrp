@@ -10,7 +10,6 @@ const UpdateComponentStatus=(props)=>{
   let inputValue = props.value;
   let textColorClass = 'text-primary';
   let inputType='text';
-  let input2ndType='text';
   let isRequired=false;
   let tooltipOnMode='hover';
   let inputName=props.title;
@@ -40,7 +39,7 @@ const UpdateComponentStatus=(props)=>{
   }
    
     
-  const [input, setInput] = useState(`${inputValue}`); // '' is the initial state value
+  const [input, setInput] = useState(`${inputValue}`); // '${inputValue}' is the initial state value
  
   // https://blog.bitsrc.io/understanding-currying-in-javascript-ceb2188c339
   const updateValue=(props)=>(e)=>{
@@ -84,11 +83,11 @@ const UpdateComponentStatus=(props)=>{
                       name={inputName}
                       value={ (typeof inputCheckboxPlaceholder !== 'undefined') ? `${props.title}`: input} 
                       onChange={updateValue(props)}
-                      onInput={(e) => setInput(e.target.value)}/>
+                      onInput={ (typeof inputCheckboxPlaceholder !== 'undefined') ? (e) =>{ setInput(e.target.value) } : null }/>
                   { (typeof inputCheckboxPlaceholder !== 'undefined') ?
                       <input className={`${textColorClass} m-0 p-0 border-0 cursor-default`} 
                         type='text'
-                        readonly
+                        readOnly={true}
                         style={{backgroundColor: `${styles.cciBgColor}`}} 
                         placeholder={t(`component:production-completed-placeholder`)}/>
                         :
@@ -122,8 +121,10 @@ export const UpdateStatus=(props)=>{
     production.teamName='';
     production.shift='';
     production.updatedBy={};  //first name, family name
-    production.recordDateTime={};
+    production.recordDateTime=null;
     production.completed=false;
+    production.shiftQty=0;
+    production.requiredQty=0;
 
     return production;
   }
@@ -164,7 +165,8 @@ export const UpdateStatus=(props)=>{
     if( typeof component.production === 'undefined' )
       component.production = new initializeProduction();
 
-    component.production.Qty=qty;
+    component.production.shiftQty=qty;
+    component.production.requiredQty += qty;
     component.production.recordDateTime=new Date();
     console.log( 'setShifProductedQty - record time: ' + component.production.recordDateTime );
   }
@@ -176,6 +178,8 @@ export const UpdateStatus=(props)=>{
 
     component.production.completed=isCompleted;
     console.log( 'setProductionCompleted - checked: ' + component.production.completed );
+    component.production.recordDateTime=new Date();
+    console.log( 'setProductionCompleted - record time: ' + component.production.recordDateTime );
   }
 
  
@@ -186,7 +190,7 @@ export const UpdateStatus=(props)=>{
         className={props.statusClassName} 
         style={{'display':'inline-block','height': `auto`}} 
         onClick={ props.onClickHandler }>
-        {props.progress}% - {props.remainingTime} {t('remaining-time-unit')}
+        {props.progress}% - {props.remainingTime} {t(`remaining-time-unit`)}
 
         { ( (props.permissionStatus.includes('update-progress') ||
             props.permissionStatus.includes('setup-bom')) &&
@@ -208,29 +212,29 @@ export const UpdateStatus=(props)=>{
           {close => (
             <div className={'bg-info d-flex flex-column'} >
               <div className={'bg-info d-flex'}>
-              <UpdateComponentStatus 
-                title='team-name'
-                value={props.component.production.teamName}
-                component={props.component}
-                handler={setTeamName}
-                updateComponent={props.updateComponent}/>
-                <a id={`${props.component.displayLogic.key}-updateProductStatus`} 
-                  href={`#${props.component.displayLogic.key}`} 
-                  className='text-danger m-0 py-1 px-1 fas fw fa-times-circle cursor-pointer' 
-                  style={{backgroundColor: `${styles.cciBgColor}`}}
-                  onClick={close}/>
-            </div>    
-            <hr className='my-0 bg-info' 
+                <UpdateComponentStatus 
+                  title='team-name'
+                  value={props.component.production.teamName}
+                  component={props.component}
+                  handler={setTeamName}
+                  updateComponent={props.updateComponent}/>
+                  <a id={`${props.component.displayLogic.key}-updateProductStatus`} 
+                    href={`#${props.component.displayLogic.key}`} 
+                    className='text-danger m-0 py-1 px-1 fas fw fa-times-circle cursor-pointer' 
+                    style={{backgroundColor: `${styles.cciBgColor}`}}
+                    onClick={close}/>
+              </div>    
+              <hr className='my-0 bg-info' 
                   style={{borderStyle:'insert', borderWidth: '0.08em', borderColor:`${styles.cciInfoBlue}`}}/>
       
-            <UpdateComponentStatus 
+              <UpdateComponentStatus 
                   title='shift'
                   value={props.component.production.shift}
                   component={props.component}
                   handler={setShiftName}
                   updateComponent={props.updateComponent}/>
 
-            <hr className='my-0 bg-info' 
+              <hr className='my-0 bg-info' 
                   style={{borderStyle:'insert', borderWidth: '0.08em', borderColor:`${styles.cciInfoBlue}`}}/>
 
               <UpdateComponentStatus 
@@ -240,17 +244,17 @@ export const UpdateStatus=(props)=>{
                 handler={setUpdatedBy}
                 updateComponent={props.updateComponent}/>
 
-            <hr className='my-0 bg-info' 
+              <hr className='my-0 bg-info' 
                   style={{borderStyle:'insert', borderWidth: '0.08em', borderColor:`${styles.cciInfoBlue}`}}/>
 
-                <UpdateComponentStatus 
-                title='quantity-per-shift'
-                  value={props.component.production.Qty}
+              <UpdateComponentStatus 
+                  title='quantity-per-shift'
+                  value={props.component.production.shiftQty}
                   component={props.component}
                   handler={setShifProductedQty}
                   updateComponent={props.updateComponent}/>
 
-            <hr className='my-0 bg-info' 
+              <hr className='my-0 bg-info' 
                   style={{borderStyle:'insert', borderWidth: '0.08em', borderColor:`${styles.cciInfoBlue}`}}/>
 
               <UpdateComponentStatus 
@@ -259,8 +263,8 @@ export const UpdateStatus=(props)=>{
                   component={props.component}
                   handler={setProductionCompleted}
                   updateComponent={props.updateComponent}/>
-              </div>
-            )} 
+            </div>
+          )} 
           </Popup>
           :
           null
