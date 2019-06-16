@@ -8,17 +8,19 @@ import styles from "./../../dist/css/ccilab-component-list.css"
 const UpdateComponentStatus=(props)=>{
   const { t } = useTranslation(['component','commands'], {useSuspense: false});
   let inputValue = props.value;
-  let textColorClass = 'text-primary';
+  let inputClassName = 'text-primary m-0 p-1 cursor-pointer';
   let inputType='text';
   let isRequired=false;
-  let tooltipOnMode='hover';
+  let tooltipOnMode=['click','hover'];
   let inputName=props.title;
   let inputCheckboxPlaceholder;
-  let inputStyle={'backgroundColor': `${styles.cciBgColor}`}
+  let inputStyle={'backgroundColor': `${styles.cciBgColor}`};
+  let tooltipPosition='top left';
+  let createUserInput = (props.title === 'updated-by-user') ? true:false;
 
   if( props.title.includes('team-name') )
   {
-    tooltipOnMode=['click','hover'];
+    tooltipPosition='bottom left';
     isRequired = true;
   }
 
@@ -42,6 +44,9 @@ const UpdateComponentStatus=(props)=>{
   const [input, setInput] = useState(`${inputValue}`); // '${inputValue}' is the initial state value
  
   // https://blog.bitsrc.io/understanding-currying-in-javascript-ceb2188c339
+  // #todo: if total produced quanity * scrape-rate reaches the total required quanity 
+  // set props.component.production.completed to true, otherwise should set it back to false
+  // if user sets it to ture
   const updateValue=(props)=>(e)=>{
       if( typeof props.handler !== 'undefined')
       {
@@ -50,8 +55,16 @@ const UpdateComponentStatus=(props)=>{
           props.handler(e.target.checked, props.component);
         }
         else {
-          console.log("UpdateComponentStatus - updateValue: " + e.target.value);
-          props.handler(e.target.value, props.component);
+          if( e.target.name.includes('-user-name') )
+          {
+            console.log("UpdateComponentStatus - updateValue: " + e.target.name + ': ' + e.target.value);
+            props.handler(e.target.value, props.component, e.target.name );
+          }
+          else {
+            console.log("UpdateComponentStatus - updateValue: " + e.target.value);
+            props.handler(e.target.value, props.component);
+          }
+         
         }
         
         updateComponent(props);
@@ -67,40 +80,37 @@ const UpdateComponentStatus=(props)=>{
     }
   }
 
+
   // https://medium.freecodecamp.org/reactjs-pass-parameters-to-event-handlers-ca1f5c422b9
   return (
     <div className='d-flex justify-content-between cusor-pointer' 
          style={{backgroundColor: `${styles.cciBgColor}`}}>
-        {/* <label className='m-0 p-0'>{t(`${props.title}`)}: </label> */}
-        <Popup 
-              trigger={
-                <div>
-                <input className={`${textColorClass} m-0 p-1 border-0 cursor-pointer`} 
-                      id={props.title}
-                      type={`${inputType}`} 
-                      required={isRequired}
-                      style={inputStyle} 
-                      placeholder={t(`component:${props.title}`)}
-                      name={inputName}
-                      value={ (typeof inputCheckboxPlaceholder !== 'undefined') ? `${props.title}`: input} 
-                      defaultChecked = { (typeof inputCheckboxPlaceholder === 'undefined') ? null : props.component.production.completed } 
-                      min = { inputType.includes('number') ? 0 : null}
-                      onChange={updateValue(props)}
-                      onClose={updateValue(props)}
-                      onInput={ (typeof inputCheckboxPlaceholder === 'undefined') ? (e) =>{ setInput(e.target.value) } : null }/>
-                  { (typeof inputCheckboxPlaceholder !== 'undefined') ?
-                      <label className={`${textColorClass} m-0 p-0 border-0 cursor-pointer font-weight-normal`} 
-                        for={props.title}
-                        style={{backgroundColor: `${styles.cciBgColor}`}}>
-                        {t(`component:production-completed-placeholder`)}
-                        </label>
-                        :
-                        null
-                  }
-                  </div>
-              }
-              id={`${props.component.displayLogic.key}-tooltip`}
-              position={'right center'}
+        { (createUserInput) ? 
+          <Popup
+            trigger={
+              <div class='m-0 border-0'>
+                  <input type={`${inputType}`} 
+                         class={`${inputClassName}`+ 'border border-primary border-top-0 border-bottom-0 border-left-0'} 
+                         name={'given-user-name'}
+                         style={inputStyle} 
+                         value={inputValue.givenName} 
+                         placeholder={t('component:given-user-name')}  
+                         onChange={updateValue(props)}
+                         onClose={updateValue(props)}
+                         onInput={ (e) =>{ setInput(e.target.value) }}/>
+                  <input type={`${inputType}`} 
+                          class={`${inputClassName}` + 'border border-primary border-top-0 border-bottom-0 border-right-0'} 
+                          name={'family-user-name'}
+                          style={inputStyle} 
+                          value={inputValue.familyName}
+                          placeholder={t('component:family-user-name')} 
+                          onChange={updateValue(props)}
+                          onClose={updateValue(props)}
+                          onInput={ (e) =>{ setInput(e.target.value) }}/>
+              </div>
+            }
+            id={`${props.component.displayLogic.key}-tooltip`}
+              position={tooltipPosition}
               closeOnDocumentClick
               on={tooltipOnMode}
               arrow={false}
@@ -110,7 +120,51 @@ const UpdateComponentStatus=(props)=>{
               <div className='font-weight-normal text-nowrap m-0 p-1'>
                 {t(`component:${props.title}`)}
               </div>
-        </Popup>
+          </Popup>
+          :
+          <Popup 
+                trigger={
+                    <div class='m-0 border-0'>
+                      <input className={`${inputClassName} border-0`} 
+                          id={props.title}
+                          type={`${inputType}`} 
+                          required={isRequired}
+                          style={inputStyle} 
+                          placeholder={t(`component:${props.title}`)}
+                          name={inputName}
+                          value={ (typeof inputCheckboxPlaceholder !== 'undefined') ? `${props.title}`: input} 
+                          defaultChecked = { (typeof inputCheckboxPlaceholder === 'undefined') ? null : props.component.production.completed } 
+                          min = { inputType.includes('number') ? 0 : null}
+                          onChange={updateValue(props)}
+                          onClose={updateValue(props)}
+                          onInput={ (typeof inputCheckboxPlaceholder === 'undefined') ? (e) =>{ setInput(e.target.value) } : null }/>
+                      {/* https://developer.mozilla.org/en-US/docs/Web/HTML/Element/input/checkbox; 
+                          you can toggle a checkbox by clicking on its associated <label> element as well as on the checkbox itself */}
+                      { (typeof inputCheckboxPlaceholder !== 'undefined') ?
+                          <label className={`m-0 p-0 border-0 cursor-pointer font-weight-normal`} 
+                            for={props.title}
+                            style={{backgroundColor: `${styles.cciBgColor}`, color: props.component.production.completed? `${styles.cciInfoBlue}` : `${styles.cciHintRed}`}}>
+                            { props.component.production.completed ? t(`component:production-completed-description`) :  t(`component:check-if-production-completed-description`) }
+                            </label>
+                            :
+                            null
+                      }
+                  </div>
+                }
+                id={`${props.component.displayLogic.key}-tooltip`}
+                position={tooltipPosition}
+                closeOnDocumentClick
+                on={tooltipOnMode}
+                arrow={true}
+                arrowStyle={{backgroundColor: 'white'}}
+                mouseLeaveDelay={0}
+                mouseEnterDelay={0}
+                contentStyle={{  padding: '0px', border: 'thin solid black' }}>
+                <div className='font-weight-normal text-nowrap m-0 p-1'>
+                  {t(`component:${props.title}`)}
+                </div>
+          </Popup>
+        }
     </div>
   );
 }
@@ -155,12 +209,19 @@ export const UpdateStatus=(props)=>{
   };
 
   //should get this information from login, doesn't need user input here
-  const setUpdatedBy=(firstName, familyName, component)=>{
+  const setUpdatedBy=(value, component, item)=>{
     if( typeof component.production === 'undefined' )
       component.production = new initializeProduction();
-
-    component.production.updatedBy={'firstName':firstName, 'familyName':familyName};
-
+      switch( item )
+      { case 'given-user-name': 
+          component.production.updatedBy.givenName=value;
+          break;
+        case 'family-user-name': 
+          component.production.updatedBy.familyName=value;
+          break;
+        default:
+          return;
+      }
   }
 
   // set the producted quantity for the shift

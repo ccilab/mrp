@@ -31,8 +31,11 @@
     "team-name": "Add team name",
     "shift":"Add shift name",
     "updated-by-user": "logged by",
-    "quantity-per-shift": "Quantity by this shift",
+    "given-user-name": "Given Name",
+    "family-user-name": "Family Name",
+    "quantity-per-shift": "Quantity made by the shift",
     "shift-product-record-date-time": "recorded date and time",
     "production-completed": "Click Checkbox only if producion is completed",
-    "production-completed-placeholder": "Producion is completed"
+    "production-completed-description": "Producion is completed!",
+    "check-if-production-completed-description": "Is producion completed?"
 }
