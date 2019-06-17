@@ -33,9 +33,6 @@ const UpdateComponentStatus=(props)=>{
     inputStyle={'backgroundColor': `${styles.cciBgColor}`, 'height':'1em','width':'1em'};
   }
 
-  if( createUserInput )
-    inputClassName = 'text-primary m-0 p-1 cursor-pointer border-1';
-
   if( props.title.includes('quantity-') )
   {
      inputType='number';
@@ -90,9 +87,10 @@ const UpdateComponentStatus=(props)=>{
         { (createUserInput) ?
           <Popup
             trigger={
-              <div class='m-0'>
-                  <input type={`${inputType}`}
-                         className={'text-primary m-0 p-1 cursor-pointer border-1'}
+              <div class='d-flex flex-column m-0 border-0'>
+                  <input className={`${inputClassName}`}
+                         id={'#given-user-name'}
+                         type={`${inputType}`}
                          name={'given-user-name'}
                          style={inputStyle}
                          value={inputValue.givenName}
@@ -100,8 +98,10 @@ const UpdateComponentStatus=(props)=>{
                          onChange={updateValue(props)}
                          onClose={updateValue(props)}
                          onInput={ (e) =>{ setInput(e.target.value) }}/>
-                  <input type={`${inputType}`}
-                          className={`${inputClassName}`}
+
+                  <input  className={`${inputClassName}`}
+                          id={'#family-user-name'}
+                          type={`${inputType}`}
                           name={'family-user-name'}
                           style={inputStyle}
                           value={inputValue.familyName}
@@ -115,7 +115,8 @@ const UpdateComponentStatus=(props)=>{
               position={tooltipPosition}
               closeOnDocumentClick
               on={tooltipOnMode}
-              arrow={false}
+              arrow={true}
+              arrowStyle={{backgroundColor: 'white'}}
               mouseLeaveDelay={0}
               mouseEnterDelay={0}
               contentStyle={{  padding: '0px', border: 'thin solid black' }}>

@@ -30,7 +30,7 @@
     "note": "Note",
     "team-name": "Add team name",
     "shift":"Add shift name",
-    "updated-by-user": "logged by",
+    "updated-by-user": "logged by user",
     "given-user-name": "Given Name",
     "family-user-name": "Family Name",
     "quantity-per-shift": "Quantity produced/consumed by the shift",
