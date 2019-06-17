@@ -33,9 +33,9 @@
     "updated-by-user": "logged by",
     "given-user-name": "Given Name",
     "family-user-name": "Family Name",
-    "quantity-per-shift": "Quantity made by the shift",
+    "quantity-per-shift": "Quantity produced/consumed by the shift",
     "shift-product-record-date-time": "recorded date and time",
-    "production-completed": "Click Checkbox only if producion is completed",
-    "production-completed-description": "Producion is completed!",
-    "check-if-production-completed-description": "Is producion completed?"
+    "production-completed": "Click Checkbox only if production is completed",
+    "production-completed-description": "Production is completed!",
+    "check-if-production-completed-description": "Is production completed?"
 }

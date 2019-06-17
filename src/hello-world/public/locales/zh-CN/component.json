@@ -33,7 +33,7 @@
     "updated-by-user": "记录人",
     "given-user-name": "名",
     "family-user-name": "姓",
-    "quantity-per-shift": "该工作班次产生的件数",
+    "quantity-per-shift": "该工作班次产生/使用的件数",
     "shift-product-record-date-time": "记录日期和时间 ",
     "production-completed": "如果完成了全部任务，请单击“复选框”",
     "production-completed-description": "全部任务已完成!",

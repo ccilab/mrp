@@ -29,16 +29,16 @@ const SetupComponentBOM=(props)=>{
     inputType='date';
     isRequired = true;
   }
-    
+
 
   if( props.title.includes('-quantity') )
   {
      inputType='number';
      isRequired = true;
   }
-       
+
   const [input, setInput] = useState(`${inputValue}`); // '' is the initial state value
- 
+
   // https://blog.bitsrc.io/understanding-currying-in-javascript-ceb2188c339
   const updateValue=(props)=>(e)=>{
       if( typeof props.handler !== 'undefined')
@@ -63,20 +63,20 @@ const SetupComponentBOM=(props)=>{
 
   // https://medium.freecodecamp.org/reactjs-pass-parameters-to-event-handlers-ca1f5c422b9
   return (
-    <div className='d-flex justify-content-between' 
+    <div className='d-flex justify-content-between'
          style={{backgroundColor: `${styles.cciBgColor}`}}>
         {/* <label className='m-0 p-0'>{t(`${props.title}`)}: </label> */}
-        <Popup 
+        <Popup
               trigger={
-                <input className={`${textColorClass} m-0 p-0 border-0 cursor-default`} 
-                      type={`${inputType}`} 
+                <input className={`${textColorClass} m-0 p-0 border-0 cursor-default`}
+                      type={`${inputType}`}
                       required={isRequired}
-                      style={{backgroundColor: `${styles.cciBgColor}`}} 
+                      style={{backgroundColor: `${styles.cciBgColor}`}}
                       placeholder={t(`component:${props.title}`)}
-                      value={input} 
+                      value={input}
                       onChange={updateValue(props)}
                       onInput={(e) => setInput(e.target.value)}/>
-                      // onMouseLeave={updateComponent(props)}/> 
+                      // onMouseLeave={updateComponent(props)}/>
               }
               id={`${props.component.displayLogic.key}-tooltip`}
               position={'right center'}
@@ -105,7 +105,7 @@ export const SetupBOM=(props)=>{
     bom.extra=initializeBOMExtra();
     return bom;
   }
- 
+
   const initializeBOMCore=()=>{
      let core={};
      core.OrderQty='';
@@ -129,7 +129,7 @@ export const SetupBOM=(props)=>{
   const initializeBOMExtra=()=>{
     let extra={};
     extra.SKU='';
-    extra.barcode='';
+    extra.barCode='';
     extra.revision='';
     extra.refDesignator='';
     extra.phase='';
@@ -196,10 +196,10 @@ export const SetupBOM=(props)=>{
     component.bom.core.completeDate=completeDate;
   }
   return (
-    ( props.component.displayLogic.selected ? 
+    ( props.component.displayLogic.selected ?
       <Popup
         trigger={
-          <button 
+          <button
             key={`component-${props.component.displayLogic.key}`}
             id={`#component-${props.component.displayLogic.key}`}
             type="button"
@@ -217,40 +217,40 @@ export const SetupBOM=(props)=>{
       {close => (
         <div className={'bg-info d-flex flex-column'} >
           <div className={'bg-info d-flex'}>
-          <SetupComponentBOM 
+          <SetupComponentBOM
             title='part-name'
             value={props.component.businessLogic.name}
             component={props.component}
             handler={setPartName}
             updateComponent={props.updateComponent}/>
-          <a id={`${props.component.displayLogic.key}-setupBOM`} 
-            href={`#${props.component.displayLogic.key}`} 
-            className='text-danger m-0 py-1 px-1 fas fw fa-times-circle cursor-pointer' 
+          <a id={`${props.component.displayLogic.key}-setupBOM`}
+            href={`#${props.component.displayLogic.key}`}
+            className='text-danger m-0 py-1 px-1 fas fw fa-times-circle cursor-pointer'
             style={{backgroundColor: `${styles.cciBgColor}`}}
             onClick={close}/>
-        </div>    
-        <hr className='my-0 bg-info' 
+        </div>
+        <hr className='my-0 bg-info'
               style={{borderStyle:'insert', borderWidth: '0.08em', borderColor:`${styles.cciInfoBlue}`}}/>
 
-          <SetupComponentBOM 
+          <SetupComponentBOM
             title='part-number'
             value={props.component.bom.core.partNumber}
             component={props.component}
             handler={setPartNumber}
             updateComponent={props.updateComponent}/>
 
-        <hr className='my-0 bg-info' 
+        <hr className='my-0 bg-info'
               style={{borderStyle:'insert', borderWidth: '0.08em', borderColor:`${styles.cciInfoBlue}`}}/>
 
           { props.component.businessLogic.parentIds.length === 0 ?
-            <SetupComponentBOM 
+            <SetupComponentBOM
             title='required-quantity'
               value={props.component.bom.core.Qty}
               component={props.component}
               handler={setTotalRequiredQty}
               updateComponent={props.updateComponent}/>
             :
-            <SetupComponentBOM 
+            <SetupComponentBOM
               title='unit-quantity'
               value={props.component.bom.core.unitQty}
               component={props.component}
@@ -258,30 +258,30 @@ export const SetupBOM=(props)=>{
               updateComponent={props.updateComponent}/>
           }
 
-        <hr className='my-0 bg-info' 
+        <hr className='my-0 bg-info'
               style={{borderStyle:'insert', borderWidth: '0.08em', borderColor:`${styles.cciInfoBlue}`}}/>
 
-          <SetupComponentBOM 
+          <SetupComponentBOM
               title='unit-of-measure'
               value={props.component.bom.core.unitOfMeasure}
               component={props.component}
               handler={setUnitOfMeasure}
               updateComponent={props.updateComponent}/>
 
-        <hr className='my-0 bg-info' 
+        <hr className='my-0 bg-info'
               style={{borderStyle:'insert', borderWidth: '0.08em', borderColor:`${styles.cciInfoBlue}`}}/>
 
-          <SetupComponentBOM 
+          <SetupComponentBOM
               title='start-product-date'
               value={props.component.bom.core.startDate}
               component={props.component}
               handler={setStartDate}
               updateComponent={props.updateComponent}/>
 
-          <hr className='my-0 bg-info' 
+          <hr className='my-0 bg-info'
               style={{borderStyle:'insert', borderWidth: '0.08em', borderColor:`${styles.cciInfoBlue}`}}/>
 
-          <SetupComponentBOM 
+          <SetupComponentBOM
               title='product-complete-date'
               value={props.component.bom.core.completeDate}
               component={props.component}
