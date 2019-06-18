@@ -22,7 +22,7 @@
     "material": "Raw Material",
     "warehouse": "Warehouse Location",
     "process": "Process",
-    "unit cost": "Unit Sost",
+    "unit cost": "Unit Cost",
     "assembly-line": "Assembly Line",
     "workshop": "Workshop",
     "lead-time": "Lead Time",
@@ -30,12 +30,12 @@
     "note": "Note",
     "team-name": "Add team name",
     "shift":"Add shift name",
-    "updated-by-user": "logged by user",
+    "updated-by-user": "logged by this user:",
     "given-user-name": "Given Name",
     "family-user-name": "Family Name",
-    "quantity-per-shift": "Quantity produced/consumed by the shift",
+    "quantity-per-shift": "Enter the actual quantity produced/consumed by the shift",
     "shift-product-record-date-time": "recorded date and time",
-    "production-completed": "Click Checkbox only if production is completed",
-    "production-completed-description": "Production is completed!",
-    "check-if-production-completed-description": "Is production completed?"
+    "production-completed": "Click Checkbox only if this sub-project is completed",
+    "production-completed-description": "Sub-project is completed!",
+    "check-if-production-completed-description": "Is this sub-project completed?"
 }

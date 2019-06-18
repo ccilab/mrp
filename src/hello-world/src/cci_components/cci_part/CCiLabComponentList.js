@@ -543,11 +543,12 @@ class CCiLabComponentList extends Component {
       this.initialized = true;
     }
 
-    // need to check following:
-    //  1 - updated component can't be the same as its own parent 
-    //  2 - updated component can't be the same as its siblings 
-    //  3 - if the updated component exists - using the same businessLogic id from existing one
-    //  4 - if the updated component doesn't exist - create a new businessLogic
+    // need to check following (#todo)
+    //  1 - if component is the root component, then needs to re-cal all component's requiredQty
+    //  2 - updated component can't be the same as its own parent 
+    //  3 - updated component can't be the same as its siblings 
+    //  4 - if the updated component exists - using the same businessLogic id from existing one
+    //  5 - if the updated component doesn't exist - create a new businessLogic
     updateComponent =( component )=>{
       console.log("CCiLabComponentList - updateComponent")
       this.selectedComponentHandler( component );

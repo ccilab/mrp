@@ -331,7 +331,7 @@ class CCiLabComponent extends Component {
         this.init(this.props);
 
         // console.log('CCiLabComponent::render() imgFile: ', this.imgName);
-        let componentBase='d-flex cci-component-lable_position  align-items-center '; //align-items-center
+        let componentBase='d-flex cci-component-label_position  align-items-center '; //align-items-center
         let inlineMenuClassName ='btn rounded-circle align-self-center p-0 bg-primary ';
         let imageClassName = ' ';
         let expendCollapseBadgeIconClassNameBase ='align-self-center nav-link p-0  '; // component-label_sticky_horizontal
@@ -416,7 +416,7 @@ class CCiLabComponent extends Component {
                 onDrop={  this.doDrop }>
                 {/* onDragOver={ this.dragOver }
                 onDrop={  this.doDrop }> */}
-                {/* 'd-flex cci-component-lable_position  align-items-center ' */}
+                {/* 'd-flex cci-component-label_position  align-items-center ' */}
               <div className={`${componentBase}`} style={{'left':`${this.leftOffset}rem`}}>
                 {/* a badge to show menu to move/copy/delete/edit component, only sole children component has move and copy option */}
                 {/* https://github.com/yjose/reactjs-popup/blob/master/docs/src/examples/Demo.js */}

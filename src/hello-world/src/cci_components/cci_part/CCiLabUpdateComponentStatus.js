@@ -6,17 +6,41 @@ import styles from "./../../dist/css/ccilab-component-list.css"
 
 
 const UpdateComponentStatus=(props)=>{
-  const { t } = useTranslation(['component','commands'], {useSuspense: false});
+  const { t, i18n } = useTranslation(['component','commands'], {useSuspense: false});
   let inputValue = props.value;
   let inputClassName = 'text-primary m-0 p-1 cursor-pointer border-0';
   let inputType='text';
   let isRequired=false;
   let tooltipOnMode=['click','hover'];
   let inputName=props.title;
-  let inputCheckboxPlaceholder;
+  let inputPlaceholder=t(`component:${props.title}`);
+  let inputCheckbox=false;
   let inputStyle={'backgroundColor': `${styles.cciBgColor}`};
   let tooltipPosition='top left';
   let createUserInput = (props.title === 'updated-by-user') ? true:false;
+
+  let name1Name='given-user-name';
+  let name1InputId='#' + name1Name;
+  let name1Value=inputValue.givenName;
+  let name1Placeholder=t(`component:${name1Name}`);
+
+  let name2Name='family-user-name';
+  let name2InputId='#' + name2Name;
+  let name2Value=inputValue.familyName;
+  let name2Placeholder=t(`component:${name2Name}`);
+  
+  if( i18n.language.includes('zh'))
+  {
+     name1Name='family-user-name';
+     name1InputId='#' + name1Name;
+     name1Value=inputValue.givenName;
+     name1Placeholder=t(`component:${name1Name}`);
+
+     name2Name='given-user-name';
+     name2InputId='#' + name2Name;
+     name2Value=inputValue.familyName;
+     name2Placeholder=t(`component:${name2Name}`);
+  }
 
   if( props.title.includes('team-name') )
   {
@@ -29,21 +53,21 @@ const UpdateComponentStatus=(props)=>{
   if( props.title.includes('-completed') )
   {
     inputType='checkbox';
-    inputCheckboxPlaceholder=t(`component:${props.title}`);
+    inputCheckbox=true;
     inputStyle={'backgroundColor': `${styles.cciBgColor}`, 'height':'1em','width':'1em'};
   }
 
-  if( props.title.includes('quantity-') )
+  if( props.title.includes('quantity-per-shift') )
   {
-     inputType='number';
-     isRequired = true;
+    inputPlaceholder=inputValue;
+    // inputValue='';
+    isRequired = true;
   }
-
 
   const [input, setInput] = useState(`${inputValue}`); // '${inputValue}' is the initial state value
 
   // https://blog.bitsrc.io/understanding-currying-in-javascript-ceb2188c339
-  // #todo: if total produced quanity * scrape-rate reaches the total required quanity
+  // #todo: if total produced quantity * scrape-rate reaches the total required quantity
   // set props.component.production.completed to true, otherwise should set it back to false
   // if user sets it to true
   const updateValue=(props)=>(e)=>{
@@ -82,30 +106,30 @@ const UpdateComponentStatus=(props)=>{
 
   // https://medium.freecodecamp.org/reactjs-pass-parameters-to-event-handlers-ca1f5c422b9
   return (
-    <div className='d-flex justify-content-between cusor-pointer'
+    <div className='d-flex justify-content-between cursor-pointer'
          style={{backgroundColor: `${styles.cciBgColor}`}}>
         { (createUserInput) ?
           <Popup
             trigger={
               <div class='d-flex flex-column m-0 border-0'>
                   <input className={`${inputClassName}`}
-                         id={'#given-user-name'}
+                         id={name1InputId}
                          type={`${inputType}`}
-                         name={'given-user-name'}
+                         name={name1Name}
                          style={inputStyle}
-                         value={inputValue.givenName}
-                         placeholder={t('component:given-user-name')}
+                         value={name1Value}
+                         placeholder={name1Placeholder}
                          onChange={updateValue(props)}
                          onClose={updateValue(props)}
                          onInput={ (e) =>{ setInput(e.target.value) }}/>
 
                   <input  className={`${inputClassName}`}
-                          id={'#family-user-name'}
+                          id={name2InputId}
                           type={`${inputType}`}
-                          name={'family-user-name'}
+                          name={name2Name}
                           style={inputStyle}
-                          value={inputValue.familyName}
-                          placeholder={t('component:family-user-name')}
+                          value={name2Value}
+                          placeholder={name2Placeholder}
                           onChange={updateValue(props)}
                           onClose={updateValue(props)}
                           onInput={ (e) =>{ setInput(e.target.value) }}/>
@@ -119,7 +143,7 @@ const UpdateComponentStatus=(props)=>{
               arrowStyle={{backgroundColor: 'white'}}
               mouseLeaveDelay={0}
               mouseEnterDelay={0}
-              contentStyle={{  padding: '0px', border: 'thin solid black' }}>
+              contentStyle={{  padding: '0px' }}>
               <div className='font-weight-normal text-nowrap m-0 p-1'>
                 {t(`component:${props.title}`)}
               </div>
@@ -133,17 +157,17 @@ const UpdateComponentStatus=(props)=>{
                           type={`${inputType}`}
                           required={isRequired}
                           style={inputStyle}
-                          placeholder={t(`component:${props.title}`)}
+                          placeholder={inputPlaceholder}
                           name={inputName}
-                          value={ (typeof inputCheckboxPlaceholder !== 'undefined') ? `${props.title}`: input}
-                          defaultChecked = { (typeof inputCheckboxPlaceholder === 'undefined') ? null : props.component.production.completed }
+                          value={  inputCheckbox ? `${props.title}`: inputValue}
+                          defaultChecked = { !inputCheckbox ? null : props.component.production.completed }
                           min = { inputType.includes('number') ? 0 : null}
                           onChange={updateValue(props)}
                           onClose={updateValue(props)}
-                          onInput={ (typeof inputCheckboxPlaceholder === 'undefined') ? (e) =>{ setInput(e.target.value) } : null }/>
+                          onInput={ !inputCheckbox ? (e) =>{ setInput(e.target.value) } : null }/>
                       {/* https://developer.mozilla.org/en-US/docs/Web/HTML/Element/input/checkbox;
                           you can toggle a checkbox by clicking on its associated <label> element as well as on the checkbox itself */}
-                      { (typeof inputCheckboxPlaceholder !== 'undefined') ?
+                      {  inputCheckbox ?
                           <label className={`m-0 p-0 border-0 cursor-pointer font-weight-normal`}
                             for={props.title}
                             style={{backgroundColor: `${styles.cciBgColor}`, color: props.component.production.completed? `${styles.cciInfoBlue}` : `${styles.cciHintRed}`}}>
@@ -162,7 +186,7 @@ const UpdateComponentStatus=(props)=>{
                 arrowStyle={{backgroundColor: 'white'}}
                 mouseLeaveDelay={0}
                 mouseEnterDelay={0}
-                contentStyle={{  padding: '0px', border: 'thin solid black' }}>
+                contentStyle={{  padding: '0px' }}>
                 <div className='font-weight-normal text-nowrap m-0 p-1'>
                   {t(`component:${props.title}`)}
                 </div>
@@ -177,6 +201,24 @@ export const UpdateStatus=(props)=>{
   const { t } = useTranslation('component', {useSuspense: false});
   const _className = 'cursor-pointer text-primary border-0 py-0 px-2 fa fw fa-edit' + (props.component.displayLogic.selected ? ' bg-info' : ' ');
 
+  let quantityValue;
+
+  if( typeof props.component.production !== 'undefined' &&
+      props.component.production.shiftQty > 0 )
+    quantityValue = props.component.production.shiftQty
+  else{
+    if (typeof props.component.bom !== 'undefined' )
+    {
+      // root component
+      if( props.component.businessLogic.parentIds.length === 0 )
+        quantityValue = props.component.bom.core.requiredQty;
+      else
+        if( parseInt(props.component.bom.core.requiredQtyPerShift, 10 ) )
+          quantityValue = props.component.bom.core.requiredQtyPerShift;
+    }
+        
+  }
+
   const initializeProduction=()=>{
     let production={};
     production.teamName='';
@@ -185,7 +227,7 @@ export const UpdateStatus=(props)=>{
     production.recordDateTime=null;
     production.completed=false;
     production.shiftQty=0;
-    production.requiredQty=0;
+    production.totalProducedQty=0;
 
     return production;
   }
@@ -227,19 +269,19 @@ export const UpdateStatus=(props)=>{
       }
   }
 
-  // set the producted quantity for the shift
+  // set the produced quantity for the shift
   // also create the record date and time
-  const setShifProductedQty=(qty, component)=>{
+  const setShiftProducedQty=(qty, component)=>{
     if( typeof component.production === 'undefined' )
       component.production = new initializeProduction();
 
     component.production.shiftQty=qty;
-    component.production.requiredQty += qty;
+    component.production.totalProducedQty += qty;
     component.production.recordDateTime=new Date();
-    console.log( 'setShifProductedQty - record time: ' + component.production.recordDateTime );
+    console.log( 'setShiftProducedQty - record time: ' + component.production.recordDateTime );
   }
 
-  //
+  // show this item for project type of item only not for production
   const setProductionCompleted=(isCompleted, component)=>{
     if( typeof component.production === 'undefined' )
       component.production = new initializeProduction();
@@ -315,22 +357,21 @@ export const UpdateStatus=(props)=>{
               <hr className='my-0 bg-info'
                   style={{borderStyle:'insert', borderWidth: '0.08em', borderColor:`${styles.cciInfoBlue}`}}/>
 
-              <UpdateComponentStatus
-                  title='quantity-per-shift'
-                  value={props.component.production.shiftQty}
-                  component={props.component}
-                  handler={setShifProductedQty}
-                  updateComponent={props.updateComponent}/>
-
-              <hr className='my-0 bg-info'
-                  style={{borderStyle:'insert', borderWidth: '0.08em', borderColor:`${styles.cciInfoBlue}`}}/>
-
-              <UpdateComponentStatus
-                  title='production-completed'
-                  value={props.component.production.completed}
-                  component={props.component}
-                  handler={setProductionCompleted}
-                  updateComponent={props.updateComponent}/>
+              { typeof quantityValue !== 'undefined' ? 
+                <UpdateComponentStatus
+                    title='quantity-per-shift'
+                    value={quantityValue}
+                    component={props.component}
+                    handler={setShiftProducedQty}
+                    updateComponent={props.updateComponent}/>
+                  :
+                <UpdateComponentStatus
+                    title='production-completed'
+                    value={props.component.production.completed}
+                    component={props.component}
+                    handler={setProductionCompleted}
+                    updateComponent={props.updateComponent}/>
+              }
             </div>
           )}
           </Popup>

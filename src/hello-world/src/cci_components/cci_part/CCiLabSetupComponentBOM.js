@@ -11,7 +11,8 @@ const SetupComponentBOM=(props)=>{
   let textColorClass = 'text-primary';
   let inputType='text';
   let isRequired=false;
-  let tooltipOnMode='hover';
+  let tooltipOnMode=['click','hover'];
+  let tooltipPosition='top left';
 
   if( props.value === 'add-part')
   {
@@ -21,7 +22,7 @@ const SetupComponentBOM=(props)=>{
 
   if( props.title.includes('part-name'))
   {
-    tooltipOnMode='hover';
+    tooltipPosition='bottom left';
     isRequired = true;
   }
   if( props.title.includes('-date') )
@@ -79,13 +80,14 @@ const SetupComponentBOM=(props)=>{
                       // onMouseLeave={updateComponent(props)}/>
               }
               id={`${props.component.displayLogic.key}-tooltip`}
-              position={'right center'}
+              position={tooltipPosition}
               closeOnDocumentClick
               on={tooltipOnMode}
-              arrow={false}
+              arrow={true}
+              arrowStyle={{backgroundColor: 'white'}}
               mouseLeaveDelay={0}
               mouseEnterDelay={0}
-              contentStyle={{ padding: '0px', border: 'thin solid black' }}
+              contentStyle={{ padding: '0px'}}
               >
               <div className='text-nowrap m-0 px-1'>
                 {t(`component:${props.title}`)}
@@ -97,6 +99,10 @@ const SetupComponentBOM=(props)=>{
 
 
 export const SetupBOM=(props)=>{
+  // using static variable totalRequiredQty inside function
+  if( typeof SetupBOM.totalRequiredQty === 'undefined' )  
+    SetupBOM.totalRequiredQty=0;
+
   const _className = 'cursor-pointer text-primary border-0 py-0 px-2 fa fw fa-edit' + (props.component.displayLogic.selected ? ' bg-info' : ' ');
 
   const initializeBOM=()=>{
@@ -106,23 +112,26 @@ export const SetupBOM=(props)=>{
     return bom;
   }
 
+  // requiredQtyPerShift calculates based on its parent component's unitQty
+  // #todo - need to re-design how to handle it
   const initializeBOMCore=()=>{
      let core={};
-     core.OrderQty='';
      core.partNumber='';
-     core.unitQty='';
+     core.unitQty=0;
      core.unitOfMeasure='';
-     core.Qty='';
+     core.requiredQty= SetupBOM.totalRequiredQty; //required quantity of component/part
      core.startDate='';
      core.completeDate='';
-     core.Scrap='';
+     core.ScrapRate='';
      core.procurementType='';
      core.warehouse='';
      core.workshop='';
      core.leadTime='';
-     core.rejectRate='';
      core.supplier='';
      core.supplierPartNumber='';
+     core.shiftCount=1;         // how many different shifts are needed
+     core.requiredQtyPerShift=0;  // required quantity for per shift per run
+     core.sameShiftRunCount=1;  //same shift runs how many times
      return core;
   }
 
@@ -146,6 +155,8 @@ export const SetupBOM=(props)=>{
   if( typeof props.component.bom === 'undefined' )
     props.component.bom = new initializeBOM();
 
+    props.component.bom.core.requiredQty= SetupBOM.totalRequiredQty;
+
   const setPartName=(partName, component)=>{
     component.businessLogic.name=partName;
     console.log("SetupBOM - setPartName: " + component.businessLogic.name);
@@ -165,14 +176,21 @@ export const SetupBOM=(props)=>{
       component.bom = new initializeBOM();
 
     component.bom.core.unitQty=unitQty;
-
+     
+    // required quantity for per shift per run
+    component.bom.core.requiredQtyPerShift = component.bom.core.requiredQty * unitQty/(component.bom.core.shiftCount * component.bom.core.sameShiftRunCount ) ;
+    console.log( 'setUnitQty: requiredQty='+component.bom.core.requiredQty);
+    console.log( 'setUnitQty: requiredQtyPerShift='+component.bom.core.requiredQtyPerShift);
   }
 
   const setTotalRequiredQty=(qty, component)=>{
     if( typeof component.bom === 'undefined' )
       component.bom = new initializeBOM();
 
-    component.bom.core.Qty=qty;
+    component.bom.core.requiredQty=qty;
+    SetupBOM.totalRequiredQty=qty;
+
+    console.log('setTotalRequiredQty - ' + SetupBOM.totalRequiredQty);
   }
 
   const setUnitOfMeasure=(unitOfMeasure, component)=>{
@@ -245,7 +263,7 @@ export const SetupBOM=(props)=>{
           { props.component.businessLogic.parentIds.length === 0 ?
             <SetupComponentBOM
             title='required-quantity'
-              value={props.component.bom.core.Qty}
+              value={props.component.bom.core.requiredQty}
               component={props.component}
               handler={setTotalRequiredQty}
               updateComponent={props.updateComponent}/>

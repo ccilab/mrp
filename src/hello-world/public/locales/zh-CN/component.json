@@ -1,12 +1,12 @@
 {
     "remaining-time-unit": "天",
     "part-name": "添加零部件名",
-    "part-number": "零部件编号",
+    "part-number": "添加零部件编号",
     "SKU": "SKU码",
     "barcode": "条型码",
-    "unit-quantity": "单位用量",
-    "unit-of-measure": "计量单位",
-    "required-quantity": "总产量",
+    "unit-quantity": "添加单位用量",
+    "unit-of-measure": "添加计量单位",
+    "required-quantity": "添加产品总产量",
     "start-product-date": "生产开始日期",
     "product-complete-date": "生产完成日期",
     "reference-designators": "Reference Designators",
@@ -30,12 +30,12 @@
     "note": "备注",
     "team-name": "添加产生班组名",
     "shift":"添加工作班次",
-    "updated-by-user": "添加记录人姓名",
+    "updated-by-user": "添加记录人姓名:",
     "given-user-name": "名",
     "family-user-name": "姓",
     "quantity-per-shift": "该工作班次产生/使用的件数",
     "shift-product-record-date-time": "记录日期和时间 ",
     "production-completed": "如果完成了全部任务，请单击“复选框”",
-    "production-completed-description": "全部任务已完成!",
-    "check-if-production-completed-description": "全部任务完成了吗?"
+    "production-completed-description": "这个子项目已完成!",
+    "check-if-production-completed-description": "这个子项目完成了吗?"
 }
