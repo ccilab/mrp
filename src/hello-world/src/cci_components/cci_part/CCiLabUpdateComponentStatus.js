@@ -8,7 +8,6 @@ import styles from "./../../dist/css/ccilab-component-list.css"
 const UpdateComponentStatus=(props)=>{
   const { t, i18n } = useTranslation(['component','commands'], {useSuspense: false});
   let inputValue = props.value;
-  let actualValue=0;
   let inputClassName = 'text-primary m-0 p-1 cursor-pointer border-0';
   let inputPlaceholder=t(`component:${props.title}`);
   let inputStyle={'backgroundColor': `${styles.cciBgColor}`};

@@ -11,6 +11,8 @@
     "product-complete-date": "Production completes date",
     "reference-designators": "Reference Designators",
     "procurement-type": "Procurement Type",
+    "in-house": "In house production",
+    "purchase" : "External Purchase",
     "supplier": "Supplier",
     "supplier-part-number": "Supplier Part Number",
     "order-quantity": "Order Quantity",

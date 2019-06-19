@@ -8,12 +8,14 @@ import styles from "./../../dist/css/ccilab-component-list.css"
 const SetupComponentBOM=(props)=>{
   const { t } = useTranslation(['component','commands'], {useSuspense: false});
   let inputValue = props.value;
-  let textColorClass = 'text-primary';
+  let inputClassName = 'text-primary m-0 p-0 border-0 cursor-pointer';
+  let inputStyle={'backgroundColor': `${styles.cciBgColor}`};
   let inputType='text';
   let isRequired=false;
   let tooltipOnMode=['click','hover'];
   let tooltipPosition='top left';
   let inputName=props.title;
+  let inputProcurementType = props.title.includes('procurement-type') ? true : false;
 
   if( props.value === 'add-part')
   {
@@ -50,8 +52,10 @@ const SetupComponentBOM=(props)=>{
 
         console.log("SetupComponentBOM - updateValue: " + e.target.value);
         props.handler(e.target.value, props.component);
-        updateComponent(props);
-      }
+     
+      }   
+      
+      updateComponent(props);
   }
 
 
@@ -67,15 +71,66 @@ const SetupComponentBOM=(props)=>{
   return (
     <div className='d-flex justify-content-between'
          style={{backgroundColor: `${styles.cciBgColor}`}}>
-        {/* <label className='m-0 p-0'>{t(`${props.title}`)}: </label> */}
-        <Popup
+       { inputProcurementType ?
+          <Popup
+            trigger={
+              <div class='d-flex flex-column m-0 border-0'>
+                <div>
+                  <input className={`${inputClassName}`}
+                        id={'procurement-type-1'}
+                        type={'radio'}
+                        name={'procurement-type'}
+                        style={inputStyle}
+                        value={'InHouse'}
+                        defaultChecked ={ inputValue.includes('InHouse') ? true : false}
+                        onChange={updateValue(props)}
+                        onClose={updateValue(props)}/>
+                  <label className={'m-0 p-0 border-0 cursor-pointer'}
+                    for={'procurement-type-1'}
+                    style={{backgroundColor: `${styles.cciBgColor}`, color: inputValue.includes('InHouse') ? `${styles.cciInfoBlue}` : `${styles.cciHintRed}`}}>
+                     {t(`component:in-house`)} 
+                    </label>
+                </div>
+                <div>
+                  <input  className={`${inputClassName}`}
+                          id={'procurement-type-2'}
+                          type={'radio'}
+                          name={'procurement-type'}
+                          style={inputStyle}
+                          value={'Purchase'}
+                          defaultChecked ={ inputValue.includes('Purchase') ? true : false}
+                          onChange={updateValue(props)}
+                          onClose={updateValue(props)}/>
+                   <label className={'m-0 p-0 border-0 cursor-pointer'}
+                    for={'procurement-type-2'}
+                    style={{backgroundColor: `${styles.cciBgColor}`, color: inputValue.includes('Purchase') ? `${styles.cciInfoBlue}` : `${styles.cciHintRed}`}}>
+                     {t('component:purchase') }
+                    </label>
+                </div>
+              </div>
+            }
+            id={`${props.component.displayLogic.key}-tooltip`}
+            position={tooltipPosition}
+            closeOnDocumentClick
+            on={tooltipOnMode}
+            arrow={true}
+            arrowStyle={{backgroundColor: 'white'}}
+            mouseLeaveDelay={0}
+            mouseEnterDelay={0}
+            contentStyle={{  padding: '0px' }}>
+            <div className='text-nowrap m-0 p-1'>
+              {t(`component:${props.title}`)}
+            </div>
+        </Popup>
+          :
+          <Popup
               trigger={
-                <input className={`${textColorClass} m-0 p-0 border-0 cursor-default`}
+                <input className={`${inputClassName}`}
                       key={inputName}
                       id={inputName}
                       type={`${inputType}`}
                       required={isRequired}
-                      style={{backgroundColor: `${styles.cciBgColor}`}}
+                      style={inputStyle}
                       placeholder={t(`component:${props.title}`)}
                       name={inputName}
                       value={input}
@@ -98,7 +153,9 @@ const SetupComponentBOM=(props)=>{
               <div className='text-nowrap m-0 px-1'>
                 {t(`component:${props.title}`)}
               </div>
-              </Popup>
+          </Popup>
+       }
+       
     </div>
   );
 }
@@ -129,7 +186,7 @@ export const SetupBOM=(props)=>{
      core.startDate='';
      core.completeDate='';
      core.ScrapRate='';
-     core.procurementType='';
+     core.procurementType='';  //'InHouse'(to produce production order), 'Purchase'(to produce purchase order)
      core.warehouse='';
      core.workshop='';
      core.leadTime='';
@@ -204,6 +261,13 @@ export const SetupBOM=(props)=>{
       component.bom = new initializeBOM();
 
     component.bom.core.unitOfMeasure=unitOfMeasure;
+  }
+
+  const setProcurementType=(procurementType, component)=>{
+    if( typeof component.bom === 'undefined' )
+      component.bom = new initializeBOM();
+
+    component.bom.core.procurementType = procurementType;
   }
 
   const setStartDate=(startDate, component)=>{
@@ -282,7 +346,7 @@ export const SetupBOM=(props)=>{
               updateComponent={props.updateComponent}/>
           }
 
-        <hr className='my-0 bg-info'
+          <hr className='my-0 bg-info'
               style={{borderStyle:'insert', borderWidth: '0.08em', borderColor:`${styles.cciInfoBlue}`}}/>
 
           <SetupComponentBOM
@@ -292,7 +356,17 @@ export const SetupBOM=(props)=>{
               handler={setUnitOfMeasure}
               updateComponent={props.updateComponent}/>
 
-        <hr className='my-0 bg-info'
+          <hr className='my-0 bg-info'
+              style={{borderStyle:'insert', borderWidth: '0.08em', borderColor:`${styles.cciInfoBlue}`}}/>
+
+          <SetupComponentBOM
+              title='procurement-type'
+              value={props.component.bom.core.procurementType}
+              component={props.component}
+              handler={setProcurementType}
+              updateComponent={props.updateComponent}/>
+
+          <hr className='my-0 bg-info'
               style={{borderStyle:'insert', borderWidth: '0.08em', borderColor:`${styles.cciInfoBlue}`}}/>
 
           <SetupComponentBOM
