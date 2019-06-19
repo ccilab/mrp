@@ -60,9 +60,12 @@ const UpdateComponentStatus=(props)=>{
     inputStyle={'backgroundColor': `${styles.cciBgColor}`, 'height':'1em','width':'1em'};
   }
 
-  if( props.title.includes('quantity-per-shift') )
+  if( props.title.includes('actual-quantity-per-shift') )
   { //shift produced is greater or equal required value, use it as real value
-        inputPlaceholder=inputValue[0];  //required quantity
+        inputPlaceholder=t('component:required-quantity-per-shift') + inputValue[0];  //required quantity
+        if( typeof props.component.bom.core!== 'undefined' && props.component.bom.core.unitOfMeasure!=='')
+          inputPlaceholder += ' ' + props.component.bom.core.unitOfMeasure;
+
         inputValue= inputValue[1] > 0 ? inputValue[1] : ''; //actual produced value
         isRequired = true;
   }
@@ -157,11 +160,12 @@ const UpdateComponentStatus=(props)=>{
                 trigger={
                     <div class='m-0 border-0'>
                       <input className={`${inputClassName}`}
-                          id={props.title}
+                          key={inputName}
+                          id={inputName}
                           type={`${inputType}`}
                           required={isRequired}
                           style={inputStyle}
-                          placeholder={inputPlaceholder}
+                          placeholder={`${inputPlaceholder}`}
                           name={inputName}
                           value={  inputCheckbox ? `${props.title}`: input}
                           defaultChecked = { !inputCheckbox ? null : props.component.production.completed }
@@ -374,7 +378,7 @@ export const UpdateStatus=(props)=>{
 
               { typeof quantityValue !== 'undefined' ?
                 <UpdateComponentStatus
-                    title='quantity-per-shift'
+                    title='actual-quantity-per-shift'
                     value={[quantityValue, producedValue]}
                     component={props.component}
                     handler={setShiftProducedQty}

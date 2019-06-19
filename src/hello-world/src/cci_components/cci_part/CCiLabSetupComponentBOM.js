@@ -13,6 +13,7 @@ const SetupComponentBOM=(props)=>{
   let isRequired=false;
   let tooltipOnMode=['click','hover'];
   let tooltipPosition='top left';
+  let inputName=props.title;
 
   if( props.value === 'add-part')
   {
@@ -70,12 +71,17 @@ const SetupComponentBOM=(props)=>{
         <Popup
               trigger={
                 <input className={`${textColorClass} m-0 p-0 border-0 cursor-default`}
+                      key={inputName}
+                      id={inputName}
                       type={`${inputType}`}
                       required={isRequired}
                       style={{backgroundColor: `${styles.cciBgColor}`}}
                       placeholder={t(`component:${props.title}`)}
+                      name={inputName}
                       value={input}
+                      min = { inputType.includes('number') ? 0 : null}
                       onChange={updateValue(props)}
+                      onClose={updateValue(props)}
                       onInput={(e) => setInput(e.target.value)}/>
                       // onMouseLeave={updateComponent(props)}/>
               }
