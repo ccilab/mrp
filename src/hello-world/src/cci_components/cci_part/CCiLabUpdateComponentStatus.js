@@ -8,15 +8,19 @@ import styles from "./../../dist/css/ccilab-component-list.css"
 const UpdateComponentStatus=(props)=>{
   const { t, i18n } = useTranslation(['component','commands'], {useSuspense: false});
   let inputValue = props.value;
+  let actualValue=0;
   let inputClassName = 'text-primary m-0 p-1 cursor-pointer border-0';
+  let inputPlaceholder=t(`component:${props.title}`);
+  let inputStyle={'backgroundColor': `${styles.cciBgColor}`};
   let inputType='text';
   let isRequired=false;
   let tooltipOnMode=['click','hover'];
-  let inputName=props.title;
-  let inputPlaceholder=t(`component:${props.title}`);
-  let inputCheckbox=false;
-  let inputStyle={'backgroundColor': `${styles.cciBgColor}`};
   let tooltipPosition='top left';
+
+  let inputName=props.title;
+
+  let inputCheckbox= props.title.includes('-completed') ? true:false;
+
   let createUserInput = (props.title === 'updated-by-user') ? true:false;
 
   let name1Name='given-user-name';
@@ -28,7 +32,7 @@ const UpdateComponentStatus=(props)=>{
   let name2InputId='#' + name2Name;
   let name2Value=inputValue.familyName;
   let name2Placeholder=t(`component:${name2Name}`);
-  
+
   if( i18n.language.includes('zh'))
   {
      name1Name='family-user-name';
@@ -53,16 +57,16 @@ const UpdateComponentStatus=(props)=>{
   if( props.title.includes('-completed') )
   {
     inputType='checkbox';
-    inputCheckbox=true;
     inputStyle={'backgroundColor': `${styles.cciBgColor}`, 'height':'1em','width':'1em'};
   }
 
   if( props.title.includes('quantity-per-shift') )
-  {
-    inputPlaceholder=inputValue;
-    // inputValue='';
-    isRequired = true;
+  { //shift produced is greater or equal required value, use it as real value
+        inputPlaceholder=inputValue[0];  //required quantity
+        inputValue= inputValue[1] > 0 ? inputValue[1] : ''; //actual produced value
+        isRequired = true;
   }
+
 
   const [input, setInput] = useState(`${inputValue}`); // '${inputValue}' is the initial state value
 
@@ -159,7 +163,7 @@ const UpdateComponentStatus=(props)=>{
                           style={inputStyle}
                           placeholder={inputPlaceholder}
                           name={inputName}
-                          value={  inputCheckbox ? `${props.title}`: inputValue}
+                          value={  inputCheckbox ? `${props.title}`: input}
                           defaultChecked = { !inputCheckbox ? null : props.component.production.completed }
                           min = { inputType.includes('number') ? 0 : null}
                           onChange={updateValue(props)}
@@ -199,24 +203,35 @@ const UpdateComponentStatus=(props)=>{
 
 export const UpdateStatus=(props)=>{
   const { t } = useTranslation('component', {useSuspense: false});
-  const _className = 'cursor-pointer text-primary border-0 py-0 px-2 fa fw fa-edit' + (props.component.displayLogic.selected ? ' bg-info' : ' ');
 
   let quantityValue;
+  let producedValue=0;
 
   if( typeof props.component.production !== 'undefined' &&
       props.component.production.shiftQty > 0 )
-    quantityValue = props.component.production.shiftQty
+  {
+    producedValue = props.component.production.shiftQty;
+
+    if( props.component.businessLogic.parentIds.length === 0 )
+        quantityValue = props.component.bom.core.requiredQty;
+    else
+        quantityValue = props.component.bom.core.requiredQtyPerShift;
+  }
+
   else{
     if (typeof props.component.bom !== 'undefined' )
     {
       // root component
       if( props.component.businessLogic.parentIds.length === 0 )
-        quantityValue = props.component.bom.core.requiredQty;
+          quantityValue = props.component.bom.core.requiredQty;
       else
-        if( parseInt(props.component.bom.core.requiredQtyPerShift, 10 ) )
-          quantityValue = props.component.bom.core.requiredQtyPerShift;
+      {
+         if( parseInt(props.component.bom.core.requiredQtyPerShift, 10 ) )
+            quantityValue = props.component.bom.core.requiredQtyPerShift;
+      }
+
     }
-        
+
   }
 
   const initializeProduction=()=>{
@@ -357,10 +372,10 @@ export const UpdateStatus=(props)=>{
               <hr className='my-0 bg-info'
                   style={{borderStyle:'insert', borderWidth: '0.08em', borderColor:`${styles.cciInfoBlue}`}}/>
 
-              { typeof quantityValue !== 'undefined' ? 
+              { typeof quantityValue !== 'undefined' ?
                 <UpdateComponentStatus
                     title='quantity-per-shift'
-                    value={quantityValue}
+                    value={[quantityValue, producedValue]}
                     component={props.component}
                     handler={setShiftProducedQty}
                     updateComponent={props.updateComponent}/>
