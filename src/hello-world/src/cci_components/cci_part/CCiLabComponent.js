@@ -86,19 +86,18 @@ const InLineMenu=(props)=>{
         <a id={`${props.displayLogickey}`}
           href={`#${t('move')}`}
           className={'align-self-center nav-link px-1 fa fa-arrows-alt'}
-          onClick={ props.moveStartHandler }/>
+          onClick={ props.moveStartHandler }> </a>
           :
           null
       }
       <a href={`#${t('add')}`}
         className={'align-self-center nav-link px-1 m-0 py-0 fa fa-plus'}
-        onClick={ props.addComponentHandler}
-        />
+        onClick={ props.addComponentHandler}> </a>
       { ( props.isDraggable === 'true') ?
           <a id={`${props.key}`}
             href={`#${t('delete')}`}
             className={'align-self-center nav-link px-1 fa fa-trash-alt'}
-            onClick={props.deleteCompnentHandler}/>
+            onClick={props.deleteComponentHandler}> </a>
           :
           null
       }
@@ -247,11 +246,11 @@ class CCiLabComponent extends Component {
     }
 
     moveStart=(e)=>{
-      let movededComponetId=e.target.id;
-      if (Number.isInteger(parseInt(movededComponetId, 10) ) )
+      let movedComponentId=e.target.id;
+      if (Number.isInteger(parseInt(movedComponentId, 10) ) )
       {
         CCiLabComponent.inlineMenu.cmd = 'move';
-        CCiLabComponent.inlineMenu.itemId = movededComponetId;
+        CCiLabComponent.inlineMenu.itemId = movedComponentId;
         console.log('move select component id: ', CCiLabComponent.inlineMenu.itemId );
       }
     }
@@ -445,7 +444,7 @@ class CCiLabComponent extends Component {
                     <InLineMenu  displayLogickey={this.currentComponent.displayLogic.key}
                                  isDraggable={draggableSetting}
                                  moveStartHandler={ this.moveStart }
-                                 deleteCompnentHandler={ this.deleteCompoent }
+                                 deleteComponentHandler={ this.deleteCompoent }
                                  addComponentHandler={this.addComponent}
                     />
                 </Popup> : null}

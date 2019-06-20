@@ -328,7 +328,7 @@ export const UpdateStatus=(props)=>{
               <a key='show-progress'
               href= {'#submit-progress'}
               className={'px-1 border-0 text-primary p-0 nav-link fa fw fa-edit'}
-              style={{'cursor': 'pointer'}}/>
+              style={{'cursor': 'pointer'}}> </a>
             }
           closeOnDocumentClick
           on={['click', 'focus']}
@@ -350,7 +350,7 @@ export const UpdateStatus=(props)=>{
                     href={`#${props.component.displayLogic.key}`}
                     className='text-danger m-0 py-1 px-1 fas fw fa-times-circle cursor-pointer'
                     style={{backgroundColor: `${styles.cciBgColor}`}}
-                    onClick={close}/>
+                    onClick={close}> </a>
               </div>
               <hr className='my-0 bg-info'
                   style={{borderStyle:'insert', borderWidth: '0.08em', borderColor:`${styles.cciInfoBlue}`}}/>

@@ -34,6 +34,13 @@ const SetupComponentBOM=(props)=>{
     isRequired = true;
   }
 
+  if( props.title.includes('procurement-type'))
+  {
+    inputClassName = 'm-0 p-0 border-0 cursor-pointer';
+    inputStyle={'backgroundColor': `${styles.cciBgColor}`, 'height':'1em','width':'1em'};
+    inputType='radio';
+    isRequired = true;
+  }
 
   if( props.title.includes('-quantity') )
   {
@@ -52,9 +59,9 @@ const SetupComponentBOM=(props)=>{
 
         console.log("SetupComponentBOM - updateValue: " + e.target.value);
         props.handler(e.target.value, props.component);
-     
-      }   
-      
+
+      }
+
       updateComponent(props);
   }
 
@@ -77,33 +84,33 @@ const SetupComponentBOM=(props)=>{
               <div class='d-flex flex-column m-0 border-0'>
                 <div>
                   <input className={`${inputClassName}`}
-                        id={'procurement-type-1'}
-                        type={'radio'}
-                        name={'procurement-type'}
+                        id={`${inputName}-1`}
+                        type={inputType}
+                        name={inputName}
                         style={inputStyle}
                         value={'InHouse'}
                         defaultChecked ={ inputValue.includes('InHouse') ? true : false}
                         onChange={updateValue(props)}
                         onClose={updateValue(props)}/>
-                  <label className={'m-0 p-0 border-0 cursor-pointer'}
-                    for={'procurement-type-1'}
-                    style={{backgroundColor: `${styles.cciBgColor}`, color: inputValue.includes('InHouse') ? `${styles.cciInfoBlue}` : `${styles.cciHintRed}`}}>
-                     {t(`component:in-house`)} 
+                  <label className={`${inputClassName}`}
+                    for={`${inputName}-1`}
+                    style={{'backgroundColor': `${styles.cciBgColor}`, 'color': inputValue.includes('InHouse') ? `${styles.cciInfoBlue}` : `${styles.cciHintRed}`}}>
+                     {t(`component:in-house`)}
                     </label>
                 </div>
                 <div>
                   <input  className={`${inputClassName}`}
-                          id={'procurement-type-2'}
-                          type={'radio'}
-                          name={'procurement-type'}
+                          id={`${inputName}-2`}
+                          type={inputType}
+                          name={inputName}
                           style={inputStyle}
                           value={'Purchase'}
                           defaultChecked ={ inputValue.includes('Purchase') ? true : false}
                           onChange={updateValue(props)}
                           onClose={updateValue(props)}/>
-                   <label className={'m-0 p-0 border-0 cursor-pointer'}
-                    for={'procurement-type-2'}
-                    style={{backgroundColor: `${styles.cciBgColor}`, color: inputValue.includes('Purchase') ? `${styles.cciInfoBlue}` : `${styles.cciHintRed}`}}>
+                   <label className={`${inputClassName}`}
+                    for={`${inputName}-2`}
+                    style={{'backgroundColor': `${styles.cciBgColor}`, 'color': inputValue.includes('Purchase') ? `${styles.cciInfoBlue}` : `${styles.cciHintRed}`}}>
                      {t('component:purchase') }
                     </label>
                 </div>
@@ -155,7 +162,7 @@ const SetupComponentBOM=(props)=>{
               </div>
           </Popup>
        }
-       
+
     </div>
   );
 }
@@ -163,7 +170,7 @@ const SetupComponentBOM=(props)=>{
 
 export const SetupBOM=(props)=>{
   // using static variable totalRequiredQty inside function
-  if( typeof SetupBOM.totalRequiredQty === 'undefined' )  
+  if( typeof SetupBOM.totalRequiredQty === 'undefined' )
     SetupBOM.totalRequiredQty=0;
 
   const _className = 'cursor-pointer text-primary border-0 py-0 px-2 fa fw fa-edit' + (props.component.displayLogic.selected ? ' bg-info' : ' ');
@@ -239,7 +246,7 @@ export const SetupBOM=(props)=>{
       component.bom = new initializeBOM();
 
     component.bom.core.unitQty=unitQty;
-     
+
     // required quantity for per shift per run
     component.bom.core.requiredQtyPerShift = component.bom.core.requiredQty * unitQty/(component.bom.core.shiftCount * component.bom.core.sameShiftRunCount ) ;
     console.log( 'setUnitQty: requiredQty='+component.bom.core.requiredQty);
@@ -315,7 +322,7 @@ export const SetupBOM=(props)=>{
             href={`#${props.component.displayLogic.key}`}
             className='text-danger m-0 py-1 px-1 fas fw fa-times-circle cursor-pointer'
             style={{backgroundColor: `${styles.cciBgColor}`}}
-            onClick={close}/>
+            onClick={close}> </a>
         </div>
         <hr className='my-0 bg-info'
               style={{borderStyle:'insert', borderWidth: '0.08em', borderColor:`${styles.cciInfoBlue}`}}/>
