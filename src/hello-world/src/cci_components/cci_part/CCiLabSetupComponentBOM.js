@@ -16,6 +16,7 @@ const SetupComponentBOM=(props)=>{
   let tooltipPosition='top left';
   let inputName=props.title;
   let inputProcurementType = props.title.includes('procurement-type') ? true : false;
+  let appendPercentage = props.title.includes('-rate')  ? true : false;
 
   if( props.value === 'add-part')
   {
@@ -48,7 +49,42 @@ const SetupComponentBOM=(props)=>{
      isRequired = true;
   }
 
+  if( appendPercentage )
+  {
+    let value =  parseFloat(inputValue);
+    if( isNaN( value ) )
+      inputValue='';
+    else
+      inputValue = value + '(%)';
+  }
+    
+
   const [input, setInput] = useState(`${inputValue}`); // '' is the initial state value
+
+  const filterInputValue=( e )=>{
+      let input=e.target.value;
+      let value;
+      
+      // https://stackoverflow.com/questions/10023845/regex-in-javascript-for-validating-decimal-numbers
+      if( appendPercentage ) 
+      {
+        var regexp = /^\d+(\.\d{1,2})?$/;
+
+        if( regexp.test( input ))
+        {
+            value=parseFloat(input);
+            if( value <= 0.000001 )
+                value = '';
+        }
+        else
+          value=input;
+      }
+      else
+        value=input;
+        
+      setInput(value);
+  };
+
 
   // https://blog.bitsrc.io/understanding-currying-in-javascript-ceb2188c339
   const updateValue=(props)=>(e)=>{
@@ -58,6 +94,11 @@ const SetupComponentBOM=(props)=>{
           e.target.value = 'add-part';
 
         console.log("SetupComponentBOM - updateValue: " + e.target.value);
+
+        // todo: need to update this when lost focus
+        // if( appendPercentage ) 
+        //   setInput( e.target.value + '(%)');
+
         props.handler(e.target.value, props.component);
 
       }
@@ -140,12 +181,11 @@ const SetupComponentBOM=(props)=>{
                       style={inputStyle}
                       placeholder={t(`component:${props.title}`)}
                       name={inputName}
-                      value={input}
+                      value={ input }
                       min = { inputType.includes('number') ? 1 : null}
                       onChange={updateValue(props)}
                       onClose={updateValue(props)}
-                      onInput={(e) => setInput(e.target.value)}/>
-                      // onMouseLeave={updateComponent(props)}/>
+                      onInput={(e)=>{filterInputValue(e)}}/>
               }
               id={`${props.component.displayLogic.key}-tooltip`}
               position={tooltipPosition}
@@ -192,7 +232,7 @@ export const SetupBOM=(props)=>{
      core.requiredQty= SetupBOM.totalRequiredQty; //required quantity of component/part
      core.startDate='';
      core.completeDate='';
-     core.ScrapRate='';
+     core.ScrapRate=0;    // in %, need /100 when uses it 
      core.procurementType='';  //'InHouse'(to produce production order), 'Purchase'(to produce purchase order)
      core.warehouse='';
      core.workshop='';
@@ -266,6 +306,18 @@ export const SetupBOM=(props)=>{
       component.bom = new initializeBOM();
 
     component.bom.core.unitOfMeasure=unitOfMeasure;
+  }
+
+  const setScrapRate=(scrapRate, component)=>{
+    if( typeof component.bom === 'undefined' )
+      component.bom = new initializeBOM();
+
+    let value = parseFloat(scrapRate);
+    if( !isNaN( value ) )
+      component.bom.core.ScrapRate = value;
+    else
+      component.bom.core.ScrapRate = 0;
+    
   }
 
   const setProcurementType=(procurementType, component)=>{
@@ -362,6 +414,16 @@ export const SetupBOM=(props)=>{
               component={props.component}
               handler={setUnitOfMeasure}
               updateComponent={props.updateComponent}/>
+
+          <hr className='my-0 bg-info'
+              style={{borderStyle:'insert', borderWidth: '0.08em', borderColor:`${styles.cciInfoBlue}`}}/>
+
+          <SetupComponentBOM
+            title='scrap-rate'
+            value={props.component.bom.core.ScrapRate > 0 ? props.component.bom.core.ScrapRate :'' }
+            component={props.component}
+            handler={setScrapRate}
+            updateComponent={props.updateComponent}/>
 
           <hr className='my-0 bg-info'
               style={{borderStyle:'insert', borderWidth: '0.08em', borderColor:`${styles.cciInfoBlue}`}}/>
