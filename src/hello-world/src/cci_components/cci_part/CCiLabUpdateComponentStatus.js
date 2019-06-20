@@ -8,7 +8,7 @@ import styles from "./../../dist/css/ccilab-component-list.css"
 const UpdateComponentStatus=(props)=>{
   const { t, i18n } = useTranslation(['component','commands'], {useSuspense: false});
   let inputValue = props.value;
-  let inputClassName = 'text-primary m-0 p-1 cursor-pointer border-0';
+  let inputClassName = 'text-primary m-0 p-0 cursor-pointer border-0';
   let inputPlaceholder=t(`component:${props.title}`);
   let inputStyle={'backgroundColor': `${styles.cciBgColor}`};
   let inputType='text';
@@ -53,7 +53,7 @@ const UpdateComponentStatus=(props)=>{
 
   // https://www.w3schools.com/bootstrap4/bootstrap_forms_input_group.asp
   // type="datetime-local" is not supported in Firefox, Safari
-  if( props.title.includes('-completed') )
+  if( inputCheckbox )
   {
     inputType='checkbox';
     inputStyle={'backgroundColor': `${styles.cciBgColor}`, 'height':'1em','width':'1em'};
@@ -117,7 +117,7 @@ const UpdateComponentStatus=(props)=>{
         { (createUserInput) ?
           <Popup
             trigger={
-              <div class='d-flex flex-column m-0 border-0'>
+              <div className='d-flex flex-column m-0 py-1 border-0'>
                   <input className={`${inputClassName}`}
                          id={name1InputId}
                          type={`${inputType}`}
@@ -149,7 +149,7 @@ const UpdateComponentStatus=(props)=>{
               arrowStyle={{backgroundColor: 'white'}}
               mouseLeaveDelay={0}
               mouseEnterDelay={0}
-              contentStyle={{  padding: '0px' }}>
+              contentStyle={{  padding: '0' }}>
               <div className='font-weight-normal text-nowrap m-0 p-1'>
                 {t(`component:${props.title}`)}
               </div>
@@ -157,7 +157,7 @@ const UpdateComponentStatus=(props)=>{
           :
           <Popup
                 trigger={
-                    <div class='m-0 border-0'>
+                    <div className='d-inline-flex m-0 py-1 border-0'>
                       <input className={`${inputClassName}`}
                           key={inputName}
                           id={inputName}
@@ -175,8 +175,8 @@ const UpdateComponentStatus=(props)=>{
                       {/* https://developer.mozilla.org/en-US/docs/Web/HTML/Element/input/checkbox;
                           you can toggle a checkbox by clicking on its associated <label> element as well as on the checkbox itself */}
                       {  inputCheckbox ?
-                          <label className={`m-0 p-0 border-0 cursor-pointer font-weight-normal`}
-                            for={props.title}
+                          <label className={`m-0 px-1 border-0 cursor-pointer font-weight-normal`}
+                            htmlFor={props.title}
                             style={{backgroundColor: `${styles.cciBgColor}`, color: props.component.production.completed? `${styles.cciInfoBlue}` : `${styles.cciHintRed}`}}>
                             { props.component.production.completed ? t(`component:production-completed-description`) :  t(`component:check-if-production-completed-description`) }
                             </label>

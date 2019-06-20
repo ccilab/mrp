@@ -81,8 +81,8 @@ const SetupComponentBOM=(props)=>{
        { inputProcurementType ?
           <Popup
             trigger={
-              <div class='d-flex flex-column m-0 border-0'>
-                <div>
+              <div className='d-flex flex-column m-0 py-1 border-0'>
+                <div className='d-inline-flex align-items-center m-0 p-0 border-0' >
                   <input className={`${inputClassName}`}
                         id={`${inputName}-1`}
                         type={inputType}
@@ -92,13 +92,13 @@ const SetupComponentBOM=(props)=>{
                         defaultChecked ={ inputValue.includes('InHouse') ? true : false}
                         onChange={updateValue(props)}
                         onClose={updateValue(props)}/>
-                  <label className={`${inputClassName}`}
-                    for={`${inputName}-1`}
+                  <label className={'m-0 px-1 border-0 cursor-pointer'}
+                    htmlFor={`${inputName}-1`}
                     style={{'backgroundColor': `${styles.cciBgColor}`, 'color': inputValue.includes('InHouse') ? `${styles.cciInfoBlue}` : `${styles.cciHintRed}`}}>
                      {t(`component:in-house`)}
                     </label>
                 </div>
-                <div>
+                <div className='d-inline-flex align-items-center m-0 y-0 border-0'>
                   <input  className={`${inputClassName}`}
                           id={`${inputName}-2`}
                           type={inputType}
@@ -108,8 +108,8 @@ const SetupComponentBOM=(props)=>{
                           defaultChecked ={ inputValue.includes('Purchase') ? true : false}
                           onChange={updateValue(props)}
                           onClose={updateValue(props)}/>
-                   <label className={`${inputClassName}`}
-                    for={`${inputName}-2`}
+                   <label className={'m-0 px-1 border-0 cursor-pointer'}
+                    htmlFor={`${inputName}-2`}
                     style={{'backgroundColor': `${styles.cciBgColor}`, 'color': inputValue.includes('Purchase') ? `${styles.cciInfoBlue}` : `${styles.cciHintRed}`}}>
                      {t('component:purchase') }
                     </label>
@@ -141,7 +141,7 @@ const SetupComponentBOM=(props)=>{
                       placeholder={t(`component:${props.title}`)}
                       name={inputName}
                       value={input}
-                      min = { inputType.includes('number') ? 0 : null}
+                      min = { inputType.includes('number') ? 1 : null}
                       onChange={updateValue(props)}
                       onClose={updateValue(props)}
                       onInput={(e) => setInput(e.target.value)}/>
@@ -224,8 +224,6 @@ export const SetupBOM=(props)=>{
 
   if( typeof props.component.bom === 'undefined' )
     props.component.bom = new initializeBOM();
-
-    props.component.bom.core.requiredQty= SetupBOM.totalRequiredQty;
 
   const setPartName=(partName, component)=>{
     component.businessLogic.name=partName;
@@ -340,14 +338,16 @@ export const SetupBOM=(props)=>{
           { props.component.businessLogic.parentIds.length === 0 ?
             <SetupComponentBOM
             title='required-quantity'
-              value={props.component.bom.core.requiredQty}
+              // value='' input will show placeholder text
+              value={props.component.bom.core.requiredQty > 0 ? props.component.bom.core.requiredQty: ''}
               component={props.component}
               handler={setTotalRequiredQty}
               updateComponent={props.updateComponent}/>
             :
             <SetupComponentBOM
               title='unit-quantity'
-              value={props.component.bom.core.unitQty}
+              // value='' input will show placeholder text
+              value={props.component.bom.core.unitQty > 0 ? props.component.bom.core.unitQty : ''}
               component={props.component}
               handler={setUnitQty}
               updateComponent={props.updateComponent}/>
