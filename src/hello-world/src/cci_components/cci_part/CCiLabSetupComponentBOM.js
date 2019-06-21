@@ -73,11 +73,7 @@ const SetupComponentBOM=(props)=>{
         var regexp = /^\d+(\.\d{1,2})?$/;
 
         if( regexp.test( input ))
-        {
             value=parseFloat(input);
-            if( value <= 0.000001 )
-                value = '';
-        }
         else
           value=input;
       }
@@ -193,7 +189,7 @@ const SetupComponentBOM=(props)=>{
                       onChange={updateValue(props)}
                       onClose={updateValue(props)}
                       onInput={(e)=>{filterInputValue(e)}}
-                      onMouseLeave={ appendPercentage ? (e)=>{rateAppendPercentage(e)} : null}/>
+                      onBlur={ appendPercentage ? (e)=>{rateAppendPercentage(e)} : null}/>
               }
               id={`${props.component.displayLogic.key}-tooltip`}
               position={tooltipPosition}
