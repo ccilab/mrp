@@ -18,6 +18,8 @@ const SetupComponentBOM=(props)=>{
   let inputProcurementType = props.title.includes('procurement-type') ? true : false;
   let appendPercentage = props.title.includes('-rate')  ? true : false;
 
+  let rateInput = React.createRef();
+
   if( props.value === 'add-part')
   {
     inputValue = '';
@@ -57,16 +59,16 @@ const SetupComponentBOM=(props)=>{
     else
       inputValue = value + '(%)';
   }
-    
+
 
   const [input, setInput] = useState(`${inputValue}`); // '' is the initial state value
 
   const filterInputValue=( e )=>{
       let input=e.target.value;
       let value;
-      
+
       // https://stackoverflow.com/questions/10023845/regex-in-javascript-for-validating-decimal-numbers
-      if( appendPercentage ) 
+      if( appendPercentage )
       {
         var regexp = /^\d+(\.\d{1,2})?$/;
 
@@ -81,10 +83,13 @@ const SetupComponentBOM=(props)=>{
       }
       else
         value=input;
-        
+
       setInput(value);
   };
 
+  const rateAppendPercentage=(e)=>{
+        setInput(rateInput.current.value + '(%)');
+  }
 
   // https://blog.bitsrc.io/understanding-currying-in-javascript-ceb2188c339
   const updateValue=(props)=>(e)=>{
@@ -96,7 +101,7 @@ const SetupComponentBOM=(props)=>{
         console.log("SetupComponentBOM - updateValue: " + e.target.value);
 
         // todo: need to update this when lost focus
-        // if( appendPercentage ) 
+        // if( appendPercentage )
         //   setInput( e.target.value + '(%)');
 
         props.handler(e.target.value, props.component);
@@ -114,6 +119,8 @@ const SetupComponentBOM=(props)=>{
       props.updateComponent(props.component);
     }
   }
+
+
 
   // https://medium.freecodecamp.org/reactjs-pass-parameters-to-event-handlers-ca1f5c422b9
   return (
@@ -174,7 +181,7 @@ const SetupComponentBOM=(props)=>{
           <Popup
               trigger={
                 <input className={`${inputClassName}`}
-                      key={inputName}
+                      ref={ appendPercentage? rateInput : null }
                       id={inputName}
                       type={`${inputType}`}
                       required={isRequired}
@@ -185,7 +192,8 @@ const SetupComponentBOM=(props)=>{
                       min = { inputType.includes('number') ? 1 : null}
                       onChange={updateValue(props)}
                       onClose={updateValue(props)}
-                      onInput={(e)=>{filterInputValue(e)}}/>
+                      onInput={(e)=>{filterInputValue(e)}}
+                      onMouseLeave={ appendPercentage ? (e)=>{rateAppendPercentage(e)} : null}/>
               }
               id={`${props.component.displayLogic.key}-tooltip`}
               position={tooltipPosition}
@@ -232,7 +240,7 @@ export const SetupBOM=(props)=>{
      core.requiredQty= SetupBOM.totalRequiredQty; //required quantity of component/part
      core.startDate='';
      core.completeDate='';
-     core.ScrapRate=0;    // in %, need /100 when uses it 
+     core.ScrapRate=0;    // in %, need /100 when uses it
      core.procurementType='';  //'InHouse'(to produce production order), 'Purchase'(to produce purchase order)
      core.warehouse='';
      core.workshop='';
@@ -317,7 +325,7 @@ export const SetupBOM=(props)=>{
       component.bom.core.ScrapRate = value;
     else
       component.bom.core.ScrapRate = 0;
-    
+
   }
 
   const setProcurementType=(procurementType, component)=>{
