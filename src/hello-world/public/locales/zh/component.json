@@ -17,7 +17,7 @@
     "supplier-part-number": "Supplier Part Number",
     "order-quantity": "Order Quantity",
     "rejection-rate": "Rejection Rate (%)",
-    "scrap-rate": "Wastage Rate (%)",
+    "scrap-rate": "废品率 (%)",
     "revision": "校订版",
     "phase": "Phase",
     "category": "部件类别",

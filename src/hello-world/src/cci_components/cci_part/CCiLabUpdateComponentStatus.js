@@ -22,6 +22,9 @@ const UpdateComponentStatus=(props)=>{
 
   let createUserInput = (props.title === 'updated-by-user') ? true:false;
 
+  let quantityInputElement = React.createRef();
+  let shiftQuantityInput=false;
+
   let name1Name='given-user-name';
   let name1InputId='#' + name1Name;
   let name1Value=inputValue.givenName;
@@ -61,12 +64,13 @@ const UpdateComponentStatus=(props)=>{
 
   if( props.title.includes('actual-quantity-per-shift') )
   { //shift produced is greater or equal required value, use it as real value
-        inputPlaceholder=t('component:required-quantity-per-shift') + inputValue[0];  //required quantity
-        if( typeof props.component.bom.core!== 'undefined' && props.component.bom.core.unitOfMeasure!=='')
-          inputPlaceholder += ' ' + props.component.bom.core.unitOfMeasure;
+    shiftQuantityInput = true;
+    inputPlaceholder=t('component:required-quantity-per-shift') + inputValue[0];  //required quantity
+    if( typeof props.component.bom.core!== 'undefined' && props.component.bom.core.unitOfMeasure!=='')
+      inputPlaceholder += ' ' + props.component.bom.core.unitOfMeasure;
 
-        inputValue= inputValue[1] > 0 ? inputValue[1] : ''; //actual produced value
-        isRequired = true;
+    inputValue= inputValue[1] > 0 ? inputValue[1] : ''; //actual produced value
+    isRequired = true;
   }
 
 
@@ -107,6 +111,16 @@ const UpdateComponentStatus=(props)=>{
       console.log("UpdateComponentStatus - updateComponent: " + props.component.businessLogic.name);
       props.updateComponent(props.component);
     }
+  }
+
+  const sanitizeNumberInput=(e, props )=>{
+    let value=parseFloat(e.target.value);
+    if( isNaN(value) || value === 0 )
+      value='';
+    else
+      value += ( typeof props.component.bom.core !== 'undefined' ) ? ' ' + props.component.bom.core.unitOfMeasure : null;
+
+    setInput(value);
   }
 
 
@@ -159,7 +173,7 @@ const UpdateComponentStatus=(props)=>{
                 trigger={
                     <div className='d-inline-flex m-0 py-1 border-0'>
                       <input className={`${inputClassName}`}
-                          key={inputName}
+                          ref={ shiftQuantityInput? quantityInputElement : null }
                           id={inputName}
                           type={`${inputType}`}
                           required={isRequired}
@@ -171,7 +185,8 @@ const UpdateComponentStatus=(props)=>{
                           min = { inputType.includes('number') ? 0 : null}
                           onChange={updateValue(props)}
                           onClose={updateValue(props)}
-                          onInput={ !inputCheckbox ? (e) =>{ setInput(e.target.value) } : null }/>
+                          onInput={ !inputCheckbox ? (e) =>{ setInput(e.target.value) } : null }
+                          onBlur={ shiftQuantityInput? (e)=>sanitizeNumberInput(e, props) : null }/>
                       {/* https://developer.mozilla.org/en-US/docs/Web/HTML/Element/input/checkbox;
                           you can toggle a checkbox by clicking on its associated <label> element as well as on the checkbox itself */}
                       {  inputCheckbox ?
@@ -293,8 +308,12 @@ export const UpdateStatus=(props)=>{
     if( typeof component.production === 'undefined' )
       component.production = new initializeProduction();
 
-    component.production.shiftQty=qty;
-    component.production.totalProducedQty += qty;
+    let value = parseFloat( qty);
+    if( isNaN( value ) )
+      value = 0;
+      
+    component.production.shiftQty=value;
+    component.production.totalProducedQty += value;
     component.production.recordDateTime=new Date();
     console.log( 'setShiftProducedQty - record time: ' + component.production.recordDateTime );
   }

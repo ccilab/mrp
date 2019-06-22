@@ -18,7 +18,7 @@ const SetupComponentBOM=(props)=>{
   let inputProcurementType = props.title.includes('procurement-type') ? true : false;
   let appendPercentage = props.title.includes('-rate')  ? true : false;
 
-  let rateInput = React.createRef();
+  let rateInputElement = React.createRef();
 
   if( props.value === 'add-part')
   {
@@ -64,27 +64,19 @@ const SetupComponentBOM=(props)=>{
   const [input, setInput] = useState(`${inputValue}`); // '' is the initial state value
 
   const filterInputValue=( e )=>{
-      let input=e.target.value;
-      let value;
-
       // https://stackoverflow.com/questions/10023845/regex-in-javascript-for-validating-decimal-numbers
-      if( appendPercentage )
-      {
-        var regexp = /^\d+(\.\d{1,2})?$/;
-
-        if( regexp.test( input ))
-            value=parseFloat(input);
-        else
-          value=input;
-      }
-      else
-        value=input;
-
-      setInput(value);
+      // https://regexr.com/ test expression
+      setInput(e.target.value);
   };
 
   const rateAppendPercentage=(e)=>{
-        setInput(rateInput.current.value + '(%)');
+    let value=parseFloat(rateInputElement.current.value);
+    if( isNaN(value) || value === 0 )
+      value='';
+    else
+      value += ' (%)';
+
+    setInput(value);
   }
 
   // https://blog.bitsrc.io/understanding-currying-in-javascript-ceb2188c339
@@ -177,7 +169,7 @@ const SetupComponentBOM=(props)=>{
           <Popup
               trigger={
                 <input className={`${inputClassName}`}
-                      ref={ appendPercentage? rateInput : null }
+                      ref={ appendPercentage? rateInputElement : null }
                       id={inputName}
                       type={`${inputType}`}
                       required={isRequired}
