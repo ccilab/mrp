@@ -40,5 +40,7 @@
     "shift-product-record-date-time": "recorded date and time",
     "production-completed": "Click Checkbox only if this sub-project is completed",
     "production-completed-description": "Sub-project is completed!",
-    "check-if-production-completed-description": "Is this sub-project completed?"
+    "check-if-production-completed-description": "Is this sub-project completed?",
+    "less-produced-by-shift":"Warning: missing ",
+    "excess-consumed-by-shift": "Warning: exceeded  "
 }

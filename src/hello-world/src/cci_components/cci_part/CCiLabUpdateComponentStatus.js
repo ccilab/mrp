@@ -24,6 +24,7 @@ const UpdateComponentStatus=(props)=>{
 
   let quantityInputElement = React.createRef();
   let shiftQuantityInput=false;
+  let requiredQty;
 
   let name1Name='given-user-name';
   let name1InputId='#' + name1Name;
@@ -62,14 +63,32 @@ const UpdateComponentStatus=(props)=>{
     inputStyle={'backgroundColor': `${styles.cciBgColor}`, 'height':'1em','width':'1em'};
   }
 
+  const attachUnitAndWarning=( producedValue )=>{
+    let value;
+    let valueWithUnit = producedValue + ( typeof props.component.bom.core !== 'undefined'  ?  props.component.bom.core.unitOfMeasure : null);
+      let diff= producedValue - parseFloat( requiredQty ); //actual - required
+      if( diff < 0 && 
+          typeof props.component.bom.core !== 'undefined' && 
+          props.component.bom.core.procurementType.includes('InHouse') )
+      {
+        let warningMissBy = '(' +t('component:less-produced-by-shift') + (-1*diff)  + ')';
+        value = valueWithUnit + warningMissBy;
+      }
+      else
+        value = valueWithUnit;
+
+    return value;
+  };
+
   if( props.title.includes('actual-quantity-per-shift') )
   { //shift produced is greater or equal required value, use it as real value
     shiftQuantityInput = true;
+    requiredQty=inputValue[0];
     inputPlaceholder=t('component:required-quantity-per-shift') + inputValue[0];  //required quantity
     if( typeof props.component.bom.core!== 'undefined' && props.component.bom.core.unitOfMeasure!=='')
       inputPlaceholder += ' ' + props.component.bom.core.unitOfMeasure;
 
-    inputValue= inputValue[1] > 0 ? inputValue[1] : ''; //actual produced value
+    inputValue= inputValue[1] > 0 ? attachUnitAndWarning(inputValue[1]) : ''; //actual produced value
     isRequired = true;
   }
 
@@ -113,12 +132,17 @@ const UpdateComponentStatus=(props)=>{
     }
   }
 
+
+
   const sanitizeNumberInput=(e, props )=>{
     let value=parseFloat(e.target.value);
     if( isNaN(value) || value === 0 )
       value='';
     else
-      value += ( typeof props.component.bom.core !== 'undefined' ) ? ' ' + props.component.bom.core.unitOfMeasure : null;
+    { //https://stackoverflow.com/questions/52891158/how-do-i-convert-string-to-number-according-to-locale-javascript
+      // example of how to use toLocaleString(i18n.language)
+      value=attachUnitAndWarning(e.target.value);
+    }
 
     setInput(value);
   }
@@ -231,11 +255,14 @@ export const UpdateStatus=(props)=>{
     producedValue = props.component.production.shiftQty;
 
     if( props.component.businessLogic.parentIds.length === 0 )
-        quantityValue = props.component.bom.core.requiredQty;
+    {
+      quantityValue = props.component.bom.core.requiredQty;
+    }
     else
-        quantityValue = props.component.bom.core.requiredQtyPerShift;
+    {
+       quantityValue = props.component.bom.core.requiredQtyPerShift;
+    }
   }
-
   else{
     if (typeof props.component.bom !== 'undefined' )
     {
@@ -247,10 +274,8 @@ export const UpdateStatus=(props)=>{
          if( parseInt(props.component.bom.core.requiredQtyPerShift, 10 ) )
             quantityValue = props.component.bom.core.requiredQtyPerShift;
       }
-
     }
-
-  }
+  };
 
   const initializeProduction=()=>{
     let production={};
@@ -311,7 +336,7 @@ export const UpdateStatus=(props)=>{
     let value = parseFloat( qty);
     if( isNaN( value ) )
       value = 0;
-      
+
     component.production.shiftQty=value;
     component.production.totalProducedQty += value;
     component.production.recordDateTime=new Date();

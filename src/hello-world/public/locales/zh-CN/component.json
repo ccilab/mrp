@@ -40,5 +40,7 @@
     "shift-product-record-date-time": "记录日期和时间 ",
     "production-completed": "如果完成了全部任务，请单击“复选框”",
     "production-completed-description": "这个子项目已完成!",
-    "check-if-production-completed-description": "这个子项目完成了吗?"
+    "check-if-production-completed-description": "这个子项目完成了吗?",
+    "less-produced-by-shift": "提示: 少生产了 ",
+    "excess-consumed-by-shift": "提示: 多用了 "
 }

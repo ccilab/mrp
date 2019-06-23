@@ -321,6 +321,8 @@ export const SetupBOM=(props)=>{
       component.bom = new initializeBOM();
 
     component.bom.core.procurementType = procurementType;
+
+    console.log( 'setProcurementType : ' + component.bom.core.procurementType );
   }
 
   const setStartDate=(startDate, component)=>{
