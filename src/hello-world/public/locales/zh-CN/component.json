@@ -3,7 +3,7 @@
     "part-name": "添加零部件名",
     "part-number": "添加零部件编号",
     "SKU": "SKU码",
-    "barcode": "条型码",
+    "bar-code": "条型码",
     "unit-quantity": "添加单位用量",
     "unit-of-measure": "添加计量单位",
     "required-quantity": "添加产品总产量",
@@ -42,5 +42,7 @@
     "production-completed-description": "这个子项目已完成!",
     "check-if-production-completed-description": "这个子项目完成了吗?",
     "less-produced-by-shift": "提示: 少生产了 ",
-    "excess-consumed-by-shift": "提示: 多用了 "
+    "excess-consumed-by-shift": "提示: 多用了 ",
+    "warning-missed":"提示: 少生产了!",
+    "warning-exceed": "提示: 用多了!"
 }

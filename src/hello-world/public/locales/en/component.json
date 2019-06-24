@@ -3,7 +3,7 @@
     "part-name": "Add Part Name",
     "part-number": "Part Number",
     "SKU": "SKU code",
-    "barcode": "barcode",
+    "bar-code": "bar-code",
     "unit-quantity": "Quantity per Assembly",
     "unit-of-measure": "Unit of Measure",
     "required-quantity": "Required Quantity",
@@ -41,6 +41,8 @@
     "production-completed": "Click Checkbox only if this sub-project is completed",
     "production-completed-description": "Sub-project is completed!",
     "check-if-production-completed-description": "Is this sub-project completed?",
-    "less-produced-by-shift":"Warning: missing ",
-    "excess-consumed-by-shift": "Warning: exceeded  "
+    "less-produced-by-shift":"Warning: missed by ",
+    "excess-consumed-by-shift": "Warning: exceeded by ",
+    "warning-missed":"Warning: missed",
+    "warning-exceed": "Waring: over used"
 }

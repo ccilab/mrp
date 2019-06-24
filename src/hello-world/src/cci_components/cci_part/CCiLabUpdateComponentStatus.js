@@ -15,6 +15,7 @@ const UpdateComponentStatus=(props)=>{
   let isRequired=false;
   let tooltipOnMode=['click','hover'];
   let tooltipPosition='top left';
+  let tooltip=t(`component:${props.title}`)
 
   let inputName=props.title;
 
@@ -63,19 +64,40 @@ const UpdateComponentStatus=(props)=>{
     inputStyle={'backgroundColor': `${styles.cciBgColor}`, 'height':'1em','width':'1em'};
   }
 
-  const attachUnitAndWarning=( producedValue )=>{
-    let value;
-    let valueWithUnit = producedValue + ( typeof props.component.bom.core !== 'undefined'  ?  props.component.bom.core.unitOfMeasure : null);
-      let diff= producedValue - parseFloat( requiredQty ); //actual - required
-      if( diff < 0 && 
-          typeof props.component.bom.core !== 'undefined' && 
+  const attachUnitAndWarning=( producedValue, props )=>{
+
+    let value=parseFloat( producedValue );
+    if( isNaN(value) || value === 0 )
+      value='';
+    else
+    {   //https://stackoverflow.com/questions/52891158/how-do-i-convert-string-to-number-according-to-locale-javascript
+        // example of how to use toLocaleString(i18n.language)
+      let valueWithUnit = value + ( typeof props.component.bom.core !== 'undefined' ?  ' '+ props.component.bom.core.unitOfMeasure : '');
+      let diff= value - parseFloat( requiredQty ); //actual - required
+      if( diff < 0 &&
+          typeof props.component.bom.core !== 'undefined' &&
           props.component.bom.core.procurementType.includes('InHouse') )
       {
-        let warningMissBy = '(' +t('component:less-produced-by-shift') + (-1*diff)  + ')';
-        value = valueWithUnit + warningMissBy;
+        let warningMissBy = t('component:less-produced-by-shift') + (-1*diff) + ( typeof props.component.bom.core !== 'undefined' ?  ' '+ props.component.bom.core.unitOfMeasure : '');
+        tooltip = warningMissBy;
+        value = valueWithUnit + '(' + t('component:warning-missed') + ')';
       }
       else
-        value = valueWithUnit;
+      {
+        if( diff > 0 &&
+            typeof props.component.bom.core !== 'undefined' &&
+            props.component.bom.core.procurementType.includes('Purchase') )
+        {
+          let warningMissBy = t('component:excess-consumed-by-shift') + diff + ( typeof props.component.bom.core !== 'undefined' ?  ' '+ props.component.bom.core.unitOfMeasure : '');
+          tooltip = warningMissBy;
+          value = valueWithUnit + '(' + t('component:warning-exceed') + ')';
+        }
+        else
+            value = valueWithUnit;
+      }
+
+
+    }
 
     return value;
   };
@@ -88,7 +110,7 @@ const UpdateComponentStatus=(props)=>{
     if( typeof props.component.bom.core!== 'undefined' && props.component.bom.core.unitOfMeasure!=='')
       inputPlaceholder += ' ' + props.component.bom.core.unitOfMeasure;
 
-    inputValue= inputValue[1] > 0 ? attachUnitAndWarning(inputValue[1]) : ''; //actual produced value
+    inputValue= inputValue[1] > 0 ? attachUnitAndWarning(inputValue[1], props) : ''; //actual produced value
     isRequired = true;
   }
 
@@ -134,16 +156,8 @@ const UpdateComponentStatus=(props)=>{
 
 
 
-  const sanitizeNumberInput=(e, props )=>{
-    let value=parseFloat(e.target.value);
-    if( isNaN(value) || value === 0 )
-      value='';
-    else
-    { //https://stackoverflow.com/questions/52891158/how-do-i-convert-string-to-number-according-to-locale-javascript
-      // example of how to use toLocaleString(i18n.language)
-      value=attachUnitAndWarning(e.target.value);
-    }
-
+  const sanitizeNumberInput=( e, props )=>{
+    let value=attachUnitAndWarning(e.target.value, props);
     setInput(value);
   }
 
@@ -234,7 +248,7 @@ const UpdateComponentStatus=(props)=>{
                 mouseEnterDelay={0}
                 contentStyle={{  padding: '0px' }}>
                 <div className='font-weight-normal text-nowrap m-0 p-1'>
-                  {t(`component:${props.title}`)}
+                  {`${tooltip}`}
                 </div>
           </Popup>
         }
