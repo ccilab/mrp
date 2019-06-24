@@ -13,7 +13,7 @@ const UpdateComponentStatus=(props)=>{
   let inputStyle={'backgroundColor': `${styles.cciBgColor}`};
   let inputType='text';
   let isRequired=false;
-  let tooltipOnMode=['click','hover'];
+  let tooltipOnMode= ['click','hover'];
   let tooltipPosition='top left';
   let tooltip=t(`component:${props.title}`)
 
@@ -65,7 +65,6 @@ const UpdateComponentStatus=(props)=>{
   }
 
   const attachUnitAndWarning=( producedValue, props )=>{
-
     let value=parseFloat( producedValue );
     if( isNaN(value) || value === 0 )
       value='';
@@ -80,7 +79,8 @@ const UpdateComponentStatus=(props)=>{
       {
         let warningMissBy = t('component:less-produced-by-shift') + (-1*diff) + ( typeof props.component.bom.core !== 'undefined' ?  ' '+ props.component.bom.core.unitOfMeasure : '');
         tooltip = warningMissBy;
-        value = valueWithUnit + '(' + t('component:warning-missed') + ')';
+        inputPlaceholder = valueWithUnit + '(' + t('component:warning-missed') + ')';
+        value='';
       }
       else
       {
@@ -90,15 +90,13 @@ const UpdateComponentStatus=(props)=>{
         {
           let warningMissBy = t('component:excess-consumed-by-shift') + diff + ( typeof props.component.bom.core !== 'undefined' ?  ' '+ props.component.bom.core.unitOfMeasure : '');
           tooltip = warningMissBy;
-          value = valueWithUnit + '(' + t('component:warning-exceed') + ')';
+          inputPlaceholder = valueWithUnit + '(' + t('component:warning-exceed') + ')';
+          value = '';
         }
         else
             value = valueWithUnit;
       }
-
-
     }
-
     return value;
   };
 
@@ -112,7 +110,9 @@ const UpdateComponentStatus=(props)=>{
 
     inputValue= inputValue[1] > 0 ? attachUnitAndWarning(inputValue[1], props) : ''; //actual produced value
     isRequired = true;
-  }
+
+    tooltipOnMode= ['hover'];
+  };
 
 
   const [input, setInput] = useState(`${inputValue}`); // '${inputValue}' is the initial state value
@@ -143,7 +143,7 @@ const UpdateComponentStatus=(props)=>{
 
         updateComponent(props);
       }
-  }
+  };
 
 
   const updateComponent=(props)=>{
@@ -159,7 +159,15 @@ const UpdateComponentStatus=(props)=>{
   const sanitizeNumberInput=( e, props )=>{
     let value=attachUnitAndWarning(e.target.value, props);
     setInput(value);
-  }
+  };
+
+  const enterKeyHandler=( e, props )=>{
+    if( e.key ==='Enter')
+    {
+      let value=attachUnitAndWarning(quantityInputElement.current.value, props);
+      setInput(value);
+    }
+  };
 
 
   // https://medium.freecodecamp.org/reactjs-pass-parameters-to-event-handlers-ca1f5c422b9
@@ -224,6 +232,7 @@ const UpdateComponentStatus=(props)=>{
                           onChange={updateValue(props)}
                           onClose={updateValue(props)}
                           onInput={ !inputCheckbox ? (e) =>{ setInput(e.target.value) } : null }
+                          onKeyPress={ shiftQuantityInput? (e)=>enterKeyHandler(e, props) : null }
                           onBlur={ shiftQuantityInput? (e)=>sanitizeNumberInput(e, props) : null }/>
                       {/* https://developer.mozilla.org/en-US/docs/Web/HTML/Element/input/checkbox;
                           you can toggle a checkbox by clicking on its associated <label> element as well as on the checkbox itself */}
@@ -239,6 +248,7 @@ const UpdateComponentStatus=(props)=>{
                   </div>
                 }
                 id={`${props.component.displayLogic.key}-tooltip`}
+                defaultOpen={ shiftQuantityInput? true : false}
                 position={tooltipPosition}
                 closeOnDocumentClick
                 on={tooltipOnMode}
@@ -368,6 +378,7 @@ export const UpdateStatus=(props)=>{
     console.log( 'setProductionCompleted - record time: ' + component.production.recordDateTime );
   }
 
+  let closePopupMenu=false;
 
   return (
       <span
@@ -388,7 +399,7 @@ export const UpdateStatus=(props)=>{
               className={'px-1 border-0 text-primary p-0 nav-link fa fw fa-edit'}
               style={{'cursor': 'pointer'}}> </a>
             }
-          closeOnDocumentClick
+          closeOnDocumentClick={ closePopupMenu? true : false}
           on={['click', 'focus']}
           position={'right top'}
           defaultOpen={false}  //don't show updateComponent menu unless user click the edit icon
@@ -408,7 +419,7 @@ export const UpdateStatus=(props)=>{
                     href={`#${props.component.displayLogic.key}`}
                     className='text-danger m-0 py-1 px-1 fas fw fa-times-circle cursor-pointer'
                     style={{backgroundColor: `${styles.cciBgColor}`}}
-                    onClick={close}> </a>
+                    onClick={ closePopupMenu ? close:null}> </a>
               </div>
               <hr className='my-0 bg-info'
                   style={{borderStyle:'insert', borderWidth: '0.08em', borderColor:`${styles.cciInfoBlue}`}}/>

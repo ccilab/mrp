@@ -11,7 +11,6 @@ const SetupComponentBOM=(props)=>{
   let inputClassName = 'text-primary m-0 p-0 border-0 cursor-pointer';
   let inputStyle={'backgroundColor': `${styles.cciBgColor}`};
   let inputType='text';
-  let isRequired=false;
   let tooltipOnMode=['click','hover'];
   let tooltipPosition='top left';
   let inputName=props.title;
@@ -23,18 +22,16 @@ const SetupComponentBOM=(props)=>{
   if( props.value === 'add-part')
   {
     inputValue = '';
-    isRequired = true;
   }
 
   if( props.title.includes('part-name'))
   {
     tooltipPosition='bottom left';
-    isRequired = true;
   }
+
   if( props.title.includes('-date') )
   {
     inputType='date';
-    isRequired = true;
   }
 
   if( props.title.includes('procurement-type'))
@@ -42,13 +39,11 @@ const SetupComponentBOM=(props)=>{
     inputClassName = 'm-0 p-0 border-0 cursor-pointer';
     inputStyle={'backgroundColor': `${styles.cciBgColor}`, 'height':'1em','width':'1em'};
     inputType='radio';
-    isRequired = true;
   }
 
   if( props.title.includes('-quantity') )
   {
      inputType='number';
-     isRequired = true;
   }
 
   if( appendPercentage )
@@ -69,15 +64,26 @@ const SetupComponentBOM=(props)=>{
       setInput(e.target.value);
   };
 
-  const rateAppendPercentage=(e)=>{
-    let value=parseFloat(rateInputElement.current.value);
+  const rateAppendPercentage=(_value)=>{
+    let value=parseFloat(_value);
     if( isNaN(value) || value === 0 )
       value='';
     else
       value += ' (%)';
 
     setInput(value);
-  }
+  };
+
+  const onBlurHandler=(e)=>{
+    rateAppendPercentage(e.target.value);
+  };
+
+  const enterKeyHandler=( e )=>{
+    if( e.key ==='Enter')
+    {
+      rateAppendPercentage(rateInputElement.current.value);
+    }
+  };
 
   // https://blog.bitsrc.io/understanding-currying-in-javascript-ceb2188c339
   const updateValue=(props)=>(e)=>{
@@ -172,7 +178,6 @@ const SetupComponentBOM=(props)=>{
                       ref={ appendPercentage? rateInputElement : null }
                       id={inputName}
                       type={`${inputType}`}
-                      required={isRequired}
                       style={inputStyle}
                       placeholder={t(`component:${props.title}`)}
                       name={inputName}
@@ -181,7 +186,8 @@ const SetupComponentBOM=(props)=>{
                       onChange={updateValue(props)}
                       onClose={updateValue(props)}
                       onInput={(e)=>{filterInputValue(e)}}
-                      onBlur={ appendPercentage ? (e)=>{rateAppendPercentage(e)} : null}/>
+                      onKeyPress={ appendPercentage? (e)=>enterKeyHandler(e) : null }
+                      onBlur={ appendPercentage ? (e)=>{onBlurHandler(e)} : null}/>
               }
               id={`${props.component.displayLogic.key}-tooltip`}
               position={tooltipPosition}
@@ -210,6 +216,21 @@ export const SetupBOM=(props)=>{
     SetupBOM.totalRequiredQty=0;
 
   const _className = 'cursor-pointer text-primary border-0 py-0 px-2 fa fw fa-edit' + (props.component.displayLogic.selected ? ' bg-info' : ' ');
+
+  let closePopupMenu = false;
+
+  let requiredItemName={ PartName : 0,
+                     TotalRequiredQty: 1,
+                     UnitQty: 2,
+                     ScrapRate: 3,
+                     ProcurementType: 4,
+                     StartDate: 5,
+                     EndDate: 6 };
+  let requiredItems= new Array(requiredItemName.EndDate+1).fill(false);
+
+  const IsClosePopupMenu=()=>{
+    return requiredItems.every(item=>item === true);
+  }
 
   const initializeBOM=()=>{
     let bom={};
@@ -263,6 +284,13 @@ export const SetupBOM=(props)=>{
 
   const setPartName=(partName, component)=>{
     component.businessLogic.name=partName;
+    if( typeof partName === 'string' && 
+      partName !== '' && 
+      partName.length > 0 && 
+      !partName.includes('add-part'))
+      requiredItems[requiredItemName.PartName] = true;
+
+    closePopupMenu = IsClosePopupMenu();
     console.log("SetupBOM - setPartName: " + component.businessLogic.name);
   };
 
@@ -279,7 +307,17 @@ export const SetupBOM=(props)=>{
     if( typeof component.bom === 'undefined' )
       component.bom = new initializeBOM();
 
-    component.bom.core.unitQty=unitQty;
+    let value = parseFloat(unitQty);
+    if( isNaN(value) )
+      value = 0;
+
+    requiredItems[requiredItemName.UnitQty] = true;
+    //simplify the checking logic, if unitQty is configured, 
+    // totalRequiredQty is not needed, set it to true
+    requiredItems[requiredItemName.TotalRequiredQty] = true;
+    component.bom.core.unitQty=value;
+
+    closePopupMenu = IsClosePopupMenu();
 
     // required quantity for per shift per run
     component.bom.core.requiredQtyPerShift = component.bom.core.requiredQty * unitQty/(component.bom.core.shiftCount * component.bom.core.sameShiftRunCount ) ;
@@ -291,8 +329,19 @@ export const SetupBOM=(props)=>{
     if( typeof component.bom === 'undefined' )
       component.bom = new initializeBOM();
 
+    let value = parseFloat(qty);
+    if( isNaN(value) )
+      value = 0;
+
+    requiredItems[requiredItemName.TotalRequiredQty] = true;
+    
+    //simplify the checking logic, if TotalRequiredQty is configured, 
+    // UnitQty is not needed, set it to true
+    requiredItems[requiredItemName.UnitQty] = true;
+
     component.bom.core.requiredQty=qty;
     SetupBOM.totalRequiredQty=qty;
+    closePopupMenu = IsClosePopupMenu();
 
     console.log('setTotalRequiredQty - ' + SetupBOM.totalRequiredQty);
   }
@@ -309,18 +358,28 @@ export const SetupBOM=(props)=>{
       component.bom = new initializeBOM();
 
     let value = parseFloat(scrapRate);
-    if( !isNaN( value ) )
-      component.bom.core.ScrapRate = value;
-    else
+    if( isNaN( value ) )
       component.bom.core.ScrapRate = 0;
 
+    component.bom.core.ScrapRate = value;
+    requiredItems[requiredItemName.ScrapRate] = true;
+    closePopupMenu = IsClosePopupMenu();
   }
 
   const setProcurementType=(procurementType, component)=>{
     if( typeof component.bom === 'undefined' )
       component.bom = new initializeBOM();
 
-    component.bom.core.procurementType = procurementType;
+    if( typeof procurementType === 'string' && 
+        procurementType !== '' && 
+        procurementType.length > 0 && 
+        ( procurementType.includes('InHouse') ||
+          procurementType.includes('Purchase')))
+    {
+      requiredItems[requiredItemName.ProcurementType] = true;
+      component.bom.core.procurementType = procurementType;
+      closePopupMenu = IsClosePopupMenu();
+    }
 
     console.log( 'setProcurementType : ' + component.bom.core.procurementType );
   }
@@ -330,6 +389,8 @@ export const SetupBOM=(props)=>{
       component.bom = new initializeBOM();
 
     component.bom.core.startDate=startDate;
+    requiredItems[requiredItemName.StartDate] = true;
+    closePopupMenu = IsClosePopupMenu();
   }
 
   const setCompleteDate=(completeDate, component)=>{
@@ -337,7 +398,13 @@ export const SetupBOM=(props)=>{
       component.bom = new initializeBOM();
 
     component.bom.core.completeDate=completeDate;
+    requiredItems[requiredItemName.EndDate] = true;
+
+    closePopupMenu = IsClosePopupMenu();
   }
+
+  
+  
   return (
     ( props.component.displayLogic.selected ?
       <Popup
@@ -350,7 +417,7 @@ export const SetupBOM=(props)=>{
             className={`${_className}`}
             style={{'height': `auto`, backgroundColor: `${styles.cciBgColor}`}}/>
         }
-      closeOnDocumentClick
+      closeOnDocumentClick={closePopupMenu ? true:false}
       on={['click', 'focus']}
       position={'right top'}
       defaultOpen={false}  //don't show setupBOM menu unless user click the edit icon
@@ -370,7 +437,7 @@ export const SetupBOM=(props)=>{
             href={`#${props.component.displayLogic.key}`}
             className='text-danger m-0 py-1 px-1 fas fw fa-times-circle cursor-pointer'
             style={{backgroundColor: `${styles.cciBgColor}`}}
-            onClick={close}> </a>
+            onClick={closePopupMenu ? close:null}> </a>
         </div>
         <hr className='my-0 bg-info'
               style={{borderStyle:'insert', borderWidth: '0.08em', borderColor:`${styles.cciInfoBlue}`}}/>
