@@ -228,8 +228,9 @@ export const SetupBOM=(props)=>{
                      EndDate: 6 };
   let requiredItems= new Array(requiredItemName.EndDate+1).fill(false);
 
+   // component.displayLogic.inlineMenuEnabled needs set to true
   const IsClosePopupMenu=()=>{
-    return requiredItems.every(item=>item === true);
+    return requiredItems[requiredItemName.TotalRequiredQty];
   }
 
   const initializeBOM=()=>{
@@ -284,13 +285,13 @@ export const SetupBOM=(props)=>{
 
   const setPartName=(partName, component)=>{
     component.businessLogic.name=partName;
-    if( typeof partName === 'string' && 
-      partName !== '' && 
-      partName.length > 0 && 
+    if( typeof partName === 'string' &&
+      partName !== '' &&
+      partName.length > 0 &&
       !partName.includes('add-part'))
       requiredItems[requiredItemName.PartName] = true;
 
-    closePopupMenu = IsClosePopupMenu();
+    // closePopupMenu = IsClosePopupMenu();
     console.log("SetupBOM - setPartName: " + component.businessLogic.name);
   };
 
@@ -312,12 +313,12 @@ export const SetupBOM=(props)=>{
       value = 0;
 
     requiredItems[requiredItemName.UnitQty] = true;
-    //simplify the checking logic, if unitQty is configured, 
+    //simplify the checking logic, if unitQty is configured,
     // totalRequiredQty is not needed, set it to true
     requiredItems[requiredItemName.TotalRequiredQty] = true;
     component.bom.core.unitQty=value;
 
-    closePopupMenu = IsClosePopupMenu();
+    // closePopupMenu = IsClosePopupMenu();
 
     // required quantity for per shift per run
     component.bom.core.requiredQtyPerShift = component.bom.core.requiredQty * unitQty/(component.bom.core.shiftCount * component.bom.core.sameShiftRunCount ) ;
@@ -334,16 +335,17 @@ export const SetupBOM=(props)=>{
       value = 0;
 
     requiredItems[requiredItemName.TotalRequiredQty] = true;
-    
-    //simplify the checking logic, if TotalRequiredQty is configured, 
+
+    //simplify the checking logic, if TotalRequiredQty is configured,
     // UnitQty is not needed, set it to true
     requiredItems[requiredItemName.UnitQty] = true;
 
     component.bom.core.requiredQty=qty;
     SetupBOM.totalRequiredQty=qty;
-    closePopupMenu = IsClosePopupMenu();
+    // closePopupMenu = IsClosePopupMenu();
 
     console.log('setTotalRequiredQty - ' + SetupBOM.totalRequiredQty);
+    console.log('setTotalRequiredQty - closePopupMenu: ' + closePopupMenu ? 'true':'false');
   }
 
   const setUnitOfMeasure=(unitOfMeasure, component)=>{
@@ -363,22 +365,22 @@ export const SetupBOM=(props)=>{
 
     component.bom.core.ScrapRate = value;
     requiredItems[requiredItemName.ScrapRate] = true;
-    closePopupMenu = IsClosePopupMenu();
+    // closePopupMenu = IsClosePopupMenu();
   }
 
   const setProcurementType=(procurementType, component)=>{
     if( typeof component.bom === 'undefined' )
       component.bom = new initializeBOM();
 
-    if( typeof procurementType === 'string' && 
-        procurementType !== '' && 
-        procurementType.length > 0 && 
+    if( typeof procurementType === 'string' &&
+        procurementType !== '' &&
+        procurementType.length > 0 &&
         ( procurementType.includes('InHouse') ||
           procurementType.includes('Purchase')))
     {
       requiredItems[requiredItemName.ProcurementType] = true;
       component.bom.core.procurementType = procurementType;
-      closePopupMenu = IsClosePopupMenu();
+    //   closePopupMenu = IsClosePopupMenu();
     }
 
     console.log( 'setProcurementType : ' + component.bom.core.procurementType );
@@ -390,7 +392,7 @@ export const SetupBOM=(props)=>{
 
     component.bom.core.startDate=startDate;
     requiredItems[requiredItemName.StartDate] = true;
-    closePopupMenu = IsClosePopupMenu();
+    // closePopupMenu = IsClosePopupMenu();
   }
 
   const setCompleteDate=(completeDate, component)=>{
@@ -400,11 +402,11 @@ export const SetupBOM=(props)=>{
     component.bom.core.completeDate=completeDate;
     requiredItems[requiredItemName.EndDate] = true;
 
-    closePopupMenu = IsClosePopupMenu();
+    // closePopupMenu = IsClosePopupMenu();
   }
 
-  
-  
+
+
   return (
     ( props.component.displayLogic.selected ?
       <Popup
@@ -417,7 +419,7 @@ export const SetupBOM=(props)=>{
             className={`${_className}`}
             style={{'height': `auto`, backgroundColor: `${styles.cciBgColor}`}}/>
         }
-      closeOnDocumentClick={closePopupMenu ? true:false}
+      closeOnDocumentClick={true}
       on={['click', 'focus']}
       position={'right top'}
       defaultOpen={false}  //don't show setupBOM menu unless user click the edit icon
@@ -437,7 +439,7 @@ export const SetupBOM=(props)=>{
             href={`#${props.component.displayLogic.key}`}
             className='text-danger m-0 py-1 px-1 fas fw fa-times-circle cursor-pointer'
             style={{backgroundColor: `${styles.cciBgColor}`}}
-            onClick={closePopupMenu ? close:null}> </a>
+            onClick={ close }> </a>
         </div>
         <hr className='my-0 bg-info'
               style={{borderStyle:'insert', borderWidth: '0.08em', borderColor:`${styles.cciInfoBlue}`}}/>

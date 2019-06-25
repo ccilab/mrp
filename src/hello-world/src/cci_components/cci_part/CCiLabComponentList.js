@@ -101,6 +101,7 @@ const initializeDisplayLogic = (key, canExpend, rectLeft ) =>{
   displayLogic.canExpend = canExpend;
   displayLogic.rectLeft = (typeof rectLeft === "undefined" ) ? 0:rectLeft;
   displayLogic.selected = 0;  // 0, -1, +1
+  displayLogic.inlineMenuEnabled = false;
   return displayLogic;
 };
 
@@ -604,8 +605,8 @@ class CCiLabComponentList extends Component {
       this.updateDimensions( updatedSessionComponents);
     };
 
-    deleteCompoent = ( deletedComponent ) =>{
-      // console.log("CCiLabComponentList - deleteCompoent displayLogic key:" + deletedComponent.displayLogic.key);
+    deleteComponent = ( deletedComponent ) =>{
+      // console.log("CCiLabComponentList - deleteComponent displayLogic key:" + deletedComponent.displayLogic.key);
 
       let currentSessionComponents = this.state.greetings;
 
@@ -928,7 +929,7 @@ class CCiLabComponentList extends Component {
                                           leftOffset={this.componentLeftOffset}
                                           listWidth={this.componentListWidth}
                                           fontSize={this.state.fontSize}
-                                          deleteCompoent={this.deleteCompoent}
+                                          deleteComponent={this.deleteComponent}
                                           addComponent={this.addComponent}
                                           showOrHideChildren={this.showOrHideChildren}
                                           selectedComponentHandler={this.selectedComponentHandler}

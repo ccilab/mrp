@@ -84,18 +84,20 @@ const InLineMenu=(props)=>{
       {/* { ( draggableSetting === 'true') ? <a href='#copy' className={'align-self-center nav-link px-1 fa fa-copy '}/> :null} */}
       { ( props.isDraggable === 'true') ?
         <a id={`${props.displayLogickey}`}
-          href={`#${t('move')}`}
+          href={ props.disable ? null : `#${t('move')}`}
           className={'align-self-center nav-link px-1 fa fa-arrows-alt'}
           onClick={ props.moveStartHandler }> </a>
           :
           null
       }
-      <a href={`#${t('add')}`}
+      
+      <a href={ props.disable ? null : `#${t('add')}`}
         className={'align-self-center nav-link px-1 m-0 py-0 fa fa-plus'}
         onClick={ props.addComponentHandler}> </a>
+
       { ( props.isDraggable === 'true') ?
           <a id={`${props.key}`}
-            href={`#${t('delete')}`}
+            href={ props.disable ? null : `#${t('delete')}`}
             className={'align-self-center nav-link px-1 fa fa-trash-alt'}
             onClick={props.deleteComponentHandler}> </a>
           :
@@ -147,8 +149,8 @@ class CCiLabComponent extends Component {
 
     imgName;
 
-    componentLableHeight;
-    componentLableWidth;
+    componentLabelHeight;
+    componentLabelWidth;
     inlineMenuHeight;
     inlineMenuWidth;
 
@@ -157,7 +159,7 @@ class CCiLabComponent extends Component {
 
     leftOffset;
 
-    permissionEabled = this.props.permissionStatus; // #todo: need to add check later
+    permissionEnabled = this.props.permissionStatus; // #todo: need to add check later
 
     init=(props)=>{
       this.currentComponent = props.component;
@@ -169,22 +171,22 @@ class CCiLabComponent extends Component {
       this.imgName = (this.currentComponent.businessLogic.imgFile.length !==0 ) ? '/images/'+ this.currentComponent.businessLogic.imgFile : '';
 
         // size of component button, rem - 16px is default font size of browser
-      this.componentLableHeight =  (this.parents.length === 0 ) ? 45/this.rootFontSize : (this.children.length !==0) ? 25/this.rootFontSize: 25/this.rootFontSize;
-      this.componentLableWidth = this.componentLableHeight;
+      this.componentLabelHeight =  (this.parents.length === 0 ) ? 45/this.rootFontSize : (this.children.length !==0) ? 25/this.rootFontSize: 25/this.rootFontSize;
+      this.componentLabelWidth = this.componentLabelHeight;
       this.inlineMenuHeight = 25/this.rootFontSize;
       this.inlineMenuWidth = 25/this.rootFontSize;
 
       this.progressStatus = this.currentComponent.businessLogic.status;
       this.progressValue = this.currentComponent.businessLogic.progressPercent;
 
-      this.leftOffset =props.leftOffset  + ( (this.parents.length === 0 ) ? 0: this.componentLableWidth/2 );
+      this.leftOffset =props.leftOffset  + ( (this.parents.length === 0 ) ? 0: this.componentLabelWidth/2 );
     }
 
     positioningComponentInfo=( )=>{
 
-      this.leftOffset=this.props.leftOffset  + ( (this.parents.length === 0 ) ? 0: this.componentLableWidth/2 );
+      this.leftOffset=this.props.leftOffset  + ( (this.parents.length === 0 ) ? 0: this.componentLabelWidth/2 );
     // this.inlineMenuIconLeft = this.leftOffset;
-    //   this.expendableIconLeft = this.inlineMenuIconLeft + this.componentLableWidth/2;
+    //   this.expendableIconLeft = this.inlineMenuIconLeft + this.componentLabelWidth/2;
     //   this.btnImgLeft = this.expendableIconLeft +  5/this.rootFontSize; //rem - to the right of ancher
     //   this.nameLableLeft = this.btnImgLeft/2 + 5/this.rootFontSize; // position si relative to img button in rem
     //   this.statusLabelLeft = getTextRect(this.componentName+':').width/this.rootFontSize;//this.nameLableLeft + getTextRect(this.componentName+':').width/this.rootFontSize + 3.5; // in rem, compnesate padding left for  ~ 4rem
@@ -230,8 +232,8 @@ class CCiLabComponent extends Component {
       }
     }
 
-    deleteCompoent = () => {
-        this.props.deleteCompoent(this.currentComponent);
+    deleteComponent = () => {
+        this.props.deleteComponent(this.currentComponent);
         CCiLabComponent.inlineMenu.itemId='undefined';
         CCiLabComponent.inlineMenu.cmd = 'select';
     };
@@ -367,17 +369,17 @@ class CCiLabComponent extends Component {
         else
         {
             // draggable for elements bellow the very top one, if use has the permission (#todo need to implement the check)inline-menu_sticky_horizontal inline-menu_sticky_horizontal inline-menu_sticky_horizontal
-            Component =  this.currentComponent.displayLogic.selected > 0 ? 'bg-info component_opacity ccilab-component-sticky-top ' + (this.permissionEabled? ' move':' ' ):
-                       this.currentComponent.displayLogic.selected < 0 ? 'bg-info component_opacity ccilab-component-sticky-bottom ' + (this.permissionEabled? ' move':' ' ):' ';
+            Component =  this.currentComponent.displayLogic.selected > 0 ? 'bg-info component_opacity ccilab-component-sticky-top ' + (this.permissionEnabled? ' move':' ' ):
+                       this.currentComponent.displayLogic.selected < 0 ? 'bg-info component_opacity ccilab-component-sticky-bottom ' + (this.permissionEnabled? ' move':' ' ):' ';
 
-            draggableSetting = ( this.permissionEabled && this.currentComponent.displayLogic.selected !== 0 &&  this.parents.length !== 0 )? 'true':'false';
+            draggableSetting = ( this.permissionEnabled && this.currentComponent.displayLogic.selected !== 0 &&  this.parents.length !== 0 )? 'true':'false';
 
             if( this.currentComponent.displayLogic.selected !== 0 )
             {
-              componentBase +=  (this.permissionEabled && this.currentComponent.displayLogic.selected !== 0 && this.props.isSetupBOM )? ' move':' cursor-default';
-              imageClassName += (this.permissionEabled && this.currentComponent.displayLogic.selected !== 0 )? ' move':' cursor-pointer';
-              componentNameClassName += (this.permissionEabled && this.currentComponent.displayLogic.selected !== 0 )? ' move':' cursor-default';
-              statusBadgeIconClassName += (this.permissionEabled && this.currentComponent.displayLogic.selected !== 0 )? ' move':' cursor-default';
+              componentBase +=  (this.permissionEnabled && this.currentComponent.displayLogic.selected !== 0 && this.props.isSetupBOM )? ' move':' cursor-default';
+              imageClassName += (this.permissionEnabled && this.currentComponent.displayLogic.selected !== 0 )? ' move':' cursor-pointer';
+              componentNameClassName += (this.permissionEnabled && this.currentComponent.displayLogic.selected !== 0 )? ' move':' cursor-default';
+              statusBadgeIconClassName += (this.permissionEnabled && this.currentComponent.displayLogic.selected !== 0 )? ' move':' cursor-default';
             }
         }
 
@@ -444,8 +446,9 @@ class CCiLabComponent extends Component {
                     <InLineMenu  displayLogickey={this.currentComponent.displayLogic.key}
                                  isDraggable={draggableSetting}
                                  moveStartHandler={ this.moveStart }
-                                 deleteComponentHandler={ this.deleteCompoent }
+                                 deleteComponentHandler={ this.deleteComponent }
                                  addComponentHandler={this.addComponent}
+                                 disable={this.currentComponent.displayLogic.inlineMenuEnabled}
                     />
                 </Popup> : null}
 
@@ -478,8 +481,8 @@ class CCiLabComponent extends Component {
                     name={this.imgName} //this.imgName
                     component={this.currentComponent}
                     className={imageClassName}
-                    height={this.componentLableHeight}
-                    width={this.componentLableWidth}
+                    height={this.componentLabelHeight}
+                    width={this.componentLabelWidth}
                     isDraggable={draggableSetting}
                     isSetupBOM={this.props.isSetupBOM}
                     dragStartHandler={this.dragStart}
@@ -505,7 +508,7 @@ class CCiLabComponent extends Component {
                     <UpdateStatus
                       component={this.currentComponent}
                       updateComponent={this.props.updateComponentHandler}
-                      permissionStatus={this.permissionEabled}
+                      permissionStatus={this.permissionEnabled}
                       statusClassName={`badge-pill badge-${this.progressStatus} ${statusBadgeIconClassName}`}
                       onClickHandler={ this.componentSelected }
                       progress={this.progressValue}
