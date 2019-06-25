@@ -4,5 +4,7 @@
     "edit" : "编辑",
     "move"  : "移动",
     "select-component": "选择零部件",
-    "upload-image": "添加照片"
+    "upload-image": "添加照片",
+    "add-part": "添加零部件",
+    "bom-setup-uncompleted" : "提示: BOM 设置没完成!" 
 }
