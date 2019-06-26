@@ -1,7 +1,7 @@
 
 import React, { Component } from "react";
 
-// Import a pre-configured insance of i18next
+// Import a pre-configured instance of i18next
 // https://github.com/ccilab/react-i18next/tree/master/example/react
 
 
@@ -125,8 +125,8 @@ const initializeComponents = ( startComponent, existingComponentList, newCompone
   if( typeof existingComponentList !== "undefined")
     existingComponentList.forEach( (existingComponent)=>{ targetComponentList.push( existingComponent ) } );
 
-  // initialize displayLogic items, create unique key value for latest componets from data layer
-  // this guarantees that displayLogic.key is unique, (newly added componet won't show itself until
+  // initialize displayLogic items, create unique key value for latest components from data layer
+  // this guarantees that displayLogic.key is unique, (newly added component won't show itself until
   // user clicks it, except the very top component),
   let displayKeyValue = findMaxDisplayKey(existingComponentList);
 
@@ -141,7 +141,7 @@ const initializeComponents = ( startComponent, existingComponentList, newCompone
           startComponent.displayLogic.childKeyIds.includes( element.displayLogic.key ) === false )
       {
           let idxInsertAt = targetComponentList.findIndex((component)=>{return component.displayLogic.key === startComponentKey});
-          // component without childIs[] is always above componets with childIds[] for display/expending purpose
+          // component without childIs[] is always above components with childIds[] for display/expending purpose
           if( element.businessLogic.childIds.length === 0 )
             targetComponentList.splice( idxInsertAt+1,0,element);
           else
@@ -166,7 +166,7 @@ const populateComponentChildKeyIds = (selectedComponent, cachedComponents )=>{
 
 
 // turn off childKeyIds[] recursively but we don't want to turn off childKeyIds[] unless
-// its direct parent's canExpened = false (the parent is expended already
+// its direct parent's canExpended = false (the parent is expended already
 const hideChildren = (aComponent, aComponents, aShowStatus)=>{
   if( !aComponent.displayLogic.canExpend && aComponent.displayLogic.childKeyIds.length )
   {
@@ -386,8 +386,8 @@ class CCiLabComponentList extends Component {
     positioningListTitle=(rootComponent)=>{
       let rootComponentName = rootComponent.businessLogic.name;
 
-      //#todo: title is from server or user input, not hardcoded here
-      // this name gives approrated width
+      //#todo: title is from server or user input, not hard-coded here
+      // this name gives appropriated width
       let titleRect=getTextRect('部件名:'); //部件名
 
       let componentTitleWidth = titleRect.width/this.state.fontSize;  //in rem
@@ -452,7 +452,7 @@ class CCiLabComponentList extends Component {
       if( rootComponent.businessLogic.childIds.length !== 0 ){
         rootComponent.displayLogic.canExpend = true;
 
-        // populate very top component's displayLogic.childKeyIds[], if it's not incluced yet
+        // populate very top component's displayLogic.childKeyIds[], if it's not included yet
         populateComponentChildKeyIds(rootComponent, currentSessionComponents);
       }
 
@@ -480,11 +480,11 @@ class CCiLabComponentList extends Component {
         let subTitleNameRect =  document.getElementById( 'subTitle-name' ).getBoundingClientRect();
         let subTitleTypeRect =  document.getElementById( 'subTitle-type' ).getBoundingClientRect();
 
-        let subTitlewidth = subTitleNameRect.width  + subTitleTypeRect.width;
-        if( titleNameRect.width > subTitlewidth )
+        let subTitleWidth = subTitleNameRect.width  + subTitleTypeRect.width;
+        if( titleNameRect.width > subTitleWidth )
           width = (this.componentTitleLeft + this.rootComponentNameWidth )* this.state.fontSize + titleNameRect.width;
         else  // title name is much longer the sub title in Chinese
-          width = (this.componentTitleLeft + this.rootComponentNameWidth )* this.state.fontSize + 1.8 * subTitlewidth ;
+          width = (this.componentTitleLeft + this.rootComponentNameWidth )* this.state.fontSize + 1.8 * subTitleWidth ;
       }
       else
         width = this.componentListWidth;
@@ -535,7 +535,7 @@ class CCiLabComponentList extends Component {
 
 
     /**
-     * called after initial render() is called and element is inserted indo DOM
+     * called after initial render() is called and element is inserted into DOM
      * Add event listener to show vertical scroll bar if browser window is shorter
      * than component list rect height
      * */
@@ -573,8 +573,8 @@ class CCiLabComponentList extends Component {
       let newComponent={};
 
       newComponent.businessLogic = new initializeBusinessLogic(parentComponent);
-      let maxBusinessLigicId = findMaxBusinessId(currentSessionComponents);
-      newComponent.businessLogic.id = ++maxBusinessLigicId;
+      let maxBusinessLogicId = findMaxBusinessId(currentSessionComponents);
+      newComponent.businessLogic.id = ++maxBusinessLogicId;
 
       let displayKeyValue = findMaxDisplayKey(currentSessionComponents);
       newComponent.displayLogic = new initializeDisplayLogic( ++displayKeyValue, false, parentComponent.displayLogic.rectLeft )
@@ -619,7 +619,7 @@ class CCiLabComponentList extends Component {
 
       parentComponents.map( (component)=>{return console.log('parent component name of deleted component: ', component.businessLogic.name) } );
 
-      //remove deleted component id and displayLogicKey from prevous parent's businessLogic and displayLogic childId list
+      //remove deleted component id and displayLogicKey from previous parent's businessLogic and displayLogic childId list
       parentComponents.map( (component)=>{
         if( component.businessLogic.childIds.length || component.displayLogic.childKeyIds.length )
         {
@@ -751,7 +751,7 @@ class CCiLabComponentList extends Component {
       }
     }
 
-    // handle componemt move
+    // handle component move
     // - update component list
     // - update component status after move by check against the new parent
     // issue - need to keep highlight is component is show or it's parent should be highlight
@@ -814,7 +814,7 @@ class CCiLabComponentList extends Component {
           return;
         }
 
-        // if targer component's children are hidden, expending all the children first without calling setState to rend the list
+        // if target component's children are hidden, expending all the children first without calling setState to rend the list
         if( targetComponent.displayLogic.canExpend )
         {
            currentSessionComponents = this.showOrHideChildren( targetComponent, true, false);
@@ -828,7 +828,7 @@ class CCiLabComponentList extends Component {
 
         parentComponents.map( (component)=>{return console.log('parent component name of source component: ', component.businessLogic.name) } );
 
-        //remove moved/source component id and displayLogicKey from prevous parent's businessLogic and displayLogic childId list
+        //remove moved/source component id and displayLogicKey from previous parent's businessLogic and displayLogic childId list
         parentComponents.map( (component)=>{
               if( component.businessLogic.childIds.length || component.displayLogic.childKeyIds.length )
               {
@@ -896,7 +896,7 @@ class CCiLabComponentList extends Component {
     }
 
     //need to update showMyself to true after button is clicked to canExpend
-    //need to update showMyself to false after button is clicked to collaps
+    //need to update showMyself to false after button is clicked to collapse
     renderGreetings = () => {
       return ( (typeof this.state !== "undefined") && (typeof this.state.greetings !== "undefined" ) )?
           this.state.greetings.map( (component) => {
@@ -958,7 +958,7 @@ class CCiLabComponentList extends Component {
       if( this.initialized === false )
         return null;
 
-      const droptoSameParentWarningModal = this.state.isDropToSameParentWarning ?
+      const DropToSameParentWarningModal = this.state.isDropToSameParentWarning ?
                   <DropComponentWarningModal
                   title='title'
                   key1='same-child'
@@ -966,7 +966,7 @@ class CCiLabComponentList extends Component {
                   hideDropWarning={this.hideDropToSameParentWarning}/>
                   : null;
 
-      const droptoItselfWarningModal = this.state.isDropToItselfWarning ?
+      const DropToItselfWarningModal = this.state.isDropToItselfWarning ?
                   <DropComponentWarningModal
                     title={'title'}
                     key1='same-component'
@@ -1053,8 +1053,8 @@ class CCiLabComponentList extends Component {
                 onClick={this.showHideComponentList} >
                 <span className={`badge-pill badge-info ${this.slidingComponentListIconClassName}`}></span>
               </a>
-            {droptoSameParentWarningModal }
-            {droptoItselfWarningModal }
+            {DropToSameParentWarningModal }
+            {DropToItselfWarningModal }
         </div>
       );
     };

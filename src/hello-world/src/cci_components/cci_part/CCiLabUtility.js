@@ -3,10 +3,10 @@
 const isElementInViewportHeight = (rect) => {
     return (
         rect.top >= 0 &&
-        rect.bottom <= (window.innerHeight || document.documentElement.clientHeight) 
+        rect.bottom <= (window.innerHeight || document.documentElement.clientHeight)
     );
   }
-  
+
 // check if an element is in viewport
 // eslint-disable-next-line
 const isElementInViewport = (rect) => {
@@ -22,23 +22,23 @@ const isElementInViewport = (rect) => {
 export  const setListHeight = (rect, fondSize) => {
     return window.innerHeight <= 200 ? 150/fondSize+'rem' : isElementInViewportHeight( rect ) ? 'auto':'90vh';
   }
-  
+
 // in vw
 export  const setListWidth = (factor, width) =>{
     let ListWidth;
 
     if( typeof width !== 'undefined')
     {
-        if( window.innerWidth <= width ) 
+        if( window.innerWidth <= width )
         {
             ListWidth = width;
             return (ListWidth * factor).toString() + 'px';
         }
     }
-    else 
+    else
     {
         let osVersion = detectOSVersion();
-       
+
         // on iphone 4S, os is 9.3.5 needs workaround to hide list
         if( osVersion.os === 'iOS' && osVersion.osMajorVersion < 10 )
             ListWidth = window.innerWidth*(window.innerWidth <= 330 ? 0.8 : window.innerWidth <= 600 ? 0.6 : window.innerWidth <= 800 ? 0.50 : 0.4 );
@@ -47,18 +47,18 @@ export  const setListWidth = (factor, width) =>{
         return (ListWidth * factor).toString() + ((osVersion.os === 'iOS' && osVersion.osMajorVersion < 10)? 'px':'vw' );
     }
 }
-  
-  
+
+
   //http://jsfiddle.net/ChristianL/AVyND/
   //  const detectBrowserMajorVersion = () =>{
   //   let browser = navigator.appName;
   //   let majorVersion = parseInt(navigator.appVersion, 10);
   //   return {'browser': browser, 'version': majorVersion};
   // }
-  
+
 export  const detectOSVersion = () =>{
       var unknown = '-';
-  
+
       // screen
       var screenSize = '';
       if (window.screen.width) {
@@ -66,7 +66,7 @@ export  const detectOSVersion = () =>{
           let height = (window.screen.height) ? window.screen.height : '';
           screenSize += '' + width + " x " + height;
       }
-  
+
       // browser
       var nVer = navigator.appVersion;
       var nAgt = navigator.userAgent;
@@ -74,7 +74,7 @@ export  const detectOSVersion = () =>{
       var version = '' + parseFloat(navigator.appVersion);
       var majorVersion = parseInt(navigator.appVersion, 10);
       var nameOffset, verOffset, ix;
-  
+
       // Opera
       if ((verOffset = nAgt.indexOf('Opera')) !== -1) {
           browser = 'Opera';
@@ -133,24 +133,24 @@ export  const detectOSVersion = () =>{
       if ((ix = version.indexOf(';')) !== -1) version = version.substring(0, ix);
       if ((ix = version.indexOf(' ')) !== -1) version = version.substring(0, ix);
       if ((ix = version.indexOf(')')) !== -1) version = version.substring(0, ix);
-  
+
       majorVersion = parseInt('' + version, 10);
       if (isNaN(majorVersion)) {
           version = '' + parseFloat(navigator.appVersion);
           majorVersion = parseInt(navigator.appVersion, 10);
       }
-  
+
       // mobile version
       var mobile = /Mobile|mini|Fennec|Android|iP(ad|od|hone)/.test(nVer);
-  
+
       // cookie
       var cookieEnabled = (navigator.cookieEnabled) ? true : false;
-  
+
       if (typeof navigator.cookieEnabled === 'undefined' && !cookieEnabled) {
-          document.cookie = 'testcookie';
-          cookieEnabled = (document.cookie.indexOf('testcookie') !== -1) ? true : false;
+          document.cookie = 'test-cookie';
+          cookieEnabled = (document.cookie.indexOf('test-cookie') !== -1) ? true : false;
       }
-  
+
       // system
       var os = unknown;
       var clientStrings = [
@@ -188,23 +188,23 @@ export  const detectOSVersion = () =>{
               break;
           }
       }
-  
+
       var osVersion = unknown;
-  
+
       if (/Windows/.test(os)) {
           osVersion = /Windows (.*)/.exec(os)[1];
           os = 'Windows';
       }
-  
+
       switch (os) {
           case 'Mac OS X':
               osVersion = /Mac OS X (10[\\.\\_\\d]+)/.exec(nAgt)[1];
               break;
-  
+
           case 'Android':
               osVersion = /Android ([\\.\\_\\d]+)/.exec(nAgt)[1];
               break;
-  
+
           case 'iOS':
               osVersion = /OS (\d+)_(\d+)_?(\d+)?/.exec(nVer);
               osVersion = osVersion[1] + '.' + osVersion[2] + '.' + (osVersion[3] | 0);
@@ -226,7 +226,7 @@ export  const detectOSVersion = () =>{
       };
       return jscd;
   }
-  
+
 // getTextWidth("hello there!", "bold 12pt arial")
 // return unit CSS px - 96css is 1 inch
 //https://webplatform.github.io/docs/tutorials/understanding-css-units/

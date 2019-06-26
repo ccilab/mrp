@@ -7,7 +7,9 @@ import styles from "./../../dist/css/ccilab-component-list.css"
 
 const SetupComponentBOM=(props)=>{
   const { t } = useTranslation(['component','commands'], {useSuspense: false});
-  let inputValue = props.value;
+
+  let inputValue = (props.value === null)? '': props.value;
+
   let inputClassName = 'text-primary m-0 p-0 border-0 cursor-pointer';
   let inputStyle={'backgroundColor': `${styles.cciBgColor}`};
   let inputType='text';
@@ -211,26 +213,18 @@ const SetupComponentBOM=(props)=>{
 
 
 export const SetupBOM=(props)=>{
-  // using static variable totalRequiredQty inside function
-  if( typeof SetupBOM.totalRequiredQty === 'undefined' )
-    SetupBOM.totalRequiredQty=0;
-
   const _className = 'cursor-pointer text-primary border-0 py-0 px-2 fa fw fa-edit' + (props.component.displayLogic.selected ? ' bg-info' : ' ');
 
-  let closePopupMenu = false;
-
-  let requiredItemName={ PartName : 0,
-                     TotalRequiredQty: 1,
-                     UnitQty: 2,
-                     ScrapRate: 3,
-                     ProcurementType: 4,
-                     StartDate: 5,
-                     EndDate: 6 };
-  let requiredItems= new Array(requiredItemName.EndDate+1).fill(false);
-
    // component.displayLogic.inlineMenuEnabled needs set to true
-  const IsClosePopupMenu=()=>{
-    return requiredItems[requiredItemName.TotalRequiredQty];
+  const IsClosePopupMenu=( component )=>{
+      if( isValidName( component.bom.core.partName) &&
+          isValidName( component.bom.core.partNumber ) &&
+          ( isValidValue( component.bom.core.requiredQty ).isValid ||
+            isValidValue( component.bom.core.unitQty ) )
+      )
+        return true;
+      else
+        return false;
   }
 
   const initializeBOM=()=>{
@@ -244,10 +238,10 @@ export const SetupBOM=(props)=>{
   // #todo - need to re-design how to handle it
   const initializeBOMCore=()=>{
      let core={};
-     core.partNumber='';
-     core.unitQty=0;
-     core.unitOfMeasure='';
-     core.requiredQty= SetupBOM.totalRequiredQty; //required quantity of component/part
+     core.partNumber=null;
+     core.unitQty=null;
+     core.unitOfMeasure=null;
+     core.requiredQty= null; //required quantity of component/part
      core.startDate='';
      core.completeDate='';
      core.ScrapRate=0;    // in %, need /100 when uses it
@@ -283,15 +277,28 @@ export const SetupBOM=(props)=>{
   if( typeof props.component.bom === 'undefined' )
     props.component.bom = new initializeBOM();
 
-  const setPartName=(partName, component)=>{
-    component.businessLogic.name=partName;
-    if( typeof partName === 'string' &&
-      partName !== '' &&
-      partName.length > 0 &&
-      !partName.includes('add-part'))
-      requiredItems[requiredItemName.PartName] = true;
+  const isValidName=( name )=>{
+    return ( typeof name === 'string' &&
+        !name.includes('add-part') &&
+        name !== '' &&
+        name.length > 0 ) ? true : false
+  };
 
-    // closePopupMenu = IsClosePopupMenu();
+  const isValidValue=(valueToCheck)=>{
+
+    let value = parseFloat(valueToCheck);
+    let valid = isNaN( value ) ? false : true;
+
+    let rt={};
+    rt.isValid = valid;
+    rt.value = value;
+    return rt;
+  };
+
+  const setPartName=(partName, component)=>{
+    if( isValidName( partName ))
+        component.businessLogic.name=partName;
+
     console.log("SetupBOM - setPartName: " + component.businessLogic.name);
   };
 
@@ -299,7 +306,8 @@ export const SetupBOM=(props)=>{
     if( typeof component.bom === 'undefined' )
       component.bom = new initializeBOM();
 
-    component.bom.core.partNumber=partNumber;
+     if( isValidName( partNumber ))
+        component.bom.core.partNumber=partNumber;
 
     console.log("SetupBOM - setPartNumber: " + component.bom.core.partNumber);
   };
@@ -308,20 +316,20 @@ export const SetupBOM=(props)=>{
     if( typeof component.bom === 'undefined' )
       component.bom = new initializeBOM();
 
-    let value = parseFloat(unitQty);
-    if( isNaN(value) )
-      value = 0;
+    let {isValid, value} = isValidValue(unitQty);
 
-    requiredItems[requiredItemName.UnitQty] = true;
+    if( !isValid )
+      return;
+
     //simplify the checking logic, if unitQty is configured,
     // totalRequiredQty is not needed, set it to true
-    requiredItems[requiredItemName.TotalRequiredQty] = true;
+
     component.bom.core.unitQty=value;
 
     // closePopupMenu = IsClosePopupMenu();
 
     // required quantity for per shift per run
-    component.bom.core.requiredQtyPerShift = component.bom.core.requiredQty * unitQty/(component.bom.core.shiftCount * component.bom.core.sameShiftRunCount ) ;
+    component.bom.core.requiredQtyPerShift =((component.bom.core.requiredQty * unitQty)/(component.bom.core.shiftCount * component.bom.core.sameShiftRunCount )) * (1 + component.bom.core.ScrapRate/100) ;
     console.log( 'setUnitQty: requiredQty='+component.bom.core.requiredQty);
     console.log( 'setUnitQty: requiredQtyPerShift='+component.bom.core.requiredQtyPerShift);
   }
@@ -330,22 +338,18 @@ export const SetupBOM=(props)=>{
     if( typeof component.bom === 'undefined' )
       component.bom = new initializeBOM();
 
-    let value = parseFloat(qty);
-    if( isNaN(value) )
-      value = 0;
+    let {isValid, value} = isValidValue(qty);
 
-    requiredItems[requiredItemName.TotalRequiredQty] = true;
+    if( !isValid )
+        return;
 
     //simplify the checking logic, if TotalRequiredQty is configured,
     // UnitQty is not needed, set it to true
-    requiredItems[requiredItemName.UnitQty] = true;
 
-    component.bom.core.requiredQty=qty;
-    SetupBOM.totalRequiredQty=qty;
+    component.bom.core.requiredQty=value;
     // closePopupMenu = IsClosePopupMenu();
 
     console.log('setTotalRequiredQty - ' + SetupBOM.totalRequiredQty);
-    console.log('setTotalRequiredQty - closePopupMenu: ' + closePopupMenu ? 'true':'false');
   }
 
   const setUnitOfMeasure=(unitOfMeasure, component)=>{
@@ -359,12 +363,12 @@ export const SetupBOM=(props)=>{
     if( typeof component.bom === 'undefined' )
       component.bom = new initializeBOM();
 
-    let value = parseFloat(scrapRate);
-    if( isNaN( value ) )
-      component.bom.core.ScrapRate = 0;
+    let {isValid, value} = isValidValue(scrapRate);
+
+    if( !isValid )
+       return;
 
     component.bom.core.ScrapRate = value;
-    requiredItems[requiredItemName.ScrapRate] = true;
     // closePopupMenu = IsClosePopupMenu();
   }
 
@@ -372,13 +376,8 @@ export const SetupBOM=(props)=>{
     if( typeof component.bom === 'undefined' )
       component.bom = new initializeBOM();
 
-    if( typeof procurementType === 'string' &&
-        procurementType !== '' &&
-        procurementType.length > 0 &&
-        ( procurementType.includes('InHouse') ||
-          procurementType.includes('Purchase')))
+    if( isValidName(procurementType) )
     {
-      requiredItems[requiredItemName.ProcurementType] = true;
       component.bom.core.procurementType = procurementType;
     //   closePopupMenu = IsClosePopupMenu();
     }
@@ -391,7 +390,6 @@ export const SetupBOM=(props)=>{
       component.bom = new initializeBOM();
 
     component.bom.core.startDate=startDate;
-    requiredItems[requiredItemName.StartDate] = true;
     // closePopupMenu = IsClosePopupMenu();
   }
 
@@ -400,7 +398,6 @@ export const SetupBOM=(props)=>{
       component.bom = new initializeBOM();
 
     component.bom.core.completeDate=completeDate;
-    requiredItems[requiredItemName.EndDate] = true;
 
     // closePopupMenu = IsClosePopupMenu();
   }
@@ -466,7 +463,7 @@ export const SetupBOM=(props)=>{
             <SetupComponentBOM
               title='unit-quantity'
               // value='' input will show placeholder text
-              value={props.component.bom.core.unitQty > 0 ? props.component.bom.core.unitQty : ''}
+              value={props.component.bom.core.unitQty !== null ? props.component.bom.core.unitQty : ''}
               component={props.component}
               handler={setUnitQty}
               updateComponent={props.updateComponent}/>
