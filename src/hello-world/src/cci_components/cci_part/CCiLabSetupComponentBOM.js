@@ -68,10 +68,10 @@ const SetupComponentBOM=(props)=>{
 
   const rateAppendPercentage=(_value)=>{
     let value=parseFloat(_value);
-    if( isNaN(value) || value === 0 )
+    if( isNaN(value) )
       value='';
     else
-      value += ' (%)';
+      value += value ? ' (%)' : '';
 
     setInput(value);
   };
@@ -217,14 +217,22 @@ export const SetupBOM=(props)=>{
 
    // component.displayLogic.inlineMenuEnabled needs set to true
   const IsClosePopupMenu=( component )=>{
-      if( isValidName( component.bom.core.partName) &&
-          isValidName( component.bom.core.partNumber ) &&
+      if( isValidString( component.businessLogic.name) &&
+          isValidString( component.bom.core.partNumber ) &&
           ( isValidValue( component.bom.core.requiredQty ).isValid ||
-            isValidValue( component.bom.core.unitQty ) )
+            isValidValue( component.bom.core.unitQty ).isValid ) &&
+          isValidValue( component.bom.core.scrapRate).isValid &&
+          isValidString( component.bom.core.procurementType) &&
+          isValidString( component.bom.core.startDate) && 
+          isValidString( component.bom.core.completeDate)
       )
-        return true;
+      {
+         component.displayLogic.inlineMenuEnabled = true;
+      }
       else
-        return false;
+      {
+        component.displayLogic.inlineMenuEnabled = false;
+      }
   }
 
   const initializeBOM=()=>{
@@ -240,19 +248,19 @@ export const SetupBOM=(props)=>{
      let core={};
      core.partNumber=null;
      core.unitQty=null;
-     core.unitOfMeasure=null;
+     core.unitOfMeasure=''; // may doesn't have unit
      core.requiredQty= null; //required quantity of component/part
-     core.startDate='';
-     core.completeDate='';
-     core.ScrapRate=0;    // in %, need /100 when uses it
-     core.procurementType='';  //'InHouse'(to produce production order), 'Purchase'(to produce purchase order)
-     core.warehouse='';
-     core.workshop='';
-     core.leadTime='';
-     core.supplier='';
-     core.supplierPartNumber='';
+     core.startDate=null;
+     core.completeDate=null;
+     core.scrapRate=null;    // in %, need /100 when uses it
+     core.procurementType=null;  //'InHouse'(to produce production order), 'Purchase'(to produce purchase order)
+     core.warehouse=null;
+     core.leadTime=null;
+     core.workshop=null;
+     core.supplier=null;
+     core.supplierPartNumber=null;
+     core.requiredQtyPerShift=null;  // required quantity for per shift per run
      core.shiftCount=1;         // how many different shifts are needed
-     core.requiredQtyPerShift=0;  // required quantity for per shift per run
      core.sameShiftRunCount=1;  //same shift runs how many times
      return core;
   }
@@ -277,10 +285,9 @@ export const SetupBOM=(props)=>{
   if( typeof props.component.bom === 'undefined' )
     props.component.bom = new initializeBOM();
 
-  const isValidName=( name )=>{
+  const isValidString=( name )=>{
     return ( typeof name === 'string' &&
         !name.includes('add-part') &&
-        name !== '' &&
         name.length > 0 ) ? true : false
   };
 
@@ -295,10 +302,27 @@ export const SetupBOM=(props)=>{
     return rt;
   };
 
-  const setPartName=(partName, component)=>{
-    if( isValidName( partName ))
-        component.businessLogic.name=partName;
+  const calQuantityPerShift=(component)=>{
+    const bomCore = component.bom.core;
+    if( component.bom.core.requiredQty !== null &&
+      component.bom.core.unitQty !== null &&
+      component.bom.core.scrapRate !== null 
+    )
+    {
+     
+      bomCore.requiredQtyPerShift =((bomCore.requiredQty * bomCore.unitQty)/(bomCore.shiftCount * bomCore.sameShiftRunCount )) * (1 + bomCore.scrapRate/100) ;
+    }
+    else
+      bomCore.requiredQtyPerShift=null;
+  };
 
+  const setPartName=(partName, component)=>{
+    if( isValidString( partName ))
+        component.businessLogic.name=partName;
+    else
+      component.businessLogic.name='';  //reset to initial value to fail IsClosePopupMenu evaluation
+
+    IsClosePopupMenu(component);
     console.log("SetupBOM - setPartName: " + component.businessLogic.name);
   };
 
@@ -306,8 +330,12 @@ export const SetupBOM=(props)=>{
     if( typeof component.bom === 'undefined' )
       component.bom = new initializeBOM();
 
-     if( isValidName( partNumber ))
-        component.bom.core.partNumber=partNumber;
+    if( isValidString( partNumber ))
+      component.bom.core.partNumber=partNumber;
+    else
+      component.businessLogic.name=null;  //reset to initial value to fail IsClosePopupMenu evaluation
+  
+    IsClosePopupMenu(component);
 
     console.log("SetupBOM - setPartNumber: " + component.bom.core.partNumber);
   };
@@ -319,17 +347,14 @@ export const SetupBOM=(props)=>{
     let {isValid, value} = isValidValue(unitQty);
 
     if( !isValid )
-      return;
-
-    //simplify the checking logic, if unitQty is configured,
-    // totalRequiredQty is not needed, set it to true
-
-    component.bom.core.unitQty=value;
-
-    // closePopupMenu = IsClosePopupMenu();
-
+      component.bom.core.unitQty=null;
+    else
+      component.bom.core.unitQty=value;
+    
     // required quantity for per shift per run
-    component.bom.core.requiredQtyPerShift =((component.bom.core.requiredQty * unitQty)/(component.bom.core.shiftCount * component.bom.core.sameShiftRunCount )) * (1 + component.bom.core.ScrapRate/100) ;
+    calQuantityPerShift(component); //reset requiredQtyPerShift to null if component.bom.core.unitQty is null
+    IsClosePopupMenu(component);
+
     console.log( 'setUnitQty: requiredQty='+component.bom.core.requiredQty);
     console.log( 'setUnitQty: requiredQtyPerShift='+component.bom.core.requiredQtyPerShift);
   }
@@ -341,15 +366,14 @@ export const SetupBOM=(props)=>{
     let {isValid, value} = isValidValue(qty);
 
     if( !isValid )
-        return;
+      component.bom.core.requiredQty=null;
+    else
+      component.bom.core.requiredQty=value;
 
-    //simplify the checking logic, if TotalRequiredQty is configured,
-    // UnitQty is not needed, set it to true
+    calQuantityPerShift(component);
+    IsClosePopupMenu(component);
 
-    component.bom.core.requiredQty=value;
-    // closePopupMenu = IsClosePopupMenu();
-
-    console.log('setTotalRequiredQty - ' + SetupBOM.totalRequiredQty);
+    console.log('setTotalRequiredQty - ' + component.bom.core.requiredQty);
   }
 
   const setUnitOfMeasure=(unitOfMeasure, component)=>{
@@ -366,40 +390,51 @@ export const SetupBOM=(props)=>{
     let {isValid, value} = isValidValue(scrapRate);
 
     if( !isValid )
-       return;
+      component.bom.core.scrapRate = null;
+    else
+      component.bom.core.scrapRate = value;
 
-    component.bom.core.ScrapRate = value;
-    // closePopupMenu = IsClosePopupMenu();
+    IsClosePopupMenu(component);
+    console.log('setScrapRate - ' + component.bom.core.scrapRate);
   }
 
   const setProcurementType=(procurementType, component)=>{
     if( typeof component.bom === 'undefined' )
       component.bom = new initializeBOM();
 
-    if( isValidName(procurementType) )
-    {
+    if( isValidString(procurementType) )
       component.bom.core.procurementType = procurementType;
-    //   closePopupMenu = IsClosePopupMenu();
-    }
+    else
+      component.bom.core.procurementType = null;
 
+    IsClosePopupMenu(component);
     console.log( 'setProcurementType : ' + component.bom.core.procurementType );
   }
 
   const setStartDate=(startDate, component)=>{
     if( typeof component.bom === 'undefined' )
       component.bom = new initializeBOM();
+      
+    if( isValidString( startDate ))
+      component.bom.core.startDate=startDate;
+    else
+      component.bom.core.startDate = null;
 
-    component.bom.core.startDate=startDate;
-    // closePopupMenu = IsClosePopupMenu();
+    IsClosePopupMenu(component);
+    console.log( 'setProcurementType : ' + component.bom.core.startDate);
   }
 
   const setCompleteDate=(completeDate, component)=>{
     if( typeof component.bom === 'undefined' )
       component.bom = new initializeBOM();
 
-    component.bom.core.completeDate=completeDate;
+    if( isValidString( completeDate ))
+      component.bom.core.completeDate=completeDate;
+    else
+      component.bom.core.completeDate = null;
 
-    // closePopupMenu = IsClosePopupMenu();
+    IsClosePopupMenu(component);
+    console.log( 'setProcurementType : ' + component.bom.core.completeDate);
   }
 
 
@@ -484,7 +519,7 @@ export const SetupBOM=(props)=>{
 
           <SetupComponentBOM
             title='scrap-rate'
-            value={props.component.bom.core.ScrapRate > 0 ? props.component.bom.core.ScrapRate :'' }
+            value={props.component.bom.core.scrapRate !== null ? props.component.bom.core.scrapRate :'' }
             component={props.component}
             handler={setScrapRate}
             updateComponent={props.updateComponent}/>

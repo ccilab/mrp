@@ -552,7 +552,7 @@ class CCiLabComponentList extends Component {
     //  4 - if the updated component exists - using the same businessLogic id from existing one
     //  5 - if the updated component doesn't exist - create a new businessLogic
     updateComponent =( component )=>{
-      console.log("CCiLabComponentList - updateComponent")
+      console.log("CCiLabComponentList - updateComponent: inline menu enable - " + component.displayLogic.inlineMenuEnabled);
       this.selectedComponentHandler( component );
     }
 

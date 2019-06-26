@@ -449,7 +449,7 @@ class CCiLabComponent extends Component {
                     arrowStyle={{backgroundColor: `${styles.cciBgColor}`}}
   						      contentStyle={{ padding: '0px', border: 'none', backgroundColor: `${styles.cciBgColor}`}}
                     >
-                    { (true? true: this.currentComponent.displayLogic.inlineMenuEnabled)?
+                    { ( !this.currentComponent.displayLogic.inlineMenuEnabled)?
                       <SetupBOMUncompleted />
                       :
                       <InLineMenu  displayLogicKey={this.currentComponent.displayLogic.key}
