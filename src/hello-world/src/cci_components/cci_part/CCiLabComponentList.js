@@ -225,7 +225,7 @@ const ComponentListTitle =(props)=>{
     <span  id='title-name' className={props.titleClassName} style={{'position':'relative', 'left':`${props.titlePositionLeft}rem`, fontSize: '1rem'}}>{t(`${props.title}`)}
 
     { props.setupBOM ?
-       <a key='submit-bom' href='#submit-bom' className='px-1 border-0 text-primary p-0 nav-link fa fa-file-upload'> </a>
+       <i key='submit-bom' className='text-primary p-1 fa fa-file-upload'/>
       :
       null
      }
@@ -234,17 +234,30 @@ const ComponentListTitle =(props)=>{
     {{
        'setup-bom':
          ( !props.setupBOM ?
-          <a  key='show-bom'
-              href={'#submit-bom'}
-              className={'px-1 border-0 text-primary p-0 nav-link fa fa-cog'}
-              style={cursorStyle}
-              onClick={setupBOM}> </a>
+          <Popup
+            trigger={
+              <i  key='show-bom'
+                className={'text-primary p-1 fa fa-cog'}
+                style={cursorStyle}
+                onClick={setupBOM}/> 
+              }
+              closeOnDocumentClick
+              on={'hover'} //['click', 'focus','hover']
+              position={ 'bottom right' }
+              mouseLeaveDelay={0}
+              mouseEnterDelay={0}
+              contentStyle={{ padding: '0px', border: 'none'}}
+              arrow={true}
+              >
+              <div className={' bg-info'}>
+                'setup BOM'
+              </div>
+          </Popup>
           :
-          <a key='show-progress'
-            href= {'#submit-progress'}
-            className={'px-1 border-0 text-primary p-0 nav-link fa fa-chart-line'}
+          <i key='show-progress'
+            className={'text-primary p-1 fa fa-chart-line'}
             style={cursorStyle}
-            onClick={showProgress}> </a>),
+            onClick={showProgress}/> ),
         'update-progress': null,
         'read-only':null
         }[props.permissionStatus]}
@@ -262,7 +275,7 @@ const ComponentListTitle =(props)=>{
       closeOnDocumentClick
       on={'hover'} //['click', 'focus','hover']
       position={ 'right top' }
-      mouseLeaveDelay={100}
+      mouseLeaveDelay={0}
       mouseEnterDelay={0}
       contentStyle={{ padding: '0px', border: 'none', 'fontSize': '0.6em'}}
       arrow={true}

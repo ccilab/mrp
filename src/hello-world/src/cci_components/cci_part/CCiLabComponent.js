@@ -138,6 +138,7 @@ const MenuMoveComponent=(props)=>{
     <Popup
         trigger={
           <i 
+          id={`${props.component.displayLogic.key}`}
           type='icon'
           className={'text-primary cursor-pointer p-1 fw fa fa-arrows-alt'}
           style={{'visibility': `${props.visibility}`}}
