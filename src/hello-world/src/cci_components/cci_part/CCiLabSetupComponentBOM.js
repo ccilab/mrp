@@ -223,7 +223,7 @@ export const SetupBOM=(props)=>{
             isValidValue( component.bom.core.unitQty ).isValid ) &&
           isValidValue( component.bom.core.scrapRate).isValid &&
           isValidString( component.bom.core.procurementType) &&
-          isValidString( component.bom.core.startDate) && 
+          isValidString( component.bom.core.startDate) &&
           isValidString( component.bom.core.completeDate)
       )
       {
@@ -306,10 +306,10 @@ export const SetupBOM=(props)=>{
     const bomCore = component.bom.core;
     if( component.bom.core.requiredQty !== null &&
       component.bom.core.unitQty !== null &&
-      component.bom.core.scrapRate !== null 
+      component.bom.core.scrapRate !== null
     )
     {
-     
+
       bomCore.requiredQtyPerShift =((bomCore.requiredQty * bomCore.unitQty)/(bomCore.shiftCount * bomCore.sameShiftRunCount )) * (1 + bomCore.scrapRate/100) ;
     }
     else
@@ -334,7 +334,7 @@ export const SetupBOM=(props)=>{
       component.bom.core.partNumber=partNumber;
     else
       component.businessLogic.name=null;  //reset to initial value to fail IsClosePopupMenu evaluation
-  
+
     IsClosePopupMenu(component);
 
     console.log("SetupBOM - setPartNumber: " + component.bom.core.partNumber);
@@ -350,7 +350,7 @@ export const SetupBOM=(props)=>{
       component.bom.core.unitQty=null;
     else
       component.bom.core.unitQty=value;
-    
+
     // required quantity for per shift per run
     calQuantityPerShift(component); //reset requiredQtyPerShift to null if component.bom.core.unitQty is null
     IsClosePopupMenu(component);
@@ -414,7 +414,7 @@ export const SetupBOM=(props)=>{
   const setStartDate=(startDate, component)=>{
     if( typeof component.bom === 'undefined' )
       component.bom = new initializeBOM();
-      
+
     if( isValidString( startDate ))
       component.bom.core.startDate=startDate;
     else
@@ -443,13 +443,13 @@ export const SetupBOM=(props)=>{
     ( props.component.displayLogic.selected ?
       <Popup
         trigger={
-          <button
+          <i
             key={`component-${props.component.displayLogic.key}`}
             id={`#component-${props.component.displayLogic.key}`}
-            type="button"
-            // 'bg-info text-primary border-0 py-0 px-2 fa fw fa-edit' : 'text-primary border-0 py-0 px-2 fa fw fa-edit';
+            type="icon"
+            // 'cursor-pointer text-primary border-0 py-0 px-2 fa fw fa-edit' + (props.component.displayLogic.selected ? ' bg-info' : ' ');
             className={`${_className}`}
-            style={{'height': `auto`, backgroundColor: `${styles.cciBgColor}`}}/>
+            style={{backgroundColor: `${styles.cciBgColor}`}}/>
         }
       closeOnDocumentClick={true}
       on={['click', 'focus']}

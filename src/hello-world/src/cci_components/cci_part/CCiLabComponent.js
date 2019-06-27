@@ -18,7 +18,7 @@ const ShowImage=(props)=>{
   };
 
   return (
-    //  {/* no style for top element so the button can host the image, other elements need style to set image position  */}
+    //  {/* no style for top element so the button can host the image, other elements need style to set image position fa fa-plus-circle */}
     <span>
      { ( props.isSetupBOM === true ) ?
         <span>
@@ -36,7 +36,7 @@ const ShowImage=(props)=>{
               trigger={
                 <i id={`${props.displayLogicKey}`}
                   type="icon"
-                  className={`${props.className} text-primary fa fa-plus-circle`}
+                  className={`${props.className} text-primary fa fa-cloud-upload-alt`}
                   style={{'cursor':'pointer'}}
                   draggable={`${props.isDraggable}`}
                   onDragStart={ props.isDraggable === 'true' ? props.dragStartHandler : null}
@@ -75,6 +75,25 @@ const ShowImage=(props)=>{
   );
 }
 
+const MenuAddComponent=(props)=>{
+    const { t } = useTranslation('commands', {useSuspense: false});
+    return (
+        <a href={`#${t('add')}`}
+        type='text'
+        className={'text-primary cursor-pointer fw fa fa-plus'}
+        style={{'visibility': `${props.visibility}`}}
+        onClick={ props.onClickHandler}> </a>
+    );
+};
+
+const MenuMoveComponent=(props)=>{
+
+};
+
+const MenuDeleteComponent=(props)=>{
+
+};
+
 // only single component can have add, delete and move menu
 // parent component only can add component
 const InLineMenu=(props)=>{
@@ -91,10 +110,10 @@ const InLineMenu=(props)=>{
           :
           null
       }
-      
-      <a href={`#${t('add')}`}
+
+      {/* <a href={`#${t('add')}`}
         className={'align-self-center nav-link px-1 m-0 py-0 fa fa-plus'}
-        onClick={ props.addComponentHandler}> </a>
+        onClick={ props.addComponentHandler}> </a> */}
 
       { ( props.isDraggable === 'true') ?
           <a id={`${props.key}`}
@@ -339,7 +358,6 @@ class CCiLabComponent extends Component {
 
         // console.log('CCiLabComponent::render() imgFile: ', this.imgName);
         let componentBase='d-flex cci-component-label_position  align-items-center '; //align-items-center
-        let inlineMenuClassName ='btn rounded-circle align-self-center p-0 bg-primary ';
         let imageClassName = ' ';
         let expendCollapseBadgeIconClassNameBase ='align-self-center nav-link p-0  '; // component-label_sticky_horizontal
         let expendCollapseBadgeIconClassName= 'fa fa-angle-right';
@@ -430,13 +448,12 @@ class CCiLabComponent extends Component {
                 { this.props.isSetupBOM ?
                   <Popup
                     trigger={
-                      <button
-                        type="button"
-                        // 'btn rounded-circle align-self-center p-0 bg-primary ''fontSize':  `0.8em`
-                        className={`${inlineMenuClassName} cursor-pointer fa fw fa-ellipsis-h`}
-                        style={ {'visibility': `${inlineMenuIconVisibility}`,
-                                  'height': `1em`,
-                                  'width': `1em`}}
+                      <MenuAddComponent
+                        type="icon"
+                        // 'btn rounded-circle align-self-center p-0 bg-info ''fontSize':  `0.8em` fa-ellipsis-h
+                        className={'text-primary cursor-pointer fa fw fa-plus-circle'}
+                        style={ {'visibility': `${inlineMenuIconVisibility}`}}
+                        onClickHandler = {this.addComponentHandler}
                       />
                     }
                     id={`${this.currentComponent.displayLogic.key}-inline-menu`}
