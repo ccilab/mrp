@@ -1,10 +1,10 @@
 {
-    "delete" : "删除",
-    "add" : "添加",
+    "delete" : "删除该子件",
+    "add" : "添加新的子件",
     "edit" : "编辑",
-    "move"  : "移动",
+    "move"  : "移动该子件到新位置",
     "select-component": "选择零部件",
     "upload-image": "添加照片",
-    "add-part": "添加零部件",
-    "bom-setup-uncompleted" : "提示: BOM 设置没完成!" 
+    "add-part": "新添加的子件",
+    "bom-setup-uncompleted" : "提示: BOM设置没完成!" 
 }

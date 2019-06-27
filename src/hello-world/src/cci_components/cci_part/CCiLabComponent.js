@@ -36,7 +36,7 @@ const ShowImage=(props)=>{
               trigger={
                 <i id={`${props.displayLogicKey}`}
                   type="icon"
-                  className={`${props.className} text-primary fa fa-cloud-upload-alt`}
+                  className={`${props.className} text-primary fa fa-image`}
                   style={{'cursor':'pointer'}}
                   draggable={`${props.isDraggable}`}
                   onDragStart={ props.isDraggable === 'true' ? props.dragStartHandler : null}
@@ -78,54 +78,86 @@ const ShowImage=(props)=>{
 const MenuAddComponent=(props)=>{
     const { t } = useTranslation('commands', {useSuspense: false});
     return (
-        <a href={`#${t('add')}`}
-        type='text'
-        className={'text-primary cursor-pointer fw fa fa-plus'}
-        style={{'visibility': `${props.visibility}`}}
-        onClick={ props.onClickHandler}> </a>
+      <Popup
+        trigger={
+          <i 
+          type='icon'
+          className={'text-primary cursor-pointer p-1 fw fa fa-plus-circle'}
+          style={{'visibility': `${props.visibility}`}}
+          onClick={ props.component.displayLogic.inlineMenuEnabled ? props.addComponentHandler : null }/>
+        }
+        id={`${props.component.displayLogic.key}-add`}
+        position={'bottom left'}
+        closeOnDocumentClick
+        on={"hover"}
+        mouseLeaveDelay={0}
+        mouseEnterDelay={0}
+        arrow={true}
+        arrowStyle={{backgroundColor: `${styles.cciBgColor}`}}
+        contentStyle={{ padding: '0px', border: 'none', backgroundColor: `${styles.cciBgColor}`}}
+      >
+      { ( !props.component.displayLogic.inlineMenuEnabled)?
+        <SetupBOMUncompleted />
+        :
+        <span className={'text-primary'} >{t('commands:add')}</span>
+      }
+
+    </Popup> 
     );
 };
 
-const MenuMoveComponent=(props)=>{
-
-};
-
 const MenuDeleteComponent=(props)=>{
-
-};
-
-// only single component can have add, delete and move menu
-// parent component only can add component
-const InLineMenu=(props)=>{
   const { t } = useTranslation('commands', {useSuspense: false});
   return (
-    <div className={'d-flex cursor-pointer bg-faded align-items-center'}>
-      {/* copy is not supported for now */}
-      {/* { ( draggableSetting === 'true') ? <a href='#copy' className={'align-self-center nav-link px-1 fa fa-copy '}/> :null} */}
-      { ( props.isDraggable === 'true') ?
-        <a id={`${props.displayLogicKey}`}
-          href={`#${t('move')}`}
-          className={'align-self-center nav-link px-1 fa fa-arrows-alt'}
-          onClick={ props.moveStartHandler }> </a>
-          :
-          null
-      }
-
-      {/* <a href={`#${t('add')}`}
-        className={'align-self-center nav-link px-1 m-0 py-0 fa fa-plus'}
-        onClick={ props.addComponentHandler}> </a> */}
-
-      { ( props.isDraggable === 'true') ?
-          <a id={`${props.key}`}
-            href={`#${t('delete')}`}
-            className={'align-self-center nav-link px-1 fa fa-trash-alt'}
-            onClick={props.deleteComponentHandler}> </a>
-          :
-          null
-      }
-    </div>
+    <Popup
+        trigger={
+          <i 
+          type='icon'
+          className={'text-primary cursor-pointer p-1 fw fa fa-trash-alt'}
+          style={{'visibility': `${props.visibility}`}}
+          onClick={ props.deleteComponentHandler }/>
+        }
+        id={`${props.component.displayLogic.key}-delete`}
+        position={'bottom left'}
+        closeOnDocumentClick
+        on={"hover"}
+        mouseLeaveDelay={0}
+        mouseEnterDelay={0}
+        arrow={true}
+        arrowStyle={{backgroundColor: `${styles.cciBgColor}`}}
+        contentStyle={{ padding: '0px', border: 'none', backgroundColor: `${styles.cciBgColor}`}}
+      >
+        <span className={'text-primary'} >{t('commands:delete')}</span>
+    </Popup> 
   );
-}
+};
+
+const MenuMoveComponent=(props)=>{
+  const { t } = useTranslation('commands', {useSuspense: false});
+  return (
+    <Popup
+        trigger={
+          <i 
+          type='icon'
+          className={'text-primary cursor-pointer p-1 fw fa fa-arrows-alt'}
+          style={{'visibility': `${props.visibility}`}}
+          onClick={ props.moveStartHandler }/>
+        }
+        id={`${props.component.displayLogic.key}-move`}
+        position={'bottom left'}
+        closeOnDocumentClick
+        on={"hover"}
+        mouseLeaveDelay={0}
+        mouseEnterDelay={0}
+        arrow={true}
+        arrowStyle={{backgroundColor: `${styles.cciBgColor}`}}
+        contentStyle={{ padding: '0px', border: 'none', backgroundColor: `${styles.cciBgColor}`}}
+      >
+        <span className={'text-primary'} >{t('commands:move')}</span>
+    </Popup> 
+  );
+};
+
 
 const ComponentName=(props)=>{
   const { t } = useTranslation('commands', {useSuspense: false});
@@ -359,7 +391,7 @@ class CCiLabComponent extends Component {
         // console.log('CCiLabComponent::render() imgFile: ', this.imgName);
         let componentBase='d-flex cci-component-label_position  align-items-center '; //align-items-center
         let imageClassName = ' ';
-        let expendCollapseBadgeIconClassNameBase ='align-self-center nav-link p-0  '; // component-label_sticky_horizontal
+        let expendCollapseBadgeIconClassNameBase ='align-self-center  '; // component-label_sticky_horizontal
         let expendCollapseBadgeIconClassName= 'fa fa-angle-right';
         let componentNameClassName = 'lead align-self-center font-weight-normal text-primary text-truncate nav-link px-2 ';//component-label_sticky_horizontal
 
@@ -417,8 +449,6 @@ class CCiLabComponent extends Component {
 
         let inlineMenuIconVisibility =  ( this.currentComponent.displayLogic.selected !== 0 ) ? 'visible' : 'hidden';
 
-        let inlineMenuPosition = (this.parents.length === 0)? 'bottom left' : 'top left';
-
         // this.componentName = this.props.component.businessLogic.name;
         console.log("CCiLabComponent: - render() - component name: "+this.componentName);
 
@@ -446,55 +476,33 @@ class CCiLabComponent extends Component {
                 {/* a badge to show menu to move/copy/delete/edit component, only sole children component has move and copy option */}
                 {/* https://github.com/yjose/reactjs-popup/blob/master/docs/src/examples/Demo.js */}
                 { this.props.isSetupBOM ?
-                  <Popup
-                    trigger={
-                      <MenuAddComponent
-                        type="icon"
-                        // 'btn rounded-circle align-self-center p-0 bg-info ''fontSize':  `0.8em` fa-ellipsis-h
-                        className={'text-primary cursor-pointer fa fw fa-plus-circle'}
-                        style={ {'visibility': `${inlineMenuIconVisibility}`}}
-                        onClickHandler = {this.addComponentHandler}
-                      />
-                    }
-                    id={`${this.currentComponent.displayLogic.key}-inline-menu`}
-                    position={`${inlineMenuPosition}`}
-                    closeOnDocumentClick
-                    on={"hover"}
-                    mouseLeaveDelay={100}
-                    mouseEnterDelay={0}
-                    arrow={true}
-                    arrowStyle={{backgroundColor: `${styles.cciBgColor}`}}
-  						      contentStyle={{ padding: '0px', border: 'none', backgroundColor: `${styles.cciBgColor}`}}
-                    >
-                    { ( !this.currentComponent.displayLogic.inlineMenuEnabled)?
-                      <SetupBOMUncompleted />
-                      :
-                      <InLineMenu  displayLogicKey={this.currentComponent.displayLogic.key}
-                                 isDraggable={draggableSetting}
-                                 moveStartHandler={ this.moveStart }
-                                 deleteComponentHandler={ this.deleteComponent }
-                                 addComponentHandler={this.addComponent}
-                      />
-                    }
-
-                  </Popup> : null
+                    <MenuAddComponent
+                      component={this.currentComponent}
+                      isDraggable={draggableSetting}
+                      style={ {'visibility': `${inlineMenuIconVisibility}`}}
+                      isDraggable={draggableSetting}
+                      // moveStartHandler={ this.moveStart }
+                      // deleteComponentHandler={ this.deleteComponent }
+                      addComponentHandler={this.addComponent}
+                    />
+                    : 
+                    null
                 }
 
                 {/* show collapse icon 'v' for all expendable components,
                   show expendable icon '>' for those components have children except the top component
                 */}
                 {/* tag's id used to handle drop event */}
-                <a  id={`${this.currentComponent.displayLogic.key}-show-hide`}
-                    href='#expend-collapse-badge'
+                <i  id={`${this.currentComponent.displayLogic.key}-show-hide`}
                     // 'align-self-center nav-link p-0  ' + 'fa fa-angle-right'
-                    className={`${expendCollapseBadgeIconClassNameBase} ${expendCollapseBadgeIconClassName} pl-2`}
+                    className={`${expendCollapseBadgeIconClassNameBase} ${expendCollapseBadgeIconClassName} cursor-pointer pl-2 pr-1`}
                     style={expendableIconStyle}
                     draggable={`${draggableSetting}`}
                     onClick={ this.expending }
                     onDragStart={ draggableSetting === 'true' ? this.dragStart : null}
                     onDragOver={ this.dragOver }
                     onDrop={  this.doDrop }>
-                </a>
+                </i>
 
                 {/* tag's id is used to get component's rect and handle drop event */}
                   <span id={`${this.currentComponent.displayLogic.key}-item`}
@@ -543,10 +551,25 @@ class CCiLabComponent extends Component {
                       remainingTime= {this.currentComponent.businessLogic.remainDays}
                     />
                   :
-                  <SetupBOM
-                    component={this.currentComponent}
-                    updateComponent={this.props.updateComponentHandler}
-                  />
+                  <span>
+                    <SetupBOM
+                      component={this.currentComponent}
+                      updateComponent={this.props.updateComponentHandler}/>
+                      {  ( draggableSetting === 'true') ?
+                        <span>
+                           <MenuMoveComponent
+                            component={this.currentComponent}
+                            moveStartHandler={ this.moveStart }/>
+                          <MenuDeleteComponent
+                            component={this.currentComponent}
+                            deleteComponentHandler={this.deleteComponent}/>
+                        </span>
+                        
+                          :
+                          null
+                      }
+                   
+                  </span>
                 }
                 </div>
             </div>

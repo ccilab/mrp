@@ -1,10 +1,10 @@
 {
-    "delete" : "delete",
-    "add" : "add",
+    "delete" : "delete this component",
+    "add" : "add a new component",
     "edit" : "edit",
-    "move"  : "move",
+    "move"  : "move this component to a different parent",
     "select-component" : "select component",
     "upload-image" : "upload image",
-    "add-part" : "create part",
+    "add-part" : "new part",
     "bom-setup-uncompleted" : "Warning: BOM setup is not completed!"
 }
