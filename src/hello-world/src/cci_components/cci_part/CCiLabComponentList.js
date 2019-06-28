@@ -229,7 +229,7 @@ const ComponentListTitle =(props)=>{
     <span  id='title-name' className={props.titleClassName} style={{'position':'relative', 'left':`${props.titlePositionLeft}rem`, fontSize: '1rem'}}>{t(`${props.title}`)}
 
     { props.setupBOM ?
-       <i key='submit-bom' className='text-primary p-1 fa fa-file-upload'/>
+       <i key='submit-bom' className='text-primary cursor-pointer p-1 fa fa-cloud-upload-alt'/>
       :
       null
      }
