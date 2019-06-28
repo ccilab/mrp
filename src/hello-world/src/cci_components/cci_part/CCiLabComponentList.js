@@ -250,10 +250,10 @@ const ComponentListTitle =(props)=>{
               position={ 'bottom right' }
               mouseLeaveDelay={0}
               mouseEnterDelay={0}
-              contentStyle={{ padding: '0px', border: 'none', backgroundColor: `${styles.cciBgColor}`}}
+              contentStyle={{  border: 'none', backgroundColor: `${styles.cciBgColor}`, fontSize: '0.8rem'}}
               arrow={true}
               arrowStyle={{backgroundColor: `${styles.cciBgColor}`}}>
-              <span className={'text-primary text-nowrap'}>
+              <span className={'text-info text-nowrap p-1'}>
                 {t('show-setup-BOM')}
               </span>
           </Popup>
@@ -270,10 +270,10 @@ const ComponentListTitle =(props)=>{
             position={ 'bottom right' }
             mouseLeaveDelay={0}
             mouseEnterDelay={0}
-            contentStyle={{ padding: '0px', border: 'none', backgroundColor: `${styles.cciBgColor}`}}
+            contentStyle={{ border: 'none', backgroundColor: `${styles.cciBgColor}`, fontSize: '0.8rem'}}
             arrow={true}
             arrowStyle={{backgroundColor: `${styles.cciBgColor}`}}>
-            <span className={'text-primary text-nowrap'}>
+            <span className={'text-info text-nowrap p-1'}>
               {t('show-progress')}
             </span>
         </Popup>
@@ -297,12 +297,12 @@ const ComponentListTitle =(props)=>{
       position={ 'right top' }
       mouseLeaveDelay={200}
       mouseEnterDelay={0}
-      contentStyle={{ padding: '0px', border: 'none', backgroundColor: `${styles.cciBgColor}`}}
+      contentStyle={{ border: 'none', backgroundColor: `${styles.cciBgColor}`}}
       arrow={true}
       arrowStyle={{backgroundColor: `${styles.cciBgColor}`}}>
-      <div className={'text-primary'}>
-        <a key='en' href='#English' className={'nav-link'} onClick={languageChangeHandler('en')}>English</a>
-        <a key='zh-CN' href='#中文' className={'nav-link'} onClick={languageChangeHandler('zh-CN')}>中文</a>
+      <div >
+        <a key='en' href='#English' className={'nav-link p-1 m-0 text-info'} style={{fontSize: '0.7rem'}} onClick={languageChangeHandler('en')}>English</a>
+        <a key='zh-CN' href='#中文' className={'nav-link p-1 m-0 text-info'} style={{fontSize: '0.7rem'}} onClick={languageChangeHandler('zh-CN')}>中文</a>
       </div>
      </Popup>
   </div>
@@ -312,10 +312,10 @@ const ComponentListTitle =(props)=>{
 const ComponentListSubTitle = (props)=>{
   const { t } = useTranslation('componentList', {useSuspense: false});
   return (
-    <div className='d-flex align-items-center bg-info fa'
-        style={{ 'height': `${props.height}rem`, 'width': `${props.width}`, fontFamily: `${fontFamily}`, fontWeight: 'normal' }}>
-        <span id='subTitle-name' className={props.className} style={{'position':'relative',  'left':`${props.positionLeft}rem`, fontSize: '0.9rem'}}>{t(`${props.name}`)}</span>
-        <span id='subTitle-type' className={props.className} style={{'position':'relative', 'left':`${props.ratePositionLeft}rem`, fontSize: '0.9rem'}}>{t(`${props.rateType}`)}
+    <div className='d-flex align-items-center fa'
+        style={{ 'height': `${props.height}rem`, 'width': `${props.width}`, backgroundColor: `${styles.cciBgColor}`, fontFamily: `${fontFamily}`, fontWeight: 'normal' }}>
+        <span id='subTitle-name' className={props.className} style={{'position':'relative',  'left':`${props.positionLeft}rem`, fontSize: '0.95rem'}}>{t(`${props.name}`)}</span>
+        <span id='subTitle-type' className={props.className} style={{'position':'relative', 'left':`${props.ratePositionLeft}rem`, fontSize: '0.95rem'}}>{t(`${props.rateType}`)}
         </span>
         {/* #todo - make title editable by user */}
         {/* <a id='subTitle-edit' href='#edit-title' className='border-0 text-primary text-nowrap p-0 nav-link fa fa-edit' style={{'position':'absolute', 'right':'0'}}></a> */}
