@@ -1,9 +1,11 @@
 {
-    "title-BOM": "生产资源计划与调度 - 设置零部件之间的结构关系(BOM):",
+    "title-BOM": "计划与调度生产 - 设置零部件之间的结构关系(BOM):",
     "title-Progress": "生产进度:",
     "subTitle-BOM-create-component": "输入零部件图像:",
     "subTitle-BOM-data": "输入零部件BOM数据:",
     "subTitle-Progress-component-name": "零部件名称:",
     "subTitle-Progress-status" : "进度: - 剩余时间:",
-    "remaining-time-unit": "天"
+    "remaining-time-unit": "天",
+    "show-setup-BOM" : "设置零部件之间的结构关系",
+    "show-progress" : "生产进度"
 }

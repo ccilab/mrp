@@ -5,5 +5,7 @@
     "subTitle-BOM-data": "Enter Component BOM Data:",
     "subTitle-Progress-component-name": "Component:",
     "subTitle-Progress-status" : "Status: - Remaining Time:",
-    "remaining-time-unit": "day"
+    "remaining-time-unit": "day",
+    "show-setup-BOM" : "Setup BOM",
+    "show-progress" : "Show production progress"
 }

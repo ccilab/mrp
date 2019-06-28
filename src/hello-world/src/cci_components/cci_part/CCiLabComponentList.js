@@ -37,6 +37,8 @@ const thirdComponents = components.thirdComponents;
 // simulate load children of component id 4 ( low_beam )
 const forthComponents = components.forthComponents;
 
+let fontFamily ='Arial, Helvetica, sans-serif';
+
 const getChildComponentsFromDataSource = (parentComponent)=>{
   //#todo: need to query server to get a new components
   console.log("query server to get child components")
@@ -216,12 +218,14 @@ const ComponentListTitle =(props)=>{
 
   // console.log("CCiLabComponentList - ComponentListTitle: i18n.language = " + i18n.language );
 
-  let cursorStyle = {'cursor': 'pointer',
-                      'position':'absolute',
+  // set setupBOM or progress icon at right side of the title bar
+  let cursorStyle = { 'position':'absolute',
                       'right':'1.5rem' };
 
   return (
-    <div className='d-flex align-items-center bg-info fa' style={{ 'height': `${props.titleHeight}rem`, 'width': `${props.titleWidth}`}}>
+    <div className='d-flex align-items-center bg-info fa'
+         style={{ 'height': `${props.titleHeight}rem`, 'width': `${props.titleWidth}`, fontFamily: `${fontFamily}`, fontWeight: 'normal'}}>
+
     <span  id='title-name' className={props.titleClassName} style={{'position':'relative', 'left':`${props.titlePositionLeft}rem`, fontSize: '1rem'}}>{t(`${props.title}`)}
 
     { props.setupBOM ?
@@ -237,27 +241,43 @@ const ComponentListTitle =(props)=>{
           <Popup
             trigger={
               <i  key='show-bom'
-                className={'text-primary p-1 fa fa-cog'}
+                className={'cursor-pointer text-primary p-1 fa fa-cog'}
                 style={cursorStyle}
-                onClick={setupBOM}/> 
+                onClick={setupBOM}/>
               }
               closeOnDocumentClick
               on={'hover'} //['click', 'focus','hover']
               position={ 'bottom right' }
               mouseLeaveDelay={0}
               mouseEnterDelay={0}
-              contentStyle={{ padding: '0px', border: 'none'}}
+              contentStyle={{ padding: '0px', border: 'none', backgroundColor: `${styles.cciBgColor}`}}
               arrow={true}
-              >
-              <div className={' bg-info'}>
-                'setup BOM'
-              </div>
+              arrowStyle={{backgroundColor: `${styles.cciBgColor}`}}>
+              <span className={'text-primary text-nowrap'}>
+                {t('show-setup-BOM')}
+              </span>
           </Popup>
           :
-          <i key='show-progress'
-            className={'text-primary p-1 fa fa-chart-line'}
-            style={cursorStyle}
-            onClick={showProgress}/> ),
+          <Popup
+              trigger={
+              <i key='show-progress'
+                className={'cursor-pointer text-primary p-1 fa fa-chart-line'}
+                style={cursorStyle}
+                onClick={showProgress}/>
+            }
+            closeOnDocumentClick
+            on={'hover'} //['click', 'focus','hover']
+            position={ 'bottom right' }
+            mouseLeaveDelay={0}
+            mouseEnterDelay={0}
+            contentStyle={{ padding: '0px', border: 'none', backgroundColor: `${styles.cciBgColor}`}}
+            arrow={true}
+            arrowStyle={{backgroundColor: `${styles.cciBgColor}`}}>
+            <span className={'text-primary text-nowrap'}>
+              {t('show-progress')}
+            </span>
+        </Popup>
+         ),
         'update-progress': null,
         'read-only':null
         }[props.permissionStatus]}
@@ -275,14 +295,14 @@ const ComponentListTitle =(props)=>{
       closeOnDocumentClick
       on={'hover'} //['click', 'focus','hover']
       position={ 'right top' }
-      mouseLeaveDelay={0}
+      mouseLeaveDelay={200}
       mouseEnterDelay={0}
-      contentStyle={{ padding: '0px', border: 'none', 'fontSize': '0.6em'}}
+      contentStyle={{ padding: '0px', border: 'none', backgroundColor: `${styles.cciBgColor}`}}
       arrow={true}
-      >
-      <div className={' bg-info'}>
-        <a key='en' href='#English' className={'nav-link px-1'} onClick={languageChangeHandler('en')}>English</a>
-        <a key='zh-CN' href='#中文' className={'nav-link px-1'} onClick={languageChangeHandler('zh-CN')}>中文</a>
+      arrowStyle={{backgroundColor: `${styles.cciBgColor}`}}>
+      <div className={'text-primary'}>
+        <a key='en' href='#English' className={'nav-link'} onClick={languageChangeHandler('en')}>English</a>
+        <a key='zh-CN' href='#中文' className={'nav-link'} onClick={languageChangeHandler('zh-CN')}>中文</a>
       </div>
      </Popup>
   </div>
@@ -292,7 +312,8 @@ const ComponentListTitle =(props)=>{
 const ComponentListSubTitle = (props)=>{
   const { t } = useTranslation('componentList', {useSuspense: false});
   return (
-    <div className='d-flex align-items-center bg-info fa' style={{ 'height': `${props.height}rem`, 'width': `${props.width}` }}>
+    <div className='d-flex align-items-center bg-info fa'
+        style={{ 'height': `${props.height}rem`, 'width': `${props.width}`, fontFamily: `${fontFamily}`, fontWeight: 'normal' }}>
         <span id='subTitle-name' className={props.className} style={{'position':'relative',  'left':`${props.positionLeft}rem`, fontSize: '0.9rem'}}>{t(`${props.name}`)}</span>
         <span id='subTitle-type' className={props.className} style={{'position':'relative', 'left':`${props.ratePositionLeft}rem`, fontSize: '0.9rem'}}>{t(`${props.rateType}`)}
         </span>

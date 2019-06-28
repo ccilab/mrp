@@ -378,8 +378,6 @@ export const UpdateStatus=(props)=>{
     console.log( 'setProductionCompleted - record time: ' + component.production.recordDateTime );
   }
 
-  let closePopupMenu=false;
-
   return (
       <span
         key={`component-${props.component.displayLogic.key}`}
@@ -399,7 +397,7 @@ export const UpdateStatus=(props)=>{
               className={'px-1 border-0 text-primary p-0 nav-link fa fw fa-edit'}
               style={{'cursor': 'pointer'}}> </a>
             }
-          closeOnDocumentClick={ closePopupMenu? true : false}
+          closeOnDocumentClick={ true }
           on={['click', 'focus']}
           position={'right top'}
           defaultOpen={false}  //don't show updateComponent menu unless user click the edit icon
@@ -419,7 +417,7 @@ export const UpdateStatus=(props)=>{
                     href={`#${props.component.displayLogic.key}`}
                     className='text-danger m-0 py-1 px-1 fas fw fa-times-circle cursor-pointer'
                     style={{backgroundColor: `${styles.cciBgColor}`}}
-                    onClick={ closePopupMenu ? close:null}> </a>
+                    onClick={ close }> </a>
               </div>
               <hr className='my-0 bg-info'
                   style={{borderStyle:'insert', borderWidth: '0.08em', borderColor:`${styles.cciInfoBlue}`}}/>
