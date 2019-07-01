@@ -228,6 +228,7 @@ export const SetupBOM=(props)=>{
       )
       {
          component.displayLogic.inlineMenuEnabled = true;
+         localStorage.setItem( `${component.businessLogic.name}`, JSON.stringify( component.bom.core ))
       }
       else
       {
@@ -237,7 +238,7 @@ export const SetupBOM=(props)=>{
 
   const initializeBOM=()=>{
     let bom={};
-    bom.core=initializeBOMCore();
+    bom.core= JSON.parse(localStorage.getItem(`${props.component.businessLogic.name}`)) || initializeBOMCore();
     bom.extra=initializeBOMExtra();
     return bom;
   }
