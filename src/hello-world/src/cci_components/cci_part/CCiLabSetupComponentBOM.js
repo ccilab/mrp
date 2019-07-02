@@ -103,17 +103,10 @@ const SetupComponentBOM=(props)=>{
         props.handler(e.target.value, props.component);
 
       }
-
-      updateComponent(props);
   }
 
-
-  const updateComponent=(props)=>{
-    if( typeof props.updateComponent !== 'undefined')
-    {
-      console.log("SetupComponentBOM - updateComponent: " + props.component.businessLogic.name);
-      props.updateComponent(props.component);
-    }
+  const updateChange=(props)=>(e)=>{
+    console.log("SetupComponentBOM - updateChange: " + e.target.value);
   }
 
 
@@ -185,11 +178,11 @@ const SetupComponentBOM=(props)=>{
                       name={inputName}
                       value={ input }
                       min = { inputType.includes('number') ? 1 : null}
-                      onChange={updateValue(props)}
+                      onChange={appendPercentage ? updateValue(props) : updateChange(props)}
                       onClose={updateValue(props)}
                       onInput={(e)=>{filterInputValue(e)}}
                       onKeyPress={ appendPercentage? (e)=>enterKeyHandler(e) : null }
-                      onBlur={ appendPercentage ? (e)=>{onBlurHandler(e)} : null}/>
+                      onBlur={ appendPercentage ? (e)=>{onBlurHandler(e)} :updateValue(props)}/>
               }
               id={`${props.component.displayLogic.key}-tooltip`}
               position={tooltipPosition}
@@ -228,7 +221,8 @@ export const SetupBOM=(props)=>{
       )
       {
          component.displayLogic.inlineMenuEnabled = true;
-         localStorage.setItem( `${component.businessLogic.name}`, JSON.stringify( component.bom.core ))
+         props.updateComponent(component);
+         sessionStorage.setItem( `${component.businessLogic.name}_${component.displayLogic.key}_bom_core`, JSON.stringify( component.bom.core ))
       }
       else
       {
@@ -238,8 +232,8 @@ export const SetupBOM=(props)=>{
 
   const initializeBOM=()=>{
     let bom={};
-    bom.core= JSON.parse(localStorage.getItem(`${props.component.businessLogic.name}`)) || initializeBOMCore();
-    bom.extra=initializeBOMExtra();
+    bom.core= JSON.parse(sessionStorage.getItem(`${props.component.businessLogic.name}_${props.component.displayLogic.key}_bom_core`)) || initializeBOMCore();
+    bom.extra=JSON.parse(sessionStorage.getItem(`${props.component.businessLogic.name}_${props.component.displayLogic.key}_bom_extra`)) ||initializeBOMExtra();
     return bom;
   }
 
@@ -422,7 +416,7 @@ export const SetupBOM=(props)=>{
       component.bom.core.startDate = null;
 
     IsClosePopupMenu(component);
-    console.log( 'setProcurementType : ' + component.bom.core.startDate);
+    console.log( 'setStartDate : ' + component.bom.core.startDate);
   }
 
   const setCompleteDate=(completeDate, component)=>{
@@ -435,7 +429,7 @@ export const SetupBOM=(props)=>{
       component.bom.core.completeDate = null;
 
     IsClosePopupMenu(component);
-    console.log( 'setProcurementType : ' + component.bom.core.completeDate);
+    console.log( 'setCompleteDate : ' + component.bom.core.completeDate);
   }
 
 
@@ -466,8 +460,7 @@ export const SetupBOM=(props)=>{
             title='part-name'
             value={props.component.businessLogic.name}
             component={props.component}
-            handler={setPartName}
-            updateComponent={props.updateComponent}/>
+            handler={setPartName}/>
           <a id={`${props.component.displayLogic.key}-setupBOM`}
             href={`#${props.component.displayLogic.key}`}
             className='text-danger m-0 py-1 px-1 fas fw fa-times-circle cursor-pointer'
@@ -481,8 +474,7 @@ export const SetupBOM=(props)=>{
             title='part-number'
             value={props.component.bom.core.partNumber}
             component={props.component}
-            handler={setPartNumber}
-            updateComponent={props.updateComponent}/>
+            handler={setPartNumber}/>
 
         <hr className='my-0 bg-info'
               style={{borderStyle:'insert', borderWidth: '0.08em', borderColor:`${styles.cciInfoBlue}`}}/>
@@ -493,16 +485,14 @@ export const SetupBOM=(props)=>{
               // value='' input will show placeholder text
               value={props.component.bom.core.requiredQty > 0 ? props.component.bom.core.requiredQty: ''}
               component={props.component}
-              handler={setTotalRequiredQty}
-              updateComponent={props.updateComponent}/>
+              handler={setTotalRequiredQty}/>
             :
             <SetupComponentBOM
               title='unit-quantity'
               // value='' input will show placeholder text
               value={props.component.bom.core.unitQty !== null ? props.component.bom.core.unitQty : ''}
               component={props.component}
-              handler={setUnitQty}
-              updateComponent={props.updateComponent}/>
+              handler={setUnitQty}/>
           }
 
           <hr className='my-0 bg-info'
@@ -512,8 +502,7 @@ export const SetupBOM=(props)=>{
               title='unit-of-measure'
               value={props.component.bom.core.unitOfMeasure}
               component={props.component}
-              handler={setUnitOfMeasure}
-              updateComponent={props.updateComponent}/>
+              handler={setUnitOfMeasure}/>
 
           <hr className='my-0 bg-info'
               style={{borderStyle:'insert', borderWidth: '0.08em', borderColor:`${styles.cciInfoBlue}`}}/>
@@ -522,8 +511,7 @@ export const SetupBOM=(props)=>{
             title='scrap-rate'
             value={props.component.bom.core.scrapRate !== null ? props.component.bom.core.scrapRate :'' }
             component={props.component}
-            handler={setScrapRate}
-            updateComponent={props.updateComponent}/>
+            handler={setScrapRate}/>
 
           <hr className='my-0 bg-info'
               style={{borderStyle:'insert', borderWidth: '0.08em', borderColor:`${styles.cciInfoBlue}`}}/>
@@ -532,8 +520,7 @@ export const SetupBOM=(props)=>{
               title='procurement-type'
               value={props.component.bom.core.procurementType}
               component={props.component}
-              handler={setProcurementType}
-              updateComponent={props.updateComponent}/>
+              handler={setProcurementType}/>
 
           <hr className='my-0 bg-info'
               style={{borderStyle:'insert', borderWidth: '0.08em', borderColor:`${styles.cciInfoBlue}`}}/>
@@ -542,8 +529,7 @@ export const SetupBOM=(props)=>{
               title='start-product-date'
               value={props.component.bom.core.startDate}
               component={props.component}
-              handler={setStartDate}
-              updateComponent={props.updateComponent}/>
+              handler={setStartDate}/>
 
           <hr className='my-0 bg-info'
               style={{borderStyle:'insert', borderWidth: '0.08em', borderColor:`${styles.cciInfoBlue}`}}/>
@@ -552,8 +538,7 @@ export const SetupBOM=(props)=>{
               title='product-complete-date'
               value={props.component.bom.core.completeDate}
               component={props.component}
-              handler={setCompleteDate}
-              updateComponent={props.updateComponent}/>
+              handler={setCompleteDate}/>
           </div>
         )}
       </Popup>

@@ -672,6 +672,9 @@ class CCiLabComponentList extends Component {
         return component.displayLogic.key !== deletedComponentId;
       });
 
+      sessionStorage.removeItem(`${deletedComponent.businessLogic.name}_${deletedComponent.displayLogic.key}_bom_core`);
+      sessionStorage.removeItem(`${deletedComponent.businessLogic.name}_${deletedComponent.displayLogic.key}_bom_extra`);
+
       this.setState({ greetings: filteredGreetings });
     };
 
@@ -880,9 +883,19 @@ class CCiLabComponentList extends Component {
 
         //remove moved/source component from component list
         let idxMovedComponent = currentSessionComponents.findIndex( (component)=>{return component.displayLogic.key === sourceId; });
+
+        
         if( idxMovedComponent >= 0 )
         {
           let rmMovedComponent = currentSessionComponents.splice( idxMovedComponent, 1);
+          
+          //rename local storage name to new name
+          let bom={}
+          bom.core= JSON.parse(sessionStorage.getItem(`${rmMovedComponent[0].businessLogic.name}_${rmMovedComponent[0].displayLogic.key}_bom_core`)) ;
+          bom.extra=JSON.parse(sessionStorage.getItem(`${rmMovedComponent[0].businessLogic.name}_${rmMovedComponent[0].displayLogic.key}_bom_extra`));
+
+          sessionStorage.removeItem(`${rmMovedComponent[0].businessLogic.name}_${rmMovedComponent[0].displayLogic.key}_bom_core`);
+          sessionStorage.removeItem(`${rmMovedComponent[0].businessLogic.name}_${rmMovedComponent[0].displayLogic.key}_bom_extra`);
 
           //update parent id of moved component (source) as target Component id
           rmMovedComponent[0].businessLogic.parentIds.length=0;
@@ -894,6 +907,12 @@ class CCiLabComponentList extends Component {
           let newDisplayKey = findMaxDisplayKey(currentSessionComponents);
 
           rmMovedComponent[0].displayLogic = initializeDisplayLogic(++newDisplayKey, false, targetComponent.displayLogic.rectLeft)
+
+          if( bom.core !== null )
+            sessionStorage.setItem( `${rmMovedComponent[0].businessLogic.name}_${rmMovedComponent[0].displayLogic.key}_bom_core`, JSON.stringify( bom.core ));
+          if( bom.extra !== null )
+            sessionStorage.setItem( `${rmMovedComponent[0].businessLogic.name}_${rmMovedComponent[0].displayLogic.key}_bom_extra`, JSON.stringify( bom.extra ))
+
 
           //update businessLogic and displayLogic childIds of target component (target) as moved component ( source )
           targetComponent.businessLogic.childIds.push(rmMovedComponent[0].businessLogic.id);
