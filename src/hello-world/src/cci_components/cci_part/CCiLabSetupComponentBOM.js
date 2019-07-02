@@ -222,12 +222,13 @@ export const SetupBOM=(props)=>{
       {
          component.displayLogic.inlineMenuEnabled = true;
          props.updateComponent(component);
-         sessionStorage.setItem( `${component.businessLogic.name}_${component.displayLogic.key}_bom_core`, JSON.stringify( component.bom.core ))
       }
       else
       {
         component.displayLogic.inlineMenuEnabled = false;
-      }
+      } 
+      
+      sessionStorage.setItem( `${component.businessLogic.name}_${component.displayLogic.key}_bom_core`, JSON.stringify( component.bom.core ));
   }
 
   const initializeBOM=()=>{
