@@ -470,8 +470,6 @@ class CCiLabComponent extends Component {
                 onDragStart={ draggableSetting === 'true' ? this.dragStart : null}
                 onDragOver={ this.dragOver }
                 onDrop={  this.doDrop }>
-                {/* onDragOver={ this.dragOver }
-                onDrop={  this.doDrop }> */}
                 {/* 'd-flex cci-component-label_position  align-items-center ' */}
                 {/* id is used to handle move */}
               <div id={`${this.currentComponent.displayLogic.key}`} className={`${componentBase}`} style={{'left':`${this.leftOffset}rem`}}>
