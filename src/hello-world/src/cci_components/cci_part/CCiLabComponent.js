@@ -473,17 +473,15 @@ class CCiLabComponent extends Component {
                 {/* onDragOver={ this.dragOver }
                 onDrop={  this.doDrop }> */}
                 {/* 'd-flex cci-component-label_position  align-items-center ' */}
-              <div className={`${componentBase}`} style={{'left':`${this.leftOffset}rem`}}>
+                {/* id is used to handle move */}
+              <div id={`${this.currentComponent.displayLogic.key}`} className={`${componentBase}`} style={{'left':`${this.leftOffset}rem`}}>
                 {/* a badge to show menu to move/copy/delete/edit component, only sole children component has move and copy option */}
                 {/* https://github.com/yjose/reactjs-popup/blob/master/docs/src/examples/Demo.js */}
                 { this.props.isSetupBOM ?
                     <MenuAddComponent
                       component={this.currentComponent}
-                      isDraggable={draggableSetting}
                       style={ {'visibility': `${inlineMenuIconVisibility}`}}
                       isDraggable={draggableSetting}
-                      // moveStartHandler={ this.moveStart }
-                      // deleteComponentHandler={ this.deleteComponent }
                       addComponentHandler={this.addComponent}
                     />
                     : 
@@ -525,8 +523,7 @@ class CCiLabComponent extends Component {
                     dragStartHandler={this.dragStart}
                     dragOverHandler={this.dragOver}
                     doDropHandler={this.doDrop }
-                    addImageHandler={this.updateImage}
-                  />
+                    addImageHandler={this.updateImage}/>
                 </span>
                 {/* tag's id is used to handle drop event */}
                 <ComponentName
