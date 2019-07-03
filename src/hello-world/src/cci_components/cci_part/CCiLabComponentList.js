@@ -95,7 +95,7 @@ const findMaxBusinessId = ( componentList )=>{
 };
 
 // initialize displayLogic object
-const initializeDisplayLogic = (key, canExpend, rectLeft ) =>{
+const initializeDisplayLogic = (key, canExpend, rectLeft, enableMenu ) =>{
   let displayLogic = {};
   displayLogic.key = key;
   displayLogic.childKeyIds = [];
@@ -103,7 +103,7 @@ const initializeDisplayLogic = (key, canExpend, rectLeft ) =>{
   displayLogic.canExpend = canExpend;
   displayLogic.rectLeft = (typeof rectLeft === "undefined" ) ? 0:rectLeft;
   displayLogic.selected = 0;  // 0, -1, +1
-  displayLogic.inlineMenuEnabled = false;
+  displayLogic.inlineMenuEnabled = (typeof enableMenu === "undefined" ) ? false : enableMenu;
   return displayLogic;
 };
 
@@ -616,23 +616,26 @@ class CCiLabComponentList extends Component {
       //update businessLogic and displayLogic childIds of parent component
       parentComponent.businessLogic.childIds.push( newComponent.businessLogic.id );
 
-       //rebuild the component list
-       let updatedSessionComponents = [];
+      //rebuild the component list
+      let updatedSessionComponents = [];
 
-       let components =[newComponent];
+      let components =[newComponent];
 
-       //initialize the updated session components
-       initializeComponents(parentComponent, currentSessionComponents, components, updatedSessionComponents);
+      //initialize the updated session components
+      initializeComponents(parentComponent, currentSessionComponents, components, updatedSessionComponents);
 
-       // populate target component's displayLogic.childKeyIds[]
-       populateComponentChildKeyIds(parentComponent, updatedSessionComponents);
+      // populate target component's displayLogic.childKeyIds[]
+      populateComponentChildKeyIds(parentComponent, updatedSessionComponents);
 
-       newComponent.displayLogic.showMyself = true;
+      newComponent.displayLogic.showMyself = true;
 
-        // update selected status so the added component or its parent will be highlighted
-        updatedSessionComponents.forEach( (item)=>{
-          setComponentSelected( item, newComponent.displayLogic.key );
-        });
+      // update selected status so the added component or its parent will be highlighted
+      updatedSessionComponents.forEach( (item)=>{
+        setComponentSelected( item, newComponent.displayLogic.key );
+      });
+
+      sessionStorage.setItem( `${newComponent.businessLogic.name}_${newComponent.displayLogic.key}_businessLogic`, JSON.stringify( newComponent.businessLogic ));
+      sessionStorage.setItem( `${newComponent.businessLogic.name}_${newComponent.displayLogic.key}_displayLogic`, JSON.stringify( newComponent.displayLogic ));
 
       // need to check vertical scroll bar doesn't show
       // create vertical scroll bar based on the height of component list dynamically
@@ -672,6 +675,8 @@ class CCiLabComponentList extends Component {
         return component.displayLogic.key !== deletedComponentId;
       });
 
+      sessionStorage.removeItem(`${deletedComponent.businessLogic.name}_${deletedComponent.displayLogic.key}_businessLogic`);
+      sessionStorage.removeItem(`${deletedComponent.businessLogic.name}_${deletedComponent.displayLogic.key}_displayLogic`);
       sessionStorage.removeItem(`${deletedComponent.businessLogic.name}_${deletedComponent.displayLogic.key}_bom_core`);
       sessionStorage.removeItem(`${deletedComponent.businessLogic.name}_${deletedComponent.displayLogic.key}_bom_extra`);
 
@@ -901,12 +906,15 @@ class CCiLabComponentList extends Component {
           rmMovedComponent[0].businessLogic.parentIds.length=0;
           rmMovedComponent[0].businessLogic.parentIds.push(targetComponent.businessLogic.id);
 
+          //keep inlineMenuEable status
+          let enableInlineMenu = rmMovedComponent[0].displayLogic.inlineMenuEnabled;
+
           //reset display key and childKeys
           delete rmMovedComponent[0].displayLogic;
 
           let newDisplayKey = findMaxDisplayKey(currentSessionComponents);
 
-          rmMovedComponent[0].displayLogic = initializeDisplayLogic(++newDisplayKey, false, targetComponent.displayLogic.rectLeft)
+          rmMovedComponent[0].displayLogic = initializeDisplayLogic(++newDisplayKey, false, targetComponent.displayLogic.rectLeft, enableInlineMenu)
 
           if( bom.core !== null )
             sessionStorage.setItem( `${rmMovedComponent[0].businessLogic.name}_${rmMovedComponent[0].displayLogic.key}_bom_core`, JSON.stringify( bom.core ));
@@ -933,6 +941,9 @@ class CCiLabComponentList extends Component {
                   setComponentSelected( item, rmMovedComponent[0].displayLogic.key );
                 });
 
+          sessionStorage.setItem( `${rmMovedComponent[0].businessLogic.name}_${rmMovedComponent[0].displayLogic.key}_businessLogic`, JSON.stringify( rmMovedComponent[0].businessLogic ));
+          sessionStorage.setItem( `${rmMovedComponent[0].businessLogic.name}_${rmMovedComponent[0].displayLogic.key}_displayLogic`, JSON.stringify( rmMovedComponent[0].displayLogic ));
+          
           //check if moved component progress status need to change (#todo)
 
           // update greetings list
