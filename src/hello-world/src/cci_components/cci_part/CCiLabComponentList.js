@@ -475,9 +475,17 @@ class CCiLabComponentList extends Component {
       let components = firstComponents;
 
       //#todo: need to query server side to find the very top component
-      let rootComponent = components.filter(component=>component.businessLogic.parentIds.length === 0)[0]
+      let rootComponent = components.filter(component=>component.businessLogic.parentIds.length === 0)[0];
+
+           
+      // if( rootComponent.displayLogic === null )
       rootComponent.displayLogic = initializeDisplayLogic( 0, rootComponent.businessLogic.childIds.length !== 0 ? true : false );
 
+      //check if a local storage exists
+      let displayLogic = JSON.parse(sessionStorage.getItem(`${rootComponent.businessLogic.name}_${rootComponent.displayLogic.key}_displayLogic`)); 
+      if( displayLogic !== null)
+        rootComponent.displayLogic = displayLogic;
+        
       initializeComponents(rootComponent, this.state.greetings, components, currentSessionComponents);
 
       //always show very top component
@@ -906,7 +914,7 @@ class CCiLabComponentList extends Component {
           rmMovedComponent[0].businessLogic.parentIds.length=0;
           rmMovedComponent[0].businessLogic.parentIds.push(targetComponent.businessLogic.id);
 
-          //keep inlineMenuEable status
+          //keep inlineMenuEnable status
           let enableInlineMenu = rmMovedComponent[0].displayLogic.inlineMenuEnabled;
 
           //reset display key and childKeys

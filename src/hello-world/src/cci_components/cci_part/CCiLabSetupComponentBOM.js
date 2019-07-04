@@ -227,7 +227,25 @@ export const SetupBOM=(props)=>{
       {
         component.displayLogic.inlineMenuEnabled = false;
       } 
+      let displayLogic=JSON.parse(sessionStorage.getItem(`add-part_${props.component.displayLogic.key}_displayLogic`));
+      if( displayLogic !== null)
+      {
+        displayLogic.inlineMenuEnabled = component.displayLogic.inlineMenuEnabled;
+        sessionStorage.setItem( `${component.businessLogic.name}_${component.displayLogic.key}_displayLogic`, JSON.stringify( displayLogic ));
+        sessionStorage.removeItem(`add-part_${props.component.displayLogic.key}_displayLogic`);
+      }
+        
       
+      let businessLogic=JSON.parse(sessionStorage.getItem(`add-part_${props.component.displayLogic.key}_businessLogic`));
+      if( businessLogic !== null)
+      {
+        if( isValidString( component.businessLogic.name) )
+          businessLogic.name = component.businessLogic.name;
+
+        sessionStorage.setItem( `${component.businessLogic.name}_${component.displayLogic.key}_businessLogic`, JSON.stringify( businessLogic ));
+        sessionStorage.removeItem(`add-part_${props.component.displayLogic.key}_businessLogic`);
+      }
+
       sessionStorage.setItem( `${component.businessLogic.name}_${component.displayLogic.key}_bom_core`, JSON.stringify( component.bom.core ));
   }
 
