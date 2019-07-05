@@ -121,9 +121,11 @@ const findMaxDisplayKey = ( componentList )=>{
   return displayKeyValue;
 };
 
-// merge newComponentList (that displayLogic isn't initialized) and existingComponentList (existing components, displayLogic is initialized) into targetComponentList
-// from the startComponent
-const initializeComponents = ( startComponent, existingComponentList, newComponentList, targetComponentList)=>{
+// merge newComponentList (that displayLogic isn't initialized) and existingComponentList 
+// (existing components, displayLogic is initialized) into targetComponentList
+// from a specific component in existingComponentList ( atComponent )
+// store businessLogic to session storage for each component in newComponentList
+const initializeComponents = ( atComponent, existingComponentList, newComponentList, targetComponentList)=>{
   if( typeof existingComponentList !== "undefined")
     existingComponentList.forEach( (existingComponent)=>{ targetComponentList.push( existingComponent ) } );
 
@@ -133,16 +135,26 @@ const initializeComponents = ( startComponent, existingComponentList, newCompone
   let displayKeyValue = findMaxDisplayKey(existingComponentList);
 
   newComponentList.forEach((element)=>{
-    if( typeof element.displayLogic === "undefined")
-      element.displayLogic = new initializeDisplayLogic( ++displayKeyValue, element.businessLogic.childIds.length !== 0 ? true : false );
-
-    if(typeof startComponent   !== "undefined"  && typeof startComponent.displayLogic !== "undefined" && typeof element !== "undefined") {
-      let startComponentKey = startComponent.displayLogic.key;
-      //need populate childKeyIds[] if its not fully populated yet
-      if( startComponent.businessLogic.childIds.length !==  startComponent.displayLogic.childKeyIds.length &&
-          startComponent.displayLogic.childKeyIds.includes( element.displayLogic.key ) === false )
+    if( typeof element !== "undefined" )
+    {
+      if( typeof element.displayLogic === "undefined" )
       {
-          let idxInsertAt = targetComponentList.findIndex((component)=>{return component.displayLogic.key === startComponentKey});
+        element.displayLogic = new initializeDisplayLogic( ++displayKeyValue, element.businessLogic.childIds.length !== 0 ? true : false );
+      }
+
+      sessionStorage.setItem( `${element.businessLogic.name}_${element.displayLogic.key}_businessLogic`, JSON.stringify( element.businessLogic ));
+    }
+      
+
+    if( typeof atComponent   !== "undefined"  && 
+        typeof atComponent.displayLogic !== "undefined" ) 
+    {
+      let atComponentKey = atComponent.displayLogic.key;
+      //need populate childKeyIds[] if its not fully populated yet
+      if( atComponent.businessLogic.childIds.length !==  atComponent.displayLogic.childKeyIds.length &&
+          atComponent.displayLogic.childKeyIds.includes( element.displayLogic.key ) === false )
+      {
+          let idxInsertAt = targetComponentList.findIndex((component)=>{return component.displayLogic.key === atComponentKey});
           // component without childIs[] is always above components with childIds[] for display/expending purpose
           if( element.businessLogic.childIds.length === 0 )
             targetComponentList.splice( idxInsertAt+1,0,element);
@@ -150,6 +162,7 @@ const initializeComponents = ( startComponent, existingComponentList, newCompone
             targetComponentList.push(element);
       }
     }
+
   });
 };
 
@@ -176,6 +189,8 @@ const hideChildren = (aComponent, aComponents, aShowStatus)=>{
       if( aComponent.displayLogic.childKeyIds.includes(component.displayLogic.key) )
       {
         component.displayLogic.showMyself = aShowStatus;
+        sessionStorage.setItem( `${component.businessLogic.name}_${component.displayLogic.key}_displayLogic`, JSON.stringify( component.displayLogic ));
+
         hideChildren(component, aComponents, aShowStatus)
       }
     });
@@ -192,6 +207,7 @@ const setComponentSelected = ( component, selectedComponentKey ) =>{
   else
     component.displayLogic.selected = 0;
 
+  sessionStorage.setItem( `${component.businessLogic.name}_${component.displayLogic.key}_displayLogic`, JSON.stringify( component.displayLogic ));
 }
 
 
@@ -475,34 +491,23 @@ class CCiLabComponentList extends Component {
       let components = firstComponents;
 
       //#todo: need to query server side to find the very top component
-      let rootComponent = components.filter(component=>component.c.parentIds.length === 0)[0];
-
-
-      // if( rootComponent.displayLogic === null )
-      rootComponent.displayLogic = initializeDisplayLogic( 0, ( typeof rootComponent.businessLogic !== 'undefined' && rootComponent.businessLogic.childIds.length !== 0 )? true : false );
-
-      //check if a local storage exists
-      let businessLogic = JSON.parse(sessionStorage.getItem(`${rootComponent.businessLogic.name}_${rootComponent.displayLogic.key}_businessLogic`));
-      if( businessLogic !== null)
-        rootComponent.businessLogic = businessLogic;
-
-      let displayLogic = JSON.parse(sessionStorage.getItem(`${rootComponent.businessLogic.name}_${rootComponent.displayLogic.key}_displayLogic`));
-      if( displayLogic !== null)
-        rootComponent.displayLogic = displayLogic;
-
-
+      // never check  local storage as it may out of sync with server
+      let rootComponent = components.filter(component=>component.businessLogic.parentIds.length === 0)[0];
       initializeComponents(rootComponent, this.state.greetings, components, currentSessionComponents);
-
+  
       //always show very top component
       rootComponent.displayLogic.showMyself = true;
 
-      if( rootComponent.businessLogic.childIds.length !== 0 ){
+      if( rootComponent.businessLogic.childIds.length !== 0 )
+      {
         rootComponent.displayLogic.canExpend = true;
 
         // populate very top component's displayLogic.childKeyIds[], if it's not included yet
         populateComponentChildKeyIds(rootComponent, currentSessionComponents);
       }
 
+      sessionStorage.setItem( `${rootComponent.businessLogic.name}_${rootComponent.displayLogic.key}_displayLogic`, JSON.stringify( rootComponent.displayLogic ));
+      
       this.positioningListTitle(rootComponent);
 
       // trick - set default visible=true in constructor, set visible=false in componentWillMount
@@ -647,7 +652,6 @@ class CCiLabComponentList extends Component {
         setComponentSelected( item, newComponent.displayLogic.key );
       });
 
-      sessionStorage.setItem( `${newComponent.businessLogic.name}_${newComponent.displayLogic.key}_businessLogic`, JSON.stringify( newComponent.businessLogic ));
       sessionStorage.setItem( `${newComponent.businessLogic.name}_${newComponent.displayLogic.key}_displayLogic`, JSON.stringify( newComponent.displayLogic ));
 
       // need to check vertical scroll bar doesn't show
@@ -711,7 +715,8 @@ class CCiLabComponentList extends Component {
 
               initializeComponents(selectedComponent, this.state.greetings, components, currentSessionComponents);
           }
-          else {
+          else 
+          {
             currentSessionComponents = this.state.greetings;
           }
 
@@ -727,12 +732,14 @@ class CCiLabComponentList extends Component {
             if( item.displayLogic.key !== rootComponent.displayLogic.key )
             {
                // find the component that has the child components, and show or hide the show status of this component's childKeyIds
-              if( selectedComponent.displayLogic.childKeyIds.includes(item.displayLogic.key) ) {
+              if( selectedComponent.displayLogic.childKeyIds.includes(item.displayLogic.key) ) 
+              {
                 item.displayLogic.showMyself = showStatus;
 
-                  // recursively hide childKeyIds[] of child component included in childKeyIds[] of current component,
-                  // but we don't want to hide child component's childKeyIds[] unless its direct parent's canExpend = false
-                  hideChildren(item, currentSessionComponents, showStatus);
+                // recursively hide childKeyIds[] of child component included in childKeyIds[] of current component,
+                // but we don't want to hide child component's childKeyIds[] unless its direct parent's canExpend = false;
+                // stored displayLogic to session storage
+                hideChildren(item, currentSessionComponents, showStatus);
               }
             }
 
@@ -912,6 +919,8 @@ class CCiLabComponentList extends Component {
           bom.core= JSON.parse(sessionStorage.getItem(`${rmMovedComponent[0].businessLogic.name}_${rmMovedComponent[0].displayLogic.key}_bom_core`)) ;
           bom.extra=JSON.parse(sessionStorage.getItem(`${rmMovedComponent[0].businessLogic.name}_${rmMovedComponent[0].displayLogic.key}_bom_extra`));
 
+          sessionStorage.removeItem(`${rmMovedComponent[0].businessLogic.name}_${rmMovedComponent[0].displayLogic.key}_businessLogic`);
+          sessionStorage.removeItem(`${rmMovedComponent[0].businessLogic.name}_${rmMovedComponent[0].displayLogic.key}_displayLogic`);
           sessionStorage.removeItem(`${rmMovedComponent[0].businessLogic.name}_${rmMovedComponent[0].displayLogic.key}_bom_core`);
           sessionStorage.removeItem(`${rmMovedComponent[0].businessLogic.name}_${rmMovedComponent[0].displayLogic.key}_bom_extra`);
 
@@ -951,11 +960,9 @@ class CCiLabComponentList extends Component {
 
           // update selected status so the moved component or its parent will be highlighted
           updatedSessionComponents.forEach( (item)=>{
-                  setComponentSelected( item, rmMovedComponent[0].displayLogic.key );
-                });
-
-          sessionStorage.setItem( `${rmMovedComponent[0].businessLogic.name}_${rmMovedComponent[0].displayLogic.key}_businessLogic`, JSON.stringify( rmMovedComponent[0].businessLogic ));
-          sessionStorage.setItem( `${rmMovedComponent[0].businessLogic.name}_${rmMovedComponent[0].displayLogic.key}_displayLogic`, JSON.stringify( rmMovedComponent[0].displayLogic ));
+            // store displayLogic to session storage for each item
+            setComponentSelected( item, rmMovedComponent[0].displayLogic.key );
+          });
 
           //check if moved component progress status need to change (#todo)
 

@@ -230,6 +230,10 @@ export const SetupBOM=(props)=>{
         component.displayLogic.inlineMenuEnabled = false;
       }
 
+      // update component name
+      if( isValidString( component.businessLogic.name) )
+        props.updateComponent(component);
+
       // initialComponentName could be hard-coded 'add-part' or other user given name
       if( initialComponentName !== component.businessLogic.name )
       {
@@ -245,6 +249,10 @@ export const SetupBOM=(props)=>{
           sessionStorage.setItem( `${component.businessLogic.name}_${component.displayLogic.key}_businessLogic`, JSON.stringify( component.businessLogic ));
       }
 
+      if( initialComponentName !== component.businessLogic.name )
+      {
+        sessionStorage.removeItem( `${initialComponentName}_${component.displayLogic.key}_bom_core`);
+      }
       sessionStorage.setItem( `${component.businessLogic.name}_${component.displayLogic.key}_bom_core`, JSON.stringify( component.bom.core ));
   }
 
