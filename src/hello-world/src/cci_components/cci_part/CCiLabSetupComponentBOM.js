@@ -308,7 +308,6 @@ export const SetupBOM=(props)=>{
 
   const isValidString=( name )=>{
     return ( typeof name === 'string' &&
-        !name.includes('add-part') &&
         name.length > 0 ) ? true : false
   };
 
