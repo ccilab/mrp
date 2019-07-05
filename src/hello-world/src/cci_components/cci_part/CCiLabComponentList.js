@@ -475,17 +475,22 @@ class CCiLabComponentList extends Component {
       let components = firstComponents;
 
       //#todo: need to query server side to find the very top component
-      let rootComponent = components.filter(component=>component.businessLogic.parentIds.length === 0)[0];
+      let rootComponent = components.filter(component=>component.c.parentIds.length === 0)[0];
 
-           
+
       // if( rootComponent.displayLogic === null )
-      rootComponent.displayLogic = initializeDisplayLogic( 0, rootComponent.businessLogic.childIds.length !== 0 ? true : false );
+      rootComponent.displayLogic = initializeDisplayLogic( 0, ( typeof rootComponent.businessLogic !== 'undefined' && rootComponent.businessLogic.childIds.length !== 0 )? true : false );
 
       //check if a local storage exists
-      let displayLogic = JSON.parse(sessionStorage.getItem(`${rootComponent.businessLogic.name}_${rootComponent.displayLogic.key}_displayLogic`)); 
+      let businessLogic = JSON.parse(sessionStorage.getItem(`${rootComponent.businessLogic.name}_${rootComponent.displayLogic.key}_businessLogic`));
+      if( businessLogic !== null)
+        rootComponent.businessLogic = businessLogic;
+
+      let displayLogic = JSON.parse(sessionStorage.getItem(`${rootComponent.businessLogic.name}_${rootComponent.displayLogic.key}_displayLogic`));
       if( displayLogic !== null)
         rootComponent.displayLogic = displayLogic;
-        
+
+
       initializeComponents(rootComponent, this.state.greetings, components, currentSessionComponents);
 
       //always show very top component
@@ -897,11 +902,11 @@ class CCiLabComponentList extends Component {
         //remove moved/source component from component list
         let idxMovedComponent = currentSessionComponents.findIndex( (component)=>{return component.displayLogic.key === sourceId; });
 
-        
+
         if( idxMovedComponent >= 0 )
         {
           let rmMovedComponent = currentSessionComponents.splice( idxMovedComponent, 1);
-          
+
           //rename local storage name to new name
           let bom={}
           bom.core= JSON.parse(sessionStorage.getItem(`${rmMovedComponent[0].businessLogic.name}_${rmMovedComponent[0].displayLogic.key}_bom_core`)) ;
@@ -951,7 +956,7 @@ class CCiLabComponentList extends Component {
 
           sessionStorage.setItem( `${rmMovedComponent[0].businessLogic.name}_${rmMovedComponent[0].displayLogic.key}_businessLogic`, JSON.stringify( rmMovedComponent[0].businessLogic ));
           sessionStorage.setItem( `${rmMovedComponent[0].businessLogic.name}_${rmMovedComponent[0].displayLogic.key}_displayLogic`, JSON.stringify( rmMovedComponent[0].displayLogic ));
-          
+
           //check if moved component progress status need to change (#todo)
 
           // update greetings list

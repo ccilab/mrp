@@ -208,6 +208,8 @@ const SetupComponentBOM=(props)=>{
 export const SetupBOM=(props)=>{
   const _className = 'cursor-pointer text-primary border-0 p-1 fa fw fa-edit' + (props.component.displayLogic.selected ? ' bg-info' : ' ');
 
+  const initialComponentName = props.component.businessLogic.name;
+
    // component.displayLogic.inlineMenuEnabled needs set to true
   const IsClosePopupMenu=( component )=>{
       if( isValidString( component.businessLogic.name) &&
@@ -226,24 +228,21 @@ export const SetupBOM=(props)=>{
       else
       {
         component.displayLogic.inlineMenuEnabled = false;
-      } 
-      let displayLogic=JSON.parse(sessionStorage.getItem(`add-part_${props.component.displayLogic.key}_displayLogic`));
-      if( displayLogic !== null)
-      {
-        displayLogic.inlineMenuEnabled = component.displayLogic.inlineMenuEnabled;
-        sessionStorage.setItem( `${component.businessLogic.name}_${component.displayLogic.key}_displayLogic`, JSON.stringify( displayLogic ));
-        sessionStorage.removeItem(`add-part_${props.component.displayLogic.key}_displayLogic`);
       }
-        
-      
-      let businessLogic=JSON.parse(sessionStorage.getItem(`add-part_${props.component.displayLogic.key}_businessLogic`));
-      if( businessLogic !== null)
-      {
-        if( isValidString( component.businessLogic.name) )
-          businessLogic.name = component.businessLogic.name;
 
-        sessionStorage.setItem( `${component.businessLogic.name}_${component.displayLogic.key}_businessLogic`, JSON.stringify( businessLogic ));
-        sessionStorage.removeItem(`add-part_${props.component.displayLogic.key}_businessLogic`);
+      // initialComponentName could be hard-coded 'add-part' or other user given name
+      if( initialComponentName !== component.businessLogic.name )
+      {
+        sessionStorage.removeItem(`${initialComponentName}_${props.component.displayLogic.key}_displayLogic`);
+      }
+      // component name may or may not change, but the component.displayLogic.inlineMenuEnabled will change if passed the checking
+      sessionStorage.setItem( `${component.businessLogic.name}_${component.displayLogic.key}_displayLogic`, JSON.stringify( component.displayLogic ));
+
+      // update component name if user changes it
+      if( initialComponentName !== component.businessLogic.name )
+      {
+          sessionStorage.removeItem(`${initialComponentName}_${props.component.displayLogic.key}_businessLogic`);
+          sessionStorage.setItem( `${component.businessLogic.name}_${component.displayLogic.key}_businessLogic`, JSON.stringify( component.businessLogic ));
       }
 
       sessionStorage.setItem( `${component.businessLogic.name}_${component.displayLogic.key}_bom_core`, JSON.stringify( component.bom.core ));
