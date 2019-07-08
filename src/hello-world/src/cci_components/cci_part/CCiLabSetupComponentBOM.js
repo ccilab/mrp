@@ -208,7 +208,7 @@ const SetupComponentBOM=(props)=>{
 export const SetupBOM=(props)=>{
   const _className = 'cursor-pointer text-primary border-0 p-1 fa fw fa-edit' + (props.component.displayLogic.selected ? ' bg-info' : ' ');
 
-  const initialComponentName = props.component.businessLogic.name;
+  const originComponent = props.component;
 
    // component.displayLogic.inlineMenuEnabled needs set to true
   const IsClosePopupMenu=( component )=>{
@@ -223,7 +223,7 @@ export const SetupBOM=(props)=>{
       )
       {
          component.displayLogic.inlineMenuEnabled = true;
-         props.updateComponent(component);
+         props.updateComponent(originComponent, component);
       }
       else
       {
@@ -232,26 +232,26 @@ export const SetupBOM=(props)=>{
 
       // update component name
       if( isValidString( component.businessLogic.name) )
-        props.updateComponent(component);
+        props.updateComponent(originComponent, component);
 
-      // initialComponentName could be hard-coded 'add-part' or other user given name
-      if( initialComponentName !== component.businessLogic.name )
+      // originComponent.businessLogic.name could be hard-coded 'add-part' or other user given name
+      if( originComponent.businessLogic.name !== component.businessLogic.name )
       {
-        sessionStorage.removeItem(`${initialComponentName}_${props.component.displayLogic.key}_displayLogic`);
+        sessionStorage.removeItem(`${originComponent.businessLogic.name}_${props.component.displayLogic.key}_displayLogic`);
       }
       // component name may or may not change, but the component.displayLogic.inlineMenuEnabled will change if passed the checking
       sessionStorage.setItem( `${component.businessLogic.name}_${component.displayLogic.key}_displayLogic`, JSON.stringify( component.displayLogic ));
 
       // update component name if user changes it
-      if( initialComponentName !== component.businessLogic.name )
+      if( originComponent.businessLogic.name !== component.businessLogic.name )
       {
-          sessionStorage.removeItem(`${initialComponentName}_${props.component.displayLogic.key}_businessLogic`);
+          sessionStorage.removeItem(`${originComponent.businessLogic.name}_${props.component.displayLogic.key}_businessLogic`);
           sessionStorage.setItem( `${component.businessLogic.name}_${component.displayLogic.key}_businessLogic`, JSON.stringify( component.businessLogic ));
       }
 
-      if( initialComponentName !== component.businessLogic.name )
+      if( originComponent.businessLogic.name !== component.businessLogic.name )
       {
-        sessionStorage.removeItem( `${initialComponentName}_${component.displayLogic.key}_bom_core`);
+        sessionStorage.removeItem( `${originComponent.businessLogic.name}_${component.displayLogic.key}_bom_core`);
       }
       sessionStorage.setItem( `${component.businessLogic.name}_${component.displayLogic.key}_bom_core`, JSON.stringify( component.bom.core ));
   }

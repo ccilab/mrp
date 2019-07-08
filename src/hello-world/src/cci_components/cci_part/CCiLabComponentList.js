@@ -121,7 +121,7 @@ const findMaxDisplayKey = ( componentList )=>{
   return displayKeyValue;
 };
 
-// merge newComponentList (that displayLogic isn't initialized) and existingComponentList 
+// merge newComponentList (that displayLogic isn't initialized) and existingComponentList
 // (existing components, displayLogic is initialized) into targetComponentList
 // from a specific component in existingComponentList ( atComponent )
 // store businessLogic to session storage for each component in newComponentList
@@ -144,10 +144,10 @@ const initializeComponents = ( atComponent, existingComponentList, newComponentL
 
       sessionStorage.setItem( `${element.businessLogic.name}_${element.displayLogic.key}_businessLogic`, JSON.stringify( element.businessLogic ));
     }
-      
 
-    if( typeof atComponent   !== "undefined"  && 
-        typeof atComponent.displayLogic !== "undefined" ) 
+
+    if( typeof atComponent   !== "undefined"  &&
+        typeof atComponent.displayLogic !== "undefined" )
     {
       let atComponentKey = atComponent.displayLogic.key;
       //need populate childKeyIds[] if its not fully populated yet
@@ -358,7 +358,7 @@ class CCiLabComponentList extends Component {
     componentListTranslateStyle;
     lastScrollYPosition;
 
-    movedComponentName;
+    sourceComponentName;
     targetComponentName;
 
     componentLeftOffset;  // in rem
@@ -384,7 +384,7 @@ class CCiLabComponentList extends Component {
       this.componentListTranslateStyle=this.state.visible ? `translate3d(0, 0, 0)`: `translate3d(-${this.hideListWidth}, 0, 0)`;
       this.lastScrollYPosition = 0;
 
-      this.movedComponentName='undefined';
+      this.sourceComponentName='undefined';
       this.targetComponentName='undefined';
 
       this.componentLeftOffset = 1;  // in rem
@@ -475,8 +475,6 @@ class CCiLabComponentList extends Component {
       //e.stopPropagation();
     };
 
-
-
     // initialize first component's childKeyIds, reorder in following order: the first component, alarm status, warning status, no_issue status
     componentWillMount=()=>{
       this.init(this.props);
@@ -494,7 +492,7 @@ class CCiLabComponentList extends Component {
       // never check  local storage as it may out of sync with server
       let rootComponent = components.filter(component=>component.businessLogic.parentIds.length === 0)[0];
       initializeComponents(rootComponent, this.state.greetings, components, currentSessionComponents);
-  
+
       //always show very top component
       rootComponent.displayLogic.showMyself = true;
 
@@ -507,7 +505,7 @@ class CCiLabComponentList extends Component {
       }
 
       sessionStorage.setItem( `${rootComponent.businessLogic.name}_${rootComponent.displayLogic.key}_displayLogic`, JSON.stringify( rootComponent.displayLogic ));
-      
+
       this.positioningListTitle(rootComponent);
 
       // trick - set default visible=true in constructor, set visible=false in componentWillMount
@@ -599,13 +597,47 @@ class CCiLabComponentList extends Component {
 
     // need to check following (#todo)
     //  1 - if component is the root component, then needs to re-cal all component's requiredQty
-    //  2 - updated component can't be the same as its own parent
+    //  2 - updated component can't be the same as its own parent ( done )
     //  3 - updated component can't be the same as its siblings
     //  4 - if the updated component exists - using the same businessLogic id from existing one
     //  5 - if the updated component doesn't exist - create a new businessLogic
-    updateComponent =( component )=>{
-      console.log("CCiLabComponentList - updateComponent: inline menu enable - " + component.displayLogic.inlineMenuEnabled);
-      this.selectedComponentHandler( component );
+    updateComponent =( originComponent, updatedComponent )=>{
+      console.log("CCiLabComponentList - updateComponent: inline menu enable - " + updatedComponent.displayLogic.inlineMenuEnabled);
+
+      // making sure updated component isn't the same as its own parent
+      if( originComponent.businessLogic.name === updatedComponent.businessLogic.name )
+      {
+          this.targetComponentName = originComponent.businessLogic.name;
+          this.sourceComponentName = updatedComponent.businessLogic.name;
+          updatedComponent.businessLogic.name = originComponent.businessLogic.name;
+          this.setState( {isDropToSameParentWarning: true} );
+      }
+
+      //making sure updated component isn't the same as its siblings
+      // find current parent components of source/moved component, have to use displayLogic.Key that is unique, to search
+      let currentSessionComponents = this.state.greetings;
+      let parentComponents = currentSessionComponents.filter(  (component)=>{
+        return component.displayLogic.childKeyIds.length && component.displayLogic.childKeyIds.find( (childKey)=>{return childKey === updatedComponent.displayLogic.key } )
+      } );
+
+      //find siblings from the parent
+      let siblings= currentSessionComponents.filter( ( component )=>{
+        return parentComponents.displayLogic.childKeyIds.find( (childKey)=>{return childKey === component.displayLogic.key;} );
+      } );
+
+      siblings.foreach( (component)=>{
+          let sameSiblings= component.businessLogic.name === updatedComponent.businessLogic.name ? true : false;
+          if( sameSiblings )
+          {
+            this.targetComponentName = originComponent.businessLogic.name;
+            this.sourceComponentName = updatedComponent.businessLogic.name;
+            updatedComponent.businessLogic.name = originComponent.businessLogic.name;
+            this.setState( {isDropToSameParentWarning: true} );
+
+            this.selectedComponentHandler( updatedComponent );
+            return;
+          }
+      })
     }
 
     // need to have following features
@@ -715,7 +747,7 @@ class CCiLabComponentList extends Component {
 
               initializeComponents(selectedComponent, this.state.greetings, components, currentSessionComponents);
           }
-          else 
+          else
           {
             currentSessionComponents = this.state.greetings;
           }
@@ -732,7 +764,7 @@ class CCiLabComponentList extends Component {
             if( item.displayLogic.key !== rootComponent.displayLogic.key )
             {
                // find the component that has the child components, and show or hide the show status of this component's childKeyIds
-              if( selectedComponent.displayLogic.childKeyIds.includes(item.displayLogic.key) ) 
+              if( selectedComponent.displayLogic.childKeyIds.includes(item.displayLogic.key) )
               {
                 item.displayLogic.showMyself = showStatus;
 
@@ -845,7 +877,7 @@ class CCiLabComponentList extends Component {
         if( targetComponent.displayLogic.childKeyIds.find( (key)=>{ return key === sourceId}) )
         {
           this.targetComponentName = targetComponent.businessLogic.name;
-          this.movedComponentName = movedComponent.businessLogic.name;
+          this.sourceComponentName = movedComponent.businessLogic.name;
 
           // console.log("CCiLabComponentList - moveComponentHandler 1");
 
@@ -857,7 +889,7 @@ class CCiLabComponentList extends Component {
         if( targetComponent.businessLogic.id === movedComponent.businessLogic.id )
         {
           this.targetComponentName = targetComponent.businessLogic.name;
-          this.movedComponentName = movedComponent.businessLogic.name;
+          this.sourceComponentName = movedComponent.businessLogic.name;
 
           // console.log("CCiLabComponentList - moveComponentHandler 2");
 
@@ -869,7 +901,7 @@ class CCiLabComponentList extends Component {
         if( targetComponent.businessLogic.childIds.includes( movedComponent.businessLogic.id ) )
         {
           this.targetComponentName = targetComponent.businessLogic.name;
-          this.movedComponentName = movedComponent.businessLogic.name;
+          this.sourceComponentName = movedComponent.businessLogic.name;
 
           // console.log("CCiLabComponentList - moveComponentHandler 3");
           this.setState( {isDropToSameParentWarning: true} );
@@ -1046,7 +1078,7 @@ class CCiLabComponentList extends Component {
                   <DropComponentWarningModal
                   title='title'
                   key1='same-child'
-                  option = { `{"targetComponent": "${this.targetComponentName}", "movedComponent": "${this.movedComponentName}"}`}
+                  option = { `{"targetComponent": "${this.targetComponentName}", "movedComponent": "${this.sourceComponentName}"}`}
                   hideDropWarning={this.hideDropToSameParentWarning}/>
                   : null;
 

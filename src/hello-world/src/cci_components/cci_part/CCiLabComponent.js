@@ -3,7 +3,7 @@ import Popup from '../popup_menu/Popup'
 import { useTranslation } from 'react-i18next';
 import {SetupBOM} from './CCiLabSetupComponentBOM';
 import {UpdateStatus} from './CCiLabUpdateComponentStatus.js'
-import {saveAs, creatHiddenImgInputTag} from "../file_save/CCiLabLocalFileAccess"
+import {creatHiddenImgInputTag} from "../file_save/CCiLabLocalFileAccess"
 
 
 import styles from './../../dist/css/ccilab-component.css'
@@ -80,7 +80,7 @@ const MenuAddComponent=(props)=>{
     return (
       <Popup
         trigger={
-          <i 
+          <i
           type='icon'
           className={'text-primary cursor-pointer p-1 fw fa fa-plus-circle'}
           style={{'visibility': `${props.visibility}`}}
@@ -102,7 +102,7 @@ const MenuAddComponent=(props)=>{
         <span className={'text-primary'} >{t('commands:add')}</span>
       }
 
-    </Popup> 
+    </Popup>
     );
 };
 
@@ -111,7 +111,7 @@ const MenuDeleteComponent=(props)=>{
   return (
     <Popup
         trigger={
-          <i 
+          <i
           type='icon'
           className={'text-primary cursor-pointer p-1 fw fa fa-trash-alt'}
           style={{'visibility': `${props.visibility}`}}
@@ -128,7 +128,7 @@ const MenuDeleteComponent=(props)=>{
         contentStyle={{ padding: '0px', border: 'none', backgroundColor: `${styles.cciBgColor}`}}
       >
         <span className={'text-primary'} >{t('commands:delete')}</span>
-    </Popup> 
+    </Popup>
   );
 };
 
@@ -137,7 +137,7 @@ const MenuMoveComponent=(props)=>{
   return (
     <Popup
         trigger={
-          <i 
+          <i
           id={`${props.component.displayLogic.key}`}
           type='icon'
           className={'text-primary cursor-pointer p-1 fw fa fa-arrows-alt'}
@@ -155,7 +155,7 @@ const MenuMoveComponent=(props)=>{
         contentStyle={{ padding: '0px', border: 'none', backgroundColor: `${styles.cciBgColor}`}}
       >
         <span className={'text-primary'} >{t('commands:move')}</span>
-    </Popup> 
+    </Popup>
   );
 };
 
@@ -482,7 +482,7 @@ class CCiLabComponent extends Component {
                       isDraggable={draggableSetting}
                       addComponentHandler={this.addComponent}
                     />
-                    : 
+                    :
                     null
                 }
 
@@ -560,11 +560,11 @@ class CCiLabComponent extends Component {
                             component={this.currentComponent}
                             deleteComponentHandler={this.deleteComponent}/>
                         </span>
-                        
+
                           :
                           null
                       }
-                   
+
                   </span>
                 }
                 </div>
