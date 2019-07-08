@@ -1,5 +1,6 @@
 {
     "title": "Warning:",
     "same-child": "'{{targetComponent}}' already has '{{movedComponent}}' as its child component!",
-    "same-component": "These two '{{targetComponent}}' are the same component!"
+    "same-component": "These two '{{targetComponent}}' are the same component!",
+    "parent-child-is-same": "'{{targetComponent}}' is used as parent and child component!"
 }

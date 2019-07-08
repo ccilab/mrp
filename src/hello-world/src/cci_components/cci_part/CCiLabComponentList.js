@@ -348,7 +348,8 @@ class CCiLabComponentList extends Component {
               permissionEnabled: 'setup-bom', // based logged in user to set permission: 'read-only', 'update-progress', 'setup-bom'
               fontSize: 23, //default browser medium font size in px
               isDropToSameParentWarning: false,
-              isDropToItselfWarning: false};
+              isDropToItselfWarning: false,
+              isUpdateToItselfWarning: false};
 
     initialized = false;  //needed to avoid render without DOM
     slidingComponentListIconClassName;
@@ -604,41 +605,44 @@ class CCiLabComponentList extends Component {
     updateComponent =( originComponent, updatedComponent )=>{
       console.log("CCiLabComponentList - updateComponent: inline menu enable - " + updatedComponent.displayLogic.inlineMenuEnabled);
 
-      // making sure updated component isn't the same as its own parent
-      if( originComponent.businessLogic.name === updatedComponent.businessLogic.name )
-      {
-          this.targetComponentName = originComponent.businessLogic.name;
-          this.sourceComponentName = updatedComponent.businessLogic.name;
-          updatedComponent.businessLogic.name = originComponent.businessLogic.name;
-          this.setState( {isDropToSameParentWarning: true} );
-      }
-
       //making sure updated component isn't the same as its siblings
       // find current parent components of source/moved component, have to use displayLogic.Key that is unique, to search
       let currentSessionComponents = this.state.greetings;
-      let parentComponents = currentSessionComponents.filter(  (component)=>{
+      let parentComponent = currentSessionComponents.find(  (component)=>{
         return component.displayLogic.childKeyIds.length && component.displayLogic.childKeyIds.find( (childKey)=>{return childKey === updatedComponent.displayLogic.key } )
       } );
 
-      //find siblings from the parent
-      let siblings= currentSessionComponents.filter( ( component )=>{
-        return parentComponents.displayLogic.childKeyIds.find( (childKey)=>{return childKey === component.displayLogic.key;} );
-      } );
-
-      siblings.foreach( (component)=>{
-          let sameSiblings= component.businessLogic.name === updatedComponent.businessLogic.name ? true : false;
-          if( sameSiblings )
-          {
-            this.targetComponentName = originComponent.businessLogic.name;
+      if( typeof parentComponent !== 'undefined'  )
+      {
+        // making sure updated component isn't the same as its own parent
+        if( parentComponent.businessLogic.name === updatedComponent.businessLogic.name )
+        {
+            this.targetComponentName = parentComponent.businessLogic.name;
             this.sourceComponentName = updatedComponent.businessLogic.name;
             updatedComponent.businessLogic.name = originComponent.businessLogic.name;
-            this.setState( {isDropToSameParentWarning: true} );
-
-            this.selectedComponentHandler( updatedComponent );
+            this.setState( {isUpdateToItselfWarning: true} );
             return;
-          }
-      })
-    }
+        }
+      }
+
+      //find siblings from the parent
+      let siblings= currentSessionComponents.filter( (component) =>{
+         return typeof parentComponent.displayLogic.childKeyIds.find( childKey => childKey === component.displayLogic.key ) !=='undefined'}
+       );
+
+      let sibling = siblings.find( (component)=>{ return component.businessLogic.name === updatedComponent.businessLogic.name; });
+
+      if( typeof sibling !== 'undefined' )
+      {
+        this.targetComponentName = parentComponent.businessLogic.name;
+        this.sourceComponentName = updatedComponent.businessLogic.name;
+        updatedComponent.businessLogic.name = originComponent.businessLogic.name;
+        this.setState( {isDropToSameParentWarning: true} );
+
+        return;
+      }
+      this.selectedComponentHandler( updatedComponent );
+    };
 
     // need to have following features
     // 1 - check if the added component exists - if yes using the same id from existing one
@@ -1070,6 +1074,10 @@ class CCiLabComponentList extends Component {
       this.setState({isDropToItselfWarning: false});
     }
 
+    hideUpdateToItselfWarning=()=>{
+      this.setState({isUpdateToItselfWarning: false});
+    }
+
     render() {
       if( this.initialized === false )
         return null;
@@ -1088,6 +1096,14 @@ class CCiLabComponentList extends Component {
                     key1='same-component'
                     option = { `{ "targetComponent": "${this.targetComponentName}"}`}
                     hideDropWarning={this.hideDropToItselfWarning}/>
+                  : null;
+
+      const UpdateToItselfWarningModal = this.state.isUpdateToItselfWarning ?
+                  <DropComponentWarningModal
+                    title={'title'}
+                    key1='parent-child-is-same'
+                    option = { `{ "targetComponent": "${this.targetComponentName}"}`}
+                    hideDropWarning={this.hideUpdateToItselfWarning}/>
                   : null;
 
       let listTitleClassName='border-0 text-primary text-nowrap';
@@ -1171,6 +1187,7 @@ class CCiLabComponentList extends Component {
               </a>
             {DropToSameParentWarningModal }
             {DropToItselfWarningModal }
+            {UpdateToItselfWarningModal}
         </div>
       );
     };

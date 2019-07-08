@@ -208,7 +208,7 @@ const SetupComponentBOM=(props)=>{
 export const SetupBOM=(props)=>{
   const _className = 'cursor-pointer text-primary border-0 p-1 fa fw fa-edit' + (props.component.displayLogic.selected ? ' bg-info' : ' ');
 
-  const originComponent = props.component;
+  const originComponent = JSON.parse(JSON.stringify(props.component));
 
    // component.displayLogic.inlineMenuEnabled needs set to true
   const IsClosePopupMenu=( component )=>{
