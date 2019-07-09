@@ -383,6 +383,7 @@ class CCiLabComponent extends Component {
     };
 
     updateImage=()=>{
+      sessionStorage.setItem( `${this.currentComponent.businessLogic.name}_${this.currentComponent.displayLogic.key}_businessLogic`, JSON.stringify( this.currentComponent.businessLogic ));
       this.setState({updateImg:true});
     };
 
