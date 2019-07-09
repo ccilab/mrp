@@ -621,6 +621,7 @@ class CCiLabComponentList extends Component {
             this.sourceComponentName = updatedComponent.businessLogic.name;
             updatedComponent.businessLogic.name = originComponent.businessLogic.name;
             this.setState( {isUpdateToItselfWarning: true} );
+            // return false so sessionStorage won't be changed inside SetupBom class
             return false;
         }
       }
@@ -642,9 +643,12 @@ class CCiLabComponentList extends Component {
         updatedComponent.businessLogic.name = originComponent.businessLogic.name;
         this.setState( {isDropToSameParentWarning: true} );
 
+        // return false so sessionStorage won't be changed inside SetupBom class
         return false;
       }
-      //this.selectedComponentHandler( updatedComponent );
+
+      // update component name
+      this.selectedComponentHandler( updatedComponent );
       return true;
     };
 
