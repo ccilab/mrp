@@ -596,12 +596,12 @@ class CCiLabComponentList extends Component {
       this.initialized = true;
     }
 
-    // need to check following (#todo)
-    //  1 - if component is the root component, then needs to re-cal all component's requiredQty
+    // need to check following:
+    //  1 - if component is the root component, then needs to re-cal all component's requiredQty (#todo)
     //  2 - updated component can't be the same as its own parent ( done )
     //  3 - updated component can't be the same as its siblings ( done )
-    //  4 - if the updated component exists - using the same businessLogic id from existing one
-    //  5 - if the updated component doesn't exist - create a new businessLogic
+    //  4 - if the updated component exists - using the same businessLogic id from existing one (done)
+    //  5 - check the root component update (done)
     updateComponent =( originComponent, updatedComponent )=>{
       console.log("CCiLabComponentList - updateComponent: inline menu enable - " + updatedComponent.displayLogic.inlineMenuEnabled);
 
@@ -624,6 +624,10 @@ class CCiLabComponentList extends Component {
             // return false so sessionStorage won't be changed inside SetupBom class
             return false;
         }
+      }
+      else  //root component is updated
+      {
+        parentComponent = originComponent;
       }
 
       //find siblings from the parent
@@ -653,7 +657,7 @@ class CCiLabComponentList extends Component {
     };
 
     // need to have following features
-    // 1 - check if the added component exists - if yes using the same id from existing one
+    // 1 - create a new businessLogic and displayLogic and store them into sessionStorage
     addComponent = ( parentComponent ) =>{
       console.log("CCiLabComponentList - addComponent to: " + parentComponent.businessLogic.name );
 
@@ -684,6 +688,7 @@ class CCiLabComponentList extends Component {
       let components =[newComponent];
 
       //initialize the updated session components
+      // save businessLogic to sessionStorage
       initializeComponents(parentComponent, currentSessionComponents, components, updatedSessionComponents);
 
       // populate target component's displayLogic.childKeyIds[]
