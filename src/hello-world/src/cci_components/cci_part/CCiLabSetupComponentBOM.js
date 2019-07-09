@@ -80,30 +80,46 @@ const SetupComponentBOM=(props)=>{
     rateAppendPercentage(e.target.value);
   };
 
-  const enterKeyHandler=( e )=>{
-    if( e.key ==='Enter')
-    {
-      rateAppendPercentage(rateInputElement.current.value);
-    }
-  };
-
   // https://blog.bitsrc.io/understanding-currying-in-javascript-ceb2188c339
   const updateValue=(props)=>(e)=>{
-      if( typeof props.handler !== 'undefined')
-      {
-        if( e.target.value === '' && props.title ==='part-name')
-          e.target.value = 'add-part';
+    //   if( typeof props.handler !== 'undefined')
+    //   {
+    //     if( typeof e.target !== 'undefined' && e.target.value === '' && props.title ==='part-name')
+    //       e.target.value = 'add-part';
 
-        console.log("SetupComponentBOM - updateValue: " + e.target.value);
+    //     console.log("SetupComponentBOM - updateValue: " + e.target.value);
 
-        // todo: need to update this when lost focus
-        // if( appendPercentage )
-        //   setInput( e.target.value + '(%)');
-
-        props.handler(e.target.value, props.component);
-
-      }
+    //     props.handler(e.target.value, props.component);
+    //   }
+    onUpdateValueEnterKey( props, e.target);
   }
+
+  const onUpdateValueEnterKey=(props, target )=>{
+    if( typeof props.handler !== 'undefined')
+    {
+      if( typeof target !== 'undefined' && target.value === '' && props.title ==='part-name')
+        target.value = 'add-part';
+
+      console.log("SetupComponentBOM - updateValue: " + target.value);
+
+      props.handler(target.value, props.component);
+
+    }
+  }
+
+  const enterKeyHandler=(e)=>{
+    if( typeof e.key !== 'undefined' && e.key ==='Enter')
+    {
+      if( appendPercentage )
+      {
+        rateAppendPercentage(rateInputElement.current.value);
+      }
+      else
+      {
+        onUpdateValueEnterKey(props, e.target);
+      }
+    }
+  };
 
   const updateChange=(props)=>(e)=>{
     console.log("SetupComponentBOM - updateChange: " + e.target.value);
@@ -181,7 +197,7 @@ const SetupComponentBOM=(props)=>{
                       onChange={appendPercentage ? updateValue(props) : updateChange(props)}
                       onClose={updateValue(props)}
                       onInput={(e)=>{filterInputValue(e)}}
-                      onKeyPress={ appendPercentage? (e)=>enterKeyHandler(e) : null }
+                      onKeyPress={ (e)=>enterKeyHandler(e) }
                       onBlur={ appendPercentage ? (e)=>{onBlurHandler(e)} :updateValue(props)}/>
               }
               id={`${props.component.displayLogic.key}-tooltip`}
@@ -208,6 +224,7 @@ const SetupComponentBOM=(props)=>{
 export const SetupBOM=(props)=>{
   const _className = 'cursor-pointer text-primary border-0 p-1 fa fw fa-edit' + (props.component.displayLogic.selected ? ' bg-info' : ' ');
 
+  // deep copy object that doesn't have function inside object
   const originComponent = JSON.parse(JSON.stringify(props.component));
 
    // component.displayLogic.inlineMenuEnabled needs set to true
@@ -231,29 +248,31 @@ export const SetupBOM=(props)=>{
       }
 
       // update component name
-      if( isValidString( component.businessLogic.name) )
-        props.updateComponent(originComponent, component);
-
-      // originComponent.businessLogic.name could be hard-coded 'add-part' or other user given name
-      if( originComponent.businessLogic.name !== component.businessLogic.name )
+      if( isValidString( component.businessLogic.name) && props.updateComponent(originComponent, component))
       {
-        sessionStorage.removeItem(`${originComponent.businessLogic.name}_${props.component.displayLogic.key}_displayLogic`);
-      }
-      // component name may or may not change, but the component.displayLogic.inlineMenuEnabled will change if passed the checking
-      sessionStorage.setItem( `${component.businessLogic.name}_${component.displayLogic.key}_displayLogic`, JSON.stringify( component.displayLogic ));
+          // originComponent.businessLogic.name could be hard-coded 'add-part' or other user given name
+          if( originComponent.businessLogic.name !== component.businessLogic.name )
+          {
+            sessionStorage.removeItem(`${originComponent.businessLogic.name}_${props.component.displayLogic.key}_displayLogic`);
+          }
+          // component name may or may not change, but the component.displayLogic.inlineMenuEnabled will change if passed the checking
+          sessionStorage.setItem( `${component.businessLogic.name}_${component.displayLogic.key}_displayLogic`, JSON.stringify( component.displayLogic ));
 
-      // update component name if user changes it
-      if( originComponent.businessLogic.name !== component.businessLogic.name )
-      {
-          sessionStorage.removeItem(`${originComponent.businessLogic.name}_${props.component.displayLogic.key}_businessLogic`);
-          sessionStorage.setItem( `${component.businessLogic.name}_${component.displayLogic.key}_businessLogic`, JSON.stringify( component.businessLogic ));
+          // update component name if user changes it
+          if( originComponent.businessLogic.name !== component.businessLogic.name )
+          {
+              sessionStorage.removeItem(`${originComponent.businessLogic.name}_${props.component.displayLogic.key}_businessLogic`);
+              sessionStorage.setItem( `${component.businessLogic.name}_${component.displayLogic.key}_businessLogic`, JSON.stringify( component.businessLogic ));
+          }
+
+          if( originComponent.businessLogic.name !== component.businessLogic.name )
+          {
+            sessionStorage.removeItem( `${originComponent.businessLogic.name}_${component.displayLogic.key}_bom_core`);
+          }
+          sessionStorage.setItem( `${component.businessLogic.name}_${component.displayLogic.key}_bom_core`, JSON.stringify( component.bom.core ));
       }
 
-      if( originComponent.businessLogic.name !== component.businessLogic.name )
-      {
-        sessionStorage.removeItem( `${originComponent.businessLogic.name}_${component.displayLogic.key}_bom_core`);
-      }
-      sessionStorage.setItem( `${component.businessLogic.name}_${component.displayLogic.key}_bom_core`, JSON.stringify( component.bom.core ));
+
   }
 
   const initializeBOM=()=>{

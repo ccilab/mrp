@@ -599,7 +599,7 @@ class CCiLabComponentList extends Component {
     // need to check following (#todo)
     //  1 - if component is the root component, then needs to re-cal all component's requiredQty
     //  2 - updated component can't be the same as its own parent ( done )
-    //  3 - updated component can't be the same as its siblings
+    //  3 - updated component can't be the same as its siblings ( done )
     //  4 - if the updated component exists - using the same businessLogic id from existing one
     //  5 - if the updated component doesn't exist - create a new businessLogic
     updateComponent =( originComponent, updatedComponent )=>{
@@ -621,7 +621,7 @@ class CCiLabComponentList extends Component {
             this.sourceComponentName = updatedComponent.businessLogic.name;
             updatedComponent.businessLogic.name = originComponent.businessLogic.name;
             this.setState( {isUpdateToItselfWarning: true} );
-            return;
+            return false;
         }
       }
 
@@ -630,7 +630,10 @@ class CCiLabComponentList extends Component {
          return typeof parentComponent.displayLogic.childKeyIds.find( childKey => childKey === component.displayLogic.key ) !=='undefined'}
        );
 
-      let sibling = siblings.find( (component)=>{ return component.businessLogic.name === updatedComponent.businessLogic.name; });
+      let sibling = siblings.find( (component)=>{
+            return component.businessLogic.name === updatedComponent.businessLogic.name &&
+                   component.displayLogic.key !== updatedComponent.displayLogic.key;
+       });
 
       if( typeof sibling !== 'undefined' )
       {
@@ -639,9 +642,10 @@ class CCiLabComponentList extends Component {
         updatedComponent.businessLogic.name = originComponent.businessLogic.name;
         this.setState( {isDropToSameParentWarning: true} );
 
-        return;
+        return false;
       }
-      this.selectedComponentHandler( updatedComponent );
+      //this.selectedComponentHandler( updatedComponent );
+      return true;
     };
 
     // need to have following features

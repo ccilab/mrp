@@ -279,25 +279,3 @@ const loadFile=(input, props)=>( e )=>{
 
   removeImgInputTag(input)
 }
-
-const receivedText =(e)=>{
-      let lines = e.target.result;
-      let newArr = JSON.parse(lines);
-
-      let number = Object.keys(newArr.MsiGroupList).length;
-      console.log("number is: " + number);
-      
-      for (let i=0;i<number;i++) {
-          console.log(newArr.MsiGroupList['MsiGroup' + i]);
-         
-          }
-
-      //     document.getElementById('txBaseImageDir' + i).value = newMsiGroup.baseImageDir;
-      //     document.getElementById('txUpgradeImageDir' + i).value = newMsiGroup.upgradeImageDir;
-      //     document.getElementById('txaChangeFile' + i).value = newMsiGroup.changedFileList;
-      
-     
-      // document.getElementById("SPVersion").value = newArr.SPversion;
-      // document.getElementById("txEmail").value = newArr.Email;
-      // document.getElementById("txInstallIconFile").value = newArr.IconFile;
-}
