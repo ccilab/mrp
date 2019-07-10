@@ -21,48 +21,56 @@ import {TextResizeDetector } from "./TextResizeDetector"
 
 
 //json-loader load the *.json file
-import components from './../../data/components.json';
+// import components from './../../data/components.json';
 
 
 //table includes assembly and paint process
 // simulate after loaded very top component and its direct  components
-const firstComponents = components.firstComponents;
+// const firstComponents = components.firstComponents;
 
 // simulate load children of component id 1 ( top )
-const secondComponents = components.secondComponents;
+// const secondComponents = components.secondComponents;
 
-// simulate load children of component id 2 ( leg )
-const thirdComponents = components.thirdComponents;
+// // simulate load children of component id 2 ( leg )
+// const thirdComponents = components.thirdComponents;
 
-// simulate load children of component id 4 ( low_beam )
-const forthComponents = components.forthComponents;
+// // simulate load children of component id 4 ( low_beam )
+// const forthComponents = components.forthComponents;
 
 let fontFamily ='Arial, Helvetica, sans-serif';
 
+// 1) get date source in businessLogic object array from server
+// 2) or try to find date source from session Storage
 const getChildComponentsFromDataSource = (parentComponent)=>{
   //#todo: need to query server to get a new components
   console.log("query server to get child components")
 
-  let components =[];
-  if( parentComponent.businessLogic.id === 1 )
+  let components = null;
+
+  // get root component first from server or session storage
+  if( typeof parentComponent === 'undefined')
   {
-    components= secondComponents;
     return components;
   }
+  // if( parentComponent.businessLogic.id === 1 )
+  // {
+  //   components= secondComponents;
+  //   return components;
+  // }
 
 
-  if( parentComponent.businessLogic.id === 2 )
-  {
-    components= thirdComponents;
-    return components;
-  }
+  // if( parentComponent.businessLogic.id === 2 )
+  // {
+  //   components= thirdComponents;
+  //   return components;
+  // }
 
 
-  if( parentComponent.businessLogic.id === 4 )
-  {
-    components= forthComponents;
-    return components;
-  }
+  // if( parentComponent.businessLogic.id === 4 )
+  // {
+  //   components= forthComponents;
+  //   return components;
+  // }
 
   return components;
 }
@@ -71,7 +79,7 @@ const getChildComponentsFromDataSource = (parentComponent)=>{
 const initializeBusinessLogic = (parentComponent)=>{
   let businessLogic={id: 0,
                      name: 'add-part',
-                     parentIds:[parentComponent.businessLogic.id],
+                     parentIds: typeof parentComponent === 'undefined'? []:[parentComponent.businessLogic.id],
                      childIds :[],
                      imgFile: '',
                      status: 'info',
@@ -487,7 +495,9 @@ class CCiLabComponentList extends Component {
 
       //#todo: need to query server to get a new components
       console.log("CCiLabComponentList - componentWillMount: query server to get root components")
-      let components = firstComponents;
+
+      //if there is no date source (remote or sessionStorage) available, create root component first
+      let components = getChildComponentsFromDataSource() || [this.addComponent()];
 
       //#todo: need to query server side to find the very top component
       // never check  local storage as it may out of sync with server
@@ -511,6 +521,7 @@ class CCiLabComponentList extends Component {
 
       // trick - set default visible=true in constructor, set visible=false in componentWillMount
       // so when user clicks << component list will sliding back
+
       // eslint-disable-next-line
       this.state.greetings=currentSessionComponents;
       // eslint-disable-next-line
@@ -657,42 +668,63 @@ class CCiLabComponentList extends Component {
     };
 
     // need to have following features
-    // 1 - create a new businessLogic and displayLogic and store them into sessionStorage
+    // 1 - create a new child component's businessLogic and displayLogic and store them into sessionStorage ( done )
+    // 2 - create root component's businessLogic and displayLogic and store them into sessionStorage ( todo )
     addComponent = ( parentComponent ) =>{
-      console.log("CCiLabComponentList - addComponent to: " + parentComponent.businessLogic.name );
-
+      let newComponent={};
       let currentSessionComponents = this.state.greetings;
 
-      // if parent component's children are hidden, expending all the children first without calling setState to rend the list
-      if( parentComponent.displayLogic.canExpend )
+      if( typeof parentComponent !== 'undefined')
       {
-         currentSessionComponents = this.showOrHideChildren( parentComponent, true, false);
-         parentComponent.displayLogic.canExpend = false;
+        console.log("CCiLabComponentList - addComponent to: " + parentComponent.businessLogic.name );
+
+        // if parent component's children are hidden, expending all the children first without calling setState to rend the list
+        if( parentComponent.displayLogic.canExpend )
+        {
+          currentSessionComponents = this.showOrHideChildren( parentComponent, true, false);
+          parentComponent.displayLogic.canExpend = false;
+        }
       }
 
-      let newComponent={};
-
+      //  root component or children 
       newComponent.businessLogic = new initializeBusinessLogic(parentComponent);
       let maxBusinessLogicId = findMaxBusinessId(currentSessionComponents);
       newComponent.businessLogic.id = ++maxBusinessLogicId;
 
       let displayKeyValue = findMaxDisplayKey(currentSessionComponents);
-      newComponent.displayLogic = new initializeDisplayLogic( ++displayKeyValue, false, parentComponent.displayLogic.rectLeft )
+      if( typeof parentComponent === 'undefined' )
+      { //root
+        newComponent.displayLogic = new initializeDisplayLogic( ++displayKeyValue, false );
+      }
+      else
+      {
+        newComponent.displayLogic = new initializeDisplayLogic( ++displayKeyValue, false, parentComponent.displayLogic.rectLeft );
+      }
 
       //update businessLogic and displayLogic childIds of parent component
-      parentComponent.businessLogic.childIds.push( newComponent.businessLogic.id );
+      if( typeof parentComponent !== 'undefined')
+      {
+        parentComponent.businessLogic.childIds.push( newComponent.businessLogic.id );
+      }
 
       //rebuild the component list
       let updatedSessionComponents = [];
 
-      let components =[newComponent];
+      if( typeof parentComponent !== 'undefined')
+      {
+        let components =[newComponent];
 
-      //initialize the updated session components
-      // save businessLogic to sessionStorage
-      initializeComponents(parentComponent, currentSessionComponents, components, updatedSessionComponents);
+        //initialize the updated session components
+        // save businessLogic to sessionStorage
+        initializeComponents(parentComponent, currentSessionComponents, components, updatedSessionComponents);
 
-      // populate target component's displayLogic.childKeyIds[]
-      populateComponentChildKeyIds(parentComponent, updatedSessionComponents);
+        // populate target component's displayLogic.childKeyIds[]
+        populateComponentChildKeyIds(parentComponent, updatedSessionComponents);
+      }
+      else
+      {
+        updatedSessionComponents=[newComponent];
+      }
 
       newComponent.displayLogic.showMyself = true;
 
@@ -706,6 +738,7 @@ class CCiLabComponentList extends Component {
       // need to check vertical scroll bar doesn't show
       // create vertical scroll bar based on the height of component list dynamically
       this.updateDimensions( updatedSessionComponents);
+      return newComponent;
     };
 
     deleteComponent = ( deletedComponent ) =>{
