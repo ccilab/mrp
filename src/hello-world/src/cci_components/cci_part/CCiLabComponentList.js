@@ -129,8 +129,8 @@ const findMaxDisplayKey = ( componentList )=>{
   return displayKeyValue;
 };
 
-// merge newComponentList (that displayLogic isn't initialized) and existingComponentList
-// (existing components, displayLogic is initialized) into targetComponentList
+// merge newComponentList (if displayLogic isn't initialized, it will be inilized inside this function) and 
+// existingComponentList (existing components, displayLogic is initialized) into targetComponentList
 // from a specific component in existingComponentList ( atComponent )
 // store businessLogic to session storage for each component in newComponentList
 const initializeComponents = ( atComponent, existingComponentList, newComponentList, targetComponentList)=>{
@@ -154,7 +154,7 @@ const initializeComponents = ( atComponent, existingComponentList, newComponentL
     }
 
 
-    if( typeof atComponent   !== "undefined"  &&
+    if( typeof atComponent  !== "undefined"  &&
         typeof atComponent.displayLogic !== "undefined" )
     {
       let atComponentKey = atComponent.displayLogic.key;
@@ -169,6 +169,10 @@ const initializeComponents = ( atComponent, existingComponentList, newComponentL
           else
             targetComponentList.push(element);
       }
+    }
+    else //new component just created as root component
+    {
+      targetComponentList.push(element);
     }
 
   });
@@ -573,7 +577,7 @@ class CCiLabComponentList extends Component {
 
     //  handles component list increase due to add/remove components
     updateDimensions=( componentList, isRender = true )=>{
-      if( this.state.greetings === "undefined")
+      if( componentList === "undefined" || this.state.greetings === "undefined")
       {
           this.setDefaultListDimension();
       }
@@ -600,7 +604,7 @@ class CCiLabComponentList extends Component {
       }
       // this.setState( {  })
       // console.log("CCiLabComponentList - updateDimensions: used list width: " + this.componentListWidth );
-      if( isRender === true )
+      if( componentList !== "undefined" && isRender === true )
         this.setState( { greetings: componentList } );
     }
 
@@ -713,17 +717,14 @@ class CCiLabComponentList extends Component {
 
       let components =[newComponent];
 
-      if( typeof parentComponent === 'undefined')
-      {
-        parentComponent = newComponent;
-      }
-
       //initialize the updated session components
       // save businessLogic to sessionStorage
+      // parentComponent and currentSessionComponents is 'undefined' 
+      // when a new component created as root component 
       initializeComponents(parentComponent, currentSessionComponents, components, updatedSessionComponents);
 
       // populate target component's displayLogic.childKeyIds[]
-      populateComponentChildKeyIds(parentComponent, updatedSessionComponents);
+      populateComponentChildKeyIds( typeof parentComponent !== 'undefined' ? parentComponent : newComponent , updatedSessionComponents);
 
       newComponent.displayLogic.showMyself = true;
 
@@ -1063,7 +1064,7 @@ class CCiLabComponentList extends Component {
     //need to update showMyself to true after button is clicked to canExpend
     //need to update showMyself to false after button is clicked to collapse
     renderGreetings = () => {
-      return ( (typeof this.state !== "undefined") && (typeof this.state.greetings !== "undefined" ) )?
+      return ((typeof this.state !== "undefined") && (typeof this.state.greetings !== "undefined" )) ?
           this.state.greetings.map( (component) => {
                 if( component.displayLogic.showMyself === true )
                 {
