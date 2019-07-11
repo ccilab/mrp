@@ -134,7 +134,7 @@ const findMaxDisplayKey = ( componentList )=>{
 // from a specific component in existingComponentList ( atComponent )
 // store businessLogic to session storage for each component in newComponentList
 const initializeComponents = ( atComponent, existingComponentList, newComponentList, targetComponentList)=>{
-  if( typeof existingComponentList !== "undefined")
+  if( typeof existingComponentList !== "undefined" && existingComponentList !== null )
     existingComponentList.forEach( (existingComponent)=>{ targetComponentList.push( existingComponent ) } );
 
   // initialize displayLogic items, create unique key value for latest components from data layer
@@ -493,29 +493,38 @@ class CCiLabComponentList extends Component {
 
       let currentSessionComponents=[];
 
-      //#todo: need to query server to get a new components
+      //#todo: need to query server side to find the very top component
       console.log("CCiLabComponentList - componentWillMount: query server to get root components")
 
       //if there is no date source (remote or sessionStorage) available, create root component first
-      let components = getChildComponentsFromDataSource() || [this.addComponent()];
-
-      //#todo: need to query server side to find the very top component
-      // never check  local storage as it may out of sync with server
-      let rootComponent = components.filter(component=>component.businessLogic.parentIds.length === 0)[0];
-      initializeComponents(rootComponent, this.state.greetings, components, currentSessionComponents);
-
-      //always show very top component
-      rootComponent.displayLogic.showMyself = true;
-
-      if( rootComponent.businessLogic.childIds.length !== 0 )
+      let components = getChildComponentsFromDataSource();
+      let rootComponent = null;
+      if( components === null || typeof components === 'undefined')
       {
-        rootComponent.displayLogic.canExpend = true;
+          components = [this.addComponent()];
+          rootComponent = components[0];
+          currentSessionComponents=[rootComponent]
+      }
+      else
+      {
+          // never check  local storage as it may out of sync with server
+          rootComponent = components.filter(component=>component.businessLogic.parentIds.length === 0)[0];
+          initializeComponents(rootComponent, this.state.greetings, components, currentSessionComponents);
 
-        // populate very top component's displayLogic.childKeyIds[], if it's not included yet
-        populateComponentChildKeyIds(rootComponent, currentSessionComponents);
+          //always show very top component
+          rootComponent.displayLogic.showMyself = true;
+
+          if( rootComponent.businessLogic.childIds.length !== 0 )
+          {
+            rootComponent.displayLogic.canExpend = true;
+
+            // populate very top component's displayLogic.childKeyIds[], if it's not included yet
+            populateComponentChildKeyIds(rootComponent, currentSessionComponents);
+          }
+
+          sessionStorage.setItem( `${rootComponent.businessLogic.name}_${rootComponent.displayLogic.key}_displayLogic`, JSON.stringify( rootComponent.displayLogic ));
       }
 
-      sessionStorage.setItem( `${rootComponent.businessLogic.name}_${rootComponent.displayLogic.key}_displayLogic`, JSON.stringify( rootComponent.displayLogic ));
 
       this.positioningListTitle(rootComponent);
 
@@ -672,7 +681,7 @@ class CCiLabComponentList extends Component {
     // 2 - create root component's businessLogic and displayLogic and store them into sessionStorage ( todo )
     addComponent = ( parentComponent ) =>{
       let newComponent={};
-      let currentSessionComponents = this.state.greetings;
+      let currentSessionComponents = this.state.greetings;  // greetings is undefined if there no component exists
 
       if( typeof parentComponent !== 'undefined')
       {
@@ -686,45 +695,35 @@ class CCiLabComponentList extends Component {
         }
       }
 
-      //  root component or children 
+      //  root component or children
       newComponent.businessLogic = new initializeBusinessLogic(parentComponent);
       let maxBusinessLogicId = findMaxBusinessId(currentSessionComponents);
       newComponent.businessLogic.id = ++maxBusinessLogicId;
 
-      let displayKeyValue = findMaxDisplayKey(currentSessionComponents);
-      if( typeof parentComponent === 'undefined' )
-      { //root
-        newComponent.displayLogic = new initializeDisplayLogic( ++displayKeyValue, false );
-      }
-      else
-      {
-        newComponent.displayLogic = new initializeDisplayLogic( ++displayKeyValue, false, parentComponent.displayLogic.rectLeft );
-      }
-
       //update businessLogic and displayLogic childIds of parent component
       if( typeof parentComponent !== 'undefined')
       {
+        let displayKeyValue = findMaxDisplayKey(currentSessionComponents);
+        newComponent.displayLogic = new initializeDisplayLogic( ++displayKeyValue, false, parentComponent.displayLogic.rectLeft );
         parentComponent.businessLogic.childIds.push( newComponent.businessLogic.id );
       }
 
       //rebuild the component list
       let updatedSessionComponents = [];
 
-      if( typeof parentComponent !== 'undefined')
-      {
-        let components =[newComponent];
+      let components =[newComponent];
 
-        //initialize the updated session components
-        // save businessLogic to sessionStorage
-        initializeComponents(parentComponent, currentSessionComponents, components, updatedSessionComponents);
-
-        // populate target component's displayLogic.childKeyIds[]
-        populateComponentChildKeyIds(parentComponent, updatedSessionComponents);
-      }
-      else
+      if( typeof parentComponent === 'undefined')
       {
-        updatedSessionComponents=[newComponent];
+        parentComponent = newComponent;
       }
+
+      //initialize the updated session components
+      // save businessLogic to sessionStorage
+      initializeComponents(parentComponent, currentSessionComponents, components, updatedSessionComponents);
+
+      // populate target component's displayLogic.childKeyIds[]
+      populateComponentChildKeyIds(parentComponent, updatedSessionComponents);
 
       newComponent.displayLogic.showMyself = true;
 
