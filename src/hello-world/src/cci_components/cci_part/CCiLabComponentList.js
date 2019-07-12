@@ -129,7 +129,7 @@ const findMaxDisplayKey = ( componentList )=>{
   return displayKeyValue;
 };
 
-// merge newComponentList (if displayLogic isn't initialized, it will be inilized inside this function) and 
+// merge newComponentList (if displayLogic isn't initialized, it will be inilized inside this function) and
 // existingComponentList (existing components, displayLogic is initialized) into targetComponentList
 // from a specific component in existingComponentList ( atComponent )
 // store businessLogic to session storage for each component in newComponentList
@@ -178,15 +178,47 @@ const initializeComponents = ( atComponent, existingComponentList, newComponentL
   });
 };
 
-const populateComponentChildKeyIds = (selectedComponent, cachedComponents )=>{
+const reduceComponentBusinessLogicChildIds=( _component, _idxBusinessLogicId )=>{
+    _component.businessLogic.childIds.splice( _idxBusinessLogicId,1);
+      //update sessionStorage businessLogic
+      let previousBusinessLogic = JSON.parse(sessionStorage.getItem(`${_component.businessLogic.name}_${_component.displayLogic.key}_businessLogic`));
+      previousBusinessLogic.childIds=_component.businessLogic.childIds;
+      sessionStorage.setItem( `${_component.businessLogic.name}_${_component.displayLogic.key}_businessLogic`, JSON.stringify( previousBusinessLogic ));
+}
+
+const reduceComponentDisplayLogicChildIds=( _component, _idxDisplayLogicId  )=>{
+    _component.displayLogic.childKeyIds.splice( _idxDisplayLogicId, 1 );
+
+      //update sessionStorage displayLogic
+      let previousDisplayLogic = JSON.parse(sessionStorage.getItem(`${_component.businessLogic.name}_${_component.displayLogic.key}_displayLogic`));
+      previousDisplayLogic.childIds=_component.displayLogic.childKeyIds;
+      sessionStorage.setItem( `${_component.businessLogic.name}_${_component.displayLogic.key}_displayLogic`, JSON.stringify( previousDisplayLogic ));
+}
+const populateComponentBusinessLogicChildIds=( _component, childComponentBusinessLogicId )=>{
+
+    _component.businessLogic.childIds.push( childComponentBusinessLogicId );
+
+    //update sessionStorage businessLogic
+    let previousBusinessLogic = JSON.parse(sessionStorage.getItem(`${_component.businessLogic.name}_${_component.displayLogic.key}_businessLogic`));
+    previousBusinessLogic.childIds=_component.businessLogic.childIds;
+    sessionStorage.setItem( `${_component.businessLogic.name}_${_component.displayLogic.key}_businessLogic`, JSON.stringify( previousBusinessLogic ));
+}
+
+const populateComponentDisplayLogicChildIds = (selectedComponent, cachedComponents )=>{
   if( selectedComponent.businessLogic.childIds.length !== selectedComponent.displayLogic.childKeyIds.length )
   {
       cachedComponents.forEach((element)=>{
         if( selectedComponent.businessLogic.childIds.includes( element.businessLogic.id ) &&
             element.businessLogic.parentIds.includes(selectedComponent.businessLogic.id )  &&
             !selectedComponent.displayLogic.childKeyIds.includes( element.displayLogic.key) )
-            selectedComponent.displayLogic.childKeyIds.push( element.displayLogic.key )
+        {
+                selectedComponent.displayLogic.childKeyIds.push( element.displayLogic.key );
+        }
       })
+      //update sessionStorage displayLogic
+      let previousDisplayLogic = JSON.parse(sessionStorage.getItem(`${selectedComponent.businessLogic.name}_${selectedComponent.displayLogic.key}_displayLogic`));
+      previousDisplayLogic.childIds=selectedComponent.displayLogic.childKeyIds;
+      sessionStorage.setItem( `${selectedComponent.businessLogic.name}_${selectedComponent.displayLogic.key}_displayLogic`, JSON.stringify( previousDisplayLogic ));
   }
 }
 
@@ -523,7 +555,7 @@ class CCiLabComponentList extends Component {
             rootComponent.displayLogic.canExpend = true;
 
             // populate very top component's displayLogic.childKeyIds[], if it's not included yet
-            populateComponentChildKeyIds(rootComponent, currentSessionComponents);
+            populateComponentDisplayLogicChildIds(rootComponent, currentSessionComponents);
           }
 
           sessionStorage.setItem( `${rootComponent.businessLogic.name}_${rootComponent.displayLogic.key}_displayLogic`, JSON.stringify( rootComponent.displayLogic ));
@@ -707,9 +739,10 @@ class CCiLabComponentList extends Component {
       //update businessLogic and displayLogic childIds of parent component
       if( typeof parentComponent !== 'undefined')
       {
-        let displayKeyValue = findMaxDisplayKey(currentSessionComponents);
-        newComponent.displayLogic = new initializeDisplayLogic( ++displayKeyValue, false, parentComponent.displayLogic.rectLeft );
-        parentComponent.businessLogic.childIds.push( newComponent.businessLogic.id );
+          let displayKeyValue = findMaxDisplayKey(currentSessionComponents);
+          newComponent.displayLogic = new initializeDisplayLogic( ++displayKeyValue, false, parentComponent.displayLogic.rectLeft );
+          //update sessionStorage businessLogic
+          populateComponentBusinessLogicChildIds( parentComponent, newComponent.businessLogic.id );
       }
 
       //rebuild the component list
@@ -719,12 +752,12 @@ class CCiLabComponentList extends Component {
 
       //initialize the updated session components
       // save businessLogic to sessionStorage
-      // parentComponent and currentSessionComponents is 'undefined' 
-      // when a new component created as root component 
+      // parentComponent and currentSessionComponents is 'undefined'
+      // when a new component created as root component
       initializeComponents(parentComponent, currentSessionComponents, components, updatedSessionComponents);
 
       // populate target component's displayLogic.childKeyIds[]
-      populateComponentChildKeyIds( typeof parentComponent !== 'undefined' ? parentComponent : newComponent , updatedSessionComponents);
+      populateComponentDisplayLogicChildIds( typeof parentComponent !== 'undefined' ? parentComponent : newComponent , updatedSessionComponents);
 
       newComponent.displayLogic.showMyself = true;
 
@@ -761,11 +794,15 @@ class CCiLabComponentList extends Component {
         {
             let idxBusinessLogicId = component.businessLogic.childIds.indexOf( deletedComponent.businessLogic.id );
             if( idxBusinessLogicId >= 0 )
-              component.businessLogic.childIds.splice( idxBusinessLogicId,1);
+            {
+                reduceComponentBusinessLogicChildIds( component, idxBusinessLogicId);
+            }
 
             let idxDisplayLogicId = component.displayLogic.childKeyIds.indexOf( deletedComponent.displayLogic.key );
             if( idxDisplayLogicId >= 0 )
-              component.displayLogic.childKeyIds.splice( idxDisplayLogicId, 1 );
+            {
+                reduceComponentDisplayLogicChildIds( component, idxDisplayLogicId );
+            }
         }
         return component;
       } );
@@ -802,7 +839,7 @@ class CCiLabComponentList extends Component {
             currentSessionComponents = this.state.greetings;
           }
 
-          populateComponentChildKeyIds(selectedComponent, currentSessionComponents );
+          populateComponentDisplayLogicChildIds(selectedComponent, currentSessionComponents );
 
           let rootComponent = currentSessionComponents.find(component=>component.businessLogic.parentIds.length === 0);
 
@@ -978,11 +1015,15 @@ class CCiLabComponentList extends Component {
               {
                   let idxBusinessLogicId = component.businessLogic.childIds.indexOf( movedComponent.businessLogic.id );
                   if( idxBusinessLogicId >= 0 )
-                    component.businessLogic.childIds.splice( idxBusinessLogicId,1);
+                  {
+                    reduceComponentBusinessLogicChildIds( component, idxBusinessLogicId);
+                  }
 
                   let idxDisplayLogicId = component.displayLogic.childKeyIds.indexOf( movedComponent.displayLogic.key );
                   if( idxDisplayLogicId >= 0 )
-                    component.displayLogic.childKeyIds.splice( idxDisplayLogicId, 1 );
+                  {
+                    reduceComponentDisplayLogicChildIds( component, idxDisplayLogicId);
+                  }
               }
               return component;
             } );
@@ -1008,7 +1049,7 @@ class CCiLabComponentList extends Component {
 
           //update parent id of moved component (source) as target Component id
           rmMovedComponent[0].businessLogic.parentIds.length=0;
-          rmMovedComponent[0].businessLogic.parentIds.push(targetComponent.businessLogic.id);
+          populateComponentBusinessLogicChildIds( rmMovedComponent[0], targetComponent.businessLogic.id);
 
           //keep inlineMenuEnable status
           let enableInlineMenu = rmMovedComponent[0].displayLogic.inlineMenuEnabled;
@@ -1027,7 +1068,7 @@ class CCiLabComponentList extends Component {
 
 
           //update businessLogic and displayLogic childIds of target component (target) as moved component ( source )
-          targetComponent.businessLogic.childIds.push(rmMovedComponent[0].businessLogic.id);
+          populateComponentBusinessLogicChildIds(targetComponent, rmMovedComponent[0].businessLogic.id);
 
           //rebuild the component list
           let updatedSessionComponents = [];
@@ -1036,7 +1077,7 @@ class CCiLabComponentList extends Component {
           initializeComponents(targetComponent, currentSessionComponents, rmMovedComponent, updatedSessionComponents);
 
           // populate target component's displayLogic.childKeyIds[]
-          populateComponentChildKeyIds(targetComponent, updatedSessionComponents);
+          populateComponentDisplayLogicChildIds(targetComponent, updatedSessionComponents);
 
           rmMovedComponent[0].displayLogic.showMyself = true;
 
