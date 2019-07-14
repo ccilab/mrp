@@ -18,6 +18,29 @@ const isElementInViewport = (rect) => {
   );
 }
 
+// https://jsfiddle.net/Dwaaren/j9zahaLL/
+export  const vwTOpx=(value)=>{
+    let w = window,
+        d = document,
+        e = d.documentElement,
+        g = d.getElementsByTagName('body')[0],
+        x = w.innerWidth || e.clientWidth || g.clientWidth;
+
+    let result = (x*value)/100;
+    return result;
+  }
+
+  export  const vhTOpx=(value)=>{
+    let w = window,
+        d = document,
+        e = d.documentElement,
+        g = d.getElementsByTagName('body')[0],
+        y = w.innerHeight|| e.clientHeight|| g.clientHeight;
+
+    let result = (y*value)/100;
+    return result;
+  }
+
 // in rem or auto or vh
 export  const setListHeight = (rect, fondSize) => {
     return window.innerHeight <= 200 ? 150/fondSize+'rem' : isElementInViewportHeight( rect ) ? 'auto':'90vh';
@@ -29,11 +52,8 @@ export  const setListWidth = (factor, width) =>{
 
     if( typeof width !== 'undefined')
     {
-        if( window.innerWidth <= width )
-        {
-            ListWidth = width;
-            return (ListWidth * factor).toString() + 'px';
-        }
+        ListWidth = width;
+        return (ListWidth * factor).toString() + 'px';
     }
     else
     {
@@ -41,9 +61,14 @@ export  const setListWidth = (factor, width) =>{
 
         // on iphone 4S, os is 9.3.5 needs workaround to hide list
         if( osVersion.os === 'iOS' && osVersion.osMajorVersion < 10 )
+        {
             ListWidth = window.innerWidth*(window.innerWidth <= 330 ? 0.8 : window.innerWidth <= 600 ? 0.6 : window.innerWidth <= 800 ? 0.50 : 0.4 );
+        }
         else
-            ListWidth = window.innerWidth <= 330 ? 90 : window.innerWidth <= 600 ? 70 : window.innerWidth <= 800 ? 50 : window.innerWidth <= 1000 ? 40 : window.innerWidth <= 1500 ? 30:30;
+        {   //set the width of component list when the list doesn't exist
+            ListWidth = window.innerWidth <= 330 ? 90 : window.innerWidth <= 600 ? 70 : window.innerWidth <= 1500 ? 50:50;
+        }
+            
         return (ListWidth * factor).toString() + ((osVersion.os === 'iOS' && osVersion.osMajorVersion < 10)? 'px':'vw' );
     }
 }

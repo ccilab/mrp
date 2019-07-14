@@ -129,7 +129,7 @@ const findMaxDisplayKey = ( componentList )=>{
   return displayKeyValue;
 };
 
-// merge newComponentList (if displayLogic isn't initialized, it will be inilized inside this function) and
+// merge newComponentList (if displayLogic isn't initialized, it will be initialized inside this function) and
 // existingComponentList (existing components, displayLogic is initialized) into targetComponentList
 // from a specific component in existingComponentList ( atComponent )
 // store businessLogic to session storage for each component in newComponentList
@@ -194,6 +194,17 @@ const reduceComponentDisplayLogicChildIds=( _component, _idxDisplayLogicId  )=>{
       previousDisplayLogic.childIds=_component.displayLogic.childKeyIds;
       sessionStorage.setItem( `${_component.businessLogic.name}_${_component.displayLogic.key}_displayLogic`, JSON.stringify( previousDisplayLogic ));
 }
+
+const populateComponentBusinessLogicParentIds=( _component, parentComponentBusinessLogicId )=>{
+
+  _component.businessLogic.parentIds.push( parentComponentBusinessLogicId );
+
+  //update sessionStorage businessLogic
+  let previousBusinessLogic = JSON.parse(sessionStorage.getItem(`${_component.businessLogic.name}_${_component.displayLogic.key}_businessLogic`));
+  previousBusinessLogic.childIds=_component.businessLogic.parentIds;
+  sessionStorage.setItem( `${_component.businessLogic.name}_${_component.displayLogic.key}_businessLogic`, JSON.stringify( previousBusinessLogic ));
+}
+
 const populateComponentBusinessLogicChildIds=( _component, childComponentBusinessLogicId )=>{
 
     _component.businessLogic.childIds.push( childComponentBusinessLogicId );
@@ -419,8 +430,8 @@ class CCiLabComponentList extends Component {
     setDefaultListDimension=()=>{
       this.componentListWidth= setListWidth(1.0); //in px or vw,
       this.hideListWidth = setListWidth(0.99); //in px or vw
-      this.componentListMinHeight = ( 450/this.state.fontSize +'rem' );  // to show full popup setup bom menu
-      this.componentListHeight= window.innerHeight <= 200 ? this.componentListMinHeight : 'auto';  //minimum height
+      this.componentListMinHeight = ( 500/this.state.fontSize +'rem' );  // to show full popup setup bom menu
+      this.componentListHeight= this.componentListMinHeight;  //minimum height
     }
 
     init=(props)=>{
@@ -438,27 +449,26 @@ class CCiLabComponentList extends Component {
     }
 
     estimateComponentListRect = (componentLists, fontSize)=>{
-      let updatedRect;
+      let updatedRect='undefined';
       let componentListRect;
       let componentListElement = document.getElementById( 'cciLabComponentListID' );
       if( typeof componentListElement !== "undefined" && componentListElement !== null )
       {
         componentListRect = componentListElement.getBoundingClientRect();
         updatedRect = {top: componentListRect.top, left: componentListRect.left, bottom: componentListRect.bottom, right: componentListRect.right*1.2, width: componentListRect.width };
+      
+    
+
+        let shownComponents = componentLists.filter(component=>component.displayLogic.showMyself === true)
+
+        let listCalculatedHight = shownComponents.length * (45+16); //in px
+
+        if( listCalculatedHight > (updatedRect.bottom-updatedRect.top) )
+          document.getElementById( 'cciLabComponentListID' ).style.overflow = 'auto';
+
+        updatedRect.bottom = listCalculatedHight;
+        return updatedRect;
       }
-      else{
-        updatedRect = { top: 0, left: 0, bottom: this.componentListHeight, right: this.componentListWidth, width: this.componentListWidth,  }
-      }
-
-      let shownComponents = componentLists.filter(component=>component.displayLogic.showMyself === true)
-
-      let listCalculatedHight = shownComponents.length * (45+16); //in px
-
-      if( listCalculatedHight > (updatedRect.bottom-updatedRect.top) )
-        document.getElementById( 'cciLabComponentListID' ).style.overflow = 'auto';
-
-      updatedRect.bottom = listCalculatedHight;
-      return updatedRect;
     }
 
     // eName is 'textSizeChanged' defined TextResizeDetector.js
@@ -618,6 +628,9 @@ class CCiLabComponentList extends Component {
             componentList = this.state.greetings;
 
           let listRect = this.estimateComponentListRect( componentList, this.state.fontSize); //this.state.greetings
+
+          if( typeof listRect === 'undefined')
+            return;
           // console.log('CCiLabComponentList - updateDimensions: list width '+ listRect.width);
 
           this.componentListHeight = setListHeight( listRect, this.state.fontSize );
@@ -1042,14 +1055,15 @@ class CCiLabComponentList extends Component {
           bom.core= JSON.parse(sessionStorage.getItem(`${rmMovedComponent[0].businessLogic.name}_${rmMovedComponent[0].displayLogic.key}_bom_core`)) ;
           bom.extra=JSON.parse(sessionStorage.getItem(`${rmMovedComponent[0].businessLogic.name}_${rmMovedComponent[0].displayLogic.key}_bom_extra`));
 
-          sessionStorage.removeItem(`${rmMovedComponent[0].businessLogic.name}_${rmMovedComponent[0].displayLogic.key}_businessLogic`);
-          sessionStorage.removeItem(`${rmMovedComponent[0].businessLogic.name}_${rmMovedComponent[0].displayLogic.key}_displayLogic`);
+          // sessionStorage.removeItem(`${rmMovedComponent[0].businessLogic.name}_${rmMovedComponent[0].displayLogic.key}_businessLogic`);
+          // sessionStorage.removeItem(`${rmMovedComponent[0].businessLogic.name}_${rmMovedComponent[0].displayLogic.key}_displayLogic`);
           sessionStorage.removeItem(`${rmMovedComponent[0].businessLogic.name}_${rmMovedComponent[0].displayLogic.key}_bom_core`);
           sessionStorage.removeItem(`${rmMovedComponent[0].businessLogic.name}_${rmMovedComponent[0].displayLogic.key}_bom_extra`);
 
           //update parent id of moved component (source) as target Component id
           rmMovedComponent[0].businessLogic.parentIds.length=0;
-          populateComponentBusinessLogicChildIds( rmMovedComponent[0], targetComponent.businessLogic.id);
+          // update storage businessLogic inside this function
+          populateComponentBusinessLogicParentIds( rmMovedComponent[0], targetComponent.businessLogic.id);
 
           //keep inlineMenuEnable status
           let enableInlineMenu = rmMovedComponent[0].displayLogic.inlineMenuEnabled;
@@ -1200,8 +1214,8 @@ class CCiLabComponentList extends Component {
         <div className={`d-flex align-items-center`} >
           {/* <AddGreeter addGreeting={this.addGreeting} /> */}
             {/* https://code.i-harness.com/en/q/27a5171 explains why vertical scroll bar won't appear for flex box
-                and what is the workaroud. iphone4s and lower isn't supported
-                UC browser and Edge pro to 15 (https://caniuse.com/#feat=css-sticky) doesn't suppot onScroll={this.updateDimensions}*/}
+                and what is the workaround. iphone4s and lower isn't supported
+                UC browser and Edge pro to 15 (https://caniuse.com/#feat=css-sticky) doesn't support onScroll={this.updateDimensions}*/}
               <div id='cciLabComponentListID'
                   className={`cci-component-list_transition`}
                   style={{'transform': `${this.componentListTranslateStyle}`,
