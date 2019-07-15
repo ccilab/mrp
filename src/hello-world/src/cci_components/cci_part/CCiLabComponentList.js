@@ -494,7 +494,7 @@ class CCiLabComponentList extends Component {
 
       //#todo: title is from server or user input, not hard-coded here
       // this name gives appropriated width
-      let titleRect=getTextRect('部件名:'); //部件名
+      let titleRect=getTextRect('component:'); //部件名
 
       let componentTitleWidth = titleRect.width/this.state.fontSize;  //in rem
        // console.log( 'CCiLabComponentList - componentTitleWidth (rem): ', componentTitleWidth);
@@ -544,7 +544,7 @@ class CCiLabComponentList extends Component {
       console.log("CCiLabComponentList - componentWillMount: query server to get root components")
 
       //if there is no date source (remote or sessionStorage) available, create root component first
-      let components = getChildComponentsFromDataSource();
+      let components = getChildComponentsFromDataSource(); //=firstComponents
       let rootComponent = null;
       if( components === null || typeof components === 'undefined')
       {
