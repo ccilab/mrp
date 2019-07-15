@@ -179,7 +179,8 @@ const initializeComponents = ( atComponent, existingComponentList, newComponentL
 };
 
 const reduceComponentBusinessLogicChildIds=( _component, _idxBusinessLogicId )=>{
-    _component.businessLogic.childIds.splice( _idxBusinessLogicId,1);
+      _component.businessLogic.childIds.splice( _idxBusinessLogicId,1);
+
       //update sessionStorage businessLogic
       let previousBusinessLogic = JSON.parse(sessionStorage.getItem(`${_component.businessLogic.name}_${_component.displayLogic.key}_businessLogic`));
       previousBusinessLogic.childIds=_component.businessLogic.childIds;
@@ -187,7 +188,7 @@ const reduceComponentBusinessLogicChildIds=( _component, _idxBusinessLogicId )=>
 }
 
 const reduceComponentDisplayLogicChildIds=( _component, _idxDisplayLogicId  )=>{
-    _component.displayLogic.childKeyIds.splice( _idxDisplayLogicId, 1 );
+      _component.displayLogic.childKeyIds.splice( _idxDisplayLogicId, 1 );
 
       //update sessionStorage displayLogic
       let previousDisplayLogic = JSON.parse(sessionStorage.getItem(`${_component.businessLogic.name}_${_component.displayLogic.key}_displayLogic`));
@@ -456,8 +457,8 @@ class CCiLabComponentList extends Component {
       {
         componentListRect = componentListElement.getBoundingClientRect();
         updatedRect = {top: componentListRect.top, left: componentListRect.left, bottom: componentListRect.bottom, right: componentListRect.right*1.2, width: componentListRect.width };
-      
-    
+
+
 
         let shownComponents = componentLists.filter(component=>component.displayLogic.showMyself === true)
 
@@ -1020,7 +1021,7 @@ class CCiLabComponentList extends Component {
                     return component.displayLogic.childKeyIds.length && component.displayLogic.childKeyIds.find( (childKey)=>{return childKey === sourceId } )
                   } );
 
-        parentComponents.map( (component)=>{return console.log('parent component name of source component: ', component.businessLogic.name) } );
+        // parentComponents.map( (component)=>{return console.log('parent component name of source component: ', component.businessLogic.name) } );
 
         //remove moved/source component id and displayLogicKey from previous parent's businessLogic and displayLogic childId list
         parentComponents.map( (component)=>{
@@ -1045,60 +1046,44 @@ class CCiLabComponentList extends Component {
         //remove moved/source component from component list
         let idxMovedComponent = currentSessionComponents.findIndex( (component)=>{return component.displayLogic.key === sourceId; });
 
-
         if( idxMovedComponent >= 0 )
         {
-          let rmMovedComponent = currentSessionComponents.splice( idxMovedComponent, 1);
-
-          //rename local storage name to new name
-          let bom={}
-          bom.core= JSON.parse(sessionStorage.getItem(`${rmMovedComponent[0].businessLogic.name}_${rmMovedComponent[0].displayLogic.key}_bom_core`)) ;
-          bom.extra=JSON.parse(sessionStorage.getItem(`${rmMovedComponent[0].businessLogic.name}_${rmMovedComponent[0].displayLogic.key}_bom_extra`));
-
-          // sessionStorage.removeItem(`${rmMovedComponent[0].businessLogic.name}_${rmMovedComponent[0].displayLogic.key}_businessLogic`);
-          // sessionStorage.removeItem(`${rmMovedComponent[0].businessLogic.name}_${rmMovedComponent[0].displayLogic.key}_displayLogic`);
-          sessionStorage.removeItem(`${rmMovedComponent[0].businessLogic.name}_${rmMovedComponent[0].displayLogic.key}_bom_core`);
-          sessionStorage.removeItem(`${rmMovedComponent[0].businessLogic.name}_${rmMovedComponent[0].displayLogic.key}_bom_extra`);
+          let rmMovedComponent = currentSessionComponents.splice( idxMovedComponent, 1)[0];
+          // make sure moved component exists in session Storage
+          if( sessionStorage.getItem( `${rmMovedComponent.businessLogic.name}_${rmMovedComponent.displayLogic.key}_businessLogic` ) === null)
+          {
+            console.log('move component found error - missing: ' + rmMovedComponent.businessLogic.name + '_' + rmMovedComponent.displayLogic.key + '_businessLogic' );
+            return ;
+          }
 
           //update parent id of moved component (source) as target Component id
-          rmMovedComponent[0].businessLogic.parentIds.length=0;
+          rmMovedComponent.businessLogic.parentIds.length=0;
           // update storage businessLogic inside this function
-          populateComponentBusinessLogicParentIds( rmMovedComponent[0], targetComponent.businessLogic.id);
+          populateComponentBusinessLogicParentIds( rmMovedComponent, targetComponent.businessLogic.id);
 
           //keep inlineMenuEnable status
-          let enableInlineMenu = rmMovedComponent[0].displayLogic.inlineMenuEnabled;
+          let enableInlineMenu = rmMovedComponent.displayLogic.inlineMenuEnabled;
 
-          //reset display key and childKeys
-          delete rmMovedComponent[0].displayLogic;
-
-          let newDisplayKey = findMaxDisplayKey(currentSessionComponents);
-
-          rmMovedComponent[0].displayLogic = initializeDisplayLogic(++newDisplayKey, false, targetComponent.displayLogic.rectLeft, enableInlineMenu)
-
-          if( bom.core !== null )
-            sessionStorage.setItem( `${rmMovedComponent[0].businessLogic.name}_${rmMovedComponent[0].displayLogic.key}_bom_core`, JSON.stringify( bom.core ));
-          if( bom.extra !== null )
-            sessionStorage.setItem( `${rmMovedComponent[0].businessLogic.name}_${rmMovedComponent[0].displayLogic.key}_bom_extra`, JSON.stringify( bom.extra ))
-
+          rmMovedComponent.displayLogic = initializeDisplayLogic(rmMovedComponent.displayLogic.key, false, targetComponent.displayLogic.rectLeft, enableInlineMenu)
 
           //update businessLogic and displayLogic childIds of target component (target) as moved component ( source )
-          populateComponentBusinessLogicChildIds(targetComponent, rmMovedComponent[0].businessLogic.id);
+          populateComponentBusinessLogicChildIds(targetComponent, rmMovedComponent.businessLogic.id);
 
           //rebuild the component list
           let updatedSessionComponents = [];
 
           //initialize the updated session components
-          initializeComponents(targetComponent, currentSessionComponents, rmMovedComponent, updatedSessionComponents);
+          initializeComponents(targetComponent, currentSessionComponents, [rmMovedComponent], updatedSessionComponents);
 
           // populate target component's displayLogic.childKeyIds[]
           populateComponentDisplayLogicChildIds(targetComponent, updatedSessionComponents);
 
-          rmMovedComponent[0].displayLogic.showMyself = true;
+          rmMovedComponent.displayLogic.showMyself = true;
 
           // update selected status so the moved component or its parent will be highlighted
           updatedSessionComponents.forEach( (item)=>{
             // store displayLogic to session storage for each item
-            setComponentSelected( item, rmMovedComponent[0].displayLogic.key );
+            setComponentSelected( item, rmMovedComponent.displayLogic.key );
           });
 
           //check if moved component progress status need to change (#todo)
@@ -1107,7 +1092,6 @@ class CCiLabComponentList extends Component {
           // console.log("CCiLabComponentList - moveComponentHandler 4 ")
           this.setState( { greetings: updatedSessionComponents });
         }
-
       }
     };
 
