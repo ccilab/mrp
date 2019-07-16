@@ -251,12 +251,12 @@ export const SetupBOM=(props)=>{
       if( isValidString( component.businessLogic.name) && props.updateComponent(originComponent, component))
       {
           // originComponent.businessLogic.name could be hard-coded 'add-part' or other user given name
-          if( originComponent.businessLogic.name !== component.businessLogic.name )
-          {
-            sessionStorage.removeItem(`${props.component.displayLogic.key}_${originComponent.businessLogic.name}_displayLogic`);
-          }
+          // if( originComponent.businessLogic.name !== component.businessLogic.name )
+          // {
+          //   sessionStorage.removeItem(`${props.component.displayLogic.key}_${originComponent.businessLogic.name}_displayLogic`);
+          // }
           // component name may or may not change, but the component.displayLogic.inlineMenuEnabled will change if passed the checking
-          sessionStorage.setItem( `${component.displayLogic.key}_${component.businessLogic.name}_displayLogic`, JSON.stringify( component.displayLogic ));
+          // sessionStorage.setItem( `${component.displayLogic.key}_${component.businessLogic.name}_displayLogic`, JSON.stringify( component.displayLogic ));
 
           // update component name if user changes it
           if( originComponent.businessLogic.name !== component.businessLogic.name )
