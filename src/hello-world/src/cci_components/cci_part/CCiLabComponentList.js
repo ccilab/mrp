@@ -39,6 +39,31 @@ import {TextResizeDetector } from "./TextResizeDetector"
 
 let fontFamily ='Arial, Helvetica, sans-serif';
 
+const getComponentsFromServer=()=>{
+  return null;
+}
+
+const getComponentsFromSessionStorage=()=>{
+  let availableComponents = null;
+  let availableDisplayKeys=[];
+  for (let i = 0; i < sessionStorage.length; i++)
+  {
+    let displayKey = parseInt( sessionStorage.key(i), 10 );
+    if( isNaN(displayKey) )
+    {
+      continue;
+    }
+    else
+    {
+      availableDisplayKeys.push(displayKey);
+    }
+
+  }
+  // setup the component structure 
+
+  return availableComponents;
+}
+
 // 1) get date source in businessLogic object array from server
 // 2) or try to find date source from session Storage
 const getChildComponentsFromDataSource = (parentComponent)=>{
@@ -50,6 +75,11 @@ const getChildComponentsFromDataSource = (parentComponent)=>{
   // get root component first from server or session storage
   if( typeof parentComponent === 'undefined')
   {
+    // get from server first
+    components = getComponentsFromServer();
+    // then try to get it from session storage
+    components = getComponentsFromSessionStorage();
+    
     return components;
   }
   // if( parentComponent.businessLogic.id === 1 )
@@ -150,7 +180,7 @@ const initializeComponents = ( atComponent, existingComponentList, newComponentL
         element.displayLogic = new initializeDisplayLogic( ++displayKeyValue, element.businessLogic.childIds.length !== 0 ? true : false );
       }
 
-      sessionStorage.setItem( `${element.businessLogic.name}_${element.displayLogic.key}_businessLogic`, JSON.stringify( element.businessLogic ));
+      sessionStorage.setItem( `${element.displayLogic.key}_${element.businessLogic.name}_businessLogic`, JSON.stringify( element.businessLogic ));
     }
 
 
@@ -182,18 +212,18 @@ const reduceComponentBusinessLogicChildIds=( _component, _idxBusinessLogicId )=>
       _component.businessLogic.childIds.splice( _idxBusinessLogicId,1);
 
       //update sessionStorage businessLogic
-      let previousBusinessLogic = JSON.parse(sessionStorage.getItem(`${_component.businessLogic.name}_${_component.displayLogic.key}_businessLogic`));
+      let previousBusinessLogic = JSON.parse(sessionStorage.getItem(`${_component.displayLogic.key}_${_component.businessLogic.name}_businessLogic`));
       previousBusinessLogic.childIds=_component.businessLogic.childIds;
-      sessionStorage.setItem( `${_component.businessLogic.name}_${_component.displayLogic.key}_businessLogic`, JSON.stringify( previousBusinessLogic ));
+      sessionStorage.setItem( `${_component.displayLogic.key}_${_component.businessLogic.name}_businessLogic`, JSON.stringify( previousBusinessLogic ));
 }
 
 const reduceComponentDisplayLogicChildIds=( _component, _idxDisplayLogicId  )=>{
       _component.displayLogic.childKeyIds.splice( _idxDisplayLogicId, 1 );
 
       //update sessionStorage displayLogic
-      let previousDisplayLogic = JSON.parse(sessionStorage.getItem(`${_component.businessLogic.name}_${_component.displayLogic.key}_displayLogic`));
+      let previousDisplayLogic = JSON.parse(sessionStorage.getItem(`${_component.displayLogic.key}_${_component.businessLogic.name}_displayLogic`));
       previousDisplayLogic.childIds=_component.displayLogic.childKeyIds;
-      sessionStorage.setItem( `${_component.businessLogic.name}_${_component.displayLogic.key}_displayLogic`, JSON.stringify( previousDisplayLogic ));
+      sessionStorage.setItem( `${_component.displayLogic.key}_${_component.businessLogic.name}_displayLogic`, JSON.stringify( previousDisplayLogic ));
 }
 
 const populateComponentBusinessLogicParentIds=( _component, parentComponentBusinessLogicId )=>{
@@ -201,9 +231,9 @@ const populateComponentBusinessLogicParentIds=( _component, parentComponentBusin
   _component.businessLogic.parentIds.push( parentComponentBusinessLogicId );
 
   //update sessionStorage businessLogic
-  let previousBusinessLogic = JSON.parse(sessionStorage.getItem(`${_component.businessLogic.name}_${_component.displayLogic.key}_businessLogic`));
+  let previousBusinessLogic = JSON.parse(sessionStorage.getItem(`${_component.displayLogic.key}_${_component.businessLogic.name}_businessLogic`));
   previousBusinessLogic.childIds=_component.businessLogic.parentIds;
-  sessionStorage.setItem( `${_component.businessLogic.name}_${_component.displayLogic.key}_businessLogic`, JSON.stringify( previousBusinessLogic ));
+  sessionStorage.setItem( `${_component.displayLogic.key}_${_component.businessLogic.name}_businessLogic`, JSON.stringify( previousBusinessLogic ));
 }
 
 const populateComponentBusinessLogicChildIds=( _component, childComponentBusinessLogicId )=>{
@@ -211,9 +241,9 @@ const populateComponentBusinessLogicChildIds=( _component, childComponentBusines
     _component.businessLogic.childIds.push( childComponentBusinessLogicId );
 
     //update sessionStorage businessLogic
-    let previousBusinessLogic = JSON.parse(sessionStorage.getItem(`${_component.businessLogic.name}_${_component.displayLogic.key}_businessLogic`));
+    let previousBusinessLogic = JSON.parse(sessionStorage.getItem(`${_component.displayLogic.key}_${_component.businessLogic.name}_businessLogic`));
     previousBusinessLogic.childIds=_component.businessLogic.childIds;
-    sessionStorage.setItem( `${_component.businessLogic.name}_${_component.displayLogic.key}_businessLogic`, JSON.stringify( previousBusinessLogic ));
+    sessionStorage.setItem( `${_component.displayLogic.key}_${_component.businessLogic.name}_businessLogic`, JSON.stringify( previousBusinessLogic ));
 }
 
 const populateComponentDisplayLogicChildIds = (selectedComponent, cachedComponents )=>{
@@ -228,9 +258,9 @@ const populateComponentDisplayLogicChildIds = (selectedComponent, cachedComponen
         }
       })
       //update sessionStorage displayLogic
-      let previousDisplayLogic = JSON.parse(sessionStorage.getItem(`${selectedComponent.businessLogic.name}_${selectedComponent.displayLogic.key}_displayLogic`));
+      let previousDisplayLogic = JSON.parse(sessionStorage.getItem(`${selectedComponent.displayLogic.key}_${selectedComponent.businessLogic.name}_displayLogic`));
       previousDisplayLogic.childIds=selectedComponent.displayLogic.childKeyIds;
-      sessionStorage.setItem( `${selectedComponent.businessLogic.name}_${selectedComponent.displayLogic.key}_displayLogic`, JSON.stringify( previousDisplayLogic ));
+      sessionStorage.setItem( `${selectedComponent.displayLogic.key}_${selectedComponent.businessLogic.name}_displayLogic`, JSON.stringify( previousDisplayLogic ));
   }
 }
 
@@ -245,7 +275,7 @@ const hideChildren = (aComponent, aComponents, aShowStatus)=>{
       if( aComponent.displayLogic.childKeyIds.includes(component.displayLogic.key) )
       {
         component.displayLogic.showMyself = aShowStatus;
-        sessionStorage.setItem( `${component.businessLogic.name}_${component.displayLogic.key}_displayLogic`, JSON.stringify( component.displayLogic ));
+        sessionStorage.setItem( `${component.displayLogic.key}_${component.businessLogic.name}_displayLogic`, JSON.stringify( component.displayLogic ));
 
         hideChildren(component, aComponents, aShowStatus)
       }
@@ -263,7 +293,7 @@ const setComponentSelected = ( component, selectedComponentKey ) =>{
   else
     component.displayLogic.selected = 0;
 
-  sessionStorage.setItem( `${component.businessLogic.name}_${component.displayLogic.key}_displayLogic`, JSON.stringify( component.displayLogic ));
+  sessionStorage.setItem( `${component.displayLogic.key}_${component.businessLogic.name}_displayLogic`, JSON.stringify( component.displayLogic ));
 }
 
 
@@ -569,7 +599,7 @@ class CCiLabComponentList extends Component {
             populateComponentDisplayLogicChildIds(rootComponent, currentSessionComponents);
           }
 
-          sessionStorage.setItem( `${rootComponent.businessLogic.name}_${rootComponent.displayLogic.key}_displayLogic`, JSON.stringify( rootComponent.displayLogic ));
+          sessionStorage.setItem( `${rootComponent.displayLogic.key}_${rootComponent.businessLogic.name}_displayLogic`, JSON.stringify( rootComponent.displayLogic ));
       }
 
 
@@ -780,7 +810,7 @@ class CCiLabComponentList extends Component {
         setComponentSelected( item, newComponent.displayLogic.key );
       });
 
-      sessionStorage.setItem( `${newComponent.businessLogic.name}_${newComponent.displayLogic.key}_displayLogic`, JSON.stringify( newComponent.displayLogic ));
+      sessionStorage.setItem( `${newComponent.displayLogic.key}_${newComponent.businessLogic.name}_displayLogic`, JSON.stringify( newComponent.displayLogic ));
 
       // need to check vertical scroll bar doesn't show
       // create vertical scroll bar based on the height of component list dynamically
@@ -825,10 +855,10 @@ class CCiLabComponentList extends Component {
         return component.displayLogic.key !== deletedComponentId;
       });
 
-      sessionStorage.removeItem(`${deletedComponent.businessLogic.name}_${deletedComponent.displayLogic.key}_businessLogic`);
-      sessionStorage.removeItem(`${deletedComponent.businessLogic.name}_${deletedComponent.displayLogic.key}_displayLogic`);
-      sessionStorage.removeItem(`${deletedComponent.businessLogic.name}_${deletedComponent.displayLogic.key}_bom_core`);
-      sessionStorage.removeItem(`${deletedComponent.businessLogic.name}_${deletedComponent.displayLogic.key}_bom_extra`);
+      sessionStorage.removeItem(`${deletedComponent.displayLogic.key}_${deletedComponent.businessLogic.name}_businessLogic`);
+      sessionStorage.removeItem(`${deletedComponent.displayLogic.key}_${deletedComponent.businessLogic.name}_displayLogic`);
+      sessionStorage.removeItem(`${deletedComponent.displayLogic.key}_${deletedComponent.businessLogic.name}_bom_core`);
+      sessionStorage.removeItem(`${deletedComponent.displayLogic.key}_${deletedComponent.businessLogic.name}_bom_extra`);
 
       this.setState({ greetings: filteredGreetings });
     };
@@ -1050,9 +1080,9 @@ class CCiLabComponentList extends Component {
         {
           let rmMovedComponent = currentSessionComponents.splice( idxMovedComponent, 1)[0];
           // make sure moved component exists in session Storage
-          if( sessionStorage.getItem( `${rmMovedComponent.businessLogic.name}_${rmMovedComponent.displayLogic.key}_businessLogic` ) === null)
+          if( sessionStorage.getItem( `${rmMovedComponent.displayLogic.key}_${rmMovedComponent.businessLogic.name}_businessLogic` ) === null)
           {
-            console.log('move component found error - missing: ' + rmMovedComponent.businessLogic.name + '_' + rmMovedComponent.displayLogic.key + '_businessLogic' );
+            console.log('move component found error - missing: ' + rmMovedComponent.displayLogic.key +'_' + rmMovedComponent.businessLogic.name +  '_businessLogic' );
             return ;
           }
 

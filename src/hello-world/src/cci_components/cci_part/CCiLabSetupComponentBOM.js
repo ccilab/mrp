@@ -253,23 +253,23 @@ export const SetupBOM=(props)=>{
           // originComponent.businessLogic.name could be hard-coded 'add-part' or other user given name
           if( originComponent.businessLogic.name !== component.businessLogic.name )
           {
-            sessionStorage.removeItem(`${originComponent.businessLogic.name}_${props.component.displayLogic.key}_displayLogic`);
+            sessionStorage.removeItem(`${props.component.displayLogic.key}_${originComponent.businessLogic.name}_displayLogic`);
           }
           // component name may or may not change, but the component.displayLogic.inlineMenuEnabled will change if passed the checking
-          sessionStorage.setItem( `${component.businessLogic.name}_${component.displayLogic.key}_displayLogic`, JSON.stringify( component.displayLogic ));
+          sessionStorage.setItem( `${component.displayLogic.key}_${component.businessLogic.name}_displayLogic`, JSON.stringify( component.displayLogic ));
 
           // update component name if user changes it
           if( originComponent.businessLogic.name !== component.businessLogic.name )
           {
-              sessionStorage.removeItem(`${originComponent.businessLogic.name}_${props.component.displayLogic.key}_businessLogic`);
-              sessionStorage.setItem( `${component.businessLogic.name}_${component.displayLogic.key}_businessLogic`, JSON.stringify( component.businessLogic ));
+              sessionStorage.removeItem(`${props.component.displayLogic.key}_${originComponent.businessLogic.name}_businessLogic`);
+              sessionStorage.setItem( `${component.displayLogic.key}_${component.businessLogic.name}_businessLogic`, JSON.stringify( component.businessLogic ));
           }
 
           if( originComponent.businessLogic.name !== component.businessLogic.name )
           {
-            sessionStorage.removeItem( `${originComponent.businessLogic.name}_${component.displayLogic.key}_bom_core`);
+            sessionStorage.removeItem( `${component.displayLogic.key}_${originComponent.businessLogic.name}_bom_core`);
           }
-          sessionStorage.setItem( `${component.businessLogic.name}_${component.displayLogic.key}_bom_core`, JSON.stringify( component.bom.core ));
+          sessionStorage.setItem( `${component.displayLogic.key}_${component.businessLogic.name}_bom_core`, JSON.stringify( component.bom.core ));
       }
 
 
@@ -277,8 +277,8 @@ export const SetupBOM=(props)=>{
 
   const initializeBOM=()=>{
     let bom={};
-    bom.core= JSON.parse(sessionStorage.getItem(`${props.component.businessLogic.name}_${props.component.displayLogic.key}_bom_core`)) || initializeBOMCore();
-    bom.extra=JSON.parse(sessionStorage.getItem(`${props.component.businessLogic.name}_${props.component.displayLogic.key}_bom_extra`)) ||initializeBOMExtra();
+    bom.core= JSON.parse(sessionStorage.getItem(`${props.component.displayLogic.key}_${props.component.businessLogic.name}_bom_core`)) || initializeBOMCore();
+    bom.extra=JSON.parse(sessionStorage.getItem(`${props.component.displayLogic.key}_${props.component.businessLogic.name}_bom_extra`)) ||initializeBOMExtra();
     return bom;
   }
 
