@@ -207,6 +207,12 @@ const initializeComponents = ( atComponent, existingComponentList, newComponentL
           else
             targetComponentList.push(element);
       }
+
+      // read component from session storage first time,  
+      if( typeof existingComponentList === "undefined" )
+      {
+        targetComponentList.push(element);
+      }
     }
     else //new component just created as root component
     {
