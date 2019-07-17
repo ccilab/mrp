@@ -45,6 +45,7 @@ const getComponentsFromServer=()=>{
 
 const getComponentsFromSessionStorage=()=>{
   let availableComponents = [];
+  let availableKeys=[];
 
   // if no available display keys from sessionStorage
   // build up the array
@@ -53,7 +54,16 @@ const getComponentsFromSessionStorage=()=>{
     let businessLogicKey = sessionStorage.key(i);
     if( businessLogicKey.includes('_businessLogic') )
     {
-        availableComponents.push( JSON.parse(sessionStorage.getItem(businessLogicKey)));
+      
+      // How to determine if Javascript array contains an object with an attribute that equals a given value?
+      // https://stackoverflow.com/questions/8217419/how-to-determine-if-javascript-array-contains-an-object-with-an-attribute-that-e
+        if( availableKeys.filter(key => (key === businessLogicKey)).length === 0 )
+        {
+          availableKeys.push( businessLogicKey );
+          let component = {};
+          component.businessLogic=JSON.parse(sessionStorage.getItem(businessLogicKey));
+          availableComponents.push( component );
+        }
     }
 
   }
@@ -583,7 +593,7 @@ class CCiLabComponentList extends Component {
       else
       {
           // never check  local storage as it may out of sync with server
-          rootComponent = components.filter(component=>component.businessLogic.parentIds.length === 0)[0];
+          rootComponent = components.filter(component=>(component.businessLogic.parentIds.length === 0))[0];
           initializeComponents(rootComponent, this.state.greetings, components, currentSessionComponents);
 
           //always show very top component
