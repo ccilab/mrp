@@ -21,12 +21,12 @@ import {TextResizeDetector } from "./TextResizeDetector"
 
 
 //json-loader load the *.json file
-// import components from './../../data/components.json';
+import components from './../../data/components.json';
 
 
 //table includes assembly and paint process
 // simulate after loaded very top component and its direct  components
-// const firstComponents = components.firstComponents;
+const firstComponents = components.firstComponents;
 
 // simulate load children of component id 1 ( top )
 // const secondComponents = components.secondComponents;
@@ -39,11 +39,11 @@ import {TextResizeDetector } from "./TextResizeDetector"
 
 let fontFamily ='Arial, Helvetica, sans-serif';
 
-const getComponentsFromServer=()=>{
-  return null;
+const getComponentsFromServer=( parentComponent )=>{
+  return null; //firstComponents;
 }
 
-const getComponentsFromSessionStorage=()=>{
+const getComponentsFromSessionStorage=( parentComponent )=>{
   let availableComponents = [];
   let availableKeys=[];
 
@@ -60,9 +60,26 @@ const getComponentsFromSessionStorage=()=>{
         if( availableKeys.filter(key => (key === businessLogicKey)).length === 0 )
         {
           availableKeys.push( businessLogicKey );
+
           let component = {};
           component.businessLogic=JSON.parse(sessionStorage.getItem(businessLogicKey));
-          availableComponents.push( component );
+
+          if( typeof parentComponent === 'undefined' && component.businessLogic.parentIds.length === 0 )
+          {
+            parentComponent = component; // this is root component
+            availableComponents.push( component );
+          }
+
+          if( typeof parentComponent !== 'undefined' ) 
+          {
+            // eslint-disable-next-line
+            let findParent = availableComponents.filter( (existingComponent)=>{ return (existingComponent.businessLogic.id === parentComponent.businessLogic.id ) && 
+                                                          existingComponent.businessLogic.parentIds.find((childKey)=>{return childKey === component.businessLogic.id}) }) ;
+
+            if( findParent )
+             availableComponents.push( component );
+          }
+         
         }
     }
 
@@ -81,16 +98,13 @@ const getChildComponentsFromDataSource = (parentComponent)=>{
   let components = null;
 
   // get root component first from server or session storage
-  if( typeof parentComponent === 'undefined')
-  {
-    // get from server first
-    components = getComponentsFromServer();
-    // then try to get it from session storage
-    components = getComponentsFromSessionStorage();
-    
-    return components;
-  }
-  // if( parentComponent.businessLogic.id === 1 )
+  // get from server first
+  // then try to get it from session storage
+  components = getComponentsFromServer( parentComponent ) || getComponentsFromSessionStorage( parentComponent );
+  
+  return components;
+  
+    // if( parentComponent.businessLogic.id === 1 )
   // {
   //   components= secondComponents;
   //   return components;
@@ -110,7 +124,7 @@ const getChildComponentsFromDataSource = (parentComponent)=>{
   //   return components;
   // }
 
-  return components;
+  // return components;
 }
 
 // initialize businessLogic object
@@ -246,7 +260,7 @@ const populateComponentBusinessLogicParentIds=( _component, parentComponentBusin
 
   //update sessionStorage businessLogic
   let previousBusinessLogic = JSON.parse(sessionStorage.getItem(`${_component.displayLogic.key}_${_component.businessLogic.name}_businessLogic`));
-  previousBusinessLogic.childIds=_component.businessLogic.parentIds;
+  previousBusinessLogic.childIds=_component.businessLogic.parentIds; //?????
   sessionStorage.setItem( `${_component.displayLogic.key}_${_component.businessLogic.name}_businessLogic`, JSON.stringify( previousBusinessLogic ));
 }
 
@@ -504,7 +518,7 @@ class CCiLabComponentList extends Component {
 
 
 
-        let shownComponents = componentLists.filter(component=>component.displayLogic.showMyself === true)
+        let shownComponents = componentLists.filter(component=>component.displayLogic.showMyself === true);
 
         let listCalculatedHight = shownComponents.length * (45+16); //in px
 
