@@ -40,7 +40,7 @@ const firstComponents = components.firstComponents;
 let fontFamily ='Arial, Helvetica, sans-serif';
 
 const getComponentsFromServer=( parentComponent )=>{
-  return null; //firstComponents;
+  return null; //firstComponents; //
 }
 
 const getComponentsFromSessionStorage=( parentComponent )=>{
@@ -72,11 +72,12 @@ const getComponentsFromSessionStorage=( parentComponent )=>{
 
           if( typeof parentComponent !== 'undefined' ) 
           {
+            // check if component has same parent component already in available component list
             // eslint-disable-next-line
             let findParent = availableComponents.filter( (existingComponent)=>{ return (existingComponent.businessLogic.id === parentComponent.businessLogic.id ) && 
                                                           existingComponent.businessLogic.parentIds.find((childKey)=>{return childKey === component.businessLogic.id}) }) ;
 
-            if( findParent )
+            if( findParent.length )
              availableComponents.push( component );
           }
          
@@ -211,7 +212,8 @@ const initializeComponents = ( atComponent, existingComponentList, newComponentL
     {
       let atComponentKey = atComponent.displayLogic.key;
       //need populate childKeyIds[] if its not fully populated yet
-      if( atComponent.businessLogic.childIds.length !==  atComponent.displayLogic.childKeyIds.length &&
+      if( atComponent.businessLogic.childIds.length &&
+          atComponent.businessLogic.childIds.length !==  atComponent.displayLogic.childKeyIds.length &&
           atComponent.displayLogic.childKeyIds.includes( element.displayLogic.key ) === false )
       {
           let idxInsertAt = targetComponentList.findIndex((component)=>{return component.displayLogic.key === atComponentKey});
@@ -223,7 +225,7 @@ const initializeComponents = ( atComponent, existingComponentList, newComponentL
       }
 
       // read component from session storage first time,  
-      if( typeof existingComponentList === "undefined" )
+      if( typeof existingComponentList === "undefined" && !atComponent.businessLogic.childIds.length)
       {
         targetComponentList.push(element);
       }
