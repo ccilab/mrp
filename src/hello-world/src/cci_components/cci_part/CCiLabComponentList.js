@@ -26,6 +26,7 @@ import components from './../../data/components.json';
 
 //table includes assembly and paint process
 // simulate after loaded very top component and its direct  components
+// eslint-disable-next-line
 const firstComponents = components.firstComponents;
 
 // simulate load children of component id 1 ( top )
@@ -40,51 +41,55 @@ const firstComponents = components.firstComponents;
 let fontFamily ='Arial, Helvetica, sans-serif';
 
 const getComponentsFromServer=( parentComponent )=>{
-  return null; //firstComponents; //
+  return firstComponents; //null; //
 }
 
+// parentComponent is undefined when its parent function 
+// getChildComponentsFromDataSource is called from componentWillMount()
 const getComponentsFromSessionStorage=( parentComponent )=>{
   let availableComponents = [];
   let availableKeys=[];
 
-  // if no available display keys from sessionStorage
-  // build up the array
+  // sort the session array first
   for (let i = 0; i < sessionStorage.length; i++)
   {
     let businessLogicKey = sessionStorage.key(i);
-    if( businessLogicKey.includes('_businessLogic') )
+    // How to determine if Javascript array contains an object with an attribute that equals a given value?
+    // https://stackoverflow.com/questions/8217419/how-to-determine-if-javascript-array-contains-an-object-with-an-attribute-that-e
+    if( businessLogicKey.includes('_businessLogic') &&
+        availableKeys.filter(key => (key === businessLogicKey)).length === 0 )
     {
-      
-      // How to determine if Javascript array contains an object with an attribute that equals a given value?
-      // https://stackoverflow.com/questions/8217419/how-to-determine-if-javascript-array-contains-an-object-with-an-attribute-that-e
-        if( availableKeys.filter(key => (key === businessLogicKey)).length === 0 )
-        {
-          availableKeys.push( businessLogicKey );
+        availableKeys.push( businessLogicKey );
+    }
+  }
 
-          let component = {};
-          component.businessLogic=JSON.parse(sessionStorage.getItem(businessLogicKey));
+  let availableSortedKeys = availableKeys.sort();
 
-          if( typeof parentComponent === 'undefined' && component.businessLogic.parentIds.length === 0 )
-          {
-            parentComponent = component; // this is root component
-            availableComponents.push( component );
-          }
+  // if no available display keys from sessionStorage
+  // build up the array
+  availableSortedKeys.forEach( (businessLogicKey)=>
+  {
+    let component = {};
+    component.businessLogic=JSON.parse(sessionStorage.getItem(businessLogicKey));
 
-          if( typeof parentComponent !== 'undefined' ) 
-          {
-            // check if component has same parent component already in available component list
-            // eslint-disable-next-line
-            let findParent = availableComponents.filter( (existingComponent)=>{ return (existingComponent.businessLogic.id === parentComponent.businessLogic.id ) && 
-                                                          existingComponent.businessLogic.parentIds.find((childKey)=>{return childKey === component.businessLogic.id}) }) ;
-
-            if( findParent.length )
-             availableComponents.push( component );
-          }
-         
-        }
+    if( typeof parentComponent === 'undefined' && component.businessLogic.parentIds.length === 0 )
+    {
+      parentComponent = component; // this is root component
+      availableComponents.push( component );
     }
 
-  }
+    if( typeof parentComponent !== 'undefined' ) 
+    {
+      // check if component has same parent component already in available component list
+      // eslint-disable-next-line
+      let findParent = typeof parentComponent.businessLogic.childIds.find((childKey)=>{return childKey === component.businessLogic.id}) !== 'undefined' ? true : false ;
+
+      if( findParent )
+      {
+        availableComponents.push( component );
+      }
+    }
+  } );
   // setup the component structure 
 
   return availableComponents.length ? availableComponents : null ;
@@ -92,6 +97,7 @@ const getComponentsFromSessionStorage=( parentComponent )=>{
 
 // 1) get date source in businessLogic object array from server
 // 2) or try to find date source from session Storage
+// 3) parentComponent is undefined when this function is called from componentWillMount()
 const getChildComponentsFromDataSource = (parentComponent)=>{
   //#todo: need to query server to get a new components
   console.log("query server to get child components")
