@@ -85,9 +85,11 @@ const getComponentsFromSessionStorage=( parentComponent )=>{
     component.businessLogic=JSON.parse(sessionStorage.getItem(businessLogicKey));
 
     let coreBomKey = availableSortedSetupBomCoreKeys.find( (coreBomKey)=>{return  parseInt(coreBomKey, 10) === parseInt(businessLogicKey, 10)} )
-    let bom={};
-    bom.core = JSON.parse(sessionStorage.getItem(coreBomKey));
-    component.bom = bom.core;
+    component.bom={};
+    // let core = {};
+    // core = JSON.parse(sessionStorage.getItem(coreBomKey));
+    let core = JSON.parse(sessionStorage.getItem(coreBomKey));;
+    component.bom.core = core;
  
 
     if( typeof parentComponent === 'undefined' && component.businessLogic.parentIds.length === 0 )
