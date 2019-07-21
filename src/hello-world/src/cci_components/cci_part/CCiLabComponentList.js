@@ -12,6 +12,9 @@ import './../../dist/css/popup-menu.css'
 import CCiLabComponent from "./CCiLabComponent";
 import DropComponentWarningModal from "./CCiLabDropComponentCheckFailedModal";
 import { setListHeight, setListWidth, getTextRect} from "./CCiLabUtility";
+import {CanEnableInlineMenu} from './CCiLabSetupComponentBOM';
+
+
 // // based on https://github.com/ccilab/react-i18next/blob/master/example/react/src/index.js
 // // import i18n (needs to be bundled ;))
 // import './../l18n/i18n'
@@ -41,36 +44,51 @@ const firstComponents = components.firstComponents;
 let fontFamily ='Arial, Helvetica, sans-serif';
 
 const getComponentsFromServer=( parentComponent )=>{
-  return firstComponents; //null; //
+  return null; //firstComponents; //
 }
 
 // parentComponent is undefined when its parent function 
 // getChildComponentsFromDataSource is called from componentWillMount()
 const getComponentsFromSessionStorage=( parentComponent )=>{
   let availableComponents = [];
-  let availableKeys=[];
+  let availableBusinessLogicKeys=[];
+  let availableSetupBomCoreKeys=[];
 
   // sort the session array first
   for (let i = 0; i < sessionStorage.length; i++)
   {
-    let businessLogicKey = sessionStorage.key(i);
+    let anyKey = sessionStorage.key(i);
+
     // How to determine if Javascript array contains an object with an attribute that equals a given value?
     // https://stackoverflow.com/questions/8217419/how-to-determine-if-javascript-array-contains-an-object-with-an-attribute-that-e
-    if( businessLogicKey.includes('_businessLogic') &&
-        availableKeys.filter(key => (key === businessLogicKey)).length === 0 )
+    if( anyKey.includes('_businessLogic') &&
+        availableBusinessLogicKeys.filter(key => (key === anyKey)).length === 0 )
     {
-        availableKeys.push( businessLogicKey );
+        availableBusinessLogicKeys.push( anyKey );
+    }
+
+    if( anyKey.includes('_bom_core') &&
+        availableSetupBomCoreKeys.filter(key => (key === anyKey)).length === 0 )
+    {
+      availableSetupBomCoreKeys.push( anyKey );
     }
   }
 
-  let availableSortedKeys = availableKeys.sort();
+  let availableSortedBusinessLogicKeys = availableBusinessLogicKeys.sort();
+  let availableSortedSetupBomCoreKeys = availableSetupBomCoreKeys.sort();
 
   // if no available display keys from sessionStorage
   // build up the array
-  availableSortedKeys.forEach( (businessLogicKey)=>
+  availableSortedBusinessLogicKeys.forEach( (businessLogicKey)=>
   {
     let component = {};
     component.businessLogic=JSON.parse(sessionStorage.getItem(businessLogicKey));
+
+    let coreBomKey = availableSortedSetupBomCoreKeys.find( (coreBomKey)=>{return  parseInt(coreBomKey, 10) === parseInt(businessLogicKey, 10)} )
+    let bom={};
+    bom.core = JSON.parse(sessionStorage.getItem(coreBomKey));
+    component.bom = bom.core;
+ 
 
     if( typeof parentComponent === 'undefined' && component.businessLogic.parentIds.length === 0 )
     {
@@ -194,7 +212,9 @@ const findMaxDisplayKey = ( componentList )=>{
 // store businessLogic to session storage for each component in newComponentList
 const initializeComponents = ( atComponent, existingComponentList, newComponentList, targetComponentList)=>{
   if( typeof existingComponentList !== "undefined" && existingComponentList !== null )
-    existingComponentList.forEach( (existingComponent)=>{ targetComponentList.push( existingComponent ) } );
+    existingComponentList.forEach( (existingComponent)=>{ 
+                                  CanEnableInlineMenu(existingComponent);
+                                  targetComponentList.push( existingComponent ) } );
 
   // initialize displayLogic items, create unique key value for latest components from data layer
   // this guarantees that displayLogic.key is unique, (newly added component won't show itself until
@@ -209,6 +229,7 @@ const initializeComponents = ( atComponent, existingComponentList, newComponentL
         element.displayLogic = new initializeDisplayLogic( ++displayKeyValue, element.businessLogic.childIds.length !== 0 ? true : false );
       }
 
+      CanEnableInlineMenu(element);
       sessionStorage.setItem( `${element.displayLogic.key}_${element.businessLogic.name}_businessLogic`, JSON.stringify( element.businessLogic ));
     }
 
@@ -620,7 +641,6 @@ class CCiLabComponentList extends Component {
       }
       else
       {
-          // never check  local storage as it may out of sync with server
           rootComponent = components.filter(component=>(component.businessLogic.parentIds.length === 0))[0];
           initializeComponents(rootComponent, this.state.greetings, components, currentSessionComponents);
 

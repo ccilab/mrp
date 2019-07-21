@@ -4,6 +4,8 @@ import { useTranslation } from 'react-i18next';
 
 import styles from "./../../dist/css/ccilab-component-list.css"
 
+import { isValidString, isValidValue } from "./CCiLabUtility";
+
 
 const SetupComponentBOM=(props)=>{
   const { t } = useTranslation(['component','commands'], {useSuspense: false});
@@ -220,6 +222,26 @@ const SetupComponentBOM=(props)=>{
   );
 }
 
+export const CanEnableInlineMenu = ( component )=>{
+  if( isValidString( component.businessLogic.name) &&
+      typeof component.bom !== 'undefined' &&
+      typeof component.bom.core !== 'undefined' &&
+      isValidString( component.bom.core.partNumber ) &&
+      ( isValidValue( component.bom.core.requiredQty ).isValid ||
+        isValidValue( component.bom.core.unitQty ).isValid ) &&
+      isValidValue( component.bom.core.scrapRate).isValid &&
+      isValidString( component.bom.core.procurementType) &&
+      isValidString( component.bom.core.startDate) &&
+      isValidString( component.bom.core.completeDate)
+)
+  {
+    component.displayLogic.inlineMenuEnabled = true;
+  }
+  else
+  {
+    component.displayLogic.inlineMenuEnabled = false;
+  }
+}
 
 export const SetupBOM=(props)=>{
   const _className = 'cursor-pointer text-primary border-0 p-1 fa fw fa-edit' + (props.component.displayLogic.selected ? ' bg-info' : ' ');
@@ -229,22 +251,10 @@ export const SetupBOM=(props)=>{
 
    // component.displayLogic.inlineMenuEnabled needs set to true
   const IsClosePopupMenu=( component )=>{
-      if( isValidString( component.businessLogic.name) &&
-          isValidString( component.bom.core.partNumber ) &&
-          ( isValidValue( component.bom.core.requiredQty ).isValid ||
-            isValidValue( component.bom.core.unitQty ).isValid ) &&
-          isValidValue( component.bom.core.scrapRate).isValid &&
-          isValidString( component.bom.core.procurementType) &&
-          isValidString( component.bom.core.startDate) &&
-          isValidString( component.bom.core.completeDate)
-      )
+      CanEnableInlineMenu( component );
+      if( component.displayLogic.inlineMenuEnabled )
       {
-         component.displayLogic.inlineMenuEnabled = true;
-         props.updateComponent(originComponent, component);
-      }
-      else
-      {
-        component.displayLogic.inlineMenuEnabled = false;
+        props.updateComponent(originComponent, component);
       }
 
       // update component name
@@ -325,21 +335,21 @@ export const SetupBOM=(props)=>{
   if( typeof props.component.bom === 'undefined' )
     props.component.bom = new initializeBOM();
 
-  const isValidString=( name )=>{
-    return ( typeof name === 'string' &&
-        name.length > 0 ) ? true : false
-  };
+  // const isValidString=( name )=>{
+  //   return ( typeof name === 'string' &&
+  //       name.length > 0 ) ? true : false
+  // };
 
-  const isValidValue=(valueToCheck)=>{
+  // const isValidValue=(valueToCheck)=>{
 
-    let value = parseFloat(valueToCheck);
-    let valid = isNaN( value ) ? false : true;
+  //   let value = parseFloat(valueToCheck);
+  //   let valid = isNaN( value ) ? false : true;
 
-    let rt={};
-    rt.isValid = valid;
-    rt.value = value;
-    return rt;
-  };
+  //   let rt={};
+  //   rt.isValid = valid;
+  //   rt.value = value;
+  //   return rt;
+  // };
 
   const calQuantityPerShift=(component)=>{
     const bomCore = component.bom.core;

@@ -74,6 +74,23 @@ export  const setListWidth = (factor, width) =>{
 }
 
 
+export const isValidString=( name )=>{
+    return ( typeof name === 'string' &&
+        name.length > 0 ) ? true : false
+  };
+
+export  const isValidValue=(valueToCheck)=>{
+
+    let value = parseFloat(valueToCheck);
+    let valid = isNaN( value ) ? false : true;
+
+    let rt={};
+    rt.isValid = valid;
+    rt.value = value;
+    return rt;
+  };
+
+
   //http://jsfiddle.net/ChristianL/AVyND/
   //  const detectBrowserMajorVersion = () =>{
   //   let browser = navigator.appName;
