@@ -59,9 +59,16 @@ const getComponentsFromSessionStorage=( parentComponent )=>{
   {
     let anyKey = sessionStorage.key(i);
 
+    let childBusinessLogicKeys=['_businessLogic'];  //parentComponent === 'undefined'
+
+    if( typeof parentComponent !== 'undefined')
+    {
+      childBusinessLogicKeys=parentComponent.businessLogic.childIds;
+    }
+
     // How to determine if Javascript array contains an object with an attribute that equals a given value?
     // https://stackoverflow.com/questions/8217419/how-to-determine-if-javascript-array-contains-an-object-with-an-attribute-that-e
-    if( anyKey.includes('_businessLogic') &&
+    if( childBusinessLogicKeys.find( key=>(anyKey.includes(key) ) ) &&
         availableBusinessLogicKeys.filter(key => (key === anyKey)).length === 0 )
     {
         availableBusinessLogicKeys.push( anyKey );

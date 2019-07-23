@@ -224,14 +224,19 @@ const SetupComponentBOM=(props)=>{
 
 export const CanEnableInlineMenu = ( component )=>{
   if( isValidString( component.businessLogic.name) &&
+      component.bom !== null &&
       typeof component.bom !== 'undefined' &&
       typeof component.bom.core !== 'undefined' &&
+      component.bom.core.partNumber !== null &&
       isValidString( component.bom.core.partNumber ) &&
       ( isValidValue( component.bom.core.requiredQty ).isValid ||
         isValidValue( component.bom.core.unitQty ).isValid ) &&
       isValidValue( component.bom.core.scrapRate).isValid &&
+      component.bom.core.procurementType !== null &&
       isValidString( component.bom.core.procurementType) &&
+      component.bom.core.startDate !== null &&
       isValidString( component.bom.core.startDate) &&
+      component.bom.core.completeDate !== null &&
       isValidString( component.bom.core.completeDate)
 )
   {

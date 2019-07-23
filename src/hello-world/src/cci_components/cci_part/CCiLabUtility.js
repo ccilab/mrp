@@ -75,7 +75,9 @@ export  const setListWidth = (factor, width) =>{
 
 
 export const isValidString=( name )=>{
-    return ( typeof name === 'string' &&
+    if ( name === null )
+        return false;
+    return (  typeof name === 'string' &&
         name.length > 0 ) ? true : false
   };
 
