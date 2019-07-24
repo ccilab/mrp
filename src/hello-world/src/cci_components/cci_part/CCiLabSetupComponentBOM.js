@@ -227,16 +227,13 @@ export const CanEnableInlineMenu = ( component )=>{
       component.bom !== null &&
       typeof component.bom !== 'undefined' &&
       typeof component.bom.core !== 'undefined' &&
-      component.bom.core.partNumber !== null &&
+      component.bom.core !== null &&
       isValidString( component.bom.core.partNumber ) &&
       ( isValidValue( component.bom.core.requiredQty ).isValid ||
         isValidValue( component.bom.core.unitQty ).isValid ) &&
       isValidValue( component.bom.core.scrapRate).isValid &&
-      component.bom.core.procurementType !== null &&
       isValidString( component.bom.core.procurementType) &&
-      component.bom.core.startDate !== null &&
       isValidString( component.bom.core.startDate) &&
-      component.bom.core.completeDate !== null &&
       isValidString( component.bom.core.completeDate)
 )
   {
@@ -337,8 +334,10 @@ export const SetupBOM=(props)=>{
     return extra;
   };
 
-  if( typeof props.component.bom === 'undefined' )
+  if( props.component.bom === null || typeof props.component.bom === 'undefined' )
+  {
     props.component.bom = new initializeBOM();
+  }
 
   // const isValidString=( name )=>{
   //   return ( typeof name === 'string' &&
@@ -531,7 +530,7 @@ export const SetupBOM=(props)=>{
 
           <SetupComponentBOM
             title='part-number'
-            value={props.component.bom.core.partNumber}
+            value={props.component.bom.core.partNumber === null ? null : props.component.bom.core.partNumber}
             component={props.component}
             handler={setPartNumber}/>
 
@@ -542,7 +541,7 @@ export const SetupBOM=(props)=>{
             <SetupComponentBOM
             title='required-quantity'
               // value='' input will show placeholder text
-              value={props.component.bom.core.requiredQty > 0 ? props.component.bom.core.requiredQty: ''}
+              value={(props.component.bom.core.requiredQty !== null && props.component.bom.core.requiredQty > 0 ) ? props.component.bom.core.requiredQty: ''}
               component={props.component}
               handler={setTotalRequiredQty}/>
             :
@@ -559,7 +558,7 @@ export const SetupBOM=(props)=>{
 
           <SetupComponentBOM
               title='unit-of-measure'
-              value={props.component.bom.core.unitOfMeasure}
+              value={props.component.bom.core.unitOfMeasure !== null ? props.component.bom.core.unitOfMeasure : ''}
               component={props.component}
               handler={setUnitOfMeasure}/>
 
@@ -577,7 +576,7 @@ export const SetupBOM=(props)=>{
 
           <SetupComponentBOM
               title='procurement-type'
-              value={props.component.bom.core.procurementType}
+              value={props.component.bom.core.procurementType !== null ? props.component.bom.core.procurementType :'' }
               component={props.component}
               handler={setProcurementType}/>
 
@@ -586,7 +585,7 @@ export const SetupBOM=(props)=>{
 
           <SetupComponentBOM
               title='start-product-date'
-              value={props.component.bom.core.startDate}
+              value={props.component.bom.core.startDate !== null ? props.component.bom.core.startDate :''}
               component={props.component}
               handler={setStartDate}/>
 
@@ -595,7 +594,7 @@ export const SetupBOM=(props)=>{
 
           <SetupComponentBOM
               title='product-complete-date'
-              value={props.component.bom.core.completeDate}
+              value={props.component.bom.core.completeDate !== null ? props.component.bom.core.completeDate :'' }
               component={props.component}
               handler={setCompleteDate}/>
           </div>

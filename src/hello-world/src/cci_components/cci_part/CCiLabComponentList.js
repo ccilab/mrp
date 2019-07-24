@@ -54,27 +54,30 @@ const getComponentsFromSessionStorage=( parentComponent )=>{
   let availableBusinessLogicKeys=[];
   let availableSetupBomCoreKeys=[];
 
+  let childBusinessLogicKeys=['_businessLogic'];  //parentComponent === 'undefined'
+
+  if( typeof parentComponent !== 'undefined')
+  {
+    childBusinessLogicKeys=parentComponent.businessLogic.childIds;
+  }
+
   // sort the session array first
   for (let i = 0; i < sessionStorage.length; i++)
   {
     let anyKey = sessionStorage.key(i);
-
-    let childBusinessLogicKeys=['_businessLogic'];  //parentComponent === 'undefined'
-
-    if( typeof parentComponent !== 'undefined')
-    {
-      childBusinessLogicKeys=parentComponent.businessLogic.childIds;
-    }
-
+   
     // How to determine if Javascript array contains an object with an attribute that equals a given value?
     // https://stackoverflow.com/questions/8217419/how-to-determine-if-javascript-array-contains-an-object-with-an-attribute-that-e
-    if( childBusinessLogicKeys.find( key=>(anyKey.includes(key) ) ) &&
+    // get direct children of parentComponent only
+    if(  anyKey.includes('_businessLogic') && childBusinessLogicKeys.find( key=>(anyKey.includes(key) ) ) &&
         availableBusinessLogicKeys.filter(key => (key === anyKey)).length === 0 )
     {
         availableBusinessLogicKeys.push( anyKey );
     }
 
-    if( anyKey.includes('_bom_core') &&
+    // get direct children of parentComponent only
+    if( anyKey.includes('_bom_core') && 
+      ( childBusinessLogicKeys[0] === '_businessLogic' || childBusinessLogicKeys.find( key=>(anyKey.includes(key) ) ) )&&
         availableSetupBomCoreKeys.filter(key => (key === anyKey)).length === 0 )
     {
       availableSetupBomCoreKeys.push( anyKey );

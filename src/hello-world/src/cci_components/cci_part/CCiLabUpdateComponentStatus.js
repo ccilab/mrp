@@ -6,6 +6,9 @@ import styles from "./../../dist/css/ccilab-component-list.css"
 
 
 const UpdateComponentStatus=(props)=>{
+  // deep copy object that doesn't have function inside object
+  const originComponent = JSON.parse(JSON.stringify(props.component));
+
   const { t, i18n } = useTranslation(['component','commands'], {useSuspense: false});
   let inputValue = props.value;
   let inputClassName = 'text-primary m-0 p-0 cursor-pointer border-0';
@@ -105,7 +108,7 @@ const UpdateComponentStatus=(props)=>{
     shiftQuantityInput = true;
     requiredQty=inputValue[0];
     inputPlaceholder=t('component:required-quantity-per-shift') + inputValue[0];  //required quantity
-    if( typeof props.component.bom.core!== 'undefined' && props.component.bom.core.unitOfMeasure!=='')
+    if( props.component.bom.core !== null && typeof props.component.bom.core!== 'undefined' && props.component.bom.core.unitOfMeasure!=='')
       inputPlaceholder += ' ' + props.component.bom.core.unitOfMeasure;
 
     inputValue= inputValue[1] > 0 ? attachUnitAndWarning(inputValue[1], props) : ''; //actual produced value
@@ -150,7 +153,7 @@ const UpdateComponentStatus=(props)=>{
     if( typeof props.updateComponent !== 'undefined')
     {
       console.log("UpdateComponentStatus - updateComponent: " + props.component.businessLogic.name);
-      props.updateComponent(props.component);
+      props.updateComponent(originComponent, props.component);
     }
   }
 
@@ -295,8 +298,14 @@ export const UpdateStatus=(props)=>{
           quantityValue = props.component.bom.core.requiredQty !== null ? props.component.bom.core.requiredQty : 'undefined';
       else
       {
-         if( parseInt(props.component.bom.core.requiredQtyPerShift, 10 ) )
+         if( props.component.bom.core !== null && parseInt(props.component.bom.core.requiredQtyPerShift, 10 ) )
+         {
             quantityValue = props.component.bom.core.requiredQtyPerShift !== null ?  props.component.bom.core.requiredQtyPerShift : 'undefined';
+         }
+         else
+         {
+            quantityValue = 'undefined';
+         }
       }
     }
   };
