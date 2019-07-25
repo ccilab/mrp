@@ -245,6 +245,53 @@ export const CanEnableInlineMenu = ( component )=>{
   }
 }
 
+export const initializeBOM=( component )=>{
+  let bom={};
+  bom.core= JSON.parse(sessionStorage.getItem(`${component.displayLogic.key}_${component.businessLogic.name}_bom_core`)) || initializeBOMCore();
+  bom.extra=JSON.parse(sessionStorage.getItem(`${component.displayLogic.key}_${component.businessLogic.name}_bom_extra`)) ||initializeBOMExtra();
+  return bom;
+}
+
+// requiredQtyPerShift calculates based on its parent component's unitQty
+// #todo - need to re-design how to handle it
+const initializeBOMCore=()=>{
+   let core={};
+   core.partNumber=null;
+   core.unitQty=null;
+   core.unitOfMeasure=''; // may doesn't have unit
+   core.requiredQty= null; //required quantity of component/part
+   core.startDate=null;
+   core.completeDate=null;
+   core.scrapRate=null;    // in %, need /100 when uses it
+   core.procurementType=null;  //'InHouse'(to produce production order), 'Purchase'(to produce purchase order)
+   core.warehouse=null;
+   core.leadTime=null;
+   core.workshop=null;
+   core.supplier=null;
+   core.supplierPartNumber=null;
+   core.requiredQtyPerShift=null;  // required quantity for per shift per run
+   core.shiftCount=1;         // how many different shifts are needed
+   core.sameShiftRunCount=1;  //same shift runs how many times
+   return core;
+}
+
+const initializeBOMExtra=()=>{
+  let extra={};
+  extra.SKU='';
+  extra.barCode='';
+  extra.revision='';
+  extra.refDesignator='';
+  extra.phase='';
+  extra.category='';
+  extra.material='';
+  extra.process='';
+  extra.unitCost='';
+  extra.assemblyLine='';
+  extra.description='';
+  extra.note='';
+  return extra;
+};
+
 export const SetupBOM=(props)=>{
   const _className = 'cursor-pointer text-primary border-0 p-1 fa fw fa-edit' + (props.component.displayLogic.selected ? ' bg-info' : ' ');
 
@@ -287,56 +334,11 @@ export const SetupBOM=(props)=>{
 
   }
 
-  const initializeBOM=()=>{
-    let bom={};
-    bom.core= JSON.parse(sessionStorage.getItem(`${props.component.displayLogic.key}_${props.component.businessLogic.name}_bom_core`)) || initializeBOMCore();
-    bom.extra=JSON.parse(sessionStorage.getItem(`${props.component.displayLogic.key}_${props.component.businessLogic.name}_bom_extra`)) ||initializeBOMExtra();
-    return bom;
-  }
 
-  // requiredQtyPerShift calculates based on its parent component's unitQty
-  // #todo - need to re-design how to handle it
-  const initializeBOMCore=()=>{
-     let core={};
-     core.partNumber=null;
-     core.unitQty=null;
-     core.unitOfMeasure=''; // may doesn't have unit
-     core.requiredQty= null; //required quantity of component/part
-     core.startDate=null;
-     core.completeDate=null;
-     core.scrapRate=null;    // in %, need /100 when uses it
-     core.procurementType=null;  //'InHouse'(to produce production order), 'Purchase'(to produce purchase order)
-     core.warehouse=null;
-     core.leadTime=null;
-     core.workshop=null;
-     core.supplier=null;
-     core.supplierPartNumber=null;
-     core.requiredQtyPerShift=null;  // required quantity for per shift per run
-     core.shiftCount=1;         // how many different shifts are needed
-     core.sameShiftRunCount=1;  //same shift runs how many times
-     return core;
-  }
-
-  const initializeBOMExtra=()=>{
-    let extra={};
-    extra.SKU='';
-    extra.barCode='';
-    extra.revision='';
-    extra.refDesignator='';
-    extra.phase='';
-    extra.category='';
-    extra.material='';
-    extra.process='';
-    extra.unitCost='';
-    extra.assemblyLine='';
-    extra.description='';
-    extra.note='';
-    return extra;
-  };
 
   if( props.component.bom === null || typeof props.component.bom === 'undefined' )
   {
-    props.component.bom = new initializeBOM();
+    props.component.bom = new initializeBOM(props.component);
   }
 
   // const isValidString=( name )=>{
@@ -381,7 +383,7 @@ export const SetupBOM=(props)=>{
 
   const setPartNumber=(partNumber, component)=>{
     if( typeof component.bom === 'undefined' )
-      component.bom = new initializeBOM();
+      component.bom = new initializeBOM( component );
 
     if( isValidString( partNumber ))
       component.bom.core.partNumber=partNumber;
@@ -395,7 +397,7 @@ export const SetupBOM=(props)=>{
 
   const setUnitQty=(unitQty, component)=>{
     if( typeof component.bom === 'undefined' )
-      component.bom = new initializeBOM();
+      component.bom = new initializeBOM( component );
 
     let {isValid, value} = isValidValue(unitQty);
 
@@ -414,7 +416,7 @@ export const SetupBOM=(props)=>{
 
   const setTotalRequiredQty=(qty, component)=>{
     if( typeof component.bom === 'undefined' )
-      component.bom = new initializeBOM();
+      component.bom = new initializeBOM( component );
 
     let {isValid, value} = isValidValue(qty);
 
@@ -431,14 +433,14 @@ export const SetupBOM=(props)=>{
 
   const setUnitOfMeasure=(unitOfMeasure, component)=>{
     if( typeof component.bom === 'undefined' )
-      component.bom = new initializeBOM();
+      component.bom = new initializeBOM( component );
 
     component.bom.core.unitOfMeasure=unitOfMeasure;
   }
 
   const setScrapRate=(scrapRate, component)=>{
     if( typeof component.bom === 'undefined' )
-      component.bom = new initializeBOM();
+      component.bom = new initializeBOM( component );
 
     let {isValid, value} = isValidValue(scrapRate);
 
@@ -453,7 +455,7 @@ export const SetupBOM=(props)=>{
 
   const setProcurementType=(procurementType, component)=>{
     if( typeof component.bom === 'undefined' )
-      component.bom = new initializeBOM();
+      component.bom = new initializeBOM( component );
 
     if( isValidString(procurementType) )
       component.bom.core.procurementType = procurementType;
@@ -466,7 +468,7 @@ export const SetupBOM=(props)=>{
 
   const setStartDate=(startDate, component)=>{
     if( typeof component.bom === 'undefined' )
-      component.bom = new initializeBOM();
+      component.bom = new initializeBOM( component );
 
     if( isValidString( startDate ))
       component.bom.core.startDate=startDate;
@@ -479,7 +481,7 @@ export const SetupBOM=(props)=>{
 
   const setCompleteDate=(completeDate, component)=>{
     if( typeof component.bom === 'undefined' )
-      component.bom = new initializeBOM();
+      component.bom = new initializeBOM( component );
 
     if( isValidString( completeDate ))
       component.bom.core.completeDate=completeDate;
@@ -530,7 +532,7 @@ export const SetupBOM=(props)=>{
 
           <SetupComponentBOM
             title='part-number'
-            value={props.component.bom.core.partNumber === null ? null : props.component.bom.core.partNumber}
+            value={props.component.bom.core.partNumber}
             component={props.component}
             handler={setPartNumber}/>
 
@@ -548,7 +550,7 @@ export const SetupBOM=(props)=>{
             <SetupComponentBOM
               title='unit-quantity'
               // value='' input will show placeholder text
-              value={props.component.bom.core.unitQty !== null ? props.component.bom.core.unitQty : ''}
+              value={ props.component.bom.core.unitQty}
               component={props.component}
               handler={setUnitQty}/>
           }
@@ -558,7 +560,7 @@ export const SetupBOM=(props)=>{
 
           <SetupComponentBOM
               title='unit-of-measure'
-              value={props.component.bom.core.unitOfMeasure !== null ? props.component.bom.core.unitOfMeasure : ''}
+              value={props.component.bom.core.unitOfMeasure }
               component={props.component}
               handler={setUnitOfMeasure}/>
 
@@ -567,7 +569,7 @@ export const SetupBOM=(props)=>{
 
           <SetupComponentBOM
             title='scrap-rate'
-            value={props.component.bom.core.scrapRate !== null ? props.component.bom.core.scrapRate :'' }
+            value={props.component.bom.core.scrapRate }
             component={props.component}
             handler={setScrapRate}/>
 
@@ -576,7 +578,7 @@ export const SetupBOM=(props)=>{
 
           <SetupComponentBOM
               title='procurement-type'
-              value={props.component.bom.core.procurementType !== null ? props.component.bom.core.procurementType :'' }
+              value={props.component.bom.core.procurementType }
               component={props.component}
               handler={setProcurementType}/>
 
@@ -585,7 +587,7 @@ export const SetupBOM=(props)=>{
 
           <SetupComponentBOM
               title='start-product-date'
-              value={props.component.bom.core.startDate !== null ? props.component.bom.core.startDate :''}
+              value={props.component.bom.core.startDate }
               component={props.component}
               handler={setStartDate}/>
 
@@ -594,7 +596,7 @@ export const SetupBOM=(props)=>{
 
           <SetupComponentBOM
               title='product-complete-date'
-              value={props.component.bom.core.completeDate !== null ? props.component.bom.core.completeDate :'' }
+              value={props.component.bom.core.completeDate }
               component={props.component}
               handler={setCompleteDate}/>
           </div>

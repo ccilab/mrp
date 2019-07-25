@@ -12,7 +12,7 @@ import './../../dist/css/popup-menu.css'
 import CCiLabComponent from "./CCiLabComponent";
 import DropComponentWarningModal from "./CCiLabDropComponentCheckFailedModal";
 import { setListHeight, setListWidth, getTextRect} from "./CCiLabUtility";
-import {CanEnableInlineMenu} from './CCiLabSetupComponentBOM';
+import {CanEnableInlineMenu, initializeBOM } from './CCiLabSetupComponentBOM';
 
 
 // // based on https://github.com/ccilab/react-i18next/blob/master/example/react/src/index.js
@@ -205,6 +205,7 @@ const initializeDisplayLogic = (key, canExpend, rectLeft, enableMenu ) =>{
 };
 
 // find maximum displayLogic.key
+// eslint-disable-next-line
 const findMaxDisplayKey = ( componentList )=>{
   let displayKeyValue = 0;
   let childKeys =[];
@@ -231,14 +232,19 @@ const initializeComponents = ( atComponent, existingComponentList, newComponentL
   // initialize displayLogic items, create unique key value for latest components from data layer
   // this guarantees that displayLogic.key is unique, (newly added component won't show itself until
   // user clicks it, except the very top component),
-  let displayKeyValue = findMaxDisplayKey(existingComponentList);
+  // let displayKeyValue = findMaxDisplayKey(existingComponentList)+1;
 
+  if( newComponentList === null || typeof newComponentList === 'undefined')
+  {
+    console.log('Error: initializeComponents newComponentList is null or undefined');
+    return;
+  }
   newComponentList.forEach((element)=>{
     if( typeof element !== "undefined" )
     {
       if( typeof element.displayLogic === "undefined" )
       {
-        element.displayLogic = new initializeDisplayLogic( ++displayKeyValue, element.businessLogic.childIds.length !== 0 ? true : false );
+        element.displayLogic = new initializeDisplayLogic( element.businessLogic.id, element.businessLogic.childIds.length !== 0 ? true : false );
       }
 
       CanEnableInlineMenu(element);
@@ -850,9 +856,9 @@ class CCiLabComponentList extends Component {
 
       //update businessLogic and displayLogic childIds of parent component
       if( typeof parentComponent !== 'undefined')
-      {
-          let displayKeyValue = findMaxDisplayKey(currentSessionComponents);
-          newComponent.displayLogic = new initializeDisplayLogic( ++displayKeyValue, false, parentComponent.displayLogic.rectLeft );
+      {   //because businessLogic.id is uniq so we no longer need a separate displayLogic.id, for now set both the same
+          let displayKeyValue = newComponent.businessLogic.id;//findMaxDisplayKey(currentSessionComponents)+1;
+          newComponent.displayLogic = new initializeDisplayLogic( displayKeyValue, false, parentComponent.displayLogic.rectLeft );
           //update sessionStorage businessLogic
           populateComponentBusinessLogicChildIds( parentComponent, newComponent.businessLogic.id );
       }
@@ -879,6 +885,8 @@ class CCiLabComponentList extends Component {
       });
 
       // sessionStorage.setItem( `${newComponent.displayLogic.key}_${newComponent.businessLogic.name}_displayLogic`, JSON.stringify( newComponent.displayLogic ));
+      newComponent.bom = new initializeBOM( newComponent );
+      sessionStorage.setItem( `${newComponent.displayLogic.key}_${newComponent.businessLogic.name}_bom_core`, JSON.stringify( newComponent.bom.core ));
 
       // need to check vertical scroll bar doesn't show
       // create vertical scroll bar based on the height of component list dynamically
