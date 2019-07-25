@@ -77,14 +77,15 @@ const ShowImage=(props)=>{
 
 const MenuAddComponent=(props)=>{
     const { t } = useTranslation('commands', {useSuspense: false});
+    const plusCircleClassName = ((props.component.displayLogic.inlineMenuEnabled ) ? 'text-primary' : 'text-danger') + ' cursor-pointer p-1 fw fa fa-plus-circle';
     return (
       <Popup
         trigger={
           <i
           type='icon'
-          className={'text-primary cursor-pointer p-1 fw fa fa-plus-circle'}
+          className={ plusCircleClassName  }
           style={{'visibility': `${props.visibility}`}}
-          onClick={ props.component.displayLogic.inlineMenuEnabled ? props.addComponentHandler : null }/>
+          onClick={ props.component.displayLogic.inlineMenuEnabled ? props.addComponentHandler : props.selectedComponentHandler }/>
         }
         id={`${props.component.displayLogic.key}-add`}
         position={'bottom left'}
@@ -482,6 +483,7 @@ class CCiLabComponent extends Component {
                       style={ {'visibility': `${inlineMenuIconVisibility}`}}
                       isDraggable={draggableSetting}
                       addComponentHandler={this.addComponent}
+                      selectedComponentHandler={this.componentSelected}
                     />
                     :
                     null

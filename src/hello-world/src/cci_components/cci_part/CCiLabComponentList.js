@@ -462,12 +462,12 @@ const ComponentListTitle =(props)=>{
      {/* popup menu to change language */}
      <Popup
       trigger={
-        <button
+        <i
           key='selection-language'
           id='#selection-language'
-          type="button"
+          //type="button"
           className={'bg-info text-primary border-0 py-0 px-1 fa fa-language'}
-          style={{'cursor': 'pointer','position':'absolute', 'right':'0'}}></button>
+          style={{'cursor': 'pointer','position':'absolute', 'right':'0'}}/>
       }
       closeOnDocumentClick
       on={'hover'} //['click', 'focus','hover']
@@ -591,7 +591,7 @@ class CCiLabComponentList extends Component {
       let iBase = TextResizeDetector.addEventListener(this.onFontResize,null);
       // console.log("initTextResizeDetector: The base font size iBase: " + iBase);
       this.setState( { fontSize: iBase } )
-      this.updateDimensions( "undefined" );
+      this.updateDimensions( this.state.greetings || "undefined" );
     }
 
     positioningListTitle=(rootComponent)=>{
@@ -729,9 +729,6 @@ class CCiLabComponentList extends Component {
           this.setDefaultListDimension();
       }
       else{
-          if( componentList === "undefined")
-            componentList = this.state.greetings;
-
           let listRect = this.estimateComponentListRect( componentList, this.state.fontSize); //this.state.greetings
 
           if( typeof listRect === 'undefined')
@@ -985,9 +982,6 @@ class CCiLabComponentList extends Component {
 
           });
 
-          // create vertical scroll bar based on the height of component list dynamically
-          this.updateDimensions( currentSessionComponents, false);
-
           if( isRending )
           {
             // console.log("CCiLabComponentList - showOrHideChildren");
@@ -1202,7 +1196,7 @@ class CCiLabComponentList extends Component {
     };
 
     showSetupBOM=( isShowSetupBOM )=>{
-      this.updateDimensions("undefined");  //title-name hasn't changed yet (from progress to setupBOM)
+      this.updateDimensions(this.state.greetings || "undefined");  //title-name hasn't changed yet (from progress to setupBOM)
       this.setState({setupBOM: isShowSetupBOM});
     }
 
