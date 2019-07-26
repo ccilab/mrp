@@ -390,7 +390,6 @@ const ComponentListTitle =(props)=>{
 
   const languageChangeHandler=(language)=>(e)=>{
     i18n.changeLanguage(language);
-    props.titleWidthChangeHandler("undefined");
   }
 
   // console.log("CCiLabComponentList - ComponentListTitle: i18n.language = " + i18n.language );
@@ -591,7 +590,7 @@ class CCiLabComponentList extends Component {
       let iBase = TextResizeDetector.addEventListener(this.onFontResize,null);
       // console.log("initTextResizeDetector: The base font size iBase: " + iBase);
       this.setState( { fontSize: iBase } )
-      this.updateDimensions( this.state.greetings || "undefined" );
+      this.updateDimensions( this.state.greetings);
     }
 
     positioningListTitle=(rootComponent)=>{
@@ -723,8 +722,8 @@ class CCiLabComponentList extends Component {
     }
 
     //  handles component list increase due to add/remove components
-    updateDimensions=( componentList, isRender = true )=>{
-      if( componentList === "undefined" || this.state.greetings === "undefined")
+    updateDimensions=( componentList )=>{
+      if( componentList === "undefined" && this.state.greetings === "undefined")
       {
           this.setDefaultListDimension();
       }
@@ -733,13 +732,10 @@ class CCiLabComponentList extends Component {
 
           if( typeof listRect === 'undefined')
             return;
-          // console.log('CCiLabComponentList - updateDimensions: list width '+ listRect.width);
 
           this.componentListHeight = setListHeight( listRect, this.state.fontSize );
 
           let titleWidth = this.getMaxTitleWidth();
-
-          // console.log('CCiLabComponentList - updateDimensions: title width '+ titleWidth);
 
           if( listRect.width <= titleWidth )
             this.componentListWidth = titleWidth;
@@ -749,9 +745,7 @@ class CCiLabComponentList extends Component {
           this.hideListWidth = this.componentListWidth*0.99 +'px';
           this.componentListWidth += 'px';
       }
-      // this.setState( {  })
-      // console.log("CCiLabComponentList - updateDimensions: used list width: " + this.componentListWidth );
-      if( componentList !== "undefined" && isRender === true )
+      if( componentList !== "undefined" )
         this.setState( { greetings: componentList } );
     }
 
@@ -762,7 +756,6 @@ class CCiLabComponentList extends Component {
      * than component list rect height
      * */
     componentDidMount =()=> {
-      console.log("CCiLabComponentList - componentDidMount");
       window.addEventListener("resize", this.onResizeHandler);
       this.initialized = true;
     }
@@ -1196,7 +1189,6 @@ class CCiLabComponentList extends Component {
     };
 
     showSetupBOM=( isShowSetupBOM )=>{
-      this.updateDimensions(this.state.greetings || "undefined");  //title-name hasn't changed yet (from progress to setupBOM)
       this.setState({setupBOM: isShowSetupBOM});
     }
 
@@ -1316,8 +1308,7 @@ class CCiLabComponentList extends Component {
                                       titleClassName = {listTitleClassName}
                                       setupBOM = {this.state.setupBOM}
                                       permissionStatus = {this.state.permissionEnabled}
-                                      changeBOMHandler = {this.showSetupBOM}
-                                      titleWidthChangeHandler = {this.updateDimensions}/> :
+                                      changeBOMHandler = {this.showSetupBOM}/> :
                                 <ComponentListTitle title='title-Progress'
                                       titleHeight={this.componentTitleHeight}
                                       titleWidth={this.componentListWidth}
@@ -1325,8 +1316,7 @@ class CCiLabComponentList extends Component {
                                       titleClassName = {listTitleClassName}
                                       setupBOM = {this.state.setupBOM}
                                       permissionStatus = {this.state.permissionEnabled}
-                                      changeBOMHandler = {this.showSetupBOM}
-                                      titleWidthChangeHandler = {this.updateDimensions}/>
+                                      changeBOMHandler = {this.showSetupBOM}/>
                   }
                   <hr className='my-0 bg-info' style={{borderStyle:'groove', borderWidth: '0.08em', borderColor:`${styles.cciInfoBlue}`}}/>
 
