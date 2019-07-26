@@ -156,5 +156,6 @@ bak/
 bash.exe.stackdump
 .gitignore.orig
 
-#package files
+
+#package json files
 package*.json
