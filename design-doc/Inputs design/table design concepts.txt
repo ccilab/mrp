@@ -1,5 +1,12 @@
-1) BOM summargy table - production cost and pricing summary for each item/raw material
+Input:
+1) BOM summargy table - the output of setup BOM tree
+   - the struct of each item/raw material and quantity requirements to produce a single product  
    - template base - "A Bill of Materials Template for Manufacturers.pdf"
+   
+2) MPS - master production schedule - from forcast or customer order - need to be configured
+
+3) Inventory summary for each item/raw material (Inventory Records File IRF) - need to be configured
+
 
 MRP works backward from a production plan for finished goods to develop requirements 
 for components and raw materials.
@@ -9,8 +16,8 @@ a bill of materials, (done)
 a master production schedule , (from customer order or forecast demand, to do )
 and an inventory records file. ( to do )
 
-2) Inventory summary for each item/raw material (Inventory Records File IRF)
-
+Output:
+primary outputs:
 3) production/purchase/material schedul/plan for each item - to prudece following two type of orders
    1) produce purchase order/plan for each outsource item/raw material
 
@@ -19,6 +26,8 @@ and an inventory records file. ( to do )
    3) material plan
 
 4) workshop/warehouse/assembly line usage planning 
+
+secondary outputs:
 
 The main outputs from MRP include three primary reports and three secondary reports. 
 The primary reports consist of: 
