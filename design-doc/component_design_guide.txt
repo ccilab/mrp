@@ -47,3 +47,9 @@ component list:
 9) fa: ellipsis-h ...
 10) font size, layout unit policy - component btn, img, graphic assets in rem unit, font size in rem (in bootstrap 4), font size in em (in fontawesome), 
     position - calculated from rect - return in rem
+
+11) configure bom for each item - component structure, qunitity/product, inputs to create bom summary table
+12) configure mps for each item - period length and count, quantity and when is needed, etc. e.g. Master Production Schedule - J Beasley.pdf
+    - inputs to create mps (master proudction/purchase schedule) table for each component ( or virtual component )
+13) configure inventory for each item - lot sizing rule,  Gross requirements, Scheduled receipts, Expected amount on hand, Lead time, Lot size policy, And more 
+    MBA-resource planning MRP.pdf, Ch14-MRP.ppt, Material Requirements Planning -J-Beasley.pdf
