@@ -1,0 +1,49 @@
+component button:
+1) has a unique component id - get component related information from db using this id for detail page
+2) has properties: parent id, siblings ids
+3) image - default is edit image, replaced with user provided image retrieved from db, 
+4) click  button send component id to fetch all component related information for detail page
+5) to support all image format and show onTime(green), warning (yellow), delay (red)
+   - dynamic change button bg_color
+   - set button z-index to 2;
+   - set img filter: opacity(50%)
+   - isn't able to override button style in Safari, focus ring only appears when tabbing not by active+focus mouse click
+6) badges next to component button to show how many children belongs to it, after expend the number changes to "x"
+7) create collapsible list/panel to expend next level childer only
+8) 90% progress could be still in alarm status if there is not enough time left to finish rest of 10%, 
+10) each component has a unique key which is used by ReactJs for code logic, component id is used by business logic and repensent a unique component
+11) childKeyIds is used to control show/hide children, not childIds[], initialize to [], cached at run time only
+12) businessItems - readonly from client, used to get business logic information from server,
+13) displayItems - presentation layer, read/write from client, handles UI updates etc
+14) bom.core and bom.extra ( done )
+15) sessionStorage component-list : component-name arrary ',' as saperator, 
+    component-name_business_display_key: json;
+    component-name_display_display_key: json;
+    component-name_bom_core_display_key: json; ( done )
+    component-name_bom_extra_display_key: json ( done )
+16) move/delete component needs to move/delete the sessionStorage( itme ) too ( done )
+17) store sessionStorge to localStorge only when user ends the session
+
+css:
+  block: cci-component-btn
+  element: cci-component-btn__img
+  modifier: cci-component-btn_alarm_(progress_percentage)
+            cci-component-btn_warning_(progress_percentage)
+       	    cci-component-btn_green_(progress_percentage)
+
+//unicode lookup 
+https://unicodelookup.com/#latin/1
+
+component list:
+1) list order and content needs to reorganize for show or hide, so the children shows directly under its parents
+2) a component can have multiple parent components and multiple child components
+3) the first component - parentIds[] size is 0;
+4) parentIds[] - component should only have direct relationship parent in this array
+5) childIds[] - the child components should only have direct relationship to this component, and child components are expended and possibly 
+   insert under its parent component when a parent component is selected
+6) different component may have same child components
+7) component's parentIds[] only includes its direct parent, e.g. only one parent per component (server side handles different level parents share the same children)
+8) using >... to indicate there are more components 
+9) fa: ellipsis-h ...
+10) font size, layout unit policy - component btn, img, graphic assets in rem unit, font size in rem (in bootstrap 4), font size in em (in fontawesome), 
+    position - calculated from rect - return in rem
