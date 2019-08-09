@@ -4,12 +4,22 @@ Input:
    - template base - "A Bill of Materials Template for Manufacturers.pdf"
    
 2) MPS - master production schedule - from forcast or customer order - need to be configured
+	- Master Production Schedule - J Beasley.pdf - repeated productions
+	- The Only Master Production Schedule Guide You Will Ever Need.pdf - agile productions
 
 3) Inventory summary for each item/raw material (Inventory Records File IRF) - need to be configured
+   - Material Requirements Planning -J-Beasley.pdf
 
+4) production operation plan - workshop/warehouse/assembly line usage planning 
+   - Production Planning and Scheduling.pdf
 
-MRP works backward from a production plan for finished goods to develop requirements 
+ 
+MRP the process - works backward from a production plan for finished goods to develop requirements 
 for components and raw materials.
+  MBA-resource planning MRP.pdf
+  Material Requirements Planning -J-Beasley.pdf
+  Ch14-MRP.ppt
+  
 
 The information input into MRP systems comes from three main sources: 
 a bill of materials, (done)
