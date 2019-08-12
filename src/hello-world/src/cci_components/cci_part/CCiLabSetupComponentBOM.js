@@ -493,6 +493,18 @@ export const SetupBOM=(props)=>{
   }
 
 
+  //hover to popup tooltip, click/focus to popup setup BOM inputs
+  // based on event from mouse or click for desktop devices, click for touch devices
+  const onSetupBOMIconHandle=(event)=>{
+    switch (event) {
+      case 'click':
+      case 'focus':
+        break;
+      case 'hover':
+        break;
+      default:
+    }
+  }
 
   return (
     ( props.component.displayLogic.selected ?
@@ -507,7 +519,8 @@ export const SetupBOM=(props)=>{
             style={{backgroundColor: `${styles.cciBgColor}`}}/>
         }
       closeOnDocumentClick={true}
-      on={['click', 'focus']}
+      on={['hover','click', 'focus']}
+      onOpen={(e)=>{onSetupBOMIconHandle(e)}}
       position={'right top'}
       defaultOpen={false}  //don't show setupBOM menu unless user click the edit icon
       contentStyle={{ padding: '0px', border: 'none', backgroundColor: `${styles.cciBgColor}`}} //

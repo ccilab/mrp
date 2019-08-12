@@ -1,17 +1,19 @@
 Input:
-1) BOM summargy table - the output of setup BOM tree
-   - the struct of each item/raw material and quantity requirements to produce a single product  
+1) BOM summary table - the output of setup BOM tree ( generated from top menu )
+   - the structure of each item/raw material and quantity requirements to produce a single product  
    - template base - "A Bill of Materials Template for Manufacturers.pdf"
    
-2) MPS - master production schedule - from forcast or customer order - need to be configured
+2) MPS - master production schedule - from forecast or customer order - need to be configured and show MPS table  for both setup and monitoring
 	- Master Production Schedule - J Beasley.pdf - repeated productions
 	- The Only Master Production Schedule Guide You Will Ever Need.pdf - agile productions
 
-3) Inventory summary for each item/raw material (Inventory Records File IRF) - need to be configured
+3) Inventory summary for each item/raw material (Inventory Records File IRF) - need to be configured and show IR table  for both setup and monitoring
    - Material Requirements Planning -J-Beasley.pdf
 
-4) production operation plan - workshop/warehouse/assembly line usage planning 
+4) production operation plan - workshop/warehouse/assembly line usage planning - need to be configured and show shift PO table for both setup and monitoring 
    - Production Planning and Scheduling.pdf
+   - coordinate usage of warehouse, workshop and assembly line factory/company wide ( generated from top menu - PO summary table based on operation plans  of all shift company wide )
+   - coordinate operations within a shift 
 
  
 MRP the process - works backward from a production plan for finished goods to develop requirements 
