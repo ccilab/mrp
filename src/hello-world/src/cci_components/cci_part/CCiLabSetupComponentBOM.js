@@ -295,6 +295,8 @@ const initializeBOMExtra=()=>{
 export const SetupBOM=(props)=>{
   const _className = 'cursor-pointer text-primary border-0 p-1 fa fw fa-edit' + (props.component.displayLogic.selected ? ' bg-info' : ' ');
 
+  let eventState = 'hover';
+
   // deep copy object that doesn't have function inside object
   const originComponent = JSON.parse(JSON.stringify(props.component));
 
@@ -495,8 +497,8 @@ export const SetupBOM=(props)=>{
 
   //hover to popup tooltip, click/focus to popup setup BOM inputs
   // based on event from mouse or click for desktop devices, click for touch devices
-  const onSetupBOMIconHandle=(event)=>{
-    switch (event) {
+  const onSetupBOMIconHandle=()=>{
+    switch (this.eventState) {
       case 'click':
       case 'focus':
         break;
@@ -506,6 +508,24 @@ export const SetupBOM=(props)=>{
     }
   }
 
+  const setEventState=(e)=>
+  {
+    if( e.onMouseOver )
+    {
+       this.eventState = 'hover';
+       return;
+    }
+    if( e.onClick)
+    {
+      this.eventState = 'click';
+      return;
+    }
+    else 
+    {
+      eventState ='hover';
+    }
+   
+  }
   return (
     ( props.component.displayLogic.selected ?
       <Popup
@@ -514,19 +534,27 @@ export const SetupBOM=(props)=>{
             key={`component-${props.component.displayLogic.key}`}
             id={`#component-${props.component.displayLogic.key}`}
             type="icon"
+            onMouseOver={(e)=>setEventState(e)}
+            onClick={(e)=>setEventState(e)}
             // 'cursor-pointer text-primary border-0 py-0 px-2 fa fw fa-edit' + (props.component.displayLogic.selected ? ' bg-info' : ' ');
             className={`${_className}`}
             style={{backgroundColor: `${styles.cciBgColor}`}}/>
         }
       closeOnDocumentClick={true}
-      on={['hover','click', 'focus']}
-      onOpen={(e)=>{onSetupBOMIconHandle(e)}}
+      on={`${eventState}`}
+     
+      // onOpen={onSetupBOMIconHandle}
       position={'right top'}
       defaultOpen={false}  //don't show setupBOM menu unless user click the edit icon
       contentStyle={{ padding: '0px', border: 'none', backgroundColor: `${styles.cciBgColor}`}} //
       arrow={true}
       arrowStyle={{backgroundColor: `${styles.cciBgColor}`}}>
-      {close => (
+      ( this.eventState == 'hover' ?
+        {
+              <span className={'text-primary'} >{'setup bOM'}</span>
+        }
+        :
+        {close => (
         <div className={'bg-info d-flex flex-column'} >
           <div className={'bg-info d-flex'}>
           <SetupComponentBOM
@@ -614,6 +642,8 @@ export const SetupBOM=(props)=>{
               handler={setCompleteDate}/>
           </div>
         )}
+     
+      ) 
       </Popup>
       :
       null
