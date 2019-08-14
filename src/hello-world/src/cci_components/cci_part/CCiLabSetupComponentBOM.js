@@ -293,6 +293,8 @@ const initializeBOMExtra=()=>{
 };
 
 export const SetupBOM=(props)=>{
+  const { t } = useTranslation('commands', {useSuspense: false});
+  
   const _className = 'cursor-pointer text-primary border-0 p-1 fa fw fa-edit' + (props.component.displayLogic.selected ? ' bg-info' : ' ');
 
   const [event, setEvent] = useState('hover'); // '' is the initial state value
@@ -520,15 +522,13 @@ export const SetupBOM=(props)=>{
             key={`component-${props.component.displayLogic.key}`}
             id={`#component-${props.component.displayLogic.key}`}
             type="icon"
-            // onMouseOver={(e)=>setEventState(e)}
-            // onClick={(e)=>setEventState(e)}
+            onClick={setEventState}
             // 'cursor-pointer text-primary border-0 py-0 px-2 fa fw fa-edit' + (props.component.displayLogic.selected ? ' bg-info' : ' ');
             className={`${_className}`}
             style={{backgroundColor: `${styles.cciBgColor}`}}/>
         }
           closeOnDocumentClick={true}
           on={`${event}`}
-          onClose={setEventState}
           position={'right top'}
           defaultOpen={false}
           contentStyle={{ padding: '0px', border: 'none', backgroundColor: `${styles.cciBgColor}`}} 
@@ -536,7 +536,7 @@ export const SetupBOM=(props)=>{
           mouseEnterDelay={400}
           arrow={true}
           arrowStyle={{backgroundColor: `${styles.cciBgColor}`}}>
-          <span className={'text-primary'} >{'setup bOM'}</span>
+          <span className={'text-primary'} >{t('commands:show-setup-BOM')}</span>
       </Popup>
       :
       <Popup
@@ -545,108 +545,107 @@ export const SetupBOM=(props)=>{
             key={`component-${props.component.displayLogic.key}`}
             id={`#component-${props.component.displayLogic.key}`}
             type="icon"
-            // onMouseOver={(e)=>setEventState(e)}
-            // onClick={(e)=>setEventState(e)}
             // 'cursor-pointer text-primary border-0 py-0 px-2 fa fw fa-edit' + (props.component.displayLogic.selected ? ' bg-info' : ' ');
             className={`${_className}`}
             style={{backgroundColor: `${styles.cciBgColor}`}}/>
         }
           closeOnDocumentClick={true}
           on={`${event}`}
-          onOpen={setEventState}
+          onClose={setEventState}
           position={'right top'}
           defaultOpen={false}  
           contentStyle={{ padding: '0px', border: 'none', backgroundColor: `${styles.cciBgColor}`}} 
           arrow={true}
           arrowStyle={{backgroundColor: `${styles.cciBgColor}`}}>
-        {close => (
-        <div className={'bg-info d-flex flex-column'} >
-          <div className={'bg-info d-flex'}>
-          <SetupComponentBOM
-            title='part-name'
-            value={props.component.businessLogic.name}
-            component={props.component}
-            handler={setPartName}/>
-          <a id={`${props.component.displayLogic.key}-setupBOM`}
-            href={`#${props.component.displayLogic.key}`}
-            className='text-danger m-0 py-1 px-1 fas fw fa-times-circle cursor-pointer'
-            style={{backgroundColor: `${styles.cciBgColor}`}}
-            onClick={ close }> </a>
-        </div>
-        <hr className='my-0 bg-info'
-              style={{borderStyle:'insert', borderWidth: '0.08em', borderColor:`${styles.cciInfoBlue}`}}/>
+          {close => (
+            <div className={'bg-info d-flex flex-column'} >
+            <div className={'bg-info d-flex'}>
+              <SetupComponentBOM
+                title='part-name'
+                value={props.component.businessLogic.name}
+                component={props.component}
+                handler={setPartName}/>
+              <a id={`${props.component.displayLogic.key}-setupBOM`}
+                href={`#${props.component.displayLogic.key}`}
+                className='text-danger m-0 py-1 px-1 fas fw fa-times-circle cursor-pointer'
+                style={{backgroundColor: `${styles.cciBgColor}`}}
+                onClick={ close }> </a>
+            </div>
+            <hr className='my-0 bg-info'
+                  style={{borderStyle:'insert', borderWidth: '0.08em', borderColor:`${styles.cciInfoBlue}`}}/>
 
-          <SetupComponentBOM
-            title='part-number'
-            value={props.component.bom.core.partNumber}
-            component={props.component}
-            handler={setPartNumber}/>
-
-        <hr className='my-0 bg-info'
-              style={{borderStyle:'insert', borderWidth: '0.08em', borderColor:`${styles.cciInfoBlue}`}}/>
-
-          { props.component.businessLogic.parentIds.length === 0 ?
             <SetupComponentBOM
-            title='required-quantity'
-              // value='' input will show placeholder text
-              value={(props.component.bom.core.requiredQty !== null && props.component.bom.core.requiredQty > 0 ) ? props.component.bom.core.requiredQty: ''}
-              component={props.component}
-              handler={setTotalRequiredQty}/>
-            :
+                title='part-number'
+                value={props.component.bom.core.partNumber}
+                component={props.component}
+                handler={setPartNumber}/>
+
+            <hr className='my-0 bg-info'
+                  style={{borderStyle:'insert', borderWidth: '0.08em', borderColor:`${styles.cciInfoBlue}`}}/>
+
+            { props.component.businessLogic.parentIds.length === 0 ?
+              <SetupComponentBOM
+              title='required-quantity'
+                // value='' input will show placeholder text
+                value={(props.component.bom.core.requiredQty !== null && props.component.bom.core.requiredQty > 0 ) ? props.component.bom.core.requiredQty: ''}
+                component={props.component}
+                handler={setTotalRequiredQty}/>
+              :
+              <SetupComponentBOM
+                title='unit-quantity'
+                // value='' input will show placeholder text
+                value={ props.component.bom.core.unitQty}
+                component={props.component}
+                handler={setUnitQty}/>
+            }
+
+            <hr className='my-0 bg-info'
+                style={{borderStyle:'insert', borderWidth: '0.08em', borderColor:`${styles.cciInfoBlue}`}}/>
+
             <SetupComponentBOM
-              title='unit-quantity'
-              // value='' input will show placeholder text
-              value={ props.component.bom.core.unitQty}
+                title='unit-of-measure'
+                value={props.component.bom.core.unitOfMeasure }
+                component={props.component}
+                handler={setUnitOfMeasure}/>
+
+            <hr className='my-0 bg-info'
+                style={{borderStyle:'insert', borderWidth: '0.08em', borderColor:`${styles.cciInfoBlue}`}}/>
+
+            <SetupComponentBOM
+              title='scrap-rate'
+              value={props.component.bom.core.scrapRate }
               component={props.component}
-              handler={setUnitQty}/>
+              handler={setScrapRate}/>
+
+            <hr className='my-0 bg-info'
+                style={{borderStyle:'insert', borderWidth: '0.08em', borderColor:`${styles.cciInfoBlue}`}}/>
+
+            <SetupComponentBOM
+                title='procurement-type'
+                value={props.component.bom.core.procurementType }
+                component={props.component}
+                handler={setProcurementType}/>
+
+            <hr className='my-0 bg-info'
+                style={{borderStyle:'insert', borderWidth: '0.08em', borderColor:`${styles.cciInfoBlue}`}}/>
+
+            <SetupComponentBOM
+                title='start-product-date'
+                value={props.component.bom.core.startDate }
+                component={props.component}
+                handler={setStartDate}/>
+
+            <hr className='my-0 bg-info'
+                style={{borderStyle:'insert', borderWidth: '0.08em', borderColor:`${styles.cciInfoBlue}`}}/>
+
+            <SetupComponentBOM
+                title='product-complete-date'
+                value={props.component.bom.core.completeDate }
+                component={props.component}
+                handler={setCompleteDate}/>
+            </div>
+            )
           }
-
-          <hr className='my-0 bg-info'
-              style={{borderStyle:'insert', borderWidth: '0.08em', borderColor:`${styles.cciInfoBlue}`}}/>
-
-          <SetupComponentBOM
-              title='unit-of-measure'
-              value={props.component.bom.core.unitOfMeasure }
-              component={props.component}
-              handler={setUnitOfMeasure}/>
-
-          <hr className='my-0 bg-info'
-              style={{borderStyle:'insert', borderWidth: '0.08em', borderColor:`${styles.cciInfoBlue}`}}/>
-
-          <SetupComponentBOM
-            title='scrap-rate'
-            value={props.component.bom.core.scrapRate }
-            component={props.component}
-            handler={setScrapRate}/>
-
-          <hr className='my-0 bg-info'
-              style={{borderStyle:'insert', borderWidth: '0.08em', borderColor:`${styles.cciInfoBlue}`}}/>
-
-          <SetupComponentBOM
-              title='procurement-type'
-              value={props.component.bom.core.procurementType }
-              component={props.component}
-              handler={setProcurementType}/>
-
-          <hr className='my-0 bg-info'
-              style={{borderStyle:'insert', borderWidth: '0.08em', borderColor:`${styles.cciInfoBlue}`}}/>
-
-          <SetupComponentBOM
-              title='start-product-date'
-              value={props.component.bom.core.startDate }
-              component={props.component}
-              handler={setStartDate}/>
-
-          <hr className='my-0 bg-info'
-              style={{borderStyle:'insert', borderWidth: '0.08em', borderColor:`${styles.cciInfoBlue}`}}/>
-
-          <SetupComponentBOM
-              title='product-complete-date'
-              value={props.component.bom.core.completeDate }
-              component={props.component}
-              handler={setCompleteDate}/>
-          </div>
-        )}
       </Popup>
       )
       :
