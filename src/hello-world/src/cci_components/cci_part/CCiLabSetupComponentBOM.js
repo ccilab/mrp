@@ -295,7 +295,7 @@ const initializeBOMExtra=()=>{
 export const SetupBOM=(props)=>{
   const _className = 'cursor-pointer text-primary border-0 p-1 fa fw fa-edit' + (props.component.displayLogic.selected ? ' bg-info' : ' ');
 
-  let eventState = 'hover';
+  const [event, setEvent] = useState('hover'); // '' is the initial state value
 
   // deep copy object that doesn't have function inside object
   const originComponent = JSON.parse(JSON.stringify(props.component));
@@ -497,63 +497,68 @@ export const SetupBOM=(props)=>{
 
   //hover to popup tooltip, click/focus to popup setup BOM inputs
   // based on event from mouse or click for desktop devices, click for touch devices
-  const onSetupBOMIconHandle=()=>{
-    switch (this.eventState) {
-      case 'click':
-      case 'focus':
-        break;
-      case 'hover':
-        break;
-      default:
+  const setEventState=()=>
+  {
+    if( event === 'click' )
+    {
+       setEvent('hover');
+       return;
+    }
+    if( event === 'hover' )
+    {
+      setEvent('click');
+      return;
     }
   }
 
-  const setEventState=(e)=>
-  {
-    if( e.onMouseOver )
-    {
-       this.eventState = 'hover';
-       return;
-    }
-    if( e.onClick)
-    {
-      this.eventState = 'click';
-      return;
-    }
-    else 
-    {
-      eventState ='hover';
-    }
-   
-  }
   return (
     ( props.component.displayLogic.selected ?
+      ( `${event}` === 'hover' ?
       <Popup
         trigger={
           <i
             key={`component-${props.component.displayLogic.key}`}
             id={`#component-${props.component.displayLogic.key}`}
             type="icon"
-            onMouseOver={(e)=>setEventState(e)}
-            onClick={(e)=>setEventState(e)}
+            // onMouseOver={(e)=>setEventState(e)}
+            // onClick={(e)=>setEventState(e)}
             // 'cursor-pointer text-primary border-0 py-0 px-2 fa fw fa-edit' + (props.component.displayLogic.selected ? ' bg-info' : ' ');
             className={`${_className}`}
             style={{backgroundColor: `${styles.cciBgColor}`}}/>
         }
-      closeOnDocumentClick={true}
-      on={`${eventState}`}
-     
-      // onOpen={onSetupBOMIconHandle}
-      position={'right top'}
-      defaultOpen={false}  //don't show setupBOM menu unless user click the edit icon
-      contentStyle={{ padding: '0px', border: 'none', backgroundColor: `${styles.cciBgColor}`}} //
-      arrow={true}
-      arrowStyle={{backgroundColor: `${styles.cciBgColor}`}}>
-      ( this.eventState == 'hover' ?
-        {
-              <span className={'text-primary'} >{'setup bOM'}</span>
+          closeOnDocumentClick={true}
+          on={`${event}`}
+          onClose={setEventState}
+          position={'right top'}
+          defaultOpen={false}
+          contentStyle={{ padding: '0px', border: 'none', backgroundColor: `${styles.cciBgColor}`}} 
+          mouseLeaveDelay={0}
+          mouseEnterDelay={400}
+          arrow={true}
+          arrowStyle={{backgroundColor: `${styles.cciBgColor}`}}>
+          <span className={'text-primary'} >{'setup bOM'}</span>
+      </Popup>
+      :
+      <Popup
+        trigger={
+          <i
+            key={`component-${props.component.displayLogic.key}`}
+            id={`#component-${props.component.displayLogic.key}`}
+            type="icon"
+            // onMouseOver={(e)=>setEventState(e)}
+            // onClick={(e)=>setEventState(e)}
+            // 'cursor-pointer text-primary border-0 py-0 px-2 fa fw fa-edit' + (props.component.displayLogic.selected ? ' bg-info' : ' ');
+            className={`${_className}`}
+            style={{backgroundColor: `${styles.cciBgColor}`}}/>
         }
-        :
+          closeOnDocumentClick={true}
+          on={`${event}`}
+          onOpen={setEventState}
+          position={'right top'}
+          defaultOpen={false}  
+          contentStyle={{ padding: '0px', border: 'none', backgroundColor: `${styles.cciBgColor}`}} 
+          arrow={true}
+          arrowStyle={{backgroundColor: `${styles.cciBgColor}`}}>
         {close => (
         <div className={'bg-info d-flex flex-column'} >
           <div className={'bg-info d-flex'}>
@@ -642,9 +647,8 @@ export const SetupBOM=(props)=>{
               handler={setCompleteDate}/>
           </div>
         )}
-     
-      ) 
       </Popup>
+      )
       :
       null
     )
