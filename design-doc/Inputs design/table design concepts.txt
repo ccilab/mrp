@@ -21,6 +21,7 @@ for components and raw materials.
   MBA-resource planning MRP.pdf
   Material Requirements Planning -J-Beasley.pdf
   Ch14-MRP.ppt
+  MRP的组成.pdf
   
 
 The information input into MRP systems comes from three main sources: 

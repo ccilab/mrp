@@ -430,7 +430,7 @@ const ComponentListTitle =(props)=>{
               arrow={true}
               arrowStyle={{backgroundColor: `${styles.cciBgColor}`}}>
               <span className={'text-info text-nowrap p-1'}>
-                {t('show-setup-BOM')}
+                {t('show-setup-MRP')}
               </span>
           </Popup>
           :
@@ -1301,7 +1301,7 @@ class CCiLabComponentList extends Component {
                   >
 
                   { this.state.setupBOM ?
-                                <ComponentListTitle title='title-BOM'
+                                <ComponentListTitle title='title-MRP'
                                       titleHeight={this.componentTitleHeight}
                                       titleWidth={this.componentListWidth}
                                       titlePositionLeft= {this.componentTitleLeft}

@@ -6,5 +6,6 @@
     "select-component" : "select component",
     "upload-image" : "upload image",
     "add-part" : "new part",
+    "show-setup-BOM" : "Setup BOM",
     "bom-setup-uncompleted" : "Warning: BOM setup is not completed!"
 }
