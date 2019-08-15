@@ -1,6 +1,7 @@
 1) Inventory policy - time report - When will the order be ready?
 2) cost policy - cost report - What is the actual production cost?
 3) real time update - planning + mornitoring 
+4) Manufacturing Resource Planning, Project Resource Planning, Stock Resource Planning - loading different .json file for different type
 
 Components:
 MRP:
