@@ -254,11 +254,10 @@ export const initializeMPS=( component )=>{
 // #todo - need to re-design how to handle it
 const _initializeMPS=()=>{
    let mps={};
-   mps.requiredQty= null; //required quantity of component/part
+   mps.demandAndEndDateMap= new Map(); //required quantity of component/part
    mps.startDate=null;
-   mps.completeDate=null;
+   mps.completeDate=null; //used as key in demandAndEndDateMap
    mps.customer=null;
-   mps.supplierPartNumber=null;
    return mps;
 }
 
@@ -275,14 +274,8 @@ export const SetupMPS=(props)=>{
 
    // component.displayLogic.inlineMenuEnabled needs set to true
   const IsClosePopupMenu=( component )=>{
-      CanEnableInlineMenu( component );
-      if( component.displayLogic.inlineMenuEnabled )
-      {
-        props.updateComponent(originComponent, component);
-      }
-
       // update component name
-      if( isValidString( component.businessLogic.name) && props.updateComponent(originComponent, component))
+      if( isValidValue( component.mps.requiredQty ).isValid &&  isValidString ( component.mps.completeDate) )
       {
           if( originComponent.businessLogic.name !== component.businessLogic.name )
           {
@@ -290,15 +283,13 @@ export const SetupMPS=(props)=>{
           }
           sessionStorage.setItem( `${component.displayLogic.key}_${component.businessLogic.name}_mps`, JSON.stringify( component.bom.mps ));
       }
-
-
   }
 
 
 
-  if( props.component.bom === null || typeof props.component.bom === 'undefined' )
+  if( props.component.mps === null || typeof props.component.mps === 'undefined' )
   {
-    props.component.bom = new initializeMPS(props.component);
+    props.component.mps = new initializeMPS(props.component);
   }
 
   const setCustomerName=(customerName, component)=>{
@@ -311,9 +302,25 @@ export const SetupMPS=(props)=>{
     console.log("SetupMPS - setCustomerName: " + component.mps.customer);
   };
 
+  
+
+
+  const setStartDate=(startDate, component)=>{
+    if( typeof component.mps === 'undefined' )
+      component.mps = new initializeMPS( component );
+
+    if( isValidString( startDate ))
+      component.mps.startDate=startDate;
+    else
+      component.mps.startDate = null;
+
+    IsClosePopupMenu(component);
+    console.log( 'setStartDate : ' + component.mps.startDate);
+  }
+
   const setTotalRequiredQty=(qty, component)=>{
     if( typeof component.bom === 'undefined' )
-      component.bom = new initializeMPS( component );
+      component.mps = new initializeMPS( component );
 
     let {isValid, value} = isValidValue(qty);
 
@@ -322,37 +329,23 @@ export const SetupMPS=(props)=>{
     else
       component.bom.mps.requiredQty=value;
 
-    calQuantityPerShift(component);
     IsClosePopupMenu(component);
 
-    console.log('setTotalRequiredQty - ' + component.bom.mps.requiredQty);
+    console.log('setTotalRequiredQty - ' + component.mps.requiredQty);
   }
 
-
-  const setStartDate=(startDate, component)=>{
-    if( typeof component.bom === 'undefined' )
-      component.bom = new initializeMPS( component );
-
-    if( isValidString( startDate ))
-      component.bom.mps.startDate=startDate;
-    else
-      component.bom.mps.startDate = null;
-
-    IsClosePopupMenu(component);
-    console.log( 'setStartDate : ' + component.bom.mps.startDate);
-  }
-
+  //have to be in-sync with forecast demand
   const setCompleteDate=(completeDate, component)=>{
     if( typeof component.bom === 'undefined' )
-      component.bom = new initializeMPS( component );
+      component.mps = new initializeMPS( component );
 
     if( isValidString( completeDate ))
-      component.bom.mps.completeDate=completeDate;
+      component.mps.completeDate.push(completeDate);
     else
-      component.bom.mps.completeDate = null;
+      component.mps.completeDate = null;
 
     IsClosePopupMenu(component);
-    console.log( 'setCompleteDate : ' + component.bom.mps.completeDate);
+    console.log( 'setCompleteDate : ' + component.mps.completeDate);
   }
 
 
