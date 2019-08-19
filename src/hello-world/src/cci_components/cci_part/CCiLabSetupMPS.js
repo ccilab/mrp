@@ -246,26 +246,19 @@ export const CanEnableInlineMenu = ( component )=>{
 }
 
 export const initializeMPS=( component )=>{
-  let mps= JSON.parse(sessionStorage.getItem(`${component.displayLogic.key}_${component.businessLogic.name}_bom_core`)) || initializeMPS();
+  let mps= JSON.parse(sessionStorage.getItem(`${component.displayLogic.key}_${component.businessLogic.name}_mps`)) || _initializeMPS();
   return mps;
 }
 
 // requiredQtyPerShift calculates based on its parent component's unitQty
 // #todo - need to re-design how to handle it
-const initializeMPS=()=>{
+const _initializeMPS=()=>{
    let mps={};
    mps.requiredQty= null; //required quantity of component/part
    mps.startDate=null;
    mps.completeDate=null;
-   mps.scrapRate=null;    // in %, need /100 when uses it
-   mps.procurementType=null;  //'InHouse'(to produce production order), 'Purchase'(to produce purchase order)
-   mps.leadTime=null;
-   mps.supplier=null;
    mps.customer=null;
    mps.supplierPartNumber=null;
-   mps.requiredQtyPerShift=null;  // required quantity for per shift per run
-   mps.shiftCount=1;         // how many different shifts are needed
-   mps.sameShiftRunCount=1;  //same shift runs how many times
    return mps;
 }
 
@@ -291,26 +284,11 @@ export const SetupMPS=(props)=>{
       // update component name
       if( isValidString( component.businessLogic.name) && props.updateComponent(originComponent, component))
       {
-          // originComponent.businessLogic.name could be hard-coded 'add-part' or other user given name
-          // if( originComponent.businessLogic.name !== component.businessLogic.name )
-          // {
-          //   sessionStorage.removeItem(`${props.component.displayLogic.key}_${originComponent.businessLogic.name}_displayLogic`);
-          // }
-          // component name may or may not change, but the component.displayLogic.inlineMenuEnabled will change if passed the checking
-          // sessionStorage.setItem( `${component.displayLogic.key}_${component.businessLogic.name}_displayLogic`, JSON.stringify( component.displayLogic ));
-
-          // update component name if user changes it
           if( originComponent.businessLogic.name !== component.businessLogic.name )
           {
-              sessionStorage.removeItem(`${props.component.displayLogic.key}_${originComponent.businessLogic.name}_businessLogic`);
-              sessionStorage.setItem( `${component.displayLogic.key}_${component.businessLogic.name}_businessLogic`, JSON.stringify( component.businessLogic ));
+            sessionStorage.removeItem( `${component.displayLogic.key}_${originComponent.businessLogic.name}_mps`);
           }
-
-          if( originComponent.businessLogic.name !== component.businessLogic.name )
-          {
-            sessionStorage.removeItem( `${component.displayLogic.key}_${originComponent.businessLogic.name}_bom_core`);
-          }
-          sessionStorage.setItem( `${component.displayLogic.key}_${component.businessLogic.name}_bom_core`, JSON.stringify( component.bom.mps ));
+          sessionStorage.setItem( `${component.displayLogic.key}_${component.businessLogic.name}_mps`, JSON.stringify( component.bom.mps ));
       }
 
 
@@ -323,78 +301,15 @@ export const SetupMPS=(props)=>{
     props.component.bom = new initializeMPS(props.component);
   }
 
-  // const isValidString=( name )=>{
-  //   return ( typeof name === 'string' &&
-  //       name.length > 0 ) ? true : false
-  // };
-
-  // const isValidValue=(valueToCheck)=>{
-
-  //   let value = parseFloat(valueToCheck);
-  //   let valid = isNaN( value ) ? false : true;
-
-  //   let rt={};
-  //   rt.isValid = valid;
-  //   rt.value = value;
-  //   return rt;
-  // };
-
-  const calQuantityPerShift=(component)=>{
-    const bomCore = component.bom.mps;
-    if( component.bom.mps.requiredQty !== null &&
-      component.bom.mps.unitQty !== null &&
-      component.bom.mps.scrapRate !== null
-    )
-    {
-
-      bomCore.requiredQtyPerShift =((bomCore.requiredQty * bomCore.unitQty)/(bomCore.shiftCount * bomCore.sameShiftRunCount )) * (1 + bomCore.scrapRate/100) ;
-    }
+  const setCustomerName=(customerName, component)=>{
+    if( isValidString( customerName ))
+        component.mps.customer=customerName;
     else
-      bomCore.requiredQtyPerShift=null;
-  };
-
-  const setPartName=(partName, component)=>{
-    if( isValidString( partName ))
-        component.businessLogic.name=partName;
-    else
-      component.businessLogic.name='';  //reset to initial value to fail IsClosePopupMenu evaluation
+      component.mps.customer='';  //reset to initial value to fail IsClosePopupMenu evaluation
 
     IsClosePopupMenu(component);
-    console.log("SetupMPS - setPartName: " + component.businessLogic.name);
+    console.log("SetupMPS - setCustomerName: " + component.mps.customer);
   };
-
-  const setPartNumber=(partNumber, component)=>{
-    if( typeof component.bom === 'undefined' )
-      component.bom = new initializeMPS( component );
-
-    if( isValidString( partNumber ))
-      component.bom.mps.partNumber=partNumber;
-    else
-      component.businessLogic.name=null;  //reset to initial value to fail IsClosePopupMenu evaluation
-
-    IsClosePopupMenu(component);
-
-    console.log("SetupMPS - setPartNumber: " + component.bom.mps.partNumber);
-  };
-
-  const setUnitQty=(unitQty, component)=>{
-    if( typeof component.bom === 'undefined' )
-      component.bom = new initializeMPS( component );
-
-    let {isValid, value} = isValidValue(unitQty);
-
-    if( !isValid )
-      component.bom.mps.unitQty=null;
-    else
-      component.bom.mps.unitQty=value;
-
-    // required quantity for per shift per run
-    calQuantityPerShift(component); //reset requiredQtyPerShift to null if component.bom.mps.unitQty is null
-    IsClosePopupMenu(component);
-
-    console.log( 'setUnitQty: requiredQty='+component.bom.mps.requiredQty);
-    console.log( 'setUnitQty: requiredQtyPerShift='+component.bom.mps.requiredQtyPerShift);
-  }
 
   const setTotalRequiredQty=(qty, component)=>{
     if( typeof component.bom === 'undefined' )
@@ -413,40 +328,6 @@ export const SetupMPS=(props)=>{
     console.log('setTotalRequiredQty - ' + component.bom.mps.requiredQty);
   }
 
-  const setUnitOfMeasure=(unitOfMeasure, component)=>{
-    if( typeof component.bom === 'undefined' )
-      component.bom = new initializeMPS( component );
-
-    component.bom.mps.unitOfMeasure=unitOfMeasure;
-  }
-
-  const setScrapRate=(scrapRate, component)=>{
-    if( typeof component.bom === 'undefined' )
-      component.bom = new initializeMPS( component );
-
-    let {isValid, value} = isValidValue(scrapRate);
-
-    if( !isValid )
-      component.bom.mps.scrapRate = null;
-    else
-      component.bom.mps.scrapRate = value;
-
-    IsClosePopupMenu(component);
-    console.log('setScrapRate - ' + component.bom.mps.scrapRate);
-  }
-
-  const setProcurementType=(procurementType, component)=>{
-    if( typeof component.bom === 'undefined' )
-      component.bom = new initializeMPS( component );
-
-    if( isValidString(procurementType) )
-      component.bom.mps.procurementType = procurementType;
-    else
-      component.bom.mps.procurementType = null;
-
-    IsClosePopupMenu(component);
-    console.log( 'setProcurementType : ' + component.bom.mps.procurementType );
-  }
 
   const setStartDate=(startDate, component)=>{
     if( typeof component.bom === 'undefined' )
@@ -492,7 +373,8 @@ export const SetupMPS=(props)=>{
   }
 
   return (
-    ( props.component.displayLogic.selected ?
+    // for manufacturing only show root MPS, all sub components are derived from it programmatically
+    ( props.component.displayLogic.selected && ( props.component.businessLogic.parentIds.length === 0 || props.component.stocking )? 
       ( `${event}` === 'hover' ?
       <Popup
         trigger={
@@ -535,94 +417,49 @@ export const SetupMPS=(props)=>{
           contentStyle={{ padding: '0px', border: 'none', backgroundColor: `${styles.cciBgColor}`}} 
           arrow={true}
           arrowStyle={{backgroundColor: `${styles.cciBgColor}`}}>
-          {close => (
-            <div className={'bg-info d-flex flex-column'} >
-            <div className={'bg-info d-flex'}>
+          {close => (      
+              <div className={'bg-info d-flex flex-column'} >
+              <div className={'bg-info d-flex'}>
+                
+                <SetupComponentMPS
+                  title='customer-name'
+                  value={(props.component.mps.requiredQty !== null && props.component.mps.requiredQty > 0 ) ? props.component.mps.requiredQty: ''} //array of demands for each period 
+                  component={props.component}
+                  handler={setCustomerName}/>
+                <a id={`${props.component.displayLogic.key}-SetupMPS`}
+                  href={`#${props.component.displayLogic.key}`}
+                  className='text-danger m-0 py-1 px-1 fas fw fa-times-circle cursor-pointer'
+                  style={{backgroundColor: `${styles.cciBgColor}`}}
+                  onClick={ close }> </a>
+              </div>
+              <hr className='my-0 bg-info'
+                    style={{borderStyle:'insert', borderWidth: '0.08em', borderColor:`${styles.cciInfoBlue}`}}/>
+              
               <SetupComponentMPS
-                title='part-name'
-                value={props.component.businessLogic.name}
-                component={props.component}
-                handler={setPartName}/>
-              <a id={`${props.component.displayLogic.key}-SetupMPS`}
-                href={`#${props.component.displayLogic.key}`}
-                className='text-danger m-0 py-1 px-1 fas fw fa-times-circle cursor-pointer'
-                style={{backgroundColor: `${styles.cciBgColor}`}}
-                onClick={ close }> </a>
-            </div>
-            <hr className='my-0 bg-info'
+                  title='required-quantity'
+                  value={(props.component.mps.requiredQty !== null && props.component.mps.requiredQty > 0 ) ? props.component.mps.requiredQty: ''} //array of demands for each period 
+                  component={props.component}
+                  handler={setTotalRequiredQty}/>
+                  
+              <hr className='my-0 bg-info'
+                    style={{borderStyle:'insert', borderWidth: '0.08em', borderColor:`${styles.cciInfoBlue}`}}/>
+
+              <SetupComponentMPS
+                  title='start-product-date'
+                  value={props.component.bom.mps.startDate }
+                  component={props.component}
+                  handler={setStartDate}/>
+
+              <hr className='my-0 bg-info'
                   style={{borderStyle:'insert', borderWidth: '0.08em', borderColor:`${styles.cciInfoBlue}`}}/>
 
-            <SetupComponentMPS
-                title='part-number'
-                value={props.component.bom.mps.partNumber}
-                component={props.component}
-                handler={setPartNumber}/>
-
-            <hr className='my-0 bg-info'
-                  style={{borderStyle:'insert', borderWidth: '0.08em', borderColor:`${styles.cciInfoBlue}`}}/>
-
-            { props.component.businessLogic.parentIds.length === 0 ?
               <SetupComponentMPS
-              title='required-quantity'
-                // value='' input will show placeholder text
-                value={(props.component.bom.mps.requiredQty !== null && props.component.bom.mps.requiredQty > 0 ) ? props.component.bom.mps.requiredQty: ''}
-                component={props.component}
-                handler={setTotalRequiredQty}/>
-              :
-              <SetupComponentMPS
-                title='unit-quantity'
-                // value='' input will show placeholder text
-                value={ props.component.bom.mps.unitQty}
-                component={props.component}
-                handler={setUnitQty}/>
-            }
-
-            <hr className='my-0 bg-info'
-                style={{borderStyle:'insert', borderWidth: '0.08em', borderColor:`${styles.cciInfoBlue}`}}/>
-
-            <SetupComponentMPS
-                title='unit-of-measure'
-                value={props.component.bom.mps.unitOfMeasure }
-                component={props.component}
-                handler={setUnitOfMeasure}/>
-
-            <hr className='my-0 bg-info'
-                style={{borderStyle:'insert', borderWidth: '0.08em', borderColor:`${styles.cciInfoBlue}`}}/>
-
-            <SetupComponentMPS
-              title='scrap-rate'
-              value={props.component.bom.mps.scrapRate }
-              component={props.component}
-              handler={setScrapRate}/>
-
-            <hr className='my-0 bg-info'
-                style={{borderStyle:'insert', borderWidth: '0.08em', borderColor:`${styles.cciInfoBlue}`}}/>
-
-            <SetupComponentMPS
-                title='procurement-type'
-                value={props.component.bom.mps.procurementType }
-                component={props.component}
-                handler={setProcurementType}/>
-
-            <hr className='my-0 bg-info'
-                style={{borderStyle:'insert', borderWidth: '0.08em', borderColor:`${styles.cciInfoBlue}`}}/>
-
-            <SetupComponentMPS
-                title='start-product-date'
-                value={props.component.bom.mps.startDate }
-                component={props.component}
-                handler={setStartDate}/>
-
-            <hr className='my-0 bg-info'
-                style={{borderStyle:'insert', borderWidth: '0.08em', borderColor:`${styles.cciInfoBlue}`}}/>
-
-            <SetupComponentMPS
-                title='product-complete-date'
-                value={props.component.bom.mps.completeDate }
-                component={props.component}
-                handler={setCompleteDate}/>
-            </div>
-            )
+                  title='product-complete-date'   //array of completed date for each required quantity
+                  value={props.component.bom.mps.completeDate }
+                  component={props.component}
+                  handler={setCompleteDate}/>
+              </div>
+              )
           }
       </Popup>
       )
