@@ -7,5 +7,6 @@
     "upload-image" : "upload image",
     "add-part" : "new part",
     "show-setup-BOM" : "Setup BOM",
-    "bom-setup-uncompleted" : "Warning: BOM setup is not completed!"
+    "bom-setup-uncompleted" : "Warning: BOM setup is not completed!",
+    "show-setup-MPS" : "Setup MPS"
 }

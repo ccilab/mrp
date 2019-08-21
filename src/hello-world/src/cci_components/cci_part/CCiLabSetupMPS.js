@@ -222,29 +222,6 @@ const SetupComponentMPS=(props)=>{
   );
 }
 
-export const CanEnableInlineMenu = ( component )=>{
-  if( isValidString( component.businessLogic.name) &&
-      component.bom !== null &&
-      typeof component.bom !== 'undefined' &&
-      typeof component.bom.mps !== 'undefined' &&
-      component.bom.mps !== null &&
-      isValidString( component.bom.mps.partNumber ) &&
-      ( isValidValue( component.bom.mps.requiredQty ).isValid ||
-        isValidValue( component.bom.mps.unitQty ).isValid ) &&
-      isValidValue( component.bom.mps.scrapRate).isValid &&
-      isValidString( component.bom.mps.procurementType) &&
-      isValidString( component.bom.mps.startDate) &&
-      isValidString( component.bom.mps.completeDate)
-)
-  {
-    component.displayLogic.inlineMenuEnabled = true;
-  }
-  else
-  {
-    component.displayLogic.inlineMenuEnabled = false;
-  }
-}
-
 export const initializeMPS=( component )=>{
   let mps= JSON.parse(sessionStorage.getItem(`${component.displayLogic.key}_${component.businessLogic.name}_mps`)) || _initializeMPS();
   return mps;
@@ -281,7 +258,7 @@ export const SetupMPS=(props)=>{
           {
             sessionStorage.removeItem( `${component.displayLogic.key}_${originComponent.businessLogic.name}_mps`);
           }
-          sessionStorage.setItem( `${component.displayLogic.key}_${component.businessLogic.name}_mps`, JSON.stringify( component.bom.mps ));
+          sessionStorage.setItem( `${component.displayLogic.key}_${component.businessLogic.name}_mps`, JSON.stringify( component.mps ));
       }
   }
 
@@ -305,29 +282,16 @@ export const SetupMPS=(props)=>{
   
 
 
-  const setStartDate=(startDate, component)=>{
-    if( typeof component.mps === 'undefined' )
-      component.mps = new initializeMPS( component );
-
-    if( isValidString( startDate ))
-      component.mps.startDate=startDate;
-    else
-      component.mps.startDate = null;
-
-    IsClosePopupMenu(component);
-    console.log( 'setStartDate : ' + component.mps.startDate);
-  }
-
   const setTotalRequiredQty=(qty, component)=>{
-    if( typeof component.bom === 'undefined' )
+    if( typeof component.mps === 'undefined' )
       component.mps = new initializeMPS( component );
 
     let {isValid, value} = isValidValue(qty);
 
     if( !isValid )
-      component.bom.mps.requiredQty=null;
+      component.mps.requiredQty=null;
     else
-      component.bom.mps.requiredQty=value;
+      component.mps.requiredQty=value;
 
     IsClosePopupMenu(component);
 
@@ -336,7 +300,7 @@ export const SetupMPS=(props)=>{
 
   //have to be in-sync with forecast demand
   const setCompleteDate=(completeDate, component)=>{
-    if( typeof component.bom === 'undefined' )
+    if( typeof component.mps === 'undefined' )
       component.mps = new initializeMPS( component );
 
     if( isValidString( completeDate ))
@@ -349,7 +313,15 @@ export const SetupMPS=(props)=>{
   }
 
 
-  //hover to popup tooltip, click/focus to popup setup BOM inputs
+  const AddNextDemandEntry=()=>{
+    ;
+  }
+
+  const removeDemandEntry=()=>{
+    ;
+  }
+
+  //hover to popup tooltip, click/focus to popup setup MPS inputs
   // based on event from mouse or click for desktop devices, click for touch devices
   const setEventState=()=>
   {
@@ -389,7 +361,7 @@ export const SetupMPS=(props)=>{
           mouseEnterDelay={400}
           arrow={true}
           arrowStyle={{backgroundColor: `${styles.cciBgColor}`}}>
-          <span className={'text-primary'} >{t('commands:show-setup-BOM')}</span>
+          <span className={'text-primary'} >{t('commands:show-setup-MPS')}</span>
       </Popup>
       :
       <Popup
@@ -412,45 +384,49 @@ export const SetupMPS=(props)=>{
           arrowStyle={{backgroundColor: `${styles.cciBgColor}`}}>
           {close => (      
               <div className={'bg-info d-flex flex-column'} >
-              <div className={'bg-info d-flex'}>
-                
-                <SetupComponentMPS
-                  title='customer-name'
-                  value={(props.component.mps.requiredQty !== null && props.component.mps.requiredQty > 0 ) ? props.component.mps.requiredQty: ''} //array of demands for each period 
-                  component={props.component}
-                  handler={setCustomerName}/>
-                <a id={`${props.component.displayLogic.key}-SetupMPS`}
-                  href={`#${props.component.displayLogic.key}`}
-                  className='text-danger m-0 py-1 px-1 fas fw fa-times-circle cursor-pointer'
-                  style={{backgroundColor: `${styles.cciBgColor}`}}
-                  onClick={ close }> </a>
-              </div>
-              <hr className='my-0 bg-info'
-                    style={{borderStyle:'insert', borderWidth: '0.08em', borderColor:`${styles.cciInfoBlue}`}}/>
-              
-              <SetupComponentMPS
-                  title='required-quantity'
-                  value={(props.component.mps.requiredQty !== null && props.component.mps.requiredQty > 0 ) ? props.component.mps.requiredQty: ''} //array of demands for each period 
-                  component={props.component}
-                  handler={setTotalRequiredQty}/>
+                <div className={'bg-info d-flex'}>
                   
-              <hr className='my-0 bg-info'
-                    style={{borderStyle:'insert', borderWidth: '0.08em', borderColor:`${styles.cciInfoBlue}`}}/>
+                  <SetupComponentMPS
+                    title='customer-name'
+                    value={(props.component.mps.requiredQty !== null && props.component.mps.requiredQty > 0 ) ? props.component.mps.requiredQty: ''} //array of demands for each period 
+                    component={props.component}
+                    handler={setCustomerName}/>
+                  <a id={`${props.component.displayLogic.key}-SetupMPS`}
+                    href={`#${props.component.displayLogic.key}`}
+                    className='text-danger m-0 py-1 px-1 fas fw fa-times-circle cursor-pointer'
+                    style={{backgroundColor: `${styles.cciBgColor}`}}
+                    onClick={ close }> </a>
+                </div>
 
-              <SetupComponentMPS
-                  title='start-product-date'
-                  value={props.component.bom.mps.startDate }
-                  component={props.component}
-                  handler={setStartDate}/>
+                <hr className='my-0 bg-info'
+                      style={{borderStyle:'insert', borderWidth: '0.08em', borderColor:`${styles.cciInfoBlue}`}}/>
 
-              <hr className='my-0 bg-info'
-                  style={{borderStyle:'insert', borderWidth: '0.08em', borderColor:`${styles.cciInfoBlue}`}}/>
-
-              <SetupComponentMPS
-                  title='product-complete-date'   //array of completed date for each required quantity
-                  value={props.component.bom.mps.completeDate }
-                  component={props.component}
-                  handler={setCompleteDate}/>
+                <div className={'bg-info d-flex'}>
+                  <SetupComponentMPS
+                      title='required-quantity'
+                      value={(props.component.mps.requiredQty !== null && props.component.mps.requiredQty > 0 ) ? props.component.mps.requiredQty: ''} //array of demands for each period 
+                      component={props.component}
+                      handler={setTotalRequiredQty}/>
+                      
+                  <SetupComponentMPS
+                      title='product-complete-date'   //array of completed date for each required quantity
+                      value={props.component.mps.completeDate }
+                      component={props.component}
+                      handler={setCompleteDate}/>
+                  { props.addNextDemandEntry === true ?
+                    <a id={`${props.component.displayLogic.key}-SetupMPS-add`}
+                      href={`#${props.component.displayLogic.key}`}
+                      className='text-info m-0 py-1 px-1 fas fw fa-plus-circle cursor-pointer'
+                      style={{backgroundColor: `${styles.cciBgColor}`}}
+                      onAdd={AddNextDemandEntry}> </a>    
+                      :
+                      <a id={`${props.component.displayLogic.key}-SetupMPS-remove`}
+                      href={`#${props.component.displayLogic.key}`}
+                      className='text-danger m-0 py-1 px-1 fas fw fa-minus-circle cursor-pointer'
+                      style={{backgroundColor: `${styles.cciBgColor}`}}
+                      onRemove={removeDemandEntry}> </a>  
+                  }
+                </div>
               </div>
               )
           }
