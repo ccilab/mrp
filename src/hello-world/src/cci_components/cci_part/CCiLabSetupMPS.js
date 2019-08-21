@@ -19,16 +19,9 @@ const SetupComponentMPS=(props)=>{
   let tooltipPosition='top left';
   let inputName=props.title;
   let inputProcurementType = props.title.includes('procurement-type') ? true : false;
-  let appendPercentage = props.title.includes('-rate')  ? true : false;
 
-  let rateInputElement = React.createRef();
 
-  if( props.value === 'add-part')
-  {
-    inputValue = '';
-  }
-
-  if( props.title.includes('part-name'))
+  if( props.title.includes('customer-name'))
   {
     tooltipPosition='bottom left';
   }
@@ -38,26 +31,11 @@ const SetupComponentMPS=(props)=>{
     inputType='date';
   }
 
-  if( props.title.includes('procurement-type'))
-  {
-    inputClassName = 'm-0 p-0 border-0 cursor-pointer';
-    inputStyle={'backgroundColor': `${styles.cciBgColor}`, 'height':'1em','width':'1em'};
-    inputType='radio';
-  }
-
   if( props.title.includes('-quantity') )
   {
      inputType='number';
   }
 
-  if( appendPercentage )
-  {
-    let value =  parseFloat(inputValue);
-    if( isNaN( value ) )
-      inputValue='';
-    else
-      inputValue = value + '(%)';
-  }
 
 
   const [input, setInput] = useState(`${inputValue}`); // '' is the initial state value
@@ -68,31 +46,8 @@ const SetupComponentMPS=(props)=>{
       setInput(e.target.value);
   };
 
-  const rateAppendPercentage=(_value)=>{
-    let value=parseFloat(_value);
-    if( isNaN(value) )
-      value='';
-    else
-      value += value ? ' (%)' : '';
-
-    setInput(value);
-  };
-
-  const onBlurHandler=(e)=>{
-    rateAppendPercentage(e.target.value);
-  };
-
   // https://blog.bitsrc.io/understanding-currying-in-javascript-ceb2188c339
   const updateValue=(props)=>(e)=>{
-    //   if( typeof props.handler !== 'undefined')
-    //   {
-    //     if( typeof e.target !== 'undefined' && e.target.value === '' && props.title ==='part-name')
-    //       e.target.value = 'add-part';
-
-    //     console.log("SetupComponentMPS - updateValue: " + e.target.value);
-
-    //     props.handler(e.target.value, props.component);
-    //   }
     onUpdateValueEnterKey( props, e.target);
   }
 
@@ -112,14 +67,7 @@ const SetupComponentMPS=(props)=>{
   const enterKeyHandler=(e)=>{
     if( typeof e.key !== 'undefined' && e.key ==='Enter')
     {
-      if( appendPercentage )
-      {
-        rateAppendPercentage(rateInputElement.current.value);
-      }
-      else
-      {
         onUpdateValueEnterKey(props, e.target);
-      }
     }
   };
 
@@ -188,7 +136,6 @@ const SetupComponentMPS=(props)=>{
           <Popup
               trigger={
                 <input className={`${inputClassName}`}
-                      ref={ appendPercentage? rateInputElement : null }
                       id={inputName}
                       type={`${inputType}`}
                       style={inputStyle}
@@ -196,11 +143,11 @@ const SetupComponentMPS=(props)=>{
                       name={inputName}
                       value={ input }
                       min = { inputType.includes('number') ? 1 : null}
-                      onChange={appendPercentage ? updateValue(props) : updateChange(props)}
+                      onChange={updateChange(props)}
                       onClose={updateValue(props)}
                       onInput={(e)=>{filterInputValue(e)}}
                       onKeyPress={ (e)=>enterKeyHandler(e) }
-                      onBlur={ appendPercentage ? (e)=>{onBlurHandler(e)} :updateValue(props)}/>
+                      onBlur={ updateValue(props)}/>
               }
               id={`${props.component.displayLogic.key}-tooltip`}
               position={tooltipPosition}
@@ -245,6 +192,8 @@ export const SetupMPS=(props)=>{
   const _className = 'cursor-pointer text-primary border-0 p-1 fa fw fa-edit' + (props.component.displayLogic.selected ? ' bg-info' : ' ');
 
   const [event, setEvent] = useState('hover'); // '' is the initial state value
+
+  
 
   // deep copy object that doesn't have function inside object
   const originComponent = JSON.parse(JSON.stringify(props.component));

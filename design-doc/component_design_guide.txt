@@ -51,6 +51,6 @@ component list:
 11) configure bom for each item - component structure, quantity/product, inputs to create bom summary table
 12) configure mps for each item - period length and count, quantity and when is needed, etc. e.g. Master Production Schedule - J Beasley.pdf
     - inputs to create mps (master production/purchase schedule) table for each component ( or virtual component )
-    - demand and end date has to be insync - 
+    - demand and end date has to be in-sync - date/demand pair in the map
 13) configure inventory for each item - lot sizing rule,  Gross requirements, Scheduled receipts, Expected amount on hand, Lead time, Lot size policy, And more 
     MBA-resource planning MRP.pdf, Ch14-MRP.ppt, Material Requirements Planning -J-Beasley.pdf

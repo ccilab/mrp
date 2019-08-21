@@ -44,5 +44,6 @@
     "less-produced-by-shift": "提示: 少生产了 ",
     "excess-consumed-by-shift": "提示: 多用了 ",
     "warning-missed":"提示: 产量太低!",
-    "warning-exceed": "提示: 用量过高!"
+    "warning-exceed": "提示: 用量过高!",
+    "customer-name": "客户名"
 }
