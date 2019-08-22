@@ -178,9 +178,7 @@ export const initializeMPS=( component )=>{
 // #todo - need to re-design how to handle it
 const _initializeMPS=()=>{
    let mps={};
-   mps.demandAndEndDateMap= new Map(); //required quantity of component/part
-   mps.startDate=null;
-   mps.completeDate=null; //used as key in demandAndEndDateMap
+   mps.demandAndEndDateMap= new Map(null, null); //map of required quantity of product/component and completed date as key
    mps.customer=null;
    return mps;
 }
@@ -191,9 +189,7 @@ export const SetupMPS=(props)=>{
   
   const _className = 'cursor-pointer text-primary border-0 p-1 fa fw fa-edit' + (props.component.displayLogic.selected ? ' bg-info' : ' ');
 
-  const [event, setEvent] = useState('hover'); // '' is the initial state value
-
-  
+  const [event, setEvent] = useState('hover'); // 'hover' is the initial state value
 
   // deep copy object that doesn't have function inside object
   const originComponent = JSON.parse(JSON.stringify(props.component));
@@ -218,6 +214,9 @@ export const SetupMPS=(props)=>{
     props.component.mps = new initializeMPS(props.component);
   }
 
+ 
+  const [demandDateMap, setDemondDateMap] = useState(props.component.mps.demandAndEndDateMap);
+
   const setCustomerName=(customerName, component)=>{
     if( isValidString( customerName ))
         component.mps.customer=customerName;
@@ -229,6 +228,7 @@ export const SetupMPS=(props)=>{
   };
 
   
+
 
 
   const setTotalRequiredQty=(qty, component)=>{
@@ -284,6 +284,46 @@ export const SetupMPS=(props)=>{
       setEvent('click');
       return;
     }
+  }
+
+ const renderDemandDateInput=( value, key, map)=>{
+  return(
+    <span>
+      <SetupComponentMPS
+         title='product-complete-date'   //array of completed date for each required quantity
+         value={ key }
+         component={props.component}
+         handler={setCompleteDate}/>
+     
+     <SetupComponentMPS
+         title='required-quantity'
+         value={( value !== null && value > 0 ) ? value : ''} //array of demands for each period 
+         component={props.component}
+         handler={setTotalRequiredQty}/>
+         
+     { props.addNextDemandEntry === true ?
+       <a id={`${props.component.displayLogic.key}-SetupMPS-add`}
+         href={`#${props.component.displayLogic.key}`}
+         className='text-info m-0 py-1 px-1 fas fw fa-plus-circle cursor-pointer'
+         style={{backgroundColor: `${styles.cciBgColor}`}}
+         onAdd={AddNextDemandEntry}> </a>    
+         :
+         <a id={`${props.component.displayLogic.key}-SetupMPS-remove`}
+         href={`#${props.component.displayLogic.key}`}
+         className='text-danger m-0 py-1 px-1 fas fw fa-minus-circle cursor-pointer'
+         style={{backgroundColor: `${styles.cciBgColor}`}}
+         onRemove={removeDemandEntry}> </a>  
+     } 
+     </span>
+  );
+ }
+
+  const renderDemandDateInputs=(quantityDateMap)=>{
+    return (
+            <div className={'bg-info d-flex'}>            
+                {quantityDateMap.forEach( {renderDemandDateInput} )}
+            </div>
+    )
   }
 
   return (
@@ -350,32 +390,7 @@ export const SetupMPS=(props)=>{
                 <hr className='my-0 bg-info'
                       style={{borderStyle:'insert', borderWidth: '0.08em', borderColor:`${styles.cciInfoBlue}`}}/>
 
-                <div className={'bg-info d-flex'}>
-                  <SetupComponentMPS
-                      title='required-quantity'
-                      value={(props.component.mps.requiredQty !== null && props.component.mps.requiredQty > 0 ) ? props.component.mps.requiredQty: ''} //array of demands for each period 
-                      component={props.component}
-                      handler={setTotalRequiredQty}/>
-                      
-                  <SetupComponentMPS
-                      title='product-complete-date'   //array of completed date for each required quantity
-                      value={props.component.mps.completeDate }
-                      component={props.component}
-                      handler={setCompleteDate}/>
-                  { props.addNextDemandEntry === true ?
-                    <a id={`${props.component.displayLogic.key}-SetupMPS-add`}
-                      href={`#${props.component.displayLogic.key}`}
-                      className='text-info m-0 py-1 px-1 fas fw fa-plus-circle cursor-pointer'
-                      style={{backgroundColor: `${styles.cciBgColor}`}}
-                      onAdd={AddNextDemandEntry}> </a>    
-                      :
-                      <a id={`${props.component.displayLogic.key}-SetupMPS-remove`}
-                      href={`#${props.component.displayLogic.key}`}
-                      className='text-danger m-0 py-1 px-1 fas fw fa-minus-circle cursor-pointer'
-                      style={{backgroundColor: `${styles.cciBgColor}`}}
-                      onRemove={removeDemandEntry}> </a>  
-                  }
-                </div>
+                {renderDemandDateInputs(demandDateMap)}
               </div>
               )
           }
