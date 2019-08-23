@@ -174,11 +174,10 @@ export const initializeMPS=( component )=>{
   return mps;
 }
 
-// requiredQtyPerShift calculates based on its parent component's unitQty
-// #todo - need to re-design how to handle it
+// demandAndEndDateArray =[[end-date-1, demand-quantity],[end-date-2, demand-quantity]]
 const _initializeMPS=()=>{
    let mps={};
-   mps.demandAndEndDateMap= new Map(null, null); //map of required quantity of product/component and completed date as key
+   mps.demandAndEndDateArray= [[null,null]]; //array - required quantity of product/component and completed date as key-value 
    mps.customer=null;
    return mps;
 }
@@ -189,33 +188,32 @@ export const SetupMPS=(props)=>{
   
   const _className = 'cursor-pointer text-primary border-0 p-1 fa fw fa-edit' + (props.component.displayLogic.selected ? ' bg-info' : ' ');
 
-  const [event, setEvent] = useState('hover'); // 'hover' is the initial state value
-
-  // deep copy object that doesn't have function inside object
-  const originComponent = JSON.parse(JSON.stringify(props.component));
-
-   // component.displayLogic.inlineMenuEnabled needs set to true
-  const IsClosePopupMenu=( component )=>{
-      // update component name
-      if( isValidValue( component.mps.requiredQty ).isValid &&  isValidString ( component.mps.completeDate) )
-      {
-          if( originComponent.businessLogic.name !== component.businessLogic.name )
-          {
-            sessionStorage.removeItem( `${component.displayLogic.key}_${originComponent.businessLogic.name}_mps`);
-          }
-          sessionStorage.setItem( `${component.displayLogic.key}_${component.businessLogic.name}_mps`, JSON.stringify( component.mps ));
-      }
-  }
-
-
-
   if( props.component.mps === null || typeof props.component.mps === 'undefined' )
   {
     props.component.mps = new initializeMPS(props.component);
   }
 
- 
-  const [demandDateMap, setDemondDateMap] = useState(props.component.mps.demandAndEndDateMap);
+  const [event, setEvent] = useState('hover'); // 'hover' is the initial state value
+
+  const [demandDateArray, setDemandDateArray] = useState(props.component.mps.demandAndEndDateArray);
+
+  // component.displayLogic.inlineMenuEnabled needs set to true
+  const IsClosePopupMenu=( component )=>{
+    let invalidEntry = false;
+    for( const element of  component.mps.demandAndEndDateArray) {
+      if( ! isValidString( element[0] ).isValid ||  !isValidValue( element[1]) )
+      {
+        invalidEntry = true;
+        break;
+      }
+    }
+      
+    if( !invalidEntry )  
+    {
+      sessionStorage.setItem( `${component.displayLogic.key}_${component.businessLogic.name}_mps`, JSON.stringify( component.mps ));
+    }
+  }
+
 
   const setCustomerName=(customerName, component)=>{
     if( isValidString( customerName ))
@@ -263,7 +261,8 @@ export const SetupMPS=(props)=>{
 
 
   const AddNextDemandEntry=()=>{
-    ;
+    demandDateArray.push([null,null]);
+    setDemandDateArray( demandDateArray );
   }
 
   const removeDemandEntry=()=>{
@@ -286,9 +285,9 @@ export const SetupMPS=(props)=>{
     }
   }
 
- const renderDemandDateInput=( value, key, map)=>{
+ const renderDemandDateInput=( key, value, isLastElement )=>{
   return(
-    <span>
+    <div className={'bg-info d-flex'}>  
       <SetupComponentMPS
          title='product-complete-date'   //array of completed date for each required quantity
          value={ key }
@@ -301,7 +300,7 @@ export const SetupMPS=(props)=>{
          component={props.component}
          handler={setTotalRequiredQty}/>
          
-     { props.addNextDemandEntry === true ?
+     { isLastElement === true ?
        <a id={`${props.component.displayLogic.key}-SetupMPS-add`}
          href={`#${props.component.displayLogic.key}`}
          className='text-info m-0 py-1 px-1 fas fw fa-plus-circle cursor-pointer'
@@ -314,15 +313,15 @@ export const SetupMPS=(props)=>{
          style={{backgroundColor: `${styles.cciBgColor}`}}
          onRemove={removeDemandEntry}> </a>  
      } 
-     </span>
+     </div>
   );
  }
 
-  const renderDemandDateInputs=(quantityDateMap)=>{
+  const renderDemandDateInputs=()=>{
     return (
-            <div className={'bg-info d-flex'}>            
-                {quantityDateMap.forEach( {renderDemandDateInput} )}
-            </div>
+      demandDateArray.map( ( item )=>{
+        return renderDemandDateInput( item[0], item[1], demandDateArray.indexOf(item) ===  demandDateArray.length - 1 ? true : false )
+      } )
     )
   }
 
@@ -374,7 +373,6 @@ export const SetupMPS=(props)=>{
           {close => (      
               <div className={'bg-info d-flex flex-column'} >
                 <div className={'bg-info d-flex'}>
-                  
                   <SetupComponentMPS
                     title='customer-name'
                     value={(props.component.mps.requiredQty !== null && props.component.mps.requiredQty > 0 ) ? props.component.mps.requiredQty: ''} //array of demands for each period 
@@ -390,7 +388,7 @@ export const SetupMPS=(props)=>{
                 <hr className='my-0 bg-info'
                       style={{borderStyle:'insert', borderWidth: '0.08em', borderColor:`${styles.cciInfoBlue}`}}/>
 
-                {renderDemandDateInputs(demandDateMap)}
+                {renderDemandDateInputs()}
               </div>
               )
           }
