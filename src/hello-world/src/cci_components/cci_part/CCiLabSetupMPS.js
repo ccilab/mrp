@@ -10,7 +10,7 @@ import { isValidString, isValidValue } from "./CCiLabUtility";
 const SetupComponentMPS=(props)=>{
   const { t } = useTranslation(['component','commands'], {useSuspense: false});
 
-  let inputValue = (props.value === null)? '': props.value;
+  let inputValue = (props.itemValue === null)? '': props.itemValue;
 
   let inputClassName = 'text-primary m-0 p-0 border-0 cursor-pointer';
   let inputStyle={'backgroundColor': `${styles.cciBgColor}`};
@@ -59,7 +59,7 @@ const SetupComponentMPS=(props)=>{
 
       console.log("SetupComponentMPS - updateValue: " + target.value);
 
-      props.handler(target.value, props.component);
+      props.handler(props.id, target.value, props.component);
 
     }
   }
@@ -174,10 +174,10 @@ export const initializeMPS=( component )=>{
   return mps;
 }
 
-// demandAndEndDateArray =[[end-date-1, demand-quantity],[end-date-2, demand-quantity]]
+// demandAndEndDateArray =[[id-1, end-date-1, demand-quantity],[id-2, end-date-2, demand-quantity]]
 const _initializeMPS=()=>{
    let mps={};
-   mps.demandAndEndDateArray= [[null,null]]; //array - required quantity of product/component and completed date as key-value 
+   mps.demandAndEndDateArray= [[0, null,null]]; //array - required quantity of product/component and completed date as key-value 
    mps.customer=null;
    return mps;
 }
@@ -198,10 +198,10 @@ export const SetupMPS=(props)=>{
   const [demandDateArray, setDemandDateArray] = useState(props.component.mps.demandAndEndDateArray);
 
   // component.displayLogic.inlineMenuEnabled needs set to true
-  const IsClosePopupMenu=( component )=>{
+  const saveValidMPSEntry=( component )=>{
     let invalidEntry = false;
     for( const element of  component.mps.demandAndEndDateArray) {
-      if( ! isValidString( element[0] ).isValid ||  !isValidValue( element[1]) )
+      if( ! isValidString( element[1] ).isValid ||  !isValidValue( element[2]) )
       {
         invalidEntry = true;
         break;
@@ -215,13 +215,13 @@ export const SetupMPS=(props)=>{
   }
 
 
-  const setCustomerName=(customerName, component)=>{
+  const setCustomerName=(index, customerName, component)=>{
     if( isValidString( customerName ))
         component.mps.customer=customerName;
     else
-      component.mps.customer='';  //reset to initial value to fail IsClosePopupMenu evaluation
+      component.mps.customer='';  //reset to initial value to fail saveValidMPSEntry evaluation
 
-    IsClosePopupMenu(component);
+    saveValidMPSEntry(component);
     console.log("SetupMPS - setCustomerName: " + component.mps.customer);
   };
 
@@ -229,44 +229,48 @@ export const SetupMPS=(props)=>{
 
 
 
-  const setTotalRequiredQty=(qty, component)=>{
+  const setTotalRequiredQty=(index, qty, component)=>{
     if( typeof component.mps === 'undefined' )
       component.mps = new initializeMPS( component );
 
     let {isValid, value} = isValidValue(qty);
 
-    if( !isValid )
-      component.mps.requiredQty=null;
-    else
-      component.mps.requiredQty=value;
+    if( isValid )
+     {
+        for( let item of component.mps.demandAndEndDateArray )
+        {
+          if( item[0] === index )
+          {
+            item[2] = value;
+            break;
+          }
+        }
+     }
 
-    IsClosePopupMenu(component);
+    saveValidMPSEntry(component);
 
     console.log('setTotalRequiredQty - ' + component.mps.requiredQty);
   }
 
   //have to be in-sync with forecast demand
-  const setCompleteDate=(completeDate, component)=>{
+  const setCompleteDate=(index, completeDate, component)=>{
     if( typeof component.mps === 'undefined' )
       component.mps = new initializeMPS( component );
 
     if( isValidString( completeDate ))
-      component.mps.completeDate.push(completeDate);
-    else
-      component.mps.completeDate = null;
+    {
+      for( let item of component.mps.demandAndEndDateArray )
+      {
+        if( item[0] === index )
+        {
+          item[1] = completeDate;
+          break;
+        }
+      }
+    }
 
-    IsClosePopupMenu(component);
-    console.log( 'setCompleteDate : ' + component.mps.completeDate);
-  }
-
-
-  const AddNextDemandEntry=()=>{
-    demandDateArray.push([null,null]);
-    setDemandDateArray( demandDateArray );
-  }
-
-  const removeDemandEntry=()=>{
-    ;
+    saveValidMPSEntry(component);
+    console.log( 'setCompleteDate index - complete date : ' + index +'-' + completeDate);
   }
 
   //hover to popup tooltip, click/focus to popup setup MPS inputs
@@ -285,33 +289,47 @@ export const SetupMPS=(props)=>{
     }
   }
 
- const renderDemandDateInput=( key, value, isLastElement )=>{
+  const AddNextDemandEntry=()=>{
+    demandDateArray.push([demandDateArray.length,null,null]);
+    setDemandDateArray( demandDateArray );
+  }
+
+  const removeDemandEntry=(index)=>(e)=>{
+    // demandDateArray.splice(index, 1); 
+    // setDemandDateArray( demandDateArray );
+  }
+
+  
+
+ const renderDemandDateInput=(index, endDate, demand, isLastElement )=>{
   return(
     <div className={'bg-info d-flex'}>  
       <SetupComponentMPS
          title='product-complete-date'   //array of completed date for each required quantity
-         value={ key }
+         id={index}
+         value={ endDate }
          component={props.component}
          handler={setCompleteDate}/>
      
      <SetupComponentMPS
          title='required-quantity'
-         value={( value !== null && value > 0 ) ? value : ''} //array of demands for each period 
+         id={index}
+         value={( demand !== null && demand > 0 ) ? demand : ''} //array of demands for each period 
          component={props.component}
          handler={setTotalRequiredQty}/>
          
      { isLastElement === true ?
-       <a id={`${props.component.displayLogic.key}-SetupMPS-add`}
-         href={`#${props.component.displayLogic.key}`}
+       <a id={`${index}-SetupMPS-add`}
+         href={`#${index}`}
          className='text-info m-0 py-1 px-1 fas fw fa-plus-circle cursor-pointer'
          style={{backgroundColor: `${styles.cciBgColor}`}}
-         onAdd={AddNextDemandEntry}> </a>    
+         onClick={AddNextDemandEntry}> </a>    
          :
-         <a id={`${props.component.displayLogic.key}-SetupMPS-remove`}
-         href={`#${props.component.displayLogic.key}`}
+         <a id={`${index}-SetupMPS-remove`}
+         href={`#${index}`}
          className='text-danger m-0 py-1 px-1 fas fw fa-minus-circle cursor-pointer'
          style={{backgroundColor: `${styles.cciBgColor}`}}
-         onRemove={removeDemandEntry}> </a>  
+         onClick={removeDemandEntry(index)}> </a>  
      } 
      </div>
   );
@@ -320,7 +338,8 @@ export const SetupMPS=(props)=>{
   const renderDemandDateInputs=()=>{
     return (
       demandDateArray.map( ( item )=>{
-        return renderDemandDateInput( item[0], item[1], demandDateArray.indexOf(item) ===  demandDateArray.length - 1 ? true : false )
+        let id = demandDateArray.indexOf(item);
+        return renderDemandDateInput( id, item[1], item[2], id ===  demandDateArray.length - 1 ? true : false )
       } )
     )
   }
@@ -375,7 +394,8 @@ export const SetupMPS=(props)=>{
                 <div className={'bg-info d-flex'}>
                   <SetupComponentMPS
                     title='customer-name'
-                    value={(props.component.mps.requiredQty !== null && props.component.mps.requiredQty > 0 ) ? props.component.mps.requiredQty: ''} //array of demands for each period 
+                    id={-1}
+                    value={props.component.mps.customer} //array of demands for each period 
                     component={props.component}
                     handler={setCustomerName}/>
                   <a id={`${props.component.displayLogic.key}-SetupMPS`}
