@@ -174,7 +174,7 @@ export const initializeMPS=( component )=>{
 // demandAndEndDateArray =[[id-1, end-date-1, demand-quantity],[id-2, end-date-2, demand-quantity]]
 const _initializeMPS=()=>{
    let mps={};
-   mps.demandAndEndDateArray= [[0, null,null]]; //array - required quantity of product/component and completed date as key-value 
+   mps.demandAndEndDateArray= [[null,null]]; //array - required quantity of product/component and completed date as key-value 
    mps.customer=null;
    return mps;
 }
@@ -198,7 +198,7 @@ export const SetupMPS=(props)=>{
   const saveValidMPSEntry=( component )=>{
     let invalidEntry = false;
     for( const element of  component.mps.demandAndEndDateArray) {
-      if( ! isValidString( element[1] ).isValid ||  !isValidValue( element[2]) )
+      if( ! isValidString( element[0] ).isValid ||  !isValidValue( element[1]) )
       {
         invalidEntry = true;
         break;
@@ -226,19 +226,21 @@ export const SetupMPS=(props)=>{
 
 
 
-  const setTotalRequiredQty=(index, qty, component)=>{
+  const setTotalRequiredQty=(index, qty, component)=>
+  {
     if( typeof component.mps === 'undefined' )
       component.mps = new initializeMPS( component );
 
     let {isValid, value} = isValidValue(qty);
 
     if( isValid )
-     {
+    {
         for( let item of component.mps.demandAndEndDateArray )
         {
-          if( item[0] === index )
+          const id = demandDateArray.indexOf( item );
+          if( id === index )
           {
-            item[2] = value;
+            item[1] = value;
             break;
           }
         }
@@ -258,9 +260,10 @@ export const SetupMPS=(props)=>{
     {
       for( let item of component.mps.demandAndEndDateArray )
       {
-        if( item[0] === index )
+        const id = demandDateArray.indexOf( item );
+        if( id === index )
         {
-          item[1] = completeDate;
+          item[0] = completeDate;
           break;
         }
       }
@@ -286,8 +289,8 @@ export const SetupMPS=(props)=>{
     }
   }
 
-  const AddNextDemandEntry=()=>{
-    demandDateArray.push([demandDateArray.length,null,null]);
+  const AddNextDemandEntry=(index)=>(e)=>{
+    demandDateArray.push([null,null]);
     sessionStorage.setItem( `${props.component.displayLogic.key}_${props.component.businessLogic.name}_mps`, JSON.stringify( props.component.mps ));
     setDemandDateArray( demandDateArray );
     window.dispatchEvent(new Event('resize'));  //resize popup menu
@@ -296,9 +299,10 @@ export const SetupMPS=(props)=>{
   const removeDemandEntry=(index)=>(e)=>{
     for( let item of demandDateArray )
     {
-      if( item[0] === index )
+      const id = demandDateArray.indexOf( item );
+      if( id === index )
       {
-        const id = demandDateArray.indexOf( item );
+        
         demandDateArray.splice(id, 1); 
       }
     }
@@ -327,13 +331,13 @@ export const SetupMPS=(props)=>{
          handler={setTotalRequiredQty}/>
          
      { isLastElement === true ?
-       <a id={`${index}-SetupMPS-add`}
+       <a id={`${index}`}
          href={`#${index}`}
          className='text-info m-0 py-1 px-1 fas fw fa-plus-circle cursor-pointer'
          style={{backgroundColor: `${styles.cciBgColor}`}}
-         onClick={AddNextDemandEntry}> </a>    
+         onClick={AddNextDemandEntry(index)}> </a>    
          :
-         <a id={`${index}-SetupMPS-remove`}
+         <a id={`${index}`}
          href={`#${index}`}
          className='text-danger m-0 py-1 px-1 fas fw fa-minus-circle cursor-pointer'
          style={{backgroundColor: `${styles.cciBgColor}`}}
