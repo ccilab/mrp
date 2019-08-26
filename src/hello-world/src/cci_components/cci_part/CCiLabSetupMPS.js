@@ -10,7 +10,7 @@ import { isValidString, isValidValue } from "./CCiLabUtility";
 const SetupComponentMPS=(props)=>{
   const { t } = useTranslation(['component','commands'], {useSuspense: false});
 
-  let inputValue = (props.itemValue === null)? '': props.itemValue;
+  let inputValue = (props.value === null)? '': props.value;
 
   let inputClassName = 'text-primary m-0 p-0 border-0 cursor-pointer';
   let inputStyle={'backgroundColor': `${styles.cciBgColor}`};
@@ -54,9 +54,6 @@ const SetupComponentMPS=(props)=>{
   const onUpdateValueEnterKey=(props, target )=>{
     if( typeof props.handler !== 'undefined')
     {
-      if( typeof target !== 'undefined' && target.value === '' && props.title ==='part-name')
-        target.value = 'add-part';
-
       console.log("SetupComponentMPS - updateValue: " + target.value);
 
       props.handler(props.id, target.value, props.component);
@@ -291,12 +288,23 @@ export const SetupMPS=(props)=>{
 
   const AddNextDemandEntry=()=>{
     demandDateArray.push([demandDateArray.length,null,null]);
+    sessionStorage.setItem( `${props.component.displayLogic.key}_${props.component.businessLogic.name}_mps`, JSON.stringify( props.component.mps ));
     setDemandDateArray( demandDateArray );
+    window.dispatchEvent(new Event('resize'));  //resize popup menu
   }
 
   const removeDemandEntry=(index)=>(e)=>{
-    // demandDateArray.splice(index, 1); 
-    // setDemandDateArray( demandDateArray );
+    for( let item of demandDateArray )
+    {
+      if( item[0] === index )
+      {
+        const id = demandDateArray.indexOf( item );
+        demandDateArray.splice(id, 1); 
+      }
+    }
+    sessionStorage.setItem( `${props.component.displayLogic.key}_${props.component.businessLogic.name}_mps`, JSON.stringify( props.component.mps ));
+    setDemandDateArray( demandDateArray );
+    window.dispatchEvent(new Event('resize'));   //resize popup menu
   }
 
   
