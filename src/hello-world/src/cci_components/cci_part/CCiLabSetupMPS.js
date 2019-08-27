@@ -235,7 +235,7 @@ export const SetupMPS=(props)=>{
 
     if( isValid )
     {
-        for( let item of component.mps.demandAndEndDateArray )
+        for( let item of demandDateArray )
         {
           const id = demandDateArray.indexOf( item );
           if( id === index )
@@ -258,7 +258,7 @@ export const SetupMPS=(props)=>{
 
     if( isValidString( completeDate ))
     {
-      for( let item of component.mps.demandAndEndDateArray )
+      for( let item of demandDateArray )
       {
         const id = demandDateArray.indexOf( item );
         if( id === index )
@@ -290,24 +290,26 @@ export const SetupMPS=(props)=>{
   }
 
   const AddNextDemandEntry=(index)=>(e)=>{
-    props.component.mps.demandAndEndDateArray.push([null,null]);
+    demandDateArray.push([null,null]);
     sessionStorage.setItem( `${props.component.displayLogic.key}_${props.component.businessLogic.name}_mps`, JSON.stringify( props.component.mps ));
-    setDemandDateArray( props.component.mps.demandAndEndDateArray );
+    setDemandDateArray( demandDateArray );
     window.dispatchEvent(new Event('resize'));  //resize popup menu
   }
 
   const removeDemandEntry=(index)=>(e)=>{
-    for( let item of props.component.mps.demandAndEndDateArray )
+    // const reducedDemandDateArray =  demandDateArray.filter( item=>props.component.mps.demandAndEndDateArray.indexOf( item ) !== index )
+    // props.component.mps.demandAndEndDateArray = reducedDemandDateArray;
+    for( let item of demandDateArray )
     {
-      const id = props.component.mps.demandAndEndDateArray.indexOf( item );
+      const id = demandDateArray.indexOf( item );
       if( id === index )
       {
-        
-        props.component.mps.demandAndEndDateArray.splice(id, 1); 
+        demandDateArray.splice(id, 1);
       }
     }
+    
     sessionStorage.setItem( `${props.component.displayLogic.key}_${props.component.businessLogic.name}_mps`, JSON.stringify( props.component.mps ));
-    setDemandDateArray( props.component.mps.demandAndEndDateArray );
+    setDemandDateArray( [...demandDateArray] );
     window.dispatchEvent(new Event('resize'));   //resize popup menu
   }
 
