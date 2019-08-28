@@ -207,6 +207,7 @@ export const SetupMPS=(props)=>{
       
     if( !invalidEntry )  
     {
+      component.mps.demandAndEndDateArray = demandDateArray;
       sessionStorage.setItem( `${component.displayLogic.key}_${component.businessLogic.name}_mps`, JSON.stringify( component.mps ));
     }
   }
@@ -291,14 +292,12 @@ export const SetupMPS=(props)=>{
 
   const AddNextDemandEntry=(index)=>(e)=>{
     demandDateArray.push([null,null]);
-    sessionStorage.setItem( `${props.component.displayLogic.key}_${props.component.businessLogic.name}_mps`, JSON.stringify( props.component.mps ));
+    saveValidMPSEntry(props.component);
     setDemandDateArray( demandDateArray );
     window.dispatchEvent(new Event('resize'));  //resize popup menu
   }
 
   const removeDemandEntry=(index)=>(e)=>{
-    // const reducedDemandDateArray =  demandDateArray.filter( item=>props.component.mps.demandAndEndDateArray.indexOf( item ) !== index )
-    // props.component.mps.demandAndEndDateArray = reducedDemandDateArray;
     for( let item of demandDateArray )
     {
       const id = demandDateArray.indexOf( item );
@@ -308,18 +307,17 @@ export const SetupMPS=(props)=>{
       }
     }
     
-    sessionStorage.setItem( `${props.component.displayLogic.key}_${props.component.businessLogic.name}_mps`, JSON.stringify( props.component.mps ));
-    setDemandDateArray( [...demandDateArray] );
+    saveValidMPSEntry(props.component);
+    setDemandDateArray( demandDateArray );
     window.dispatchEvent(new Event('resize'));   //resize popup menu
   }
 
   
 
- const renderDemandDateInput=(index, endDate, demand, isLastElement )=>{
+ const renderDemandDateInput=(uniqueKey, index, endDate, demand, isLastElement )=>{
   return(
-    <div className={'bg-info d-flex'}>  
+    <div key={uniqueKey} className={'bg-info d-flex'}>  
       <SetupComponentMPS
-         key={index}
          title='product-complete-date'   //array of completed date for each required quantity
          id={index}
          value={ endDate }
@@ -327,7 +325,6 @@ export const SetupMPS=(props)=>{
          handler={setCompleteDate}/>
      
      <SetupComponentMPS
-         key={index}
          title='required-quantity'
          id={index}
          value={( demand !== null && demand > 0 ) ? demand : ''} //array of demands for each period 
@@ -335,17 +332,15 @@ export const SetupMPS=(props)=>{
          handler={setTotalRequiredQty}/>
          
      { isLastElement === true ?
-       <i key={index} 
-         id={`${index}`}
+       <i id={`${index}`}
          className='text-info m-0 py-1 px-1 fas fw fa-plus-circle cursor-pointer'
          style={{backgroundColor: `${styles.cciBgColor}`}}
-         onClick={AddNextDemandEntry(index)}> </i>    
+         onClick={AddNextDemandEntry(index)}/>
          :
-         <i key={index}
-         id={`${index}`}
+         <i id={`${index}`}
          className='text-danger m-0 py-1 px-1 fas fw fa-minus-circle cursor-pointer'
          style={{backgroundColor: `${styles.cciBgColor}`}}
-         onClick={removeDemandEntry(index)}> </i>  
+         onClick={removeDemandEntry(index)}/>
      } 
      </div>
   );
@@ -355,7 +350,7 @@ export const SetupMPS=(props)=>{
     return (
       demandDateArray.map( ( item )=>{
         let id = demandDateArray.indexOf(item);
-        return renderDemandDateInput( id, item[0], item[1], id ===  demandDateArray.length - 1 ? true : false )
+        return renderDemandDateInput( Math.random(), id, item[0], item[1], id ===  demandDateArray.length - 1 ? true : false )
       } )
     )
   }
