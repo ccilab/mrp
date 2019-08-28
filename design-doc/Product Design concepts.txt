@@ -1,0 +1,63 @@
+1) Inventory policy - time report - When will the order be ready?
+2) cost policy - cost report - What is the actual production cost?
+3) real time update - planning + mornitoring 
+4) Manufacturing Resource Planning, Project Resource Planning, Stock Resource Planning - loading different .json file for different type
+
+Components:
+MRP:
+1) BOM - assembly/products breakdown
+2) Routings - product/part 
+   work location, operation description, Fixed time, variable time, fixed cost, variable cost, Quantity, worker/team, 
+   other fixed cost, other variable cost
+   
+SIngle page app, MVC architecture 
+login -  https
+home page modules MRP
+MRP - home page job id page search from existing jobs or create new one - two items
+    - top and break BOM have to fill first
+    - master delivery time schedule time/cnt 
+Final output:
+  - estimate cost at each delivery date
+  - estimated delivery date
+BOM
+ - 2nd level BOM
+ - ... last level BOM
+breakdown to Single item BOM
+   item - name, id, purchase or in house production, lead time - machine down time, shift, blackout, etc, purchase cost or production cost - 
+     variable cost - material, labour, 
+    fixed cost - machinery, electrical, space,     admin, etc
+
+where to fit routing ?
+
+icon:
+https://www.iconfinder.com/icons/314724/document_edit_icon
+
+//credit author on the web
+https://www.flaticon.com/free-icons/puzzle
+//group puzzle
+<div>Icons made by <a href="https://www.freepik.com/" title="Freepik">Freepik</a> from <a href="https://www.flaticon.com/" 			    title="Flaticon">www.flaticon.com</a> is licensed by <a href="http://creativecommons.org/licenses/by/3.0/" title="Creative Commons BY 3.0" target="_blank">CC 3.0 BY</a></div>
+
+//single puzzle
+<div>Icons made by <a href="https://www.flaticon.com/authors/lucy-g" title="Lucy G">Lucy G</a> from <a href="https://www.flaticon.com/" 			    title="Flaticon">www.flaticon.com</a> is licensed by <a href="http://creativecommons.org/licenses/by/3.0/" title="Creative Commons BY 3.0" target="_blank">CC 3.0 BY</a></div>
+
+
+//group cog
+<div>Icons made by <a href="https://www.flaticon.com/authors/skyclick" title="Skyclick">Skyclick</a> from <a href="https://www.flaticon.com/" 			    title="Flaticon">www.flaticon.com</a> is licensed by <a href="http://creativecommons.org/licenses/by/3.0/" title="Creative Commons BY 3.0" target="_blank">CC 3.0 BY</a></div>
+
+//collection icon
+https://thenounproject.com/term/category/861639/
+Category by Pilif Nox  from the Noun Project
+
+// project management apps
+https://www.projectmanager.com/software/dashboard
+
+/// top 10 PM apps
+https://project-management.com/top-10-project-management-software//
+
+/// mrp app
+https://www.capterra.com/mrp-software/
+
+https://katanamrp.com/features
+
+//software architects:
+https://en.wikipedia.org/wiki/List_of_system_quality_attributes

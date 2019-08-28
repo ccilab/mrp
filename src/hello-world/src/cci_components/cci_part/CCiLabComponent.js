@@ -8,6 +8,7 @@ import {creatHiddenImgInputTag} from "../file_save/CCiLabLocalFileAccess"
 
 import styles from './../../dist/css/ccilab-component.css'
 import './../../dist/css/popup-menu.css'
+import { SetupMPS } from './CCiLabSetupMPS';
 
 
 const ShowImage=(props)=>{
@@ -567,6 +568,8 @@ class CCiLabComponent extends Component {
                           :
                           null
                       }
+                      <SetupMPS
+                         component={this.currentComponent}/>
 
                   </span>
                 }

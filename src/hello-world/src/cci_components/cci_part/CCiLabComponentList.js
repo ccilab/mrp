@@ -13,6 +13,7 @@ import CCiLabComponent from "./CCiLabComponent";
 import DropComponentWarningModal from "./CCiLabDropComponentCheckFailedModal";
 import { setListHeight, setListWidth, getTextRect} from "./CCiLabUtility";
 import {CanEnableInlineMenu, initializeBOM } from './CCiLabSetupComponentBOM';
+import { initializeMPS } from './CCiLabSetupMPS';
 
 
 // // based on https://github.com/ccilab/react-i18next/blob/master/example/react/src/index.js
@@ -430,7 +431,7 @@ const ComponentListTitle =(props)=>{
               arrow={true}
               arrowStyle={{backgroundColor: `${styles.cciBgColor}`}}>
               <span className={'text-info text-nowrap p-1'}>
-                {t('show-setup-BOM')}
+                {t('show-setup-MRP')}
               </span>
           </Popup>
           :
@@ -876,8 +877,9 @@ class CCiLabComponentList extends Component {
 
       // sessionStorage.setItem( `${newComponent.displayLogic.key}_${newComponent.businessLogic.name}_displayLogic`, JSON.stringify( newComponent.displayLogic ));
       newComponent.bom = new initializeBOM( newComponent );
+      newComponent.mps = new initializeMPS( newComponent );
       sessionStorage.setItem( `${newComponent.displayLogic.key}_${newComponent.businessLogic.name}_bom_core`, JSON.stringify( newComponent.bom.core ));
-
+      sessionStorage.setItem( `${newComponent.displayLogic.key}_${newComponent.businessLogic.name}_mps`, JSON.stringify( newComponent.mps ));
       // need to check vertical scroll bar doesn't show
       // create vertical scroll bar based on the height of component list dynamically
       this.updateDimensions( updatedSessionComponents);
@@ -1301,7 +1303,7 @@ class CCiLabComponentList extends Component {
                   >
 
                   { this.state.setupBOM ?
-                                <ComponentListTitle title='title-BOM'
+                                <ComponentListTitle title='title-MRP'
                                       titleHeight={this.componentTitleHeight}
                                       titleWidth={this.componentListWidth}
                                       titlePositionLeft= {this.componentTitleLeft}
