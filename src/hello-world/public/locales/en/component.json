@@ -44,5 +44,6 @@
     "less-produced-by-shift":"Warning: missed by ",
     "excess-consumed-by-shift": "Warning: exceeded by ",
     "warning-missed":"Warning: missed",
-    "warning-exceed": "Waring: over used"
+    "warning-exceed": "Waring: over used",
+    "customer-name": "Customer name"
 }

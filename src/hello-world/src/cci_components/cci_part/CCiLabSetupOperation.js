@@ -229,8 +229,13 @@ export const CanEnableInlineMenu = ( component )=>{
       typeof component.bom.core !== 'undefined' &&
       component.bom.core !== null &&
       isValidString( component.bom.core.partNumber ) &&
-      ( component.businessLogic.parentIds.length === 0 ||
-        isValidValue( component.bom.core.unitQty ).isValid ) )
+      ( isValidValue( component.bom.core.requiredQty ).isValid ||
+        isValidValue( component.bom.core.unitQty ).isValid ) &&
+      isValidValue( component.bom.core.scrapRate).isValid &&
+      isValidString( component.bom.core.procurementType) &&
+      isValidString( component.bom.core.startDate) &&
+      isValidString( component.bom.core.completeDate)
+)
   {
     component.displayLogic.inlineMenuEnabled = true;
   }
@@ -254,19 +259,19 @@ const initializeBOMCore=()=>{
    core.partNumber=null;
    core.unitQty=null;
    core.unitOfMeasure=''; // may doesn't have unit
-  //  core.requiredQty= null; //required quantity of component/part
-  //  core.startDate=null;
-  //  core.completeDate=null;
-  //  core.scrapRate=null;    // in %, need /100 when uses it
-  //  core.procurementType=null;  //'InHouse'(to produce production order), 'Purchase'(to produce purchase order)
-  //  core.warehouse=null;
-  //  core.leadTime=null;
-  //  core.workshop=null;
-  //  core.supplier=null;
-  //  core.supplierPartNumber=null;
-  //  core.requiredQtyPerShift=null;  // required quantity for per shift per run
-  //  core.shiftCount=1;         // how many different shifts are needed
-  //  core.sameShiftRunCount=1;  //same shift runs how many times
+   core.requiredQty= null; //required quantity of component/part
+   core.startDate=null;
+   core.completeDate=null;
+   core.scrapRate=null;    // in %, need /100 when uses it
+   core.procurementType=null;  //'InHouse'(to produce production order), 'Purchase'(to produce purchase order)
+   core.warehouse=null;
+   core.leadTime=null;
+   core.workshop=null;
+   core.supplier=null;
+   core.supplierPartNumber=null;
+   core.requiredQtyPerShift=null;  // required quantity for per shift per run
+   core.shiftCount=1;         // how many different shifts are needed
+   core.sameShiftRunCount=1;  //same shift runs how many times
    return core;
 }
 
@@ -298,7 +303,7 @@ export const SetupBOM=(props)=>{
   const originComponent = JSON.parse(JSON.stringify(props.component));
 
    // component.displayLogic.inlineMenuEnabled needs set to true
-  const saveValidBOMEntry=( component )=>{
+  const IsClosePopupMenu=( component )=>{
       CanEnableInlineMenu( component );
       if( component.displayLogic.inlineMenuEnabled )
       {
@@ -308,18 +313,29 @@ export const SetupBOM=(props)=>{
       // update component name
       if( isValidString( component.businessLogic.name) && props.updateComponent(originComponent, component))
       {
+          // originComponent.businessLogic.name could be hard-coded 'add-part' or other user given name
+          // if( originComponent.businessLogic.name !== component.businessLogic.name )
+          // {
+          //   sessionStorage.removeItem(`${props.component.displayLogic.key}_${originComponent.businessLogic.name}_displayLogic`);
+          // }
+          // component name may or may not change, but the component.displayLogic.inlineMenuEnabled will change if passed the checking
+          // sessionStorage.setItem( `${component.displayLogic.key}_${component.businessLogic.name}_displayLogic`, JSON.stringify( component.displayLogic ));
+
           // update component name if user changes it
           if( originComponent.businessLogic.name !== component.businessLogic.name )
           {
-              sessionStorage.removeItem( `${component.displayLogic.key}_${originComponent.businessLogic.name}_mps`);
-              sessionStorage.setItem( `${component.displayLogic.key}_${component.businessLogic.name}_mps`, JSON.stringify( component.mps ));
-              sessionStorage.removeItem( `${component.displayLogic.key}_${originComponent.businessLogic.name}_bom_core`);
               sessionStorage.removeItem(`${props.component.displayLogic.key}_${originComponent.businessLogic.name}_businessLogic`);
               sessionStorage.setItem( `${component.displayLogic.key}_${component.businessLogic.name}_businessLogic`, JSON.stringify( component.businessLogic ));
           }
 
+          if( originComponent.businessLogic.name !== component.businessLogic.name )
+          {
+            sessionStorage.removeItem( `${component.displayLogic.key}_${originComponent.businessLogic.name}_bom_core`);
+          }
           sessionStorage.setItem( `${component.displayLogic.key}_${component.businessLogic.name}_bom_core`, JSON.stringify( component.bom.core ));
       }
+
+
   }
 
 
@@ -329,15 +345,43 @@ export const SetupBOM=(props)=>{
     props.component.bom = new initializeBOM(props.component);
   }
 
+  // const isValidString=( name )=>{
+  //   return ( typeof name === 'string' &&
+  //       name.length > 0 ) ? true : false
+  // };
 
+  // const isValidValue=(valueToCheck)=>{
+
+  //   let value = parseFloat(valueToCheck);
+  //   let valid = isNaN( value ) ? false : true;
+
+  //   let rt={};
+  //   rt.isValid = valid;
+  //   rt.value = value;
+  //   return rt;
+  // };
+
+  const calQuantityPerShift=(component)=>{
+    const bomCore = component.bom.core;
+    if( component.bom.core.requiredQty !== null &&
+      component.bom.core.unitQty !== null &&
+      component.bom.core.scrapRate !== null
+    )
+    {
+
+      bomCore.requiredQtyPerShift =((bomCore.requiredQty * bomCore.unitQty)/(bomCore.shiftCount * bomCore.sameShiftRunCount )) * (1 + bomCore.scrapRate/100) ;
+    }
+    else
+      bomCore.requiredQtyPerShift=null;
+  };
 
   const setPartName=(partName, component)=>{
     if( isValidString( partName ))
         component.businessLogic.name=partName;
     else
-      component.businessLogic.name='';  //reset to initial value to fail saveValidBOMEntry evaluation
+      component.businessLogic.name='';  //reset to initial value to fail IsClosePopupMenu evaluation
 
-    saveValidBOMEntry(component);
+    IsClosePopupMenu(component);
     console.log("SetupBOM - setPartName: " + component.businessLogic.name);
   };
 
@@ -348,9 +392,9 @@ export const SetupBOM=(props)=>{
     if( isValidString( partNumber ))
       component.bom.core.partNumber=partNumber;
     else
-      component.businessLogic.name=null;  //reset to initial value to fail saveValidBOMEntry evaluation
+      component.businessLogic.name=null;  //reset to initial value to fail IsClosePopupMenu evaluation
 
-    saveValidBOMEntry(component);
+    IsClosePopupMenu(component);
 
     console.log("SetupBOM - setPartNumber: " + component.bom.core.partNumber);
   };
@@ -367,7 +411,28 @@ export const SetupBOM=(props)=>{
       component.bom.core.unitQty=value;
 
     // required quantity for per shift per run
-    saveValidBOMEntry(component);
+    calQuantityPerShift(component); //reset requiredQtyPerShift to null if component.bom.core.unitQty is null
+    IsClosePopupMenu(component);
+
+    console.log( 'setUnitQty: requiredQty='+component.bom.core.requiredQty);
+    console.log( 'setUnitQty: requiredQtyPerShift='+component.bom.core.requiredQtyPerShift);
+  }
+
+  const setTotalRequiredQty=(qty, component)=>{
+    if( typeof component.bom === 'undefined' )
+      component.bom = new initializeBOM( component );
+
+    let {isValid, value} = isValidValue(qty);
+
+    if( !isValid )
+      component.bom.core.requiredQty=null;
+    else
+      component.bom.core.requiredQty=value;
+
+    calQuantityPerShift(component);
+    IsClosePopupMenu(component);
+
+    console.log('setTotalRequiredQty - ' + component.bom.core.requiredQty);
   }
 
   const setUnitOfMeasure=(unitOfMeasure, component)=>{
@@ -375,6 +440,60 @@ export const SetupBOM=(props)=>{
       component.bom = new initializeBOM( component );
 
     component.bom.core.unitOfMeasure=unitOfMeasure;
+  }
+
+  const setScrapRate=(scrapRate, component)=>{
+    if( typeof component.bom === 'undefined' )
+      component.bom = new initializeBOM( component );
+
+    let {isValid, value} = isValidValue(scrapRate);
+
+    if( !isValid )
+      component.bom.core.scrapRate = null;
+    else
+      component.bom.core.scrapRate = value;
+
+    IsClosePopupMenu(component);
+    console.log('setScrapRate - ' + component.bom.core.scrapRate);
+  }
+
+  const setProcurementType=(procurementType, component)=>{
+    if( typeof component.bom === 'undefined' )
+      component.bom = new initializeBOM( component );
+
+    if( isValidString(procurementType) )
+      component.bom.core.procurementType = procurementType;
+    else
+      component.bom.core.procurementType = null;
+
+    IsClosePopupMenu(component);
+    console.log( 'setProcurementType : ' + component.bom.core.procurementType );
+  }
+
+  const setStartDate=(startDate, component)=>{
+    if( typeof component.bom === 'undefined' )
+      component.bom = new initializeBOM( component );
+
+    if( isValidString( startDate ))
+      component.bom.core.startDate=startDate;
+    else
+      component.bom.core.startDate = null;
+
+    IsClosePopupMenu(component);
+    console.log( 'setStartDate : ' + component.bom.core.startDate);
+  }
+
+  const setCompleteDate=(completeDate, component)=>{
+    if( typeof component.bom === 'undefined' )
+      component.bom = new initializeBOM( component );
+
+    if( isValidString( completeDate ))
+      component.bom.core.completeDate=completeDate;
+    else
+      component.bom.core.completeDate = null;
+
+    IsClosePopupMenu(component);
+    console.log( 'setCompleteDate : ' + component.bom.core.completeDate);
   }
 
 
@@ -465,7 +584,12 @@ export const SetupBOM=(props)=>{
                   style={{borderStyle:'insert', borderWidth: '0.08em', borderColor:`${styles.cciInfoBlue}`}}/>
 
             { props.component.businessLogic.parentIds.length === 0 ?
-              null
+              <SetupComponentBOM
+              title='required-quantity'
+                // value='' input will show placeholder text
+                value={(props.component.bom.core.requiredQty !== null && props.component.bom.core.requiredQty > 0 ) ? props.component.bom.core.requiredQty: ''}
+                component={props.component}
+                handler={setTotalRequiredQty}/>
               :
               <SetupComponentBOM
                 title='unit-quantity'
@@ -486,7 +610,40 @@ export const SetupBOM=(props)=>{
 
             <hr className='my-0 bg-info'
                 style={{borderStyle:'insert', borderWidth: '0.08em', borderColor:`${styles.cciInfoBlue}`}}/>
-            </div> 
+
+            <SetupComponentBOM
+              title='scrap-rate'
+              value={props.component.bom.core.scrapRate }
+              component={props.component}
+              handler={setScrapRate}/>
+
+            <hr className='my-0 bg-info'
+                style={{borderStyle:'insert', borderWidth: '0.08em', borderColor:`${styles.cciInfoBlue}`}}/>
+
+            <SetupComponentBOM
+                title='procurement-type'
+                value={props.component.bom.core.procurementType }
+                component={props.component}
+                handler={setProcurementType}/>
+
+            <hr className='my-0 bg-info'
+                style={{borderStyle:'insert', borderWidth: '0.08em', borderColor:`${styles.cciInfoBlue}`}}/>
+
+            <SetupComponentBOM
+                title='start-product-date'
+                value={props.component.bom.core.startDate }
+                component={props.component}
+                handler={setStartDate}/>
+
+            <hr className='my-0 bg-info'
+                style={{borderStyle:'insert', borderWidth: '0.08em', borderColor:`${styles.cciInfoBlue}`}}/>
+
+            <SetupComponentBOM
+                title='product-complete-date'
+                value={props.component.bom.core.completeDate }
+                component={props.component}
+                handler={setCompleteDate}/>
+            </div>
             )
           }
       </Popup>
