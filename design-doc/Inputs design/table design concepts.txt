@@ -8,7 +8,8 @@ Input:
 	- The Only Master Production Schedule Guide You Will Ever Need.pdf - agile productions
 
 3) Inventory summary for each item/raw material (Inventory Records File IRF) - need to be configured and show IR table  for both setup and monitoring
-   - Material Requirements Planning -J-Beasley.pdf
+   - choice of lot size rule -J-Beasley.pdf
+   - Inventory Control.pdf - decide Quantity Demanded (Qd) - Lot Size Disipline
 
 4) production operation plan - workshop/warehouse/assembly line usage planning - need to be configured and show shift PO table for both setup and monitoring 
    - Production Planning and Scheduling.pdf
