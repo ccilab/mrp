@@ -1,15 +1,44 @@
-Input:
+﻿Input:
 1) BOM summary table - the output of setup BOM tree ( generated from top menu )
    - the structure of each item/raw material and quantity requirements to produce a single product  
    - template base - "A Bill of Materials Template for Manufacturers.pdf"
    
-2) MPS - master production schedule - from forecast or customer order - need to be configured and show MPS table  for both setup and monitoring
-	- Master Production Schedule - J Beasley.pdf - repeated productions
-	- The Only Master Production Schedule Guide You Will Ever Need.pdf - agile productions
+2) MPS - master production schedule - a process based on cost driven to find minimum cost 
+        - reference: Master Production Schedule - J Beasley.pdf 
+        - input: * demand plan e.g. completed-date/demand pair - from forecast or customer order or out-going inventory setup
+		 
+		 * Number of employee, 
+		   time/employee, 
+		   cost/hour/employee, 
+		   overtime/employee, 
+		   overtime-cost/hour/employee,
+		   time-needed/unit/employee,
+		   hiring/dismissal cost/employee,
+		   maximum/minimum employee allowed, 
+		   Other Unit production Cost  - from product operation setup
 
-3) Inventory summary for each item/raw material (Inventory Records File IRF) - need to be configured and show IR table  for both setup and monitoring
-   - choice of lot size rule -J-Beasley.pdf
-   - Inventory Control.pdf - decide Quantity Demanded (Qd) - Lot Size Disipline
+		 * Scheduled Receipts (SR)
+		   Initial Inventory or backorder ( Begining Inventory BI)
+		   Maximum ending Inventory Allowed
+		   Minimum ending Inventory Allowed (SS)
+		   Unit Inventory holding Cost
+		   Maximum purchasing (subcontracting) allowed
+		   Unit subcontracting cost
+		   Maximum backorder Allowed
+		   Unit backorder cost - from IRF Setup
+		 		 
+
+	- The Only Master Production Schedule Guide You Will Ever Need.pdf - agile productions not cost driven
+
+        - need to be configured and show MPS table  for both setup and monitoring	
+	
+
+3) Inventory Control - a process to find EOC (Qd) for each item/raw material (Inventory Records File IRF) 
+    - input IRF
+    - need to be configured and show IR table  for both setup and monitoring
+    - references: 
+      - choice of lot size rule -J-Beasley.pdf
+      - Inventory Control -J-Beasley.pdf - decide Quantity Demanded (Qd) - Lot Size Disipline
 
 4) production operation plan - workshop/warehouse/assembly line usage planning - need to be configured and show shift PO table for both setup and monitoring 
    - Production Planning and Scheduling.pdf
@@ -17,8 +46,8 @@ Input:
    - coordinate operations within a shift 
 
  
-MRP the process - works backward from a production plan for finished goods to develop requirements 
-for components and raw materials.
+MRP the process - is stockout driven, not cost driven
+    - works backward from a production plan for finished goods to develop requirements for components and raw materials.
   MBA-resource planning MRP.pdf
   Material Requirements Planning -J-Beasley.pdf
   Ch14-MRP.ppt
