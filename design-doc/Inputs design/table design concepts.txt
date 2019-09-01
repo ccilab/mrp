@@ -4,8 +4,10 @@
    - template base - "A Bill of Materials Template for Manufacturers.pdf"
    
 2) MPS - master production schedule - a process based on cost driven to find minimum cost 
+       - The master production schedule expresses how much of each item is wanted and when it is wanted, and how it is wanted
         - reference: Master Production Schedule - J Beasley.pdf 
-        - input: * demand plan e.g. completed-date/demand pair - from forecast or customer order or out-going inventory setup
+        - linear algorithm - 
+        - input: * demand plan - from forecast or customer order or out-going inventory setup,  e.g. completed-date/demand pair
 		 
 		 * Number of employee, 
 		   time/employee, 
@@ -15,17 +17,19 @@
 		   time-needed/unit/employee,
 		   hiring/dismissal cost/employee,
 		   maximum/minimum employee allowed, 
-		   Other Unit production Cost  - from product operation setup
+		   Other Unit production Cost  
+		   Setup Cost - from product operation setup
 
 		 * Scheduled Receipts (SR)
-		   Initial Inventory or backorder ( Begining Inventory BI)
+		   Initial Inventory or backorder ( Begining Inventory BI, Inventory On-hand)
 		   Maximum ending Inventory Allowed
 		   Minimum ending Inventory Allowed (SS)
 		   Unit Inventory holding Cost
 		   Maximum purchasing (subcontracting) allowed
 		   Unit subcontracting cost
 		   Maximum backorder Allowed
-		   Unit backorder cost - from IRF Setup
+		   Unit backorder cost 
+		   Interest - from IRF Setup
 		 		 
 
 	- The Only Master Production Schedule Guide You Will Ever Need.pdf - agile productions not cost driven
@@ -55,9 +59,9 @@ MRP the process - is stockout driven, not cost driven
   
 
 The information input into MRP systems comes from three main sources: 
-a bill of materials, (done)
-a master production schedule , (from customer order or forecast demand, to do )
-and an inventory records file. ( to do )
+a input:  bill of materials, (done)
+output master production schedule , (from input customer order or forecast demand, to do )
+and an input inventory records file. ( to do )
 
 Output:
 primary outputs:
