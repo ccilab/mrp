@@ -18,7 +18,6 @@ const SetupComponentBOM=(props)=>{
   let tooltipOnMode=['click','hover'];
   let tooltipPosition='top left';
   let inputName=props.title;
-  let inputProcurementType = props.title.includes('procurement-type') ? true : false;
   let appendPercentage = props.title.includes('-rate')  ? true : false;
 
   let rateInputElement = React.createRef();
@@ -132,44 +131,23 @@ const SetupComponentBOM=(props)=>{
   // https://medium.freecodecamp.org/reactjs-pass-parameters-to-event-handlers-ca1f5c422b9
   return (
     <div className='d-flex justify-content-between'
-         style={{backgroundColor: `${styles.cciBgColor}`}}>
-       { inputProcurementType ?
-          <Popup
+        style={{backgroundColor: `${styles.cciBgColor}`}}>
+        <Popup
             trigger={
-              <div className='d-flex flex-column m-0 py-1 border-0'>
-                <div className='d-inline-flex align-items-center m-0 p-0 border-0' >
-                  <input className={`${inputClassName}`}
-                        id={`${inputName}-1`}
-                        type={inputType}
-                        name={inputName}
-                        style={inputStyle}
-                        value={'InHouse'}
-                        defaultChecked ={ inputValue.includes('InHouse') ? true : false}
-                        onChange={updateValue(props)}
-                        onClose={updateValue(props)}/>
-                  <label className={'m-0 px-1 border-0 cursor-pointer'}
-                    htmlFor={`${inputName}-1`}
-                    style={{'backgroundColor': `${styles.cciBgColor}`, 'color': inputValue.includes('InHouse') ? `${styles.cciInfoBlue}` : `${styles.cciHintRed}`}}>
-                     {t(`component:in-house`)}
-                    </label>
-                </div>
-                <div className='d-inline-flex align-items-center m-0 y-0 border-0'>
-                  <input  className={`${inputClassName}`}
-                          id={`${inputName}-2`}
-                          type={inputType}
-                          name={inputName}
-                          style={inputStyle}
-                          value={'Purchase'}
-                          defaultChecked ={ inputValue.includes('Purchase') ? true : false}
-                          onChange={updateValue(props)}
-                          onClose={updateValue(props)}/>
-                   <label className={'m-0 px-1 border-0 cursor-pointer'}
-                    htmlFor={`${inputName}-2`}
-                    style={{'backgroundColor': `${styles.cciBgColor}`, 'color': inputValue.includes('Purchase') ? `${styles.cciInfoBlue}` : `${styles.cciHintRed}`}}>
-                     {t('component:purchase') }
-                    </label>
-                </div>
-              </div>
+              <input className={`${inputClassName}`}
+                    ref={ appendPercentage? rateInputElement : null }
+                    id={inputName}
+                    type={`${inputType}`}
+                    style={inputStyle}
+                    placeholder={t(`component:${props.title}`)}
+                    name={inputName}
+                    value={ input }
+                    min = { inputType.includes('number') ? 1 : null}
+                    onChange={appendPercentage ? updateValue(props) : updateChange(props)}
+                    onClose={updateValue(props)}
+                    onInput={(e)=>{filterInputValue(e)}}
+                    onKeyPress={ (e)=>enterKeyHandler(e) }
+                    onBlur={ appendPercentage ? (e)=>{onBlurHandler(e)} :updateValue(props)}/>
             }
             id={`${props.component.displayLogic.key}-tooltip`}
             position={tooltipPosition}
@@ -179,45 +157,12 @@ const SetupComponentBOM=(props)=>{
             arrowStyle={{backgroundColor: 'white'}}
             mouseLeaveDelay={0}
             mouseEnterDelay={0}
-            contentStyle={{  padding: '0px' }}>
-            <div className='text-nowrap m-0 p-1'>
+            contentStyle={{ padding: '0px'}}
+            >
+            <div className='text-nowrap m-0 px-1'>
               {t(`component:${props.title}`)}
             </div>
         </Popup>
-          :
-          <Popup
-              trigger={
-                <input className={`${inputClassName}`}
-                      ref={ appendPercentage? rateInputElement : null }
-                      id={inputName}
-                      type={`${inputType}`}
-                      style={inputStyle}
-                      placeholder={t(`component:${props.title}`)}
-                      name={inputName}
-                      value={ input }
-                      min = { inputType.includes('number') ? 1 : null}
-                      onChange={appendPercentage ? updateValue(props) : updateChange(props)}
-                      onClose={updateValue(props)}
-                      onInput={(e)=>{filterInputValue(e)}}
-                      onKeyPress={ (e)=>enterKeyHandler(e) }
-                      onBlur={ appendPercentage ? (e)=>{onBlurHandler(e)} :updateValue(props)}/>
-              }
-              id={`${props.component.displayLogic.key}-tooltip`}
-              position={tooltipPosition}
-              closeOnDocumentClick
-              on={tooltipOnMode}
-              arrow={true}
-              arrowStyle={{backgroundColor: 'white'}}
-              mouseLeaveDelay={0}
-              mouseEnterDelay={0}
-              contentStyle={{ padding: '0px'}}
-              >
-              <div className='text-nowrap m-0 px-1'>
-                {t(`component:${props.title}`)}
-              </div>
-          </Popup>
-       }
-
     </div>
   );
 }
@@ -311,8 +256,10 @@ export const SetupBOM=(props)=>{
           // update component name if user changes it
           if( originComponent.businessLogic.name !== component.businessLogic.name )
           {
-              sessionStorage.removeItem( `${component.displayLogic.key}_${originComponent.businessLogic.name}_mps`);
-              sessionStorage.setItem( `${component.displayLogic.key}_${component.businessLogic.name}_mps`, JSON.stringify( component.mps ));
+              sessionStorage.removeItem( `${component.displayLogic.key}_${originComponent.businessLogic.name}_pdp`);
+              sessionStorage.setItem( `${component.displayLogic.key}_${component.businessLogic.name}_pdp`, JSON.stringify( component.pdp ));
+              sessionStorage.removeItem( `${component.displayLogic.key}_${originComponent.businessLogic.name}_irf`);
+              sessionStorage.setItem( `${component.displayLogic.key}_${component.businessLogic.name}_irf`, JSON.stringify( component.irf ));
               sessionStorage.removeItem( `${component.displayLogic.key}_${originComponent.businessLogic.name}_bom_core`);
               sessionStorage.removeItem(`${props.component.displayLogic.key}_${originComponent.businessLogic.name}_businessLogic`);
               sessionStorage.setItem( `${component.displayLogic.key}_${component.businessLogic.name}_businessLogic`, JSON.stringify( component.businessLogic ));

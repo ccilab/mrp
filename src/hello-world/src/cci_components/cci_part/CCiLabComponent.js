@@ -1,14 +1,16 @@
 import React, { Component } from 'react';
 import Popup from '../popup_menu/Popup'
 import { useTranslation } from 'react-i18next';
+
+import {UpdateStatus} from './CCiLabUpdateComponentStatus.js';
+import {creatHiddenImgInputTag} from "../file_save/CCiLabLocalFileAccess";
+
+
+import styles from './../../dist/css/ccilab-component.css';
+import './../../dist/css/popup-menu.css';
 import {SetupBOM} from './CCiLabSetupComponentBOM';
-import {UpdateStatus} from './CCiLabUpdateComponentStatus.js'
-import {creatHiddenImgInputTag} from "../file_save/CCiLabLocalFileAccess"
-
-
-import styles from './../../dist/css/ccilab-component.css'
-import './../../dist/css/popup-menu.css'
-import { SetupMPS } from './CCiLabSetupMPS';
+import {SetupPDP } from './CCiLabSetupPDP';
+import {SetupIRF} from './CCiLabSetupIR';
 
 
 const ShowImage=(props)=>{
@@ -568,8 +570,8 @@ class CCiLabComponent extends Component {
                           :
                           null
                       }
-                      <SetupMPS
-                         component={this.currentComponent}/>
+                      <SetupPDP component={this.currentComponent}/>
+                      <SetupIRF component={this.currentComponent}/>
 
                   </span>
                 }

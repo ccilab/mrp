@@ -1,0 +1,7 @@
+{
+    "customer-name": "Customer name",
+    "lead-time": "Lead Time",
+    "procurement-type": "* Procurement Type",
+    "in-house": "In house production",
+    "purchase" : "External Purchase"
+}

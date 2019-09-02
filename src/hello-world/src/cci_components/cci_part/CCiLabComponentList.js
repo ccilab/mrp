@@ -13,7 +13,7 @@ import CCiLabComponent from "./CCiLabComponent";
 import DropComponentWarningModal from "./CCiLabDropComponentCheckFailedModal";
 import { setListHeight, setListWidth, getTextRect} from "./CCiLabUtility";
 import {CanEnableInlineMenu, initializeBOM } from './CCiLabSetupComponentBOM';
-import { initializeMPS } from './CCiLabSetupMPS';
+import { initializePDP } from './CCiLabSetupPDP';
 
 
 // // based on https://github.com/ccilab/react-i18next/blob/master/example/react/src/index.js
@@ -26,6 +26,7 @@ import {TextResizeDetector } from "./TextResizeDetector"
 
 //json-loader load the *.json file
 import components from './../../data/components.json';
+import { initializeIRF } from "./CCiLabSetupIR";
 
 
 //table includes assembly and paint process
@@ -877,9 +878,11 @@ class CCiLabComponentList extends Component {
 
       // sessionStorage.setItem( `${newComponent.displayLogic.key}_${newComponent.businessLogic.name}_displayLogic`, JSON.stringify( newComponent.displayLogic ));
       newComponent.bom = new initializeBOM( newComponent );
-      newComponent.mps = new initializeMPS( newComponent );
+      newComponent.pdp = new initializePDP( newComponent );
+      newComponent.irf = new initializeIRF( newComponent );
       sessionStorage.setItem( `${newComponent.displayLogic.key}_${newComponent.businessLogic.name}_bom_core`, JSON.stringify( newComponent.bom.core ));
-      sessionStorage.setItem( `${newComponent.displayLogic.key}_${newComponent.businessLogic.name}_mps`, JSON.stringify( newComponent.mps ));
+      sessionStorage.setItem( `${newComponent.displayLogic.key}_${newComponent.businessLogic.name}_pdp`, JSON.stringify( newComponent.pdp ));
+      sessionStorage.setItem( `${newComponent.displayLogic.key}_${newComponent.businessLogic.name}_irf`, JSON.stringify( newComponent.irf ));
       // need to check vertical scroll bar doesn't show
       // create vertical scroll bar based on the height of component list dynamically
       this.updateDimensions( updatedSessionComponents);

@@ -10,9 +10,6 @@
     "start-product-date": "* Production starts date",
     "product-complete-date": "* Production completes date",
     "reference-designators": "Reference Designators",
-    "procurement-type": "* Procurement Type",
-    "in-house": "In house production",
-    "purchase" : "External Purchase",
     "supplier": "Supplier",
     "supplier-part-number": "Supplier Part Number",
     "order-quantity": "Order Quantity",
@@ -44,6 +41,5 @@
     "less-produced-by-shift":"Warning: missed by ",
     "excess-consumed-by-shift": "Warning: exceeded by ",
     "warning-missed":"Warning: missed",
-    "warning-exceed": "Waring: over used",
-    "customer-name": "Customer name"
+    "warning-exceed": "Waring: over used"
 }

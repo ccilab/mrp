@@ -7,7 +7,7 @@ import styles from "./../../dist/css/ccilab-component-list.css"
 import { isValidString, isValidValue } from "./CCiLabUtility";
 
 
-const SetupComponentMPS=(props)=>{
+const SetupComponentPDP=(props)=>{
   const { t } = useTranslation(['component','commands'], {useSuspense: false});
 
   let inputValue = (props.value === null)? '': props.value;
@@ -18,8 +18,6 @@ const SetupComponentMPS=(props)=>{
   let tooltipOnMode=['click','hover'];
   let tooltipPosition='top left';
   let inputName=props.title;
-  let inputProcurementType = props.title.includes('procurement-type') ? true : false;
-
 
   if( props.title.includes('customer-name'))
   {
@@ -54,7 +52,7 @@ const SetupComponentMPS=(props)=>{
   const onUpdateValueEnterKey=(props, target )=>{
     if( typeof props.handler !== 'undefined')
     {
-      console.log("SetupComponentMPS - updateValue: " + target.value);
+      console.log("SetupComponentPDP - updateValue: " + target.value);
 
       props.handler(props.id, target.value, props.component);
 
@@ -69,7 +67,7 @@ const SetupComponentMPS=(props)=>{
   };
 
   const updateChange=(props)=>(e)=>{
-    console.log("SetupComponentMPS - updateChange: " + e.target.value);
+    console.log("SetupComponentPDP - updateChange: " + e.target.value);
   }
 
 
@@ -78,43 +76,22 @@ const SetupComponentMPS=(props)=>{
   return (
     <div className='d-flex justify-content-between'
          style={{backgroundColor: `${styles.cciBgColor}`}}>
-       { inputProcurementType ?
-          <Popup
+
+        <Popup
             trigger={
-              <div className='d-flex flex-column m-0 py-1 border-0'>
-                <div className='d-inline-flex align-items-center m-0 p-0 border-0' >
-                  <input className={`${inputClassName}`}
-                        id={`${inputName}-1`}
-                        type={inputType}
-                        name={inputName}
-                        style={inputStyle}
-                        value={'InHouse'}
-                        defaultChecked ={ inputValue.includes('InHouse') ? true : false}
-                        onChange={updateValue(props)}
-                        onClose={updateValue(props)}/>
-                  <label className={'m-0 px-1 border-0 cursor-pointer'}
-                    htmlFor={`${inputName}-1`}
-                    style={{'backgroundColor': `${styles.cciBgColor}`, 'color': inputValue.includes('InHouse') ? `${styles.cciInfoBlue}` : `${styles.cciHintRed}`}}>
-                     {t(`component:in-house`)}
-                    </label>
-                </div>
-                <div className='d-inline-flex align-items-center m-0 y-0 border-0'>
-                  <input  className={`${inputClassName}`}
-                          id={`${inputName}-2`}
-                          type={inputType}
-                          name={inputName}
-                          style={inputStyle}
-                          value={'Purchase'}
-                          defaultChecked ={ inputValue.includes('Purchase') ? true : false}
-                          onChange={updateValue(props)}
-                          onClose={updateValue(props)}/>
-                   <label className={'m-0 px-1 border-0 cursor-pointer'}
-                    htmlFor={`${inputName}-2`}
-                    style={{'backgroundColor': `${styles.cciBgColor}`, 'color': inputValue.includes('Purchase') ? `${styles.cciInfoBlue}` : `${styles.cciHintRed}`}}>
-                     {t('component:purchase') }
-                    </label>
-                </div>
-              </div>
+              <input className={`${inputClassName}`}
+                    id={inputName}
+                    type={`${inputType}`}
+                    style={inputStyle}
+                    placeholder={t(`component:${props.title}`)}
+                    name={inputName}
+                    value={ input }
+                    min = { inputType.includes('number') ? 1 : null}
+                    onChange={updateChange(props)}
+                    onClose={updateValue(props)}
+                    onInput={(e)=>{filterInputValue(e)}}
+                    onKeyPress={ (e)=>enterKeyHandler(e) }
+                    onBlur={ updateValue(props)}/>
             }
             id={`${props.component.displayLogic.key}-tooltip`}
             position={tooltipPosition}
@@ -124,80 +101,50 @@ const SetupComponentMPS=(props)=>{
             arrowStyle={{backgroundColor: 'white'}}
             mouseLeaveDelay={0}
             mouseEnterDelay={0}
-            contentStyle={{  padding: '0px' }}>
-            <div className='text-nowrap m-0 p-1'>
+            contentStyle={{ padding: '0px'}}
+            >
+            <div className='text-nowrap m-0 px-1'>
               {t(`component:${props.title}`)}
             </div>
         </Popup>
-          :
-          <Popup
-              trigger={
-                <input className={`${inputClassName}`}
-                      id={inputName}
-                      type={`${inputType}`}
-                      style={inputStyle}
-                      placeholder={t(`component:${props.title}`)}
-                      name={inputName}
-                      value={ input }
-                      min = { inputType.includes('number') ? 1 : null}
-                      onChange={updateChange(props)}
-                      onClose={updateValue(props)}
-                      onInput={(e)=>{filterInputValue(e)}}
-                      onKeyPress={ (e)=>enterKeyHandler(e) }
-                      onBlur={ updateValue(props)}/>
-              }
-              id={`${props.component.displayLogic.key}-tooltip`}
-              position={tooltipPosition}
-              closeOnDocumentClick
-              on={tooltipOnMode}
-              arrow={true}
-              arrowStyle={{backgroundColor: 'white'}}
-              mouseLeaveDelay={0}
-              mouseEnterDelay={0}
-              contentStyle={{ padding: '0px'}}
-              >
-              <div className='text-nowrap m-0 px-1'>
-                {t(`component:${props.title}`)}
-              </div>
-          </Popup>
-       }
 
     </div>
   );
 }
 
-export const initializeMPS=( component )=>{
-  let mps= JSON.parse(sessionStorage.getItem(`${component.displayLogic.key}_${component.businessLogic.name}_mps`)) || _initializeMPS();
-  return mps;
+export const initializePDP=( component )=>{
+  let pdp= JSON.parse(sessionStorage.getItem(`${component.displayLogic.key}_${component.businessLogic.name}_pdp`)) || _initializeMPS();
+  return pdp;
 }
 
 // demandAndEndDateArray =[[id-1, end-date-1, demand-quantity],[id-2, end-date-2, demand-quantity]]
 const _initializeMPS=()=>{
-   let mps={};
-   mps.demandAndEndDateArray= [[null,null]]; //array - required quantity of product/component and completed date as key-value 
-   mps.customer=null;
-   return mps;
+   let pdp={};
+   pdp.demandAndEndDateArray= [[null,null]]; //array - required quantity of product/component and completed date as key-value 
+   pdp.customer=null;
+   return pdp;
 }
 
 
-export const SetupMPS=(props)=>{
+export const SetupPDP=(props)=>{
   const { t } = useTranslation('commands', {useSuspense: false});
   
   const _className = 'cursor-pointer text-primary border-0 p-1 fa fw fa-edit' + (props.component.displayLogic.selected ? ' bg-info' : ' ');
 
-  if( props.component.mps === null || typeof props.component.mps === 'undefined' )
-  {
-    props.component.mps = new initializeMPS(props.component);
-  }
 
   const [event, setEvent] = useState('hover'); // 'hover' is the initial state value
 
-  const [demandDateArray, setDemandDateArray] = useState(props.component.mps.demandAndEndDateArray);
+  const [demandDateArray, setDemandDateArray] = useState(props.component.pdp.demandAndEndDateArray);
+  
+  if( props.component.pdp === null || typeof props.component.pdp === 'undefined' )
+  {
+    props.component.pdp = new initializePDP(props.component);
+  }
 
   // component.displayLogic.inlineMenuEnabled needs set to true
   const saveValidMPSEntry=( component )=>{
     let invalidEntry = false;
-    // for( const element of  component.mps.demandAndEndDateArray) {
+    // for( const element of  component.pdp.demandAndEndDateArray) {
     //   if( ! isValidString( element[0] ).isValid ||  !isValidValue( element[1]) )
     //   {
     //     invalidEntry = true;
@@ -207,20 +154,20 @@ export const SetupMPS=(props)=>{
       
     if( !invalidEntry )  
     {
-      component.mps.demandAndEndDateArray = demandDateArray;
-      sessionStorage.setItem( `${component.displayLogic.key}_${component.businessLogic.name}_mps`, JSON.stringify( component.mps ));
+      component.pdp.demandAndEndDateArray = demandDateArray;
+      sessionStorage.setItem( `${component.displayLogic.key}_${component.businessLogic.name}_pdp`, JSON.stringify( component.pdp ));
     }
   }
 
 
   const setCustomerName=(index, customerName, component)=>{
     if( isValidString( customerName ))
-        component.mps.customer=customerName;
+        component.pdp.customer=customerName;
     else
-      component.mps.customer='';  //reset to initial value to fail saveValidMPSEntry evaluation
+      component.pdp.customer='';  //reset to initial value to fail saveValidMPSEntry evaluation
 
     saveValidMPSEntry(component);
-    console.log("SetupMPS - setCustomerName: " + component.mps.customer);
+    console.log("SetupPDP - setCustomerName: " + component.pdp.customer);
   };
 
   
@@ -229,8 +176,8 @@ export const SetupMPS=(props)=>{
 
   const setTotalRequiredQty=(index, qty, component)=>
   {
-    if( typeof component.mps === 'undefined' )
-      component.mps = new initializeMPS( component );
+    if( typeof component.pdp === 'undefined' )
+      component.pdp = new initializePDP( component );
 
     let {isValid, value} = isValidValue(qty);
 
@@ -249,13 +196,13 @@ export const SetupMPS=(props)=>{
 
     saveValidMPSEntry(component);
 
-    console.log('setTotalRequiredQty - ' + component.mps.requiredQty);
+    console.log('setTotalRequiredQty - ' + component.pdp.requiredQty);
   }
 
   //have to be in-sync with forecast demand
   const setCompleteDate=(index, completeDate, component)=>{
-    if( typeof component.mps === 'undefined' )
-      component.mps = new initializeMPS( component );
+    if( typeof component.pdp === 'undefined' )
+      component.pdp = new initializePDP( component );
 
     if( isValidString( completeDate ))
     {
@@ -274,7 +221,7 @@ export const SetupMPS=(props)=>{
     console.log( 'setCompleteDate index - complete date : ' + index +'-' + completeDate);
   }
 
-  //hover to popup tooltip, click/focus to popup setup MPS inputs
+  //hover to popup tooltip, click/focus to popup setup pdp inputs
   // based on event from mouse or click for desktop devices, click for touch devices
   const setEventState=()=>
   {
@@ -317,14 +264,14 @@ export const SetupMPS=(props)=>{
  const renderDemandDateInput=(uniqueKey, index, endDate, demand, isLastElement )=>{
   return(
     <div key={uniqueKey} className={'bg-info d-flex'}>  
-      <SetupComponentMPS
+      <SetupComponentPDP
          title='product-complete-date'   //array of completed date for each required quantity
          id={index}
          value={ endDate }
          component={props.component}
          handler={setCompleteDate}/>
      
-     <SetupComponentMPS
+     <SetupComponentPDP
          title='required-quantity'
          id={index}
          value={( demand !== null && demand > 0 ) ? demand : ''} //array of demands for each period 
@@ -356,7 +303,7 @@ export const SetupMPS=(props)=>{
   }
 
   return (
-    // for manufacturing only show root MPS, all sub components are derived from it programmatically
+    // for manufacturing only show root pdp, all sub components are derived from it programmatically
     ( props.component.displayLogic.selected && ( props.component.businessLogic.parentIds.length === 0 || props.component.stocking )? 
       ( `${event}` === 'hover' ?
       <Popup
@@ -379,7 +326,7 @@ export const SetupMPS=(props)=>{
           mouseEnterDelay={400}
           arrow={true}
           arrowStyle={{backgroundColor: `${styles.cciBgColor}`}}>
-          <span className={'text-primary'} >{t('commands:show-setup-MPS')}</span>
+          <span className={'text-primary'} >{t('commands:show-setup-PDP')}</span>
       </Popup>
       :
       <Popup
@@ -403,17 +350,16 @@ export const SetupMPS=(props)=>{
           {close => (      
               <div className={'bg-info d-flex flex-column'} >
                 <div className={'bg-info d-flex'}>
-                  <SetupComponentMPS
+                  <SetupComponentPDP
                     title='customer-name'
                     id={-1}
-                    value={props.component.mps.customer} //array of demands for each period 
+                    value={props.component.pdp.customer} //array of demands for each period 
                     component={props.component}
                     handler={setCustomerName}/>
-                  <a id={`${props.component.displayLogic.key}-SetupMPS`}
-                    href={`#${props.component.displayLogic.key}`}
+                  <i id={`${props.component.displayLogic.key}-SetupPDP`}
                     className='text-danger m-0 py-1 px-1 fas fw fa-times-circle cursor-pointer'
                     style={{backgroundColor: `${styles.cciBgColor}`}}
-                    onClick={ close }> </a>
+                    onClick={ close }/>
                 </div>
 
                 <hr className='my-0 bg-info'

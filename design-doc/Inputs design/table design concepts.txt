@@ -17,13 +17,16 @@
 		   time-needed/unit/employee,
 		   hiring/dismissal cost/employee,
 		   maximum/minimum employee allowed, 
-		   Other Unit production Cost  
+		   scrapRate
 		   Setup Cost - from product operation setup
 
 		 * Scheduled Receipts (SR)
 		   Initial Inventory or backorder ( Begining Inventory BI, Inventory On-hand)
 		   Maximum ending Inventory Allowed
 		   Minimum ending Inventory Allowed (SS)
+		   Procurement
+		   Lead Time
+ 		   Other Unit production Cost  // this is the cost of producing one unit of the product that is not already accounted for by employee costs - here zero 
 		   Unit Inventory holding Cost
 		   Maximum purchasing (subcontracting) allowed
 		   Unit subcontracting cost

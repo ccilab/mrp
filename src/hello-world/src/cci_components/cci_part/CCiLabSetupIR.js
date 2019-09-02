@@ -7,7 +7,7 @@ import styles from "./../../dist/css/ccilab-component-list.css"
 import { isValidString, isValidValue } from "./CCiLabUtility";
 
 
-const SetupComponentBOM=(props)=>{
+const SetupComponentIR=(props)=>{
   const { t } = useTranslation(['component','commands'], {useSuspense: false});
 
   let inputValue = (props.value === null)? '': props.value;
@@ -89,7 +89,7 @@ const SetupComponentBOM=(props)=>{
     //     if( typeof e.target !== 'undefined' && e.target.value === '' && props.title ==='part-name')
     //       e.target.value = 'add-part';
 
-    //     console.log("SetupComponentBOM - updateValue: " + e.target.value);
+    //     console.log("SetupComponentIR - updateValue: " + e.target.value);
 
     //     props.handler(e.target.value, props.component);
     //   }
@@ -102,7 +102,7 @@ const SetupComponentBOM=(props)=>{
       if( typeof target !== 'undefined' && target.value === '' && props.title ==='part-name')
         target.value = 'add-part';
 
-      console.log("SetupComponentBOM - updateValue: " + target.value);
+      console.log("SetupComponentIR - updateValue: " + target.value);
 
       props.handler(target.value, props.component);
 
@@ -124,7 +124,7 @@ const SetupComponentBOM=(props)=>{
   };
 
   const updateChange=(props)=>(e)=>{
-    console.log("SetupComponentBOM - updateChange: " + e.target.value);
+    console.log("SetupComponentIR - updateChange: " + e.target.value);
   }
 
 
@@ -222,167 +222,64 @@ const SetupComponentBOM=(props)=>{
   );
 }
 
-export const CanEnableInlineMenu = ( component )=>{
-  if( isValidString( component.businessLogic.name) &&
-      component.bom !== null &&
-      typeof component.bom !== 'undefined' &&
-      typeof component.bom.core !== 'undefined' &&
-      component.bom.core !== null &&
-      isValidString( component.bom.core.partNumber ) &&
-      ( isValidValue( component.bom.core.requiredQty ).isValid ||
-        isValidValue( component.bom.core.unitQty ).isValid ) &&
-      isValidValue( component.bom.core.scrapRate).isValid &&
-      isValidString( component.bom.core.procurementType) &&
-      isValidString( component.bom.core.startDate) &&
-      isValidString( component.bom.core.completeDate)
-)
-  {
-    component.displayLogic.inlineMenuEnabled = true;
-  }
-  else
-  {
-    component.displayLogic.inlineMenuEnabled = false;
-  }
+
+export const initializeIRF=( component )=>{
+  let irf= JSON.parse(sessionStorage.getItem(`${component.displayLogic.key}_${component.businessLogic.name}_irf`)) || _initializeIRF();
+  return irf;
 }
 
-export const initializeBOM=( component )=>{
-  let bom={};
-  bom.core= JSON.parse(sessionStorage.getItem(`${component.displayLogic.key}_${component.businessLogic.name}_bom_core`)) || initializeBOMCore();
-  bom.extra=JSON.parse(sessionStorage.getItem(`${component.displayLogic.key}_${component.businessLogic.name}_bom_extra`)) ||initializeBOMExtra();
-  return bom;
+const _initializeIRF=()=>{
+   let irf={};
+   irf.inventoryOnHand=null;  //Initial Inventory, Beginning Inventory  
+   irf.scheduledReceipts=[[null,null]];  //SR - date-quantity pair
+   irf.maxAllowedEndingInventory=null; // may doesn't have unit
+   irf.minAllowedEndingInventory= null; //Safe Stock (SS)
+   irf.startDate=null;
+   irf.completeDate=null;
+   irf.procurementType=null;  //'InHouse'(to produce production order), 'Purchase'(to produce purchase order)
+   irf.leadTime=null;
+   irf.otherProductionCostPerUnit=null;
+   irf.holdingCostPerUnit=null;  //Inventory holding cost per unit
+   irf.interest=null;
+   irf.maxPurchasingAllowed=0;   //doesn't allowed for now
+   irf.purchasingCostPerUnit=0;  //doesn't allowed for now
+   irf.maxBackOrderAllowed=0;    //doesn't allowed for now
+   irf.backOrderCostPerUnit=0;  //doesn't allowed for now
+ 
+   return irf;
 }
 
-// requiredQtyPerShift calculates based on its parent component's unitQty
-// #todo - need to re-design how to handle it
-const initializeBOMCore=()=>{
-   let core={};
-   core.partNumber=null;
-   core.unitQty=null;
-   core.unitOfMeasure=''; // may doesn't have unit
-   core.requiredQty= null; //required quantity of component/part
-   core.startDate=null;
-   core.completeDate=null;
-   core.scrapRate=null;    // in %, need /100 when uses it
-   core.procurementType=null;  //'InHouse'(to produce production order), 'Purchase'(to produce purchase order)
-   core.warehouse=null;
-   core.leadTime=null;
-   core.workshop=null;
-   core.supplier=null;
-   core.supplierPartNumber=null;
-   core.requiredQtyPerShift=null;  // required quantity for per shift per run
-   core.shiftCount=1;         // how many different shifts are needed
-   core.sameShiftRunCount=1;  //same shift runs how many times
-   return core;
-}
 
-const initializeBOMExtra=()=>{
-  let extra={};
-  extra.SKU='';
-  extra.barCode='';
-  extra.revision='';
-  extra.refDesignator='';
-  extra.phase='';
-  extra.category='';
-  extra.material='';
-  extra.process='';
-  extra.unitCost='';
-  extra.assemblyLine='';
-  extra.description='';
-  extra.note='';
-  return extra;
-};
-
-export const SetupBOM=(props)=>{
+export const SetupIRF=(props)=>{
   const { t } = useTranslation('commands', {useSuspense: false});
   
   const _className = 'cursor-pointer text-primary border-0 p-1 fa fw fa-edit' + (props.component.displayLogic.selected ? ' bg-info' : ' ');
 
   const [event, setEvent] = useState('hover'); // '' is the initial state value
 
-  // deep copy object that doesn't have function inside object
-  const originComponent = JSON.parse(JSON.stringify(props.component));
+  const [SRArray, setSRArray] = useState(props.component.irf.scheduledReceipts);
+
+  if( props.component.irf === null || typeof props.component.irf === 'undefined' )
+  {
+    props.component.irf = new initializeIRF(props.component);
+  }
 
    // component.displayLogic.inlineMenuEnabled needs set to true
-  const IsClosePopupMenu=( component )=>{
-      CanEnableInlineMenu( component );
-      if( component.displayLogic.inlineMenuEnabled )
-      {
-        props.updateComponent(originComponent, component);
-      }
-
-      // update component name
-      if( isValidString( component.businessLogic.name) && props.updateComponent(originComponent, component))
-      {
-          // originComponent.businessLogic.name could be hard-coded 'add-part' or other user given name
-          // if( originComponent.businessLogic.name !== component.businessLogic.name )
-          // {
-          //   sessionStorage.removeItem(`${props.component.displayLogic.key}_${originComponent.businessLogic.name}_displayLogic`);
-          // }
-          // component name may or may not change, but the component.displayLogic.inlineMenuEnabled will change if passed the checking
-          // sessionStorage.setItem( `${component.displayLogic.key}_${component.businessLogic.name}_displayLogic`, JSON.stringify( component.displayLogic ));
-
-          // update component name if user changes it
-          if( originComponent.businessLogic.name !== component.businessLogic.name )
-          {
-              sessionStorage.removeItem(`${props.component.displayLogic.key}_${originComponent.businessLogic.name}_businessLogic`);
-              sessionStorage.setItem( `${component.displayLogic.key}_${component.businessLogic.name}_businessLogic`, JSON.stringify( component.businessLogic ));
-          }
-
-          if( originComponent.businessLogic.name !== component.businessLogic.name )
-          {
-            sessionStorage.removeItem( `${component.displayLogic.key}_${originComponent.businessLogic.name}_bom_core`);
-          }
-          sessionStorage.setItem( `${component.displayLogic.key}_${component.businessLogic.name}_bom_core`, JSON.stringify( component.bom.core ));
-      }
-
-
+  const saveValidIRFEntry=( component )=>{
+    component.irf.scheduledReceipts = SRArray;
+    sessionStorage.setItem( `${component.displayLogic.key}_${component.businessLogic.name}_irf`, JSON.stringify( component.irf ));
   }
 
+  const setIOH=(ioh, component)=>{
+    let {isValid, value} = isValidValue(ioh);
 
-
-  if( props.component.bom === null || typeof props.component.bom === 'undefined' )
-  {
-    props.component.bom = new initializeBOM(props.component);
-  }
-
-  // const isValidString=( name )=>{
-  //   return ( typeof name === 'string' &&
-  //       name.length > 0 ) ? true : false
-  // };
-
-  // const isValidValue=(valueToCheck)=>{
-
-  //   let value = parseFloat(valueToCheck);
-  //   let valid = isNaN( value ) ? false : true;
-
-  //   let rt={};
-  //   rt.isValid = valid;
-  //   rt.value = value;
-  //   return rt;
-  // };
-
-  const calQuantityPerShift=(component)=>{
-    const bomCore = component.bom.core;
-    if( component.bom.core.requiredQty !== null &&
-      component.bom.core.unitQty !== null &&
-      component.bom.core.scrapRate !== null
-    )
-    {
-
-      bomCore.requiredQtyPerShift =((bomCore.requiredQty * bomCore.unitQty)/(bomCore.shiftCount * bomCore.sameShiftRunCount )) * (1 + bomCore.scrapRate/100) ;
-    }
+     if( !isValid )
+      component.irf.inventoryOnHand=null;
     else
-      bomCore.requiredQtyPerShift=null;
-  };
+      component.irf.inventoryOnHand=value;
 
-  const setPartName=(partName, component)=>{
-    if( isValidString( partName ))
-        component.businessLogic.name=partName;
-    else
-      component.businessLogic.name='';  //reset to initial value to fail IsClosePopupMenu evaluation
-
-    IsClosePopupMenu(component);
-    console.log("SetupBOM - setPartName: " + component.businessLogic.name);
+    // required quantity for per shift per run
+    saveValidIRFEntry(component);
   };
 
   const setPartNumber=(partNumber, component)=>{
@@ -390,13 +287,11 @@ export const SetupBOM=(props)=>{
       component.bom = new initializeBOM( component );
 
     if( isValidString( partNumber ))
-      component.bom.core.partNumber=partNumber;
+      component.bom.irf.partNumber=partNumber;
     else
       component.businessLogic.name=null;  //reset to initial value to fail IsClosePopupMenu evaluation
 
-    IsClosePopupMenu(component);
-
-    console.log("SetupBOM - setPartNumber: " + component.bom.core.partNumber);
+    console.log("SetupIRF - setPartNumber: " + component.bom.irf.partNumber);
   };
 
   const setUnitQty=(unitQty, component)=>{
@@ -406,16 +301,16 @@ export const SetupBOM=(props)=>{
     let {isValid, value} = isValidValue(unitQty);
 
     if( !isValid )
-      component.bom.core.unitQty=null;
+      component.bom.irf.unitQty=null;
     else
-      component.bom.core.unitQty=value;
+      component.bom.irf.unitQty=value;
 
     // required quantity for per shift per run
-    calQuantityPerShift(component); //reset requiredQtyPerShift to null if component.bom.core.unitQty is null
+    calQuantityPerShift(component); //reset requiredQtyPerShift to null if component.bom.irf.unitQty is null
     IsClosePopupMenu(component);
 
-    console.log( 'setUnitQty: requiredQty='+component.bom.core.requiredQty);
-    console.log( 'setUnitQty: requiredQtyPerShift='+component.bom.core.requiredQtyPerShift);
+    console.log( 'setUnitQty: requiredQty='+component.bom.irf.requiredQty);
+    console.log( 'setUnitQty: requiredQtyPerShift='+component.bom.irf.requiredQtyPerShift);
   }
 
   const setTotalRequiredQty=(qty, component)=>{
@@ -425,21 +320,21 @@ export const SetupBOM=(props)=>{
     let {isValid, value} = isValidValue(qty);
 
     if( !isValid )
-      component.bom.core.requiredQty=null;
+      component.bom.irf.requiredQty=null;
     else
-      component.bom.core.requiredQty=value;
+      component.bom.irf.requiredQty=value;
 
     calQuantityPerShift(component);
     IsClosePopupMenu(component);
 
-    console.log('setTotalRequiredQty - ' + component.bom.core.requiredQty);
+    console.log('setTotalRequiredQty - ' + component.bom.irf.requiredQty);
   }
 
   const setUnitOfMeasure=(unitOfMeasure, component)=>{
     if( typeof component.bom === 'undefined' )
       component.bom = new initializeBOM( component );
 
-    component.bom.core.unitOfMeasure=unitOfMeasure;
+    component.bom.irf.unitOfMeasure=unitOfMeasure;
   }
 
   const setScrapRate=(scrapRate, component)=>{
@@ -449,12 +344,12 @@ export const SetupBOM=(props)=>{
     let {isValid, value} = isValidValue(scrapRate);
 
     if( !isValid )
-      component.bom.core.scrapRate = null;
+      component.bom.irf.scrapRate = null;
     else
-      component.bom.core.scrapRate = value;
+      component.bom.irf.scrapRate = value;
 
     IsClosePopupMenu(component);
-    console.log('setScrapRate - ' + component.bom.core.scrapRate);
+    console.log('setScrapRate - ' + component.bom.irf.scrapRate);
   }
 
   const setProcurementType=(procurementType, component)=>{
@@ -462,12 +357,12 @@ export const SetupBOM=(props)=>{
       component.bom = new initializeBOM( component );
 
     if( isValidString(procurementType) )
-      component.bom.core.procurementType = procurementType;
+      component.bom.irf.procurementType = procurementType;
     else
-      component.bom.core.procurementType = null;
+      component.bom.irf.procurementType = null;
 
     IsClosePopupMenu(component);
-    console.log( 'setProcurementType : ' + component.bom.core.procurementType );
+    console.log( 'setProcurementType : ' + component.bom.irf.procurementType );
   }
 
   const setStartDate=(startDate, component)=>{
@@ -475,12 +370,12 @@ export const SetupBOM=(props)=>{
       component.bom = new initializeBOM( component );
 
     if( isValidString( startDate ))
-      component.bom.core.startDate=startDate;
+      component.bom.irf.startDate=startDate;
     else
-      component.bom.core.startDate = null;
+      component.bom.irf.startDate = null;
 
     IsClosePopupMenu(component);
-    console.log( 'setStartDate : ' + component.bom.core.startDate);
+    console.log( 'setStartDate : ' + component.bom.irf.startDate);
   }
 
   const setCompleteDate=(completeDate, component)=>{
@@ -488,12 +383,12 @@ export const SetupBOM=(props)=>{
       component.bom = new initializeBOM( component );
 
     if( isValidString( completeDate ))
-      component.bom.core.completeDate=completeDate;
+      component.bom.irf.completeDate=completeDate;
     else
-      component.bom.core.completeDate = null;
+      component.bom.irf.completeDate = null;
 
     IsClosePopupMenu(component);
-    console.log( 'setCompleteDate : ' + component.bom.core.completeDate);
+    console.log( 'setCompleteDate : ' + component.bom.irf.completeDate);
   }
 
 
@@ -536,7 +431,7 @@ export const SetupBOM=(props)=>{
           mouseEnterDelay={400}
           arrow={true}
           arrowStyle={{backgroundColor: `${styles.cciBgColor}`}}>
-          <span className={'text-primary'} >{t('commands:show-setup-BOM')}</span>
+          <span className={'text-primary'} >{t('commands:show-setup-IRF')}</span>
       </Popup>
       :
       <Popup
@@ -560,12 +455,12 @@ export const SetupBOM=(props)=>{
           {close => (
             <div className={'bg-info d-flex flex-column'} >
             <div className={'bg-info d-flex'}>
-              <SetupComponentBOM
+              <SetupComponentIR
                 title='part-name'
                 value={props.component.businessLogic.name}
                 component={props.component}
-                handler={setPartName}/>
-              <a id={`${props.component.displayLogic.key}-setupBOM`}
+                handler={setIOH}/>
+              <a id={`${props.component.displayLogic.key}-SetupIRF`}
                 href={`#${props.component.displayLogic.key}`}
                 className='text-danger m-0 py-1 px-1 fas fw fa-times-circle cursor-pointer'
                 style={{backgroundColor: `${styles.cciBgColor}`}}
@@ -574,9 +469,9 @@ export const SetupBOM=(props)=>{
             <hr className='my-0 bg-info'
                   style={{borderStyle:'insert', borderWidth: '0.08em', borderColor:`${styles.cciInfoBlue}`}}/>
 
-            <SetupComponentBOM
+            <SetupComponentIR
                 title='part-number'
-                value={props.component.bom.core.partNumber}
+                value={props.component.bom.irf.partNumber}
                 component={props.component}
                 handler={setPartNumber}/>
 
@@ -584,17 +479,17 @@ export const SetupBOM=(props)=>{
                   style={{borderStyle:'insert', borderWidth: '0.08em', borderColor:`${styles.cciInfoBlue}`}}/>
 
             { props.component.businessLogic.parentIds.length === 0 ?
-              <SetupComponentBOM
+              <SetupComponentIR
               title='required-quantity'
                 // value='' input will show placeholder text
-                value={(props.component.bom.core.requiredQty !== null && props.component.bom.core.requiredQty > 0 ) ? props.component.bom.core.requiredQty: ''}
+                value={(props.component.bom.irf.requiredQty !== null && props.component.bom.irf.requiredQty > 0 ) ? props.component.bom.irf.requiredQty: ''}
                 component={props.component}
                 handler={setTotalRequiredQty}/>
               :
-              <SetupComponentBOM
+              <SetupComponentIR
                 title='unit-quantity'
                 // value='' input will show placeholder text
-                value={ props.component.bom.core.unitQty}
+                value={ props.component.bom.irf.unitQty}
                 component={props.component}
                 handler={setUnitQty}/>
             }
@@ -602,45 +497,45 @@ export const SetupBOM=(props)=>{
             <hr className='my-0 bg-info'
                 style={{borderStyle:'insert', borderWidth: '0.08em', borderColor:`${styles.cciInfoBlue}`}}/>
 
-            <SetupComponentBOM
+            <SetupComponentIR
                 title='unit-of-measure'
-                value={props.component.bom.core.unitOfMeasure }
+                value={props.component.bom.irf.unitOfMeasure }
                 component={props.component}
                 handler={setUnitOfMeasure}/>
 
             <hr className='my-0 bg-info'
                 style={{borderStyle:'insert', borderWidth: '0.08em', borderColor:`${styles.cciInfoBlue}`}}/>
 
-            <SetupComponentBOM
+            <SetupComponentIR
               title='scrap-rate'
-              value={props.component.bom.core.scrapRate }
+              value={props.component.bom.irf.scrapRate }
               component={props.component}
               handler={setScrapRate}/>
 
             <hr className='my-0 bg-info'
                 style={{borderStyle:'insert', borderWidth: '0.08em', borderColor:`${styles.cciInfoBlue}`}}/>
 
-            <SetupComponentBOM
+            <SetupComponentIR
                 title='procurement-type'
-                value={props.component.bom.core.procurementType }
+                value={props.component.bom.irf.procurementType }
                 component={props.component}
                 handler={setProcurementType}/>
 
             <hr className='my-0 bg-info'
                 style={{borderStyle:'insert', borderWidth: '0.08em', borderColor:`${styles.cciInfoBlue}`}}/>
 
-            <SetupComponentBOM
+            <SetupComponentIR
                 title='start-product-date'
-                value={props.component.bom.core.startDate }
+                value={props.component.bom.irf.startDate }
                 component={props.component}
                 handler={setStartDate}/>
 
             <hr className='my-0 bg-info'
                 style={{borderStyle:'insert', borderWidth: '0.08em', borderColor:`${styles.cciInfoBlue}`}}/>
 
-            <SetupComponentBOM
+            <SetupComponentIR
                 title='product-complete-date'
-                value={props.component.bom.core.completeDate }
+                value={props.component.bom.irf.completeDate }
                 component={props.component}
                 handler={setCompleteDate}/>
             </div>
