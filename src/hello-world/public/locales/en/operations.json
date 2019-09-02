@@ -1,0 +1,11 @@
+{
+    "start-product-date": "* Production starts date",
+    "team-name": "* Add team name",
+    "shift":"* Add shift name",
+    "process": "Process",
+    "assembly-line": "Assembly Line",
+    "workshop": "Workshop",
+    "warehouse": "Warehouse Location",
+    "rejection-rate": "Rejection Rate (%)",
+    "scrap-rate": "* Scrap Rate (%)"
+}

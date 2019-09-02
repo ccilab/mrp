@@ -8,7 +8,7 @@ import { isValidString, isValidValue } from "./CCiLabUtility";
 
 
 const SetupComponentIR=(props)=>{
-  const { t } = useTranslation(['component','commands'], {useSuspense: false});
+  const { t } = useTranslation(['inventoryRecords','commands'], {useSuspense: false});
 
   let inputValue = (props.value === null)? '': props.value;
 
@@ -23,12 +23,8 @@ const SetupComponentIR=(props)=>{
 
   let rateInputElement = React.createRef();
 
-  if( props.value === 'add-part')
-  {
-    inputValue = '';
-  }
 
-  if( props.title.includes('part-name'))
+  if( props.title.includes('inventory-on-hand'))
   {
     tooltipPosition='bottom left';
   }
@@ -150,7 +146,7 @@ const SetupComponentIR=(props)=>{
                   <label className={'m-0 px-1 border-0 cursor-pointer'}
                     htmlFor={`${inputName}-1`}
                     style={{'backgroundColor': `${styles.cciBgColor}`, 'color': inputValue.includes('InHouse') ? `${styles.cciInfoBlue}` : `${styles.cciHintRed}`}}>
-                     {t(`component:in-house`)}
+                     {t(`inventoryRecords:in-house`)}
                     </label>
                 </div>
                 <div className='d-inline-flex align-items-center m-0 y-0 border-0'>
@@ -166,7 +162,7 @@ const SetupComponentIR=(props)=>{
                    <label className={'m-0 px-1 border-0 cursor-pointer'}
                     htmlFor={`${inputName}-2`}
                     style={{'backgroundColor': `${styles.cciBgColor}`, 'color': inputValue.includes('Purchase') ? `${styles.cciInfoBlue}` : `${styles.cciHintRed}`}}>
-                     {t('component:purchase') }
+                     {t('inventoryRecords:purchase') }
                     </label>
                 </div>
               </div>
@@ -181,7 +177,7 @@ const SetupComponentIR=(props)=>{
             mouseEnterDelay={0}
             contentStyle={{  padding: '0px' }}>
             <div className='text-nowrap m-0 p-1'>
-              {t(`component:${props.title}`)}
+              {t(`inventoryRecords:${props.title}`)}
             </div>
         </Popup>
           :
@@ -192,7 +188,7 @@ const SetupComponentIR=(props)=>{
                       id={inputName}
                       type={`${inputType}`}
                       style={inputStyle}
-                      placeholder={t(`component:${props.title}`)}
+                      placeholder={t(`inventoryRecords:${props.title}`)}
                       name={inputName}
                       value={ input }
                       min = { inputType.includes('number') ? 1 : null}
@@ -213,7 +209,7 @@ const SetupComponentIR=(props)=>{
               contentStyle={{ padding: '0px'}}
               >
               <div className='text-nowrap m-0 px-1'>
-                {t(`component:${props.title}`)}
+                {t(`inventoryRecords:${props.title}`)}
               </div>
           </Popup>
        }
@@ -232,13 +228,11 @@ const _initializeIRF=()=>{
    let irf={};
    irf.inventoryOnHand=null;  //Initial Inventory, Beginning Inventory  
    irf.scheduledReceipts=[[null,null]];  //SR - date-quantity pair
-   irf.maxAllowedEndingInventory=null; // may doesn't have unit
+   irf.maxAllowedEndingInventory=null; // Maximum Stock
    irf.minAllowedEndingInventory= null; //Safe Stock (SS)
-   irf.startDate=null;
-   irf.completeDate=null;
    irf.procurementType=null;  //'InHouse'(to produce production order), 'Purchase'(to produce purchase order)
    irf.leadTime=null;
-   irf.otherProductionCostPerUnit=null;
+   irf.otherProductionCostPerUnit=null; //other than employee costs
    irf.holdingCostPerUnit=null;  //Inventory holding cost per unit
    irf.interest=null;
    irf.maxPurchasingAllowed=0;   //doesn't allowed for now
@@ -257,12 +251,12 @@ export const SetupIRF=(props)=>{
 
   const [event, setEvent] = useState('hover'); // '' is the initial state value
 
-  const [SRArray, setSRArray] = useState(props.component.irf.scheduledReceipts);
-
   if( props.component.irf === null || typeof props.component.irf === 'undefined' )
   {
     props.component.irf = new initializeIRF(props.component);
   }
+
+  const [SRArray, setSRArray] = useState(props.component.irf.scheduledReceipts);
 
    // component.displayLogic.inlineMenuEnabled needs set to true
   const saveValidIRFEntry=( component )=>{
@@ -282,115 +276,148 @@ export const SetupIRF=(props)=>{
     saveValidIRFEntry(component);
   };
 
-  const setPartNumber=(partNumber, component)=>{
-    if( typeof component.bom === 'undefined' )
-      component.bom = new initializeBOM( component );
+  const setSRQty=(index, qty, component)=>{
+    if( typeof component.irf === 'undefined' )
+      component.irf = new initializeIRF( component );
 
-    if( isValidString( partNumber ))
-      component.bom.irf.partNumber=partNumber;
-    else
-      component.businessLogic.name=null;  //reset to initial value to fail IsClosePopupMenu evaluation
+      let {isValid, value} = isValidValue(qty);
 
-    console.log("SetupIRF - setPartNumber: " + component.bom.irf.partNumber);
+      if( isValid )
+      {
+          for( let item of SRArray )
+          {
+            const id = SRArray.indexOf( item );
+            if( id === index )
+            {
+              item[1] = value;
+              break;
+            }
+          }
+       }
+  
+       saveValidIRFEntry(component);
   };
 
-  const setUnitQty=(unitQty, component)=>{
-    if( typeof component.bom === 'undefined' )
-      component.bom = new initializeBOM( component );
+    //have to be in-sync with SR Qty
+    const setSRDate=(index, completeDate, component)=>{
+      if( typeof component.irf === 'undefined' )
+        component.irf = new initializeIRF( component );
+  
+      if( isValidString( completeDate ))
+      {
+        for( let item of SRArray )
+        {
+          const id = SRArray.indexOf( item );
+          if( id === index )
+          {
+            item[0] = completeDate;
+            break;
+          }
+        }
+      }
+  
+      saveValidIRFEntry(component);
+    }
 
-    let {isValid, value} = isValidValue(unitQty);
-
-    if( !isValid )
-      component.bom.irf.unitQty=null;
-    else
-      component.bom.irf.unitQty=value;
-
-    // required quantity for per shift per run
-    calQuantityPerShift(component); //reset requiredQtyPerShift to null if component.bom.irf.unitQty is null
-    IsClosePopupMenu(component);
-
-    console.log( 'setUnitQty: requiredQty='+component.bom.irf.requiredQty);
-    console.log( 'setUnitQty: requiredQtyPerShift='+component.bom.irf.requiredQtyPerShift);
-  }
-
-  const setTotalRequiredQty=(qty, component)=>{
-    if( typeof component.bom === 'undefined' )
-      component.bom = new initializeBOM( component );
+  const setMaxStock=(qty, component)=>{
+    if( typeof component.irf === 'undefined' )
+      component.irf = new initializeIRF( component );
 
     let {isValid, value} = isValidValue(qty);
 
     if( !isValid )
-      component.bom.irf.requiredQty=null;
+      component.irf.maxAllowedEndingInventory=null;
     else
-      component.bom.irf.requiredQty=value;
+      component.irf.maxAllowedEndingInventory=value;
 
-    calQuantityPerShift(component);
-    IsClosePopupMenu(component);
-
-    console.log('setTotalRequiredQty - ' + component.bom.irf.requiredQty);
+    saveValidIRFEntry(component); 
   }
 
-  const setUnitOfMeasure=(unitOfMeasure, component)=>{
-    if( typeof component.bom === 'undefined' )
-      component.bom = new initializeBOM( component );
+  const setSS=(qty, component)=>{
+    if( typeof component.irf === 'undefined' )
+      component.irf = new initializeIRF( component );
 
-    component.bom.irf.unitOfMeasure=unitOfMeasure;
-  }
-
-  const setScrapRate=(scrapRate, component)=>{
-    if( typeof component.bom === 'undefined' )
-      component.bom = new initializeBOM( component );
-
-    let {isValid, value} = isValidValue(scrapRate);
+    let {isValid, value} = isValidValue(qty);
 
     if( !isValid )
-      component.bom.irf.scrapRate = null;
+      component.irf.minAllowedEndingInventory=null;
     else
-      component.bom.irf.scrapRate = value;
+      component.irf.minAllowedEndingInventory=value;
 
-    IsClosePopupMenu(component);
-    console.log('setScrapRate - ' + component.bom.irf.scrapRate);
+    saveValidIRFEntry(component); 
   }
 
   const setProcurementType=(procurementType, component)=>{
-    if( typeof component.bom === 'undefined' )
-      component.bom = new initializeBOM( component );
+    if( typeof component.irf === 'undefined' )
+      component.irf = new initializeIRF( component );
 
     if( isValidString(procurementType) )
-      component.bom.irf.procurementType = procurementType;
+      component.irf.procurementType = procurementType;
     else
-      component.bom.irf.procurementType = null;
+      component.irf.procurementType = null;
 
-    IsClosePopupMenu(component);
-    console.log( 'setProcurementType : ' + component.bom.irf.procurementType );
+   
+    console.log( 'setProcurementType : ' + component.irf.procurementType );
   }
 
-  const setStartDate=(startDate, component)=>{
-    if( typeof component.bom === 'undefined' )
-      component.bom = new initializeBOM( component );
+  // followed with unit (days, weeks, months)
+  const setLeadTime=(qty, component)=>{
+    if( typeof component.irf === 'undefined' )
+      component.irf = new initializeIRF( component );
 
-    if( isValidString( startDate ))
-      component.bom.irf.startDate=startDate;
+    let {isValid, value} = isValidValue(qty);
+
+    if( !isValid )
+      component.irf.leadTime=null;
     else
-      component.bom.irf.startDate = null;
+      component.irf.leadTime=value;
 
-    IsClosePopupMenu(component);
-    console.log( 'setStartDate : ' + component.bom.irf.startDate);
+    saveValidIRFEntry(component); 
+  }
+  
+  //unit in local currency
+  const setOtherCostPerUnit=(cost, component)=>{
+    if( typeof component.irf === 'undefined' )
+      component.irf = new initializeIRF( component );
+
+    let {isValid, value} = isValidValue(cost);
+
+    if( !isValid )
+      component.irf.otherProductionCostPerUnit=null;
+    else
+      component.irf.otherProductionCostPerUnit=value;
+
+    saveValidIRFEntry(component); 
+  }
+  
+
+  const setHoldingCostPerUnit=(cost, component)=>{
+    if( typeof component.irf === 'undefined' )
+      component.irf = new initializeIRF( component );
+
+    let {isValid, value} = isValidValue(cost);
+
+    if( !isValid )
+      component.irf.holdingCostPerUnit=null;
+    else
+      component.irf.holdingCostPerUnit=value;
+
+    saveValidIRFEntry(component); 
   }
 
-  const setCompleteDate=(completeDate, component)=>{
-    if( typeof component.bom === 'undefined' )
-      component.bom = new initializeBOM( component );
+  const setInterest=(interest, component)=>{
+    if( typeof component.irf === 'undefined' )
+      component.irf = new initializeIRF( component );
 
-    if( isValidString( completeDate ))
-      component.bom.irf.completeDate=completeDate;
+    let {isValid, value} = isValidValue(interest);
+
+    if( !isValid )
+      component.irf.interest=null;
     else
-      component.bom.irf.completeDate = null;
+      component.irf.interest=value;
 
-    IsClosePopupMenu(component);
-    console.log( 'setCompleteDate : ' + component.bom.irf.completeDate);
+    saveValidIRFEntry(component); 
   }
-
 
   //hover to popup tooltip, click/focus to popup setup BOM inputs
   // based on event from mouse or click for desktop devices, click for touch devices
@@ -407,6 +434,72 @@ export const SetupIRF=(props)=>{
       return;
     }
   }
+
+  const AddNextSREntry=(index)=>(e)=>{
+    SRArray.push([null,null]);
+    saveValidIRFEntry(props.component);
+    setSRArray( SRArray );
+    window.dispatchEvent(new Event('resize'));  //resize popup menu
+  }
+
+  const removeSREntry=(index)=>(e)=>{
+    for( let item of SRArray )
+    {
+      const id = SRArray.indexOf( item );
+      if( id === index )
+      {
+        SRArray.splice(id, 1);
+      }
+    }
+    
+    saveValidIRFEntry(props.component);
+    setSRArray( SRArray );
+    window.dispatchEvent(new Event('resize'));   //resize popup menu
+  }
+
+  
+
+ const renderSRInput=(uniqueKey, index, srDate, demand, isLastElement )=>{
+  return(
+    <div key={uniqueKey} className={'bg-info d-flex'}>  
+      <SetupComponentIR
+         title='scheduled-receipts-date'   //array of completed date for each required quantity
+         id={index}
+         value={ srDate }
+         component={props.component}
+         handler={setSRDate}/>
+     
+     <SetupComponentIR
+         title='scheduled-receipts-quantity'
+         id={index}
+         value={( demand !== null && demand > 0 ) ? demand : ''} //array of demands for each period 
+         component={props.component}
+         handler={setSRQty}/>
+         
+     { isLastElement === true ?
+       <i id={`${index}`}
+         className='text-info m-0 py-1 px-1 fas fw fa-plus-circle cursor-pointer'
+         style={{backgroundColor: `${styles.cciBgColor}`}}
+         onClick={AddNextSREntry(index)}/>
+         :
+         <i id={`${index}`}
+         className='text-danger m-0 py-1 px-1 fas fw fa-minus-circle cursor-pointer'
+         style={{backgroundColor: `${styles.cciBgColor}`}}
+         onClick={removeSREntry(index)}/>
+     } 
+     </div>
+  );
+ }
+
+  const renderSRInputs=()=>{
+    return (
+      SRArray.map( ( item )=>{
+        let id = SRArray.indexOf(item);
+        return renderSRInput( Math.random(), id, item[0], item[1], id ===  SRArray.length - 1 ? true : false )
+      } )
+    )
+  }
+
 
   return (
     ( props.component.displayLogic.selected ?
@@ -456,68 +549,53 @@ export const SetupIRF=(props)=>{
             <div className={'bg-info d-flex flex-column'} >
             <div className={'bg-info d-flex'}>
               <SetupComponentIR
-                title='part-name'
-                value={props.component.businessLogic.name}
+                title='inventory-on-hand-quantity'
+                value={props.component.irf.inventoryOnHand}
                 component={props.component}
                 handler={setIOH}/>
-              <a id={`${props.component.displayLogic.key}-SetupIRF`}
-                href={`#${props.component.displayLogic.key}`}
+              <i id={`${props.component.displayLogic.key}-SetupIRF`}
                 className='text-danger m-0 py-1 px-1 fas fw fa-times-circle cursor-pointer'
                 style={{backgroundColor: `${styles.cciBgColor}`}}
-                onClick={ close }> </a>
+                onClick={ close }/> 
             </div>
             <hr className='my-0 bg-info'
                   style={{borderStyle:'insert', borderWidth: '0.08em', borderColor:`${styles.cciInfoBlue}`}}/>
 
-            <SetupComponentIR
-                title='part-number'
-                value={props.component.bom.irf.partNumber}
-                component={props.component}
-                handler={setPartNumber}/>
+            {renderSRInputs()}
 
             <hr className='my-0 bg-info'
                   style={{borderStyle:'insert', borderWidth: '0.08em', borderColor:`${styles.cciInfoBlue}`}}/>
 
-            { props.component.businessLogic.parentIds.length === 0 ?
-              <SetupComponentIR
-              title='required-quantity'
-                // value='' input will show placeholder text
-                value={(props.component.bom.irf.requiredQty !== null && props.component.bom.irf.requiredQty > 0 ) ? props.component.bom.irf.requiredQty: ''}
+            <SetupComponentIR
+                title='max-allowed-ending-inventory-quantity'
+                value={props.component.irf.maxAllowedEndingInventory}
                 component={props.component}
-                handler={setTotalRequiredQty}/>
-              :
-              <SetupComponentIR
-                title='unit-quantity'
-                // value='' input will show placeholder text
-                value={ props.component.bom.irf.unitQty}
-                component={props.component}
-                handler={setUnitQty}/>
-            }
+                handler={setMaxStock}/>    
 
             <hr className='my-0 bg-info'
                 style={{borderStyle:'insert', borderWidth: '0.08em', borderColor:`${styles.cciInfoBlue}`}}/>
 
             <SetupComponentIR
-                title='unit-of-measure'
-                value={props.component.bom.irf.unitOfMeasure }
+                title='mim-allowed-ending-inventory-quantity'
+                value={props.component.irf.minAllowedEndingInventory }
                 component={props.component}
-                handler={setUnitOfMeasure}/>
+                handler={setSS}/>
 
             <hr className='my-0 bg-info'
                 style={{borderStyle:'insert', borderWidth: '0.08em', borderColor:`${styles.cciInfoBlue}`}}/>
 
             <SetupComponentIR
-              title='scrap-rate'
-              value={props.component.bom.irf.scrapRate }
+              title='lead-time-quantity'
+              value={props.component.irf.leadTime }
               component={props.component}
-              handler={setScrapRate}/>
+              handler={setLeadTime}/>
 
             <hr className='my-0 bg-info'
                 style={{borderStyle:'insert', borderWidth: '0.08em', borderColor:`${styles.cciInfoBlue}`}}/>
 
             <SetupComponentIR
                 title='procurement-type'
-                value={props.component.bom.irf.procurementType }
+                value={props.component.irf.procurementType }
                 component={props.component}
                 handler={setProcurementType}/>
 
@@ -525,19 +603,28 @@ export const SetupIRF=(props)=>{
                 style={{borderStyle:'insert', borderWidth: '0.08em', borderColor:`${styles.cciInfoBlue}`}}/>
 
             <SetupComponentIR
-                title='start-product-date'
-                value={props.component.bom.irf.startDate }
+                title='other-production-cost-per-unit-quantity'
+                value={props.component.irf.otherProductionCostPerUnit }
                 component={props.component}
-                handler={setStartDate}/>
+                handler={setOtherCostPerUnit}/>
 
             <hr className='my-0 bg-info'
                 style={{borderStyle:'insert', borderWidth: '0.08em', borderColor:`${styles.cciInfoBlue}`}}/>
 
             <SetupComponentIR
-                title='product-complete-date'
-                value={props.component.bom.irf.completeDate }
+                title='holding-cost-per-unit-quantity'
+                value={props.component.irf.holdingCostPerUnit }
                 component={props.component}
-                handler={setCompleteDate}/>
+                handler={setHoldingCostPerUnit}/>
+
+            <hr className='my-0 bg-info'
+                style={{borderStyle:'insert', borderWidth: '0.08em', borderColor:`${styles.cciInfoBlue}`}}/>
+
+            <SetupComponentIR
+                title='interest-rate'
+                value={props.component.irf.interest }
+                component={props.component}
+                handler={setInterest}/>
             </div>
             )
           }

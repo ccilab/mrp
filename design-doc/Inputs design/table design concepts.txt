@@ -17,7 +17,8 @@
 		   time-needed/unit/employee,
 		   hiring/dismissal cost/employee,
 		   maximum/minimum employee allowed, 
-		   scrapRate
+		   start date,
+		   scrapRate,
 		   Setup Cost - from product operation setup
 
 		 * Scheduled Receipts (SR)

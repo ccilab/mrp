@@ -1,9 +1,15 @@
 {
-    "customer-name": "Customer name",
-    "lead-time": "Lead Time",
+    "inventory-on-hand-quantity": "Beginning Inventory",
+    "scheduled-receipts-date": "Scheduled Receipts Date",
+    "scheduled-receipts-quantity": "Scheduled Receipts Quantity",
+    "max-allowed-ending-inventory-quantity": "Maximum Stock Limit",
+    "mim-allowed-ending-inventory-quantity": "Safe Stock",
+    "lead-time-quantity": "Lead Time",
     "procurement-type": "* Procurement Type",
     "in-house": "In house production",
     "purchase" : "External Purchase",
-    "start-product-date": "* Production starts date",
-    "product-complete-date": "* Production completes date"
+    "other-production-cost-per-unit-quantity": "Other cost per unit",
+    "other-purchase-cost-per-unit-quantity" : "Purchase cost per unit",
+    "holding-cost-per-unit-quantity": "Holding cost per unit",
+    "interest-rate" :"interest"
 }

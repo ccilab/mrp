@@ -134,15 +134,16 @@ export const SetupPDP=(props)=>{
 
   const [event, setEvent] = useState('hover'); // 'hover' is the initial state value
 
-  const [demandDateArray, setDemandDateArray] = useState(props.component.pdp.demandAndEndDateArray);
-  
+    
   if( props.component.pdp === null || typeof props.component.pdp === 'undefined' )
   {
     props.component.pdp = new initializePDP(props.component);
   }
 
+  const [demandDateArray, setDemandDateArray] = useState(props.component.pdp.demandAndEndDateArray);
+
   // component.displayLogic.inlineMenuEnabled needs set to true
-  const saveValidMPSEntry=( component )=>{
+  const saveValidPDPEntry=( component )=>{
     let invalidEntry = false;
     // for( const element of  component.pdp.demandAndEndDateArray) {
     //   if( ! isValidString( element[0] ).isValid ||  !isValidValue( element[1]) )
@@ -164,9 +165,9 @@ export const SetupPDP=(props)=>{
     if( isValidString( customerName ))
         component.pdp.customer=customerName;
     else
-      component.pdp.customer='';  //reset to initial value to fail saveValidMPSEntry evaluation
+      component.pdp.customer='';  //reset to initial value to fail saveValidPDPEntry evaluation
 
-    saveValidMPSEntry(component);
+    saveValidPDPEntry(component);
     console.log("SetupPDP - setCustomerName: " + component.pdp.customer);
   };
 
@@ -194,9 +195,7 @@ export const SetupPDP=(props)=>{
         }
      }
 
-    saveValidMPSEntry(component);
-
-    console.log('setTotalRequiredQty - ' + component.pdp.requiredQty);
+    saveValidPDPEntry(component);
   }
 
   //have to be in-sync with forecast demand
@@ -217,8 +216,7 @@ export const SetupPDP=(props)=>{
       }
     }
 
-    saveValidMPSEntry(component);
-    console.log( 'setCompleteDate index - complete date : ' + index +'-' + completeDate);
+    saveValidPDPEntry(component);
   }
 
   //hover to popup tooltip, click/focus to popup setup pdp inputs
@@ -239,7 +237,7 @@ export const SetupPDP=(props)=>{
 
   const AddNextDemandEntry=(index)=>(e)=>{
     demandDateArray.push([null,null]);
-    saveValidMPSEntry(props.component);
+    saveValidPDPEntry(props.component);
     setDemandDateArray( demandDateArray );
     window.dispatchEvent(new Event('resize'));  //resize popup menu
   }
@@ -254,7 +252,7 @@ export const SetupPDP=(props)=>{
       }
     }
     
-    saveValidMPSEntry(props.component);
+    saveValidPDPEntry(props.component);
     setDemandDateArray( demandDateArray );
     window.dispatchEvent(new Event('resize'));   //resize popup menu
   }
