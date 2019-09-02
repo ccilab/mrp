@@ -3,5 +3,7 @@
     "lead-time": "Lead Time",
     "procurement-type": "* Procurement Type",
     "in-house": "In house production",
-    "purchase" : "External Purchase"
+    "purchase" : "External Purchase",
+    "start-product-date": "* Production starts date",
+    "product-complete-date": "* Production completes date"
 }

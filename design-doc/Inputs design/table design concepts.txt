@@ -28,7 +28,7 @@
 		   Lead Time
  		   Other Unit production Cost  // this is the cost of producing one unit of the product that is not already accounted for by employee costs - here zero 
 		   Unit Inventory holding Cost
-		   Maximum purchasing (subcontracting) allowed
+		   Maximum purchasing (subcontracting) allowed  
 		   Unit subcontracting cost
 		   Maximum backorder Allowed
 		   Unit backorder cost 
