@@ -191,7 +191,7 @@ const SetupComponentIR=(props)=>{
                       placeholder={t(`inventoryRecords:${props.title}`)}
                       name={inputName}
                       value={ input }
-                      min = { inputType.includes('number') ? 1 : null}
+                      min = { inputType.includes('number') ? 0: null}
                       onChange={appendPercentage ? updateValue(props) : updateChange(props)}
                       onClose={updateValue(props)}
                       onInput={(e)=>{filterInputValue(e)}}
@@ -257,6 +257,8 @@ export const SetupIRF=(props)=>{
   }
 
   const [SRArray, setSRArray] = useState(props.component.irf.scheduledReceipts);
+
+  const [procurementType, setProcurement] = useState(props.component.irf.procurementType);
 
    // component.displayLogic.inlineMenuEnabled needs set to true
   const saveValidIRFEntry=( component )=>{
@@ -326,10 +328,25 @@ export const SetupIRF=(props)=>{
     let {isValid, value} = isValidValue(qty);
 
     if( !isValid )
-      component.irf.maxAllowedEndingInventory=null;
+    {
+      if( component.irf.minAllowedEndingInventory !== null && typeof component.irf.minAllowedEndingInventory  !== 'undefined'  )
+      {
+         component.irf.maxAllowedEndingInventory=component.irf.minAllowedEndingInventory;
+      }
+    }
     else
-      component.irf.maxAllowedEndingInventory=value;
-
+    {
+      let {isSSValid, ssValue } = isValidValue( component.irf.minAllowedEndingInventory );
+      if( isSSValid && component.irf.maxAllowedEndingInventory <= ssValue )
+      {
+        component.irf.maxAllowedEndingInventory = ssValue;
+      }
+      else
+      {
+         component.irf.maxAllowedEndingInventory=value;
+      }
+    }
+      
     saveValidIRFEntry(component); 
   }
 
@@ -356,7 +373,7 @@ export const SetupIRF=(props)=>{
     else
       component.irf.procurementType = null;
 
-   
+    setProcurement(component.irf.procurementType);
     console.log( 'setProcurementType : ' + component.irf.procurementType );
   }
 
@@ -567,19 +584,19 @@ export const SetupIRF=(props)=>{
                   style={{borderStyle:'insert', borderWidth: '0.08em', borderColor:`${styles.cciInfoBlue}`}}/>
 
             <SetupComponentIR
-                title='max-allowed-ending-inventory-quantity'
-                value={props.component.irf.maxAllowedEndingInventory}
+                title='mim-allowed-ending-inventory-quantity'
+                value={props.component.irf.minAllowedEndingInventory }
                 component={props.component}
-                handler={setMaxStock}/>    
+                handler={setSS}/>
 
             <hr className='my-0 bg-info'
                 style={{borderStyle:'insert', borderWidth: '0.08em', borderColor:`${styles.cciInfoBlue}`}}/>
 
             <SetupComponentIR
-                title='mim-allowed-ending-inventory-quantity'
-                value={props.component.irf.minAllowedEndingInventory }
+                title='max-allowed-ending-inventory-quantity'
+                value={props.component.irf.maxAllowedEndingInventory}
                 component={props.component}
-                handler={setSS}/>
+                handler={setMaxStock}/>    
 
             <hr className='my-0 bg-info'
                 style={{borderStyle:'insert', borderWidth: '0.08em', borderColor:`${styles.cciInfoBlue}`}}/>
@@ -603,7 +620,7 @@ export const SetupIRF=(props)=>{
                 style={{borderStyle:'insert', borderWidth: '0.08em', borderColor:`${styles.cciInfoBlue}`}}/>
 
             <SetupComponentIR
-                title='other-production-cost-per-unit-quantity'
+                title={ procurementType === null || procurementType === 'InHouse' ? 'other-production-cost-per-unit-quantity' : 'other-purchase-cost-per-unit-quantity'}
                 value={props.component.irf.otherProductionCostPerUnit }
                 component={props.component}
                 handler={setOtherCostPerUnit}/>
