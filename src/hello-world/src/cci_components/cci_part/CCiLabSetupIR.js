@@ -170,11 +170,12 @@ const SetupComponentIR=(props)=>{
             <div className='text-nowrap m-0 p-1'>
               {t(`inventoryRecords:${props.title}`)}
             </div>
-        </Popup>
+          </Popup>
           :
           <Popup
               trigger={
-                <input className={`${inputClassName}`}
+                <input key={props.id}
+                      className={`${inputClassName}`}
                       ref={ appendPercentage? rateInputElement : null }
                       id={inputName}
                       type={`${inputType}`}
@@ -251,6 +252,8 @@ export const SetupIRF=(props)=>{
 
   const [procurementType, setProcurement] = useState(props.component.irf.procurementType);
 
+  const [maxStock, setMaxStockLimit] = useState(props.component.irf.maxAllowedEndingInventory);
+
    // component.displayLogic.inlineMenuEnabled needs set to true
   const saveValidIRFEntry=( component )=>{
     component.irf.scheduledReceipts = SRArray;
@@ -318,7 +321,7 @@ export const SetupIRF=(props)=>{
 
     let {isValid, value} = isValidValue(qty);
 
-    if( !isValid )
+    if( !isValid || value <= component.irf.minAllowedEndingInventory )
     {
       if( component.irf.minAllowedEndingInventory !== null && typeof component.irf.minAllowedEndingInventory  !== 'undefined'  )
       {
@@ -327,16 +330,10 @@ export const SetupIRF=(props)=>{
     }
     else
     {
-      let {isSSValid, ssValue } = isValidValue( component.irf.minAllowedEndingInventory );
-      if( isSSValid && component.irf.maxAllowedEndingInventory <= ssValue )
-      {
-        component.irf.maxAllowedEndingInventory = ssValue;
-      }
-      else
-      {
-         component.irf.maxAllowedEndingInventory=value;
-      }
+      component.irf.maxAllowedEndingInventory=value;
     }
+
+    setMaxStockLimit( component.irf.maxAllowedEndingInventory );
       
     saveValidIRFEntry(component); 
   }
@@ -365,7 +362,8 @@ export const SetupIRF=(props)=>{
       component.irf.procurementType = null;
 
     setProcurement(component.irf.procurementType);
-    console.log( 'setProcurementType : ' + component.irf.procurementType );
+
+    saveValidIRFEntry(component); 
   }
 
   // followed with unit (days, weeks, months)
@@ -587,8 +585,8 @@ export const SetupIRF=(props)=>{
 
             <SetupComponentIR
                 title='max-allowed-ending-inventory-quantity'
-                id={-1}
-                value={ ( props.component.irf.minAllowedEndingInventory !== null || props.component.irf.maxAllowedEndingInventory === null ) || props.component.irf.minAllowedEndingInventory > props.component.irf.maxAllowedEndingInventory ? props.component.irf.maxAllowedEndingInventory : props.component.irf.minAllowedEndingInventory }
+                id={maxStock !== null ? maxStock : -1}
+                value={ ( maxStock !== null ) && ( props.component.irf.minAllowedEndingInventory > maxStock )  ?  props.component.irf.minAllowedEndingInventory : maxStock}
                 component={props.component}
                 handler={setMaxStock}/>
 
