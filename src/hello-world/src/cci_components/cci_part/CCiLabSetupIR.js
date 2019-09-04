@@ -80,15 +80,6 @@ const SetupComponentIR=(props)=>{
 
   // https://blog.bitsrc.io/understanding-currying-in-javascript-ceb2188c339
   const updateValue=(props)=>(e)=>{
-    //   if( typeof props.handler !== 'undefined')
-    //   {
-    //     if( typeof e.target !== 'undefined' && e.target.value === '' && props.title ==='part-name')
-    //       e.target.value = 'add-part';
-
-    //     console.log("SetupComponentIR - updateValue: " + e.target.value);
-
-    //     props.handler(e.target.value, props.component);
-    //   }
     onUpdateValueEnterKey( props, e.target);
   }
 
@@ -100,7 +91,7 @@ const SetupComponentIR=(props)=>{
 
       console.log("SetupComponentIR - updateValue: " + target.value);
 
-      props.handler(target.value, props.component);
+      props.handler(props.id, target.value, props.component);
 
     }
   }
@@ -266,7 +257,7 @@ export const SetupIRF=(props)=>{
     sessionStorage.setItem( `${component.displayLogic.key}_${component.businessLogic.name}_irf`, JSON.stringify( component.irf ));
   }
 
-  const setIOH=(ioh, component)=>{
+  const setIOH=(index, ioh, component)=>{
     let {isValid, value} = isValidValue(ioh);
 
      if( !isValid )
@@ -321,7 +312,7 @@ export const SetupIRF=(props)=>{
       saveValidIRFEntry(component);
     }
 
-  const setMaxStock=(qty, component)=>{
+  const setMaxStock=(index, qty, component)=>{
     if( typeof component.irf === 'undefined' )
       component.irf = new initializeIRF( component );
 
@@ -350,7 +341,7 @@ export const SetupIRF=(props)=>{
     saveValidIRFEntry(component); 
   }
 
-  const setSS=(qty, component)=>{
+  const setSS=(index, qty, component)=>{
     if( typeof component.irf === 'undefined' )
       component.irf = new initializeIRF( component );
 
@@ -364,7 +355,7 @@ export const SetupIRF=(props)=>{
     saveValidIRFEntry(component); 
   }
 
-  const setProcurementType=(procurementType, component)=>{
+  const setProcurementType=(index, procurementType, component)=>{
     if( typeof component.irf === 'undefined' )
       component.irf = new initializeIRF( component );
 
@@ -378,7 +369,7 @@ export const SetupIRF=(props)=>{
   }
 
   // followed with unit (days, weeks, months)
-  const setLeadTime=(qty, component)=>{
+  const setLeadTime=(index, qty, component)=>{
     if( typeof component.irf === 'undefined' )
       component.irf = new initializeIRF( component );
 
@@ -393,7 +384,7 @@ export const SetupIRF=(props)=>{
   }
   
   //unit in local currency
-  const setOtherCostPerUnit=(cost, component)=>{
+  const setOtherCostPerUnit=(index, cost, component)=>{
     if( typeof component.irf === 'undefined' )
       component.irf = new initializeIRF( component );
 
@@ -408,7 +399,7 @@ export const SetupIRF=(props)=>{
   }
   
 
-  const setHoldingCostPerUnit=(cost, component)=>{
+  const setHoldingCostPerUnit=(index, cost, component)=>{
     if( typeof component.irf === 'undefined' )
       component.irf = new initializeIRF( component );
 
@@ -422,7 +413,7 @@ export const SetupIRF=(props)=>{
     saveValidIRFEntry(component); 
   }
 
-  const setInterest=(interest, component)=>{
+  const setInterest=(index, interest, component)=>{
     if( typeof component.irf === 'undefined' )
       component.irf = new initializeIRF( component );
 
@@ -489,7 +480,7 @@ export const SetupIRF=(props)=>{
      <SetupComponentIR
          title='scheduled-receipts-quantity'
          id={index}
-         value={( demand !== null && demand > 0 ) ? demand : ''} //array of demands for each period 
+         value={( demand !== null && demand >= 0 ) ? demand : ''} //array of demands for each period 
          component={props.component}
          handler={setSRQty}/>
          
@@ -504,7 +495,7 @@ export const SetupIRF=(props)=>{
          style={{backgroundColor: `${styles.cciBgColor}`}}
          onClick={removeSREntry(index)}/>
      } 
-     </div>
+    </div>
   );
  }
 
@@ -567,6 +558,7 @@ export const SetupIRF=(props)=>{
             <div className={'bg-info d-flex'}>
               <SetupComponentIR
                 title='inventory-on-hand-quantity'
+                id={-1}
                 value={props.component.irf.inventoryOnHand}
                 component={props.component}
                 handler={setIOH}/>
@@ -579,12 +571,13 @@ export const SetupIRF=(props)=>{
                   style={{borderStyle:'insert', borderWidth: '0.08em', borderColor:`${styles.cciInfoBlue}`}}/>
 
             {renderSRInputs()}
-
+            
             <hr className='my-0 bg-info'
                   style={{borderStyle:'insert', borderWidth: '0.08em', borderColor:`${styles.cciInfoBlue}`}}/>
 
             <SetupComponentIR
                 title='mim-allowed-ending-inventory-quantity'
+                id={-1}
                 value={props.component.irf.minAllowedEndingInventory }
                 component={props.component}
                 handler={setSS}/>
@@ -594,15 +587,17 @@ export const SetupIRF=(props)=>{
 
             <SetupComponentIR
                 title='max-allowed-ending-inventory-quantity'
-                value={props.component.irf.maxAllowedEndingInventory}
+                id={-1}
+                value={ ( props.component.irf.minAllowedEndingInventory !== null || props.component.irf.maxAllowedEndingInventory === null ) || props.component.irf.minAllowedEndingInventory > props.component.irf.maxAllowedEndingInventory ? props.component.irf.maxAllowedEndingInventory : props.component.irf.minAllowedEndingInventory }
                 component={props.component}
-                handler={setMaxStock}/>    
+                handler={setMaxStock}/>
 
             <hr className='my-0 bg-info'
                 style={{borderStyle:'insert', borderWidth: '0.08em', borderColor:`${styles.cciInfoBlue}`}}/>
 
             <SetupComponentIR
               title='lead-time-quantity'
+              id={-1}
               value={props.component.irf.leadTime }
               component={props.component}
               handler={setLeadTime}/>
@@ -612,6 +607,7 @@ export const SetupIRF=(props)=>{
 
             <SetupComponentIR
                 title='procurement-type'
+                id={-1}
                 value={props.component.irf.procurementType }
                 component={props.component}
                 handler={setProcurementType}/>
@@ -621,6 +617,7 @@ export const SetupIRF=(props)=>{
 
             <SetupComponentIR
                 title={ procurementType === null || procurementType === 'InHouse' ? 'other-production-cost-per-unit-quantity' : 'other-purchase-cost-per-unit-quantity'}
+                id={-1}
                 value={props.component.irf.otherProductionCostPerUnit }
                 component={props.component}
                 handler={setOtherCostPerUnit}/>
@@ -630,6 +627,7 @@ export const SetupIRF=(props)=>{
 
             <SetupComponentIR
                 title='holding-cost-per-unit-quantity'
+                id={-1}
                 value={props.component.irf.holdingCostPerUnit }
                 component={props.component}
                 handler={setHoldingCostPerUnit}/>
@@ -639,6 +637,7 @@ export const SetupIRF=(props)=>{
 
             <SetupComponentIR
                 title='interest-rate'
+                id={-1}
                 value={props.component.irf.interest }
                 component={props.component}
                 handler={setInterest}/>
