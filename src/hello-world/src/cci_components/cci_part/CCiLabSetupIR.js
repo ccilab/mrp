@@ -234,6 +234,8 @@ const _initializeIRF=()=>{
    irf.otherProductionCostPerUnit=null; //other than employee costs
    irf.holdingCostPerUnit=null;  //Inventory holding cost per unit
    irf.interest=null;
+   irf.supplier='';   //string initialized to ''
+   irf.supplierPartNumber='';
    irf.maxPurchasingAllowed=0;   //doesn't allowed for now
    irf.purchasingCostPerUnit=0;  //doesn't allowed for now
    irf.maxBackOrderAllowed=0;    //doesn't allowed for now
@@ -266,6 +268,9 @@ export const SetupIRF=(props)=>{
   }
 
   const setIOH=(index, ioh, component)=>{
+    if( typeof component.irf === 'undefined' )
+      component.irf = new initializeIRF( component );
+
     let {isValid, value} = isValidValue(ioh);
 
      if( !isValid )
@@ -433,6 +438,24 @@ export const SetupIRF=(props)=>{
 
     saveValidIRFEntry(component); 
   }
+
+  const setSupplier=(index, supplierName, component)=>{
+    if( isValidString( supplierName ))
+        component.irf.supplier=supplierName;
+    else
+      component.irf.supplier='';  
+
+      saveValidIRFEntry(component); 
+  };
+
+  const setSupplierPartNumber=(index, supplierPartNumber, component)=>{
+    if( isValidString( supplierPartNumber ))
+        component.irf.supplierPartNumber=supplierPartNumber;
+    else
+      component.irf.supplierPartNumber='';  
+
+      saveValidIRFEntry(component); 
+  };
 
   //hover to popup tooltip, click/focus to popup setup BOM inputs
   // based on event from mouse or click for desktop devices, click for touch devices
@@ -632,6 +655,33 @@ export const SetupIRF=(props)=>{
             <hr className='my-0 bg-info'
                 style={{borderStyle:'insert', borderWidth: '0.08em', borderColor:`${styles.cciInfoBlue}`}}/>
 
+            { ( procurementType === 'Purchase' ? 
+              <div>
+              <SetupComponentIR
+              title='supplier-name'
+              id={-1}
+              value={props.component.irf.supplier }
+              component={props.component}
+              handler={setSupplier}/>
+
+              <hr className='my-0 bg-info'
+              style={{borderStyle:'insert', borderWidth: '0.08em', borderColor:`${styles.cciInfoBlue}`}}/>
+
+              <SetupComponentIR
+              title='supplied-part-number'
+              id={-1}
+              value={props.component.irf.supplierPartNumber }
+              component={props.component}
+              handler={setSupplierPartNumber}/>
+
+              <hr className='my-0 bg-info'
+              style={{borderStyle:'insert', borderWidth: '0.08em', borderColor:`${styles.cciInfoBlue}`}}/>
+              </div>
+              : 
+              null
+              )
+            }
+          
             <SetupComponentIR
                 title='holding-cost-per-unit-quantity'
                 id={-1}

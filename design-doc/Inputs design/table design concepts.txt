@@ -15,9 +15,10 @@
 		   overtime/employee, 
 		   overtime-cost/hour/employee,
 		   time-needed/unit/employee,
-		   hiring/dismissal cost/employee,
-		   maximum/minimum employee allowed, 
+		   hiring and dismissal cost/employee,
+		   maximum and minimum employee allowed, 
 		   start date,
+	           shift,
 		   scrapRate,
 		   Setup Cost - from product operation setup
 

@@ -11,5 +11,7 @@
     "other-production-cost-per-unit-quantity": "Other cost per unit",
     "other-purchase-cost-per-unit-quantity" : "Purchase cost per unit",
     "holding-cost-per-unit-quantity": "Holding cost per unit",
-    "interest-rate" :"interest"
+    "interest-rate" :"interest",
+    "supplier-name" : "Supplier Name",
+    "supplied-part-number" : "Supplied Part Name"
 }
