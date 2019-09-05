@@ -86,12 +86,19 @@ const SetupComponentIR=(props)=>{
   const onUpdateValueEnterKey=(props, target )=>{
     if( typeof props.handler !== 'undefined')
     {
-      if( typeof target !== 'undefined' && target.value === '' && props.title ==='part-name')
-        target.value = 'add-part';
-
+      let value = target.value;
+      if( props.title.includes('max-allowed-ending-inventory-quantity') )
+      {
+        let _value=parseFloat(value);
+        if( isNaN(_value) || _value < props.component.irf.minAllowedEndingInventory )
+        {
+          value=props.component.irf.minAllowedEndingInventory;
+          setInput(value);
+        }
+      }
       console.log("SetupComponentIR - updateValue: " + target.value);
 
-      props.handler(props.id, target.value, props.component);
+      props.handler(props.id, value, props.component);
 
     }
   }
@@ -252,8 +259,6 @@ export const SetupIRF=(props)=>{
 
   const [procurementType, setProcurement] = useState(props.component.irf.procurementType);
 
-  const [maxStock, setMaxStockLimit] = useState(props.component.irf.maxAllowedEndingInventory);
-
    // component.displayLogic.inlineMenuEnabled needs set to true
   const saveValidIRFEntry=( component )=>{
     component.irf.scheduledReceipts = SRArray;
@@ -317,24 +322,19 @@ export const SetupIRF=(props)=>{
 
   const setMaxStock=(index, qty, component)=>{
     if( typeof component.irf === 'undefined' )
-      component.irf = new initializeIRF( component );
-
-    let {isValid, value} = isValidValue(qty);
-
-    if( !isValid || value <= component.irf.minAllowedEndingInventory )
     {
-      if( component.irf.minAllowedEndingInventory !== null && typeof component.irf.minAllowedEndingInventory  !== 'undefined'  )
-      {
-         component.irf.maxAllowedEndingInventory=component.irf.minAllowedEndingInventory;
-      }
+      component.irf = new initializeIRF( component );
     }
+       
+    //validation of value is done inside onUpdateValueEnterKey 
+    let {isValid, value} = isValidValue(qty);
+    if( !isValid )
+      component.irf.maxAllowedEndingInventory=null;
     else
     {
       component.irf.maxAllowedEndingInventory=value;
     }
-
-    setMaxStockLimit( component.irf.maxAllowedEndingInventory );
-      
+   
     saveValidIRFEntry(component); 
   }
 
@@ -347,7 +347,16 @@ export const SetupIRF=(props)=>{
     if( !isValid )
       component.irf.minAllowedEndingInventory=null;
     else
+    {
       component.irf.minAllowedEndingInventory=value;
+
+      if( component.irf.maxAllowedEndingInventory < value )
+      {
+        component.irf.maxAllowedEndingInventory = value;
+      }
+        
+    }
+
 
     saveValidIRFEntry(component); 
   }
@@ -585,8 +594,8 @@ export const SetupIRF=(props)=>{
 
             <SetupComponentIR
                 title='max-allowed-ending-inventory-quantity'
-                id={maxStock !== null ? maxStock : -1}
-                value={ ( maxStock !== null ) && ( props.component.irf.minAllowedEndingInventory > maxStock )  ?  props.component.irf.minAllowedEndingInventory : maxStock}
+                id={-1}
+                value={ ( props.component.irf.maxAllowedEndingInventory !== null ) && ( props.component.irf.minAllowedEndingInventory > props.component.irf.maxAllowedEndingInventory )  ?  props.component.irf.minAllowedEndingInventory : props.component.irf.maxAllowedEndingInventory}
                 component={props.component}
                 handler={setMaxStock}/>
 
