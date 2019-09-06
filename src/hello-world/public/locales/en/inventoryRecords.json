@@ -1,9 +1,9 @@
 {
-    "inventory-on-hand-quantity": "Beginning Inventory",
+    "inventory-on-hand-quantity": "Inventory on-hand",
     "scheduled-receipts-date": "Scheduled Receipts Date",
     "scheduled-receipts-quantity": "Scheduled Receipts Quantity",
-    "max-allowed-ending-inventory-quantity": "Maximum Stock Limit",
-    "mim-allowed-ending-inventory-quantity": "Safe Stock",
+    "max-allowed-ending-inventory-quantity": "Maximum Stock",
+    "mim-allowed-ending-inventory-quantity": "Minimum Stock",
     "lead-time-quantity": "Lead Time",
     "procurement-type": "* Procurement Type",
     "in-house": "In house production",

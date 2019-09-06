@@ -9,5 +9,6 @@
     "show-setup-BOM" : "Setup BOM",
     "bom-setup-uncompleted" : "Warning: BOM setup is not completed!",
     "show-setup-PDP" : "Setup Product Demand",
-    "show-setup-IRF" : "Setup Inventory Records"
+    "show-setup-IRF" : "Setup Inventory Records",
+    "show-setup-OP" : "Setup Operation"
 }

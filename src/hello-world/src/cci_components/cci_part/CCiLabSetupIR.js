@@ -244,7 +244,7 @@ const _initializeIRF=()=>{
    return irf;
 }
 
-
+//Inventory Records File
 export const SetupIRF=(props)=>{
   const { t } = useTranslation('commands', {useSuspense: false});
   
@@ -592,6 +592,12 @@ export const SetupIRF=(props)=>{
                 value={props.component.irf.inventoryOnHand}
                 component={props.component}
                 handler={setIOH}/>
+              <SetupComponentIR
+                title='lead-time-quantity'
+                id={-1}
+                value={props.component.irf.leadTime }
+                component={props.component}
+                handler={setLeadTime}/>
               <i id={`${props.component.displayLogic.key}-SetupIRF`}
                 className='text-danger m-0 py-1 px-1 fas fw fa-times-circle cursor-pointer'
                 style={{backgroundColor: `${styles.cciBgColor}`}}
@@ -605,32 +611,21 @@ export const SetupIRF=(props)=>{
             <hr className='my-0 bg-info'
                   style={{borderStyle:'insert', borderWidth: '0.08em', borderColor:`${styles.cciInfoBlue}`}}/>
 
-            <SetupComponentIR
-                title='mim-allowed-ending-inventory-quantity'
-                id={-1}
-                value={props.component.irf.minAllowedEndingInventory }
-                component={props.component}
-                handler={setSS}/>
+            <div className={'bg-info d-flex'}> 
+              <SetupComponentIR
+                  title='mim-allowed-ending-inventory-quantity'
+                  id={-1}
+                  value={props.component.irf.minAllowedEndingInventory }
+                  component={props.component}
+                  handler={setSS}/>
 
-            <hr className='my-0 bg-info'
-                style={{borderStyle:'insert', borderWidth: '0.08em', borderColor:`${styles.cciInfoBlue}`}}/>
-
-            <SetupComponentIR
-                title='max-allowed-ending-inventory-quantity'
-                id={-1}
-                value={ ( props.component.irf.maxAllowedEndingInventory !== null ) && ( props.component.irf.minAllowedEndingInventory > props.component.irf.maxAllowedEndingInventory )  ?  props.component.irf.minAllowedEndingInventory : props.component.irf.maxAllowedEndingInventory}
-                component={props.component}
-                handler={setMaxStock}/>
-
-            <hr className='my-0 bg-info'
-                style={{borderStyle:'insert', borderWidth: '0.08em', borderColor:`${styles.cciInfoBlue}`}}/>
-
-            <SetupComponentIR
-              title='lead-time-quantity'
-              id={-1}
-              value={props.component.irf.leadTime }
-              component={props.component}
-              handler={setLeadTime}/>
+              <SetupComponentIR
+                  title='max-allowed-ending-inventory-quantity'
+                  id={-1}
+                  value={ ( props.component.irf.maxAllowedEndingInventory !== null ) && ( props.component.irf.minAllowedEndingInventory > props.component.irf.maxAllowedEndingInventory )  ?  props.component.irf.minAllowedEndingInventory : props.component.irf.maxAllowedEndingInventory}
+                  component={props.component}
+                  handler={setMaxStock}/>
+            </div>
 
             <hr className='my-0 bg-info'
                 style={{borderStyle:'insert', borderWidth: '0.08em', borderColor:`${styles.cciInfoBlue}`}}/>
@@ -656,32 +651,28 @@ export const SetupIRF=(props)=>{
                 style={{borderStyle:'insert', borderWidth: '0.08em', borderColor:`${styles.cciInfoBlue}`}}/>
 
             { ( procurementType === 'Purchase' ? 
-              <div>
-              <SetupComponentIR
-              title='supplier-name'
-              id={-1}
-              value={props.component.irf.supplier }
-              component={props.component}
-              handler={setSupplier}/>
+              <div className={'bg-info d-flex'}>
+                <SetupComponentIR
+                title='supplier-name'
+                id={-1}
+                value={props.component.irf.supplier }
+                component={props.component}
+                handler={setSupplier}/>
 
-              <hr className='my-0 bg-info'
-              style={{borderStyle:'insert', borderWidth: '0.08em', borderColor:`${styles.cciInfoBlue}`}}/>
-
-              <SetupComponentIR
-              title='supplied-part-number'
-              id={-1}
-              value={props.component.irf.supplierPartNumber }
-              component={props.component}
-              handler={setSupplierPartNumber}/>
-
-              <hr className='my-0 bg-info'
-              style={{borderStyle:'insert', borderWidth: '0.08em', borderColor:`${styles.cciInfoBlue}`}}/>
+                <SetupComponentIR
+                title='supplied-part-number'
+                id={-1}
+                value={props.component.irf.supplierPartNumber }
+                component={props.component}
+                handler={setSupplierPartNumber}/>
               </div>
               : 
               null
               )
             }
-          
+          <hr className='my-0 bg-info'
+              style={{borderStyle:'insert', borderWidth: '0.08em', borderColor:`${styles.cciInfoBlue}`}}/>
+
             <SetupComponentIR
                 title='holding-cost-per-unit-quantity'
                 id={-1}

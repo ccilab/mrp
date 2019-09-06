@@ -125,7 +125,7 @@ const _initializeMPS=()=>{
    return pdp;
 }
 
-
+//Production Demand Plan
 export const SetupPDP=(props)=>{
   const { t } = useTranslation('commands', {useSuspense: false});
   
@@ -144,20 +144,8 @@ export const SetupPDP=(props)=>{
 
   // component.displayLogic.inlineMenuEnabled needs set to true
   const saveValidPDPEntry=( component )=>{
-    let invalidEntry = false;
-    // for( const element of  component.pdp.demandAndEndDateArray) {
-    //   if( ! isValidString( element[0] ).isValid ||  !isValidValue( element[1]) )
-    //   {
-    //     invalidEntry = true;
-    //     break;
-    //   }
-    // }
-      
-    if( !invalidEntry )  
-    {
-      component.pdp.demandAndEndDateArray = demandDateArray;
-      sessionStorage.setItem( `${component.displayLogic.key}_${component.businessLogic.name}_pdp`, JSON.stringify( component.pdp ));
-    }
+    component.pdp.demandAndEndDateArray = demandDateArray;
+    sessionStorage.setItem( `${component.displayLogic.key}_${component.businessLogic.name}_pdp`, JSON.stringify( component.pdp ));
   }
 
 

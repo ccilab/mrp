@@ -233,21 +233,21 @@ const _initializeOp=()=>{
    operation.dailyOvertimeCapacityPerEmployee=null;  //in hour
    operation.averageHourlyOvertimeCost= null; //required quantity of component/part
    operation.averageTimePerComponentPerEmployee=null; //in hour, time needed to produce one component per employee
-   operation.maxAllowedEmployeePerShift=null; 
    operation.minAllowedEmployeePerShift=null;
+   operation.maxAllowedEmployeePerShift=null;
    operation.averageHiringCostPerEmployee = null;
    operation.averageDismissalCostPerEmployee = null; //local currency
    operation.startDate=null;
-   operation.scrapRate=null;    // in %, need /100 when uses it
+   operation.scrapRate=null;    // in %, need /100 when uses it 
    operation.setupCost=null;    // initial cost to produce the component
-   operation.inputWarehouse=null;    // where is prerequisite component/raw material stored
-   operation.outputWarehouse=null;    // where is component stored
-   operation.workshop=null;           //
+   operation.inputWarehouse='';    // where is prerequisite component/raw material stored
+   operation.outputWarehouse='';    // where is component stored
+   operation.workshop='';           //
    operation.shiftCount=1;         // how many different shifts are needed
    return operation;
 }
 
-
+//Operation
 export const SetupOP=(props)=>{
   const { t } = useTranslation('commands', {useSuspense: false});
   
@@ -262,8 +262,7 @@ export const SetupOP=(props)=>{
 
    // 
    const saveValidOpEntry=( component )=>{
-    component.irf.scheduledReceipts = SRArray;
-    sessionStorage.setItem( `${component.displayLogic.key}_${component.businessLogic.name}_irf`, JSON.stringify( component.irf ));
+    sessionStorage.setItem( `${component.displayLogic.key}_${component.businessLogic.name}_op`, JSON.stringify( component.operation ));
   }
   
 
@@ -281,61 +280,131 @@ export const SetupOP=(props)=>{
     saveValidOpEntry(component);
   };
 
-  const setPartNumber=(partNumber, component)=>{
+  const setDailyTimeCapacity=(capacity, component)=>{
     if( typeof component.operation === 'undefined' )
       component.operation = new initializeOp( component );
 
-    if( isValidString( partNumber ))
-      component.operation.operation.partNumber=partNumber;
-    else
-      component.businessLogic.name=null;  //reset to initial value to fail saveValidOpEntry evaluation
+      let {isValid, value} = isValidValue(capacity);
+
+      if( !isValid )
+       component.operation.dailyTimeCapacityPerEmployee=null;
+     else
+       component.operation.dailyTimeCapacityPerEmployee=value;
 
     saveValidOpEntry(component);
-
-    console.log("SetupOP - setPartNumber: " + component.operation.operation.partNumber);
   };
 
-  const setUnitQty=(unitQty, component)=>{
+  const setHourlyCost=(hourlyCost, component)=>{
     if( typeof component.operation === 'undefined' )
       component.operation = new initializeOp( component );
 
-    let {isValid, value} = isValidValue(unitQty);
+    let {isValid, value} = isValidValue(hourlyCost);
 
     if( !isValid )
-      component.operation.operation.unitQty=null;
+      component.operation.averageHourlyCost=null;
     else
-      component.operation.operation.unitQty=value;
+      component.operation.averageHourlyCost=value;
 
-    // required quantity for per shift per run
-    calQuantityPerShift(component); //reset requiredQtyPerShift to null if component.operation.operation.unitQty is null
     saveValidOpEntry(component);
-
-    console.log( 'setUnitQty: requiredQty='+component.operation.operation.requiredQty);
-    console.log( 'setUnitQty: requiredQtyPerShift='+component.operation.operation.requiredQtyPerShift);
   }
 
-  const setTotalRequiredQty=(qty, component)=>{
+  const setDailyOvertimeCapacity=(overtimeCapacity, component)=>{
     if( typeof component.operation === 'undefined' )
       component.operation = new initializeOp( component );
 
-    let {isValid, value} = isValidValue(qty);
+    let {isValid, value} = isValidValue(overtimeCapacity);
 
     if( !isValid )
-      component.operation.operation.requiredQty=null;
+      component.operation.dailyOvertimeCapacityPerEmployee=null;
     else
-      component.operation.operation.requiredQty=value;
+      component.operation.dailyOvertimeCapacityPerEmployee=value;
 
-    calQuantityPerShift(component);
     saveValidOpEntry(component);
-
-    console.log('setTotalRequiredQty - ' + component.operation.operation.requiredQty);
   }
 
-  const setUnitOfMeasure=(unitOfMeasure, component)=>{
+  const setHourlyOvertimeCost=(overtimeCost, component)=>{
     if( typeof component.operation === 'undefined' )
       component.operation = new initializeOp( component );
 
-    component.operation.operation.unitOfMeasure=unitOfMeasure;
+      let {isValid, value} = isValidValue(overtimeCapacity);
+
+      if( !isValid )
+        component.operation.dailyOvertimeCapacityPerEmployee=null;
+      else
+        component.operation.dailyOvertimeCapacityPerEmployee=value;
+  
+      saveValidOpEntry(component);
+  }
+
+  
+  const setTimePerComponentPerEmployee=(timePerComponent, component)=>{
+    if( typeof component.operation === 'undefined' )
+      component.operation = new initializeOp( component );
+
+      let {isValid, value} = isValidValue(timePerComponent);
+
+      if( !isValid )
+        component.operation.averageTimePerComponentPerEmployee = null;
+      else
+        component.operation.averageTimePerComponentPerEmployee = value;
+  
+    saveValidOpEntry(component);
+  }
+
+  const setMinAllowedEmployee=(count, component)=>{
+    if( typeof component.operation === 'undefined' )
+      component.operation = new initializeOp( component );
+
+    let {isValid, value} = isValidValue(count);
+
+    if( !isValid )
+      component.operation.minAllowedEmployeePerShift = null;
+    else
+      component.operation.minAllowedEmployeePerShift = value;
+
+    saveValidOpEntry(component);
+  }
+
+  const setMaxAllowedEmployee=(count, component)=>{
+    if( typeof component.operation === 'undefined' )
+      component.operation = new initializeOp( component );
+
+    let {isValid, value} = isValidValue(count);
+
+    if( !isValid )
+      component.operation.minAllowedEmployeePerShift = null;
+    else
+      component.operation.minAllowedEmployeePerShift = value;
+
+    saveValidOpEntry(component);
+  }
+
+  const setHiringCost=(cost, component)=>{
+    if( typeof component.operation === 'undefined' )
+      component.operation = new initializeOp( component );
+
+    let {isValid, value} = isValidValue(cost);
+
+    if( !isValid )
+      component.operation.averageHiringCostPerEmployee = null;
+    else
+      component.operation.averageHiringCostPerEmployee = value;
+
+    saveValidOpEntry(component);
+  }
+
+  const setDismissalCost=(cost, component)=>{
+    if( typeof component.operation === 'undefined' )
+      component.operation = new initializeOp( component );
+
+    let {isValid, value} = isValidValue(cost);
+
+    if( !isValid )
+      component.operation.averageDismissalCostPerEmployee = null;
+    else
+      component.operation.averageDismissalCostPerEmployee = value;
+
+    saveValidOpEntry(component);
   }
 
   const setScrapRate=(scrapRate, component)=>{
@@ -345,54 +414,75 @@ export const SetupOP=(props)=>{
     let {isValid, value} = isValidValue(scrapRate);
 
     if( !isValid )
-      component.operation.operation.scrapRate = null;
+      component.operation.scrapRate = null;
     else
-      component.operation.operation.scrapRate = value;
+      component.operation.scrapRate = value;
 
     saveValidOpEntry(component);
-    console.log('setScrapRate - ' + component.operation.operation.scrapRate);
   }
 
-  const setProcurementType=(procurementType, component)=>{
-    if( typeof component.operation === 'undefined' )
-      component.operation = new initializeOp( component );
-
-    if( isValidString(procurementType) )
-      component.operation.operation.procurementType = procurementType;
-    else
-      component.operation.operation.procurementType = null;
-
-    saveValidOpEntry(component);
-    console.log( 'setProcurementType : ' + component.operation.operation.procurementType );
-  }
 
   const setStartDate=(startDate, component)=>{
     if( typeof component.operation === 'undefined' )
       component.operation = new initializeOp( component );
 
     if( isValidString( startDate ))
-      component.operation.operation.startDate=startDate;
+      component.operation.startDate=startDate;
     else
-      component.operation.operation.startDate = null;
+      component.operation.startDate = null;
 
     saveValidOpEntry(component);
-    console.log( 'setStartDate : ' + component.operation.operation.startDate);
   }
 
-  const setCompleteDate=(completeDate, component)=>{
+  const setSetupCost=(cost, component)=>{
     if( typeof component.operation === 'undefined' )
       component.operation = new initializeOp( component );
 
-    if( isValidString( completeDate ))
-      component.operation.operation.completeDate=completeDate;
+    let {isValid, value} = isValidValue(cost);
+
+    if( !isValid )
+      component.operation.setupCost = null;
     else
-      component.operation.operation.completeDate = null;
+      component.operation.setupCost = value;
 
     saveValidOpEntry(component);
-    console.log( 'setCompleteDate : ' + component.operation.operation.completeDate);
   }
 
+  const setInputWarehouse=(name, component)=>{
+    if( typeof component.operation === 'undefined' )
+      component.operation = new initializeOp( component );
 
+    if( isValidString( name ))
+      component.operation.inputWarehouse=name;
+    else
+      component.operation.inputWarehouse = '';
+
+    saveValidOpEntry(component);
+  }
+
+  const setOutputWarehouse=(name, component)=>{
+    if( typeof component.operation === 'undefined' )
+      component.operation = new initializeOp( component );
+
+    if( isValidString( name ))
+      component.operation.outputWarehouse=name;
+    else
+      component.operation.outputWarehouse = '';
+
+    saveValidOpEntry(component);
+  }
+
+  const setWorkshop=(name, component)=>{
+    if( typeof component.operation === 'undefined' )
+      component.operation = new initializeOp( component );
+
+    if( isValidString( name ))
+      component.operation.workshop=name;
+    else
+      component.operation.workshop = '';
+
+    saveValidOpEntry(component);
+  }
   //hover to popup tooltip, click/focus to popup setup BOM inputs
   // based on event from mouse or click for desktop devices, click for touch devices
   const setEventState=()=>
@@ -472,7 +562,7 @@ export const SetupOP=(props)=>{
 
             <SetupComponentOp
                 title='part-number'
-                value={props.component.operation.operation.partNumber}
+                value={props.component.operation.partNumber}
                 component={props.component}
                 handler={setPartNumber}/>
 
@@ -483,14 +573,14 @@ export const SetupOP=(props)=>{
               <SetupComponentOp
               title='required-quantity'
                 // value='' input will show placeholder text
-                value={(props.component.operation.operation.requiredQty !== null && props.component.operation.operation.requiredQty > 0 ) ? props.component.operation.operation.requiredQty: ''}
+                value={(props.component.operation.requiredQty !== null && props.component.operation.requiredQty > 0 ) ? props.component.operation.requiredQty: ''}
                 component={props.component}
                 handler={setTotalRequiredQty}/>
               :
               <SetupComponentOp
                 title='unit-quantity'
                 // value='' input will show placeholder text
-                value={ props.component.operation.operation.unitQty}
+                value={ props.component.operation.unitQty}
                 component={props.component}
                 handler={setUnitQty}/>
             }
@@ -500,7 +590,7 @@ export const SetupOP=(props)=>{
 
             <SetupComponentOp
                 title='unit-of-measure'
-                value={props.component.operation.operation.unitOfMeasure }
+                value={props.component.operation.unitOfMeasure }
                 component={props.component}
                 handler={setUnitOfMeasure}/>
 
@@ -509,7 +599,7 @@ export const SetupOP=(props)=>{
 
             <SetupComponentOp
               title='scrap-rate'
-              value={props.component.operation.operation.scrapRate }
+              value={props.component.operation.scrapRate }
               component={props.component}
               handler={setScrapRate}/>
 
@@ -518,7 +608,7 @@ export const SetupOP=(props)=>{
 
             <SetupComponentOp
                 title='procurement-type'
-                value={props.component.operation.operation.procurementType }
+                value={props.component.operation.procurementType }
                 component={props.component}
                 handler={setProcurementType}/>
 
@@ -527,7 +617,7 @@ export const SetupOP=(props)=>{
 
             <SetupComponentOp
                 title='start-product-date'
-                value={props.component.operation.operation.startDate }
+                value={props.component.operation.startDate }
                 component={props.component}
                 handler={setStartDate}/>
 
@@ -536,7 +626,7 @@ export const SetupOP=(props)=>{
 
             <SetupComponentOp
                 title='product-complete-date'
-                value={props.component.operation.operation.completeDate }
+                value={props.component.operation.completeDate }
                 component={props.component}
                 handler={setCompleteDate}/>
             </div>
