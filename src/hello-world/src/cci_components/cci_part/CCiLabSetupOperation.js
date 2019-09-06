@@ -228,10 +228,10 @@ export const initializeOp=( component )=>{
 const _initializeOp=()=>{
    let operation={};
    operation.employeeCount=null;  //number of employees to produce the demand of a component
-   operation.timeCapacityPerEmployeePerDay=null;  //in hour
-   operation.averageCostPerHour=null; 
-   operation.overtimeCapacityPerEmployeePerDay=null;  //in hour
-   operation.averageOvertimeCostPerHour= null; //required quantity of component/part
+   operation.dailyTimeCapacityPerEmployee=null;  //in hour
+   operation.averageHourlyCost=null; 
+   operation.dailyOvertimeCapacityPerEmployee=null;  //in hour
+   operation.averageHourlyOvertimeCost= null; //required quantity of component/part
    operation.averageTimePerComponentPerEmployee=null; //in hour, time needed to produce one component per employee
    operation.maxAllowedEmployeePerShift=null; 
    operation.minAllowedEmployeePerShift=null;
@@ -243,179 +243,153 @@ const _initializeOp=()=>{
    operation.inputWarehouse=null;    // where is prerequisite component/raw material stored
    operation.outputWarehouse=null;    // where is component stored
    operation.workshop=null;           //
-   operation.requiredQtyPerShift=null;  // required quantity for per shift per run
    operation.shiftCount=1;         // how many different shifts are needed
-   operation.sameShiftRunCount=1;  //same shift runs how many times
    return operation;
 }
 
 
-export const SetupBOM=(props)=>{
+export const SetupOP=(props)=>{
   const { t } = useTranslation('commands', {useSuspense: false});
   
   const _className = 'cursor-pointer text-primary border-0 p-1 fa fw fa-edit' + (props.component.displayLogic.selected ? ' bg-info' : ' ');
 
   const [event, setEvent] = useState('hover'); // '' is the initial state value
 
-  // deep copy object that doesn't have function inside object
-  const originComponent = JSON.parse(JSON.stringify(props.component));
-
-
-
-  if( props.component.bom === null || typeof props.component.bom === 'undefined' )
+  if( props.component.operation === null || typeof props.component.operation === 'undefined' )
   {
     props.component.operation = new initializeOp(props.component);
   }
 
-  // const isValidString=( name )=>{
-  //   return ( typeof name === 'string' &&
-  //       name.length > 0 ) ? true : false
-  // };
+   // 
+   const saveValidOpEntry=( component )=>{
+    component.irf.scheduledReceipts = SRArray;
+    sessionStorage.setItem( `${component.displayLogic.key}_${component.businessLogic.name}_irf`, JSON.stringify( component.irf ));
+  }
+  
 
-  // const isValidValue=(valueToCheck)=>{
+  const setEmployeeCount=(count, component)=>{
+    if( typeof component.operation === 'undefined' )
+      component.operation = new initializeOp( component );
 
-  //   let value = parseFloat(valueToCheck);
-  //   let valid = isNaN( value ) ? false : true;
+    let {isValid, value} = isValidValue(count);
 
-  //   let rt={};
-  //   rt.isValid = valid;
-  //   rt.value = value;
-  //   return rt;
-  // };
-
-  const calQuantityPerShift=(component)=>{
-    const bomCore = component.bom.operation;
-    if( component.bom.operation.requiredQty !== null &&
-      component.bom.operation.unitQty !== null &&
-      component.bom.operation.scrapRate !== null
-    )
-    {
-
-      bomCore.requiredQtyPerShift =((bomCore.requiredQty * bomCore.unitQty)/(bomCore.shiftCount * bomCore.sameShiftRunCount )) * (1 + bomCore.scrapRate/100) ;
-    }
+     if( !isValid )
+      component.operation.employeeCount=null;
     else
-      bomCore.requiredQtyPerShift=null;
-  };
+      component.operation.employeeCount=value;
 
-  const setPartName=(partName, component)=>{
-    if( isValidString( partName ))
-        component.businessLogic.name=partName;
-    else
-      component.businessLogic.name='';  //reset to initial value to fail IsClosePopupMenu evaluation
-
-    IsClosePopupMenu(component);
-    console.log("SetupBOM - setPartName: " + component.businessLogic.name);
+    saveValidOpEntry(component);
   };
 
   const setPartNumber=(partNumber, component)=>{
-    if( typeof component.bom === 'undefined' )
-      component.bom = new initializeOp( component );
+    if( typeof component.operation === 'undefined' )
+      component.operation = new initializeOp( component );
 
     if( isValidString( partNumber ))
-      component.bom.operation.partNumber=partNumber;
+      component.operation.operation.partNumber=partNumber;
     else
-      component.businessLogic.name=null;  //reset to initial value to fail IsClosePopupMenu evaluation
+      component.businessLogic.name=null;  //reset to initial value to fail saveValidOpEntry evaluation
 
-    IsClosePopupMenu(component);
+    saveValidOpEntry(component);
 
-    console.log("SetupBOM - setPartNumber: " + component.bom.operation.partNumber);
+    console.log("SetupOP - setPartNumber: " + component.operation.operation.partNumber);
   };
 
   const setUnitQty=(unitQty, component)=>{
-    if( typeof component.bom === 'undefined' )
-      component.bom = new initializeOp( component );
+    if( typeof component.operation === 'undefined' )
+      component.operation = new initializeOp( component );
 
     let {isValid, value} = isValidValue(unitQty);
 
     if( !isValid )
-      component.bom.operation.unitQty=null;
+      component.operation.operation.unitQty=null;
     else
-      component.bom.operation.unitQty=value;
+      component.operation.operation.unitQty=value;
 
     // required quantity for per shift per run
-    calQuantityPerShift(component); //reset requiredQtyPerShift to null if component.bom.operation.unitQty is null
-    IsClosePopupMenu(component);
+    calQuantityPerShift(component); //reset requiredQtyPerShift to null if component.operation.operation.unitQty is null
+    saveValidOpEntry(component);
 
-    console.log( 'setUnitQty: requiredQty='+component.bom.operation.requiredQty);
-    console.log( 'setUnitQty: requiredQtyPerShift='+component.bom.operation.requiredQtyPerShift);
+    console.log( 'setUnitQty: requiredQty='+component.operation.operation.requiredQty);
+    console.log( 'setUnitQty: requiredQtyPerShift='+component.operation.operation.requiredQtyPerShift);
   }
 
   const setTotalRequiredQty=(qty, component)=>{
-    if( typeof component.bom === 'undefined' )
-      component.bom = new initializeOp( component );
+    if( typeof component.operation === 'undefined' )
+      component.operation = new initializeOp( component );
 
     let {isValid, value} = isValidValue(qty);
 
     if( !isValid )
-      component.bom.operation.requiredQty=null;
+      component.operation.operation.requiredQty=null;
     else
-      component.bom.operation.requiredQty=value;
+      component.operation.operation.requiredQty=value;
 
     calQuantityPerShift(component);
-    IsClosePopupMenu(component);
+    saveValidOpEntry(component);
 
-    console.log('setTotalRequiredQty - ' + component.bom.operation.requiredQty);
+    console.log('setTotalRequiredQty - ' + component.operation.operation.requiredQty);
   }
 
   const setUnitOfMeasure=(unitOfMeasure, component)=>{
-    if( typeof component.bom === 'undefined' )
-      component.bom = new initializeOp( component );
+    if( typeof component.operation === 'undefined' )
+      component.operation = new initializeOp( component );
 
-    component.bom.operation.unitOfMeasure=unitOfMeasure;
+    component.operation.operation.unitOfMeasure=unitOfMeasure;
   }
 
   const setScrapRate=(scrapRate, component)=>{
-    if( typeof component.bom === 'undefined' )
-      component.bom = new initializeOp( component );
+    if( typeof component.operation === 'undefined' )
+      component.operation = new initializeOp( component );
 
     let {isValid, value} = isValidValue(scrapRate);
 
     if( !isValid )
-      component.bom.operation.scrapRate = null;
+      component.operation.operation.scrapRate = null;
     else
-      component.bom.operation.scrapRate = value;
+      component.operation.operation.scrapRate = value;
 
-    IsClosePopupMenu(component);
-    console.log('setScrapRate - ' + component.bom.operation.scrapRate);
+    saveValidOpEntry(component);
+    console.log('setScrapRate - ' + component.operation.operation.scrapRate);
   }
 
   const setProcurementType=(procurementType, component)=>{
-    if( typeof component.bom === 'undefined' )
-      component.bom = new initializeOp( component );
+    if( typeof component.operation === 'undefined' )
+      component.operation = new initializeOp( component );
 
     if( isValidString(procurementType) )
-      component.bom.operation.procurementType = procurementType;
+      component.operation.operation.procurementType = procurementType;
     else
-      component.bom.operation.procurementType = null;
+      component.operation.operation.procurementType = null;
 
-    IsClosePopupMenu(component);
-    console.log( 'setProcurementType : ' + component.bom.operation.procurementType );
+    saveValidOpEntry(component);
+    console.log( 'setProcurementType : ' + component.operation.operation.procurementType );
   }
 
   const setStartDate=(startDate, component)=>{
-    if( typeof component.bom === 'undefined' )
-      component.bom = new initializeOp( component );
+    if( typeof component.operation === 'undefined' )
+      component.operation = new initializeOp( component );
 
     if( isValidString( startDate ))
-      component.bom.operation.startDate=startDate;
+      component.operation.operation.startDate=startDate;
     else
-      component.bom.operation.startDate = null;
+      component.operation.operation.startDate = null;
 
-    IsClosePopupMenu(component);
-    console.log( 'setStartDate : ' + component.bom.operation.startDate);
+    saveValidOpEntry(component);
+    console.log( 'setStartDate : ' + component.operation.operation.startDate);
   }
 
   const setCompleteDate=(completeDate, component)=>{
-    if( typeof component.bom === 'undefined' )
-      component.bom = new initializeOp( component );
+    if( typeof component.operation === 'undefined' )
+      component.operation = new initializeOp( component );
 
     if( isValidString( completeDate ))
-      component.bom.operation.completeDate=completeDate;
+      component.operation.operation.completeDate=completeDate;
     else
-      component.bom.operation.completeDate = null;
+      component.operation.operation.completeDate = null;
 
-    IsClosePopupMenu(component);
-    console.log( 'setCompleteDate : ' + component.bom.operation.completeDate);
+    saveValidOpEntry(component);
+    console.log( 'setCompleteDate : ' + component.operation.operation.completeDate);
   }
 
 
@@ -483,11 +457,11 @@ export const SetupBOM=(props)=>{
             <div className={'bg-info d-flex flex-column'} >
             <div className={'bg-info d-flex'}>
               <SetupComponentOp
-                title='part-name'
-                value={props.component.businessLogic.name}
+                title='employee-count-quantity'
+                value={props.component.operation.employeeCount}
                 component={props.component}
-                handler={setPartName}/>
-              <a id={`${props.component.displayLogic.key}-setupBOM`}
+                handler={setEmployeeCount}/>
+              <a id={`${props.component.displayLogic.key}-SetupOP`}
                 href={`#${props.component.displayLogic.key}`}
                 className='text-danger m-0 py-1 px-1 fas fw fa-times-circle cursor-pointer'
                 style={{backgroundColor: `${styles.cciBgColor}`}}
@@ -498,7 +472,7 @@ export const SetupBOM=(props)=>{
 
             <SetupComponentOp
                 title='part-number'
-                value={props.component.bom.operation.partNumber}
+                value={props.component.operation.operation.partNumber}
                 component={props.component}
                 handler={setPartNumber}/>
 
@@ -509,14 +483,14 @@ export const SetupBOM=(props)=>{
               <SetupComponentOp
               title='required-quantity'
                 // value='' input will show placeholder text
-                value={(props.component.bom.operation.requiredQty !== null && props.component.bom.operation.requiredQty > 0 ) ? props.component.bom.operation.requiredQty: ''}
+                value={(props.component.operation.operation.requiredQty !== null && props.component.operation.operation.requiredQty > 0 ) ? props.component.operation.operation.requiredQty: ''}
                 component={props.component}
                 handler={setTotalRequiredQty}/>
               :
               <SetupComponentOp
                 title='unit-quantity'
                 // value='' input will show placeholder text
-                value={ props.component.bom.operation.unitQty}
+                value={ props.component.operation.operation.unitQty}
                 component={props.component}
                 handler={setUnitQty}/>
             }
@@ -526,7 +500,7 @@ export const SetupBOM=(props)=>{
 
             <SetupComponentOp
                 title='unit-of-measure'
-                value={props.component.bom.operation.unitOfMeasure }
+                value={props.component.operation.operation.unitOfMeasure }
                 component={props.component}
                 handler={setUnitOfMeasure}/>
 
@@ -535,7 +509,7 @@ export const SetupBOM=(props)=>{
 
             <SetupComponentOp
               title='scrap-rate'
-              value={props.component.bom.operation.scrapRate }
+              value={props.component.operation.operation.scrapRate }
               component={props.component}
               handler={setScrapRate}/>
 
@@ -544,7 +518,7 @@ export const SetupBOM=(props)=>{
 
             <SetupComponentOp
                 title='procurement-type'
-                value={props.component.bom.operation.procurementType }
+                value={props.component.operation.operation.procurementType }
                 component={props.component}
                 handler={setProcurementType}/>
 
@@ -553,7 +527,7 @@ export const SetupBOM=(props)=>{
 
             <SetupComponentOp
                 title='start-product-date'
-                value={props.component.bom.operation.startDate }
+                value={props.component.operation.operation.startDate }
                 component={props.component}
                 handler={setStartDate}/>
 
@@ -562,7 +536,7 @@ export const SetupBOM=(props)=>{
 
             <SetupComponentOp
                 title='product-complete-date'
-                value={props.component.bom.operation.completeDate }
+                value={props.component.operation.operation.completeDate }
                 component={props.component}
                 handler={setCompleteDate}/>
             </div>

@@ -1,4 +1,6 @@
 {
+    "employee-count-quantity" : "Number of Employees",
+    "daily-time-capacity-per-person-quantity" : "Employee daily working hours",
     "start-product-date": "* Production starts date",
     "team-name": "* Add team name",
     "shift":"* Add shift name",

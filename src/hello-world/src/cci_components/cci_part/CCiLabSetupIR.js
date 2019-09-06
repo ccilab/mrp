@@ -261,7 +261,7 @@ export const SetupIRF=(props)=>{
 
   const [procurementType, setProcurement] = useState(props.component.irf.procurementType);
 
-   // component.displayLogic.inlineMenuEnabled needs set to true
+   // 
   const saveValidIRFEntry=( component )=>{
     component.irf.scheduledReceipts = SRArray;
     sessionStorage.setItem( `${component.displayLogic.key}_${component.businessLogic.name}_irf`, JSON.stringify( component.irf ));
