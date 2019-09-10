@@ -637,6 +637,7 @@ export const SetupIRF=(props)=>{
                 component={props.component}
                 handler={setProcurementType}/>
 
+
             <hr className='my-0 bg-info'
                 style={{borderStyle:'insert', borderWidth: '0.08em', borderColor:`${styles.cciInfoBlue}`}}/>
 
@@ -655,15 +656,19 @@ export const SetupIRF=(props)=>{
                   value={props.component.irf.supplierPartNumber }
                   component={props.component}
                   handler={setSupplierPartNumber}/>
-
-                <hr className='my-0 bg-info'
-                style={{borderStyle:'insert', borderWidth: '0.08em', borderColor:`${styles.cciInfoBlue}`}}/>
                 </div>
+              
                 : 
                 null
                 )
               }
-           
+            { ( procurementType === 'Purchase' ? 
+             <hr className='my-0 bg-info'
+                  style={{borderStyle:'insert', borderWidth: '0.08em', borderColor:`${styles.cciInfoBlue}`}}/>
+                  :
+                  null
+               )
+            }
 
             <SetupComponentIR
                 title={ procurementType === null || procurementType === 'InHouse' ? 'other-production-cost-per-unit-quantity' : 'other-purchase-cost-per-unit-quantity'}

@@ -490,16 +490,17 @@ export const SetupOP=(props)=>{
                 value={props.component.operation.employeeCount}
                 component={props.component}
                 handler={setEmployeeCount}/>
+             
                <SetupComponentOp
                 title='employee-count-quantity'
                 value={props.component.operation.averageTimePerComponentPerEmployee}
                 component={props.component}
-                handler={setTimePerComponentPerEmployee}/>  
-              <a id={`${props.component.displayLogic.key}-SetupOP`}
-                href={`#${props.component.displayLogic.key}`}
+                handler={setTimePerComponentPerEmployee} /> 
+               <i id={`${props.component.displayLogic.key}-SetupOP`}
                 className='text-danger m-0 py-1 px-1 fas fw fa-times-circle cursor-pointer'
                 style={{backgroundColor: `${styles.cciBgColor}`}}
-                onClick={ close }> </a>
+                onClick={ close }/> 
+               
             </div>
             <hr className='my-0 bg-info'
                   style={{borderStyle:'insert', borderWidth: '0.08em', borderColor:`${styles.cciInfoBlue}`}}/>
