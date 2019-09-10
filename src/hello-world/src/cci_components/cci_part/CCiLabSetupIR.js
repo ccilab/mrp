@@ -130,8 +130,8 @@ const SetupComponentIR=(props)=>{
        { inputProcurementType ?
           <Popup
             trigger={
-              <div className='d-flex flex-column m-0 py-1 border-0'>
-                <div className='d-inline-flex align-items-center m-0 p-0 border-0' >
+              <div className='d-flex m-0 py-1 border-0'>
+                <span className='align-items-center m-0 p-0 border-0' >
                   <input className={`${inputClassName}`}
                         id={`${inputName}-1`}
                         type={inputType}
@@ -145,9 +145,9 @@ const SetupComponentIR=(props)=>{
                     htmlFor={`${inputName}-1`}
                     style={{'backgroundColor': `${styles.cciBgColor}`, 'color': inputValue.includes('InHouse') ? `${styles.cciInfoBlue}` : `${styles.cciHintRed}`}}>
                      {t(`inventoryRecords:in-house`)}
-                    </label>
-                </div>
-                <div className='d-inline-flex align-items-center m-0 y-0 border-0'>
+                  </label>
+                </span>
+                <span className='align-items-center m-0 y-0 border-0'>
                   <input  className={`${inputClassName}`}
                           id={`${inputName}-2`}
                           type={inputType}
@@ -162,7 +162,7 @@ const SetupComponentIR=(props)=>{
                     style={{'backgroundColor': `${styles.cciBgColor}`, 'color': inputValue.includes('Purchase') ? `${styles.cciInfoBlue}` : `${styles.cciHintRed}`}}>
                      {t('inventoryRecords:purchase') }
                     </label>
-                </div>
+                </span>
               </div>
             }
             id={`${props.component.displayLogic.key}-tooltip`}
@@ -640,6 +640,31 @@ export const SetupIRF=(props)=>{
             <hr className='my-0 bg-info'
                 style={{borderStyle:'insert', borderWidth: '0.08em', borderColor:`${styles.cciInfoBlue}`}}/>
 
+            { ( procurementType === 'Purchase' ? 
+                <div className={'bg-info d-flex'}>
+                  <SetupComponentIR
+                  title='supplier-name'
+                  id={-1}
+                  value={props.component.irf.supplier }
+                  component={props.component}
+                  handler={setSupplier}/>
+
+                  <SetupComponentIR
+                  title='supplied-part-number'
+                  id={-1}
+                  value={props.component.irf.supplierPartNumber }
+                  component={props.component}
+                  handler={setSupplierPartNumber}/>
+
+                <hr className='my-0 bg-info'
+                style={{borderStyle:'insert', borderWidth: '0.08em', borderColor:`${styles.cciInfoBlue}`}}/>
+                </div>
+                : 
+                null
+                )
+              }
+           
+
             <SetupComponentIR
                 title={ procurementType === null || procurementType === 'InHouse' ? 'other-production-cost-per-unit-quantity' : 'other-purchase-cost-per-unit-quantity'}
                 id={-1}
@@ -650,28 +675,7 @@ export const SetupIRF=(props)=>{
             <hr className='my-0 bg-info'
                 style={{borderStyle:'insert', borderWidth: '0.08em', borderColor:`${styles.cciInfoBlue}`}}/>
 
-            { ( procurementType === 'Purchase' ? 
-              <div className={'bg-info d-flex'}>
-                <SetupComponentIR
-                title='supplier-name'
-                id={-1}
-                value={props.component.irf.supplier }
-                component={props.component}
-                handler={setSupplier}/>
-
-                <SetupComponentIR
-                title='supplied-part-number'
-                id={-1}
-                value={props.component.irf.supplierPartNumber }
-                component={props.component}
-                handler={setSupplierPartNumber}/>
-              </div>
-              : 
-              null
-              )
-            }
-          <hr className='my-0 bg-info'
-              style={{borderStyle:'insert', borderWidth: '0.08em', borderColor:`${styles.cciInfoBlue}`}}/>
+         
 
             <SetupComponentIR
                 title='holding-cost-per-unit-quantity'

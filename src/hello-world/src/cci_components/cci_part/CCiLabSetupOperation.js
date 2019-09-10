@@ -8,7 +8,7 @@ import { isValidString, isValidValue } from "./CCiLabUtility";
 
 
 const SetupComponentOp=(props)=>{
-  const { t } = useTranslation(['component','commands'], {useSuspense: false});
+  const { t } = useTranslation(['operations','commands'], {useSuspense: false});
 
   let inputValue = (props.value === null)? '': props.value;
 
@@ -18,12 +18,11 @@ const SetupComponentOp=(props)=>{
   let tooltipOnMode=['click','hover'];
   let tooltipPosition='top left';
   let inputName=props.title;
-  let inputProcurementType = props.title.includes('procurement-type') ? true : false;
   let appendPercentage = props.title.includes('-rate')  ? true : false;
 
   let rateInputElement = React.createRef();
 
-  if( props.title.includes('part-name'))
+  if( props.title.includes('employee-count') || props.title.includes('component-per-employee') )
   {
     tooltipPosition='bottom left';
   }
@@ -33,12 +32,6 @@ const SetupComponentOp=(props)=>{
     inputType='date';
   }
 
-  if( props.title.includes('procurement-type'))
-  {
-    inputClassName = 'm-0 p-0 border-0 cursor-pointer';
-    inputStyle={'backgroundColor': `${styles.cciBgColor}`, 'height':'1em','width':'1em'};
-    inputType='radio';
-  }
 
   if( props.title.includes('-quantity') )
   {
@@ -128,58 +121,6 @@ const SetupComponentOp=(props)=>{
   return (
     <div className='d-flex justify-content-between'
          style={{backgroundColor: `${styles.cciBgColor}`}}>
-       { inputProcurementType ?
-          <Popup
-            trigger={
-              <div className='d-flex flex-column m-0 py-1 border-0'>
-                <div className='d-inline-flex align-items-center m-0 p-0 border-0' >
-                  <input className={`${inputClassName}`}
-                        id={`${inputName}-1`}
-                        type={inputType}
-                        name={inputName}
-                        style={inputStyle}
-                        value={'InHouse'}
-                        defaultChecked ={ inputValue.includes('InHouse') ? true : false}
-                        onChange={updateValue(props)}
-                        onClose={updateValue(props)}/>
-                  <label className={'m-0 px-1 border-0 cursor-pointer'}
-                    htmlFor={`${inputName}-1`}
-                    style={{'backgroundColor': `${styles.cciBgColor}`, 'color': inputValue.includes('InHouse') ? `${styles.cciInfoBlue}` : `${styles.cciHintRed}`}}>
-                     {t(`component:in-house`)}
-                    </label>
-                </div>
-                <div className='d-inline-flex align-items-center m-0 y-0 border-0'>
-                  <input  className={`${inputClassName}`}
-                          id={`${inputName}-2`}
-                          type={inputType}
-                          name={inputName}
-                          style={inputStyle}
-                          value={'Purchase'}
-                          defaultChecked ={ inputValue.includes('Purchase') ? true : false}
-                          onChange={updateValue(props)}
-                          onClose={updateValue(props)}/>
-                   <label className={'m-0 px-1 border-0 cursor-pointer'}
-                    htmlFor={`${inputName}-2`}
-                    style={{'backgroundColor': `${styles.cciBgColor}`, 'color': inputValue.includes('Purchase') ? `${styles.cciInfoBlue}` : `${styles.cciHintRed}`}}>
-                     {t('component:purchase') }
-                    </label>
-                </div>
-              </div>
-            }
-            id={`${props.component.displayLogic.key}-tooltip`}
-            position={tooltipPosition}
-            closeOnDocumentClick
-            on={tooltipOnMode}
-            arrow={true}
-            arrowStyle={{backgroundColor: 'white'}}
-            mouseLeaveDelay={0}
-            mouseEnterDelay={0}
-            contentStyle={{  padding: '0px' }}>
-            <div className='text-nowrap m-0 p-1'>
-              {t(`component:${props.title}`)}
-            </div>
-        </Popup>
-          :
           <Popup
               trigger={
                 <input className={`${inputClassName}`}
@@ -187,7 +128,7 @@ const SetupComponentOp=(props)=>{
                       id={inputName}
                       type={`${inputType}`}
                       style={inputStyle}
-                      placeholder={t(`component:${props.title}`)}
+                      placeholder={t(`operations:${props.title}`)}
                       name={inputName}
                       value={ input }
                       min = { inputType.includes('number') ? 1 : null}
@@ -208,11 +149,9 @@ const SetupComponentOp=(props)=>{
               contentStyle={{ padding: '0px'}}
               >
               <div className='text-nowrap m-0 px-1'>
-                {t(`component:${props.title}`)}
+                {t(`operations:${props.title}`)}
               </div>
           </Popup>
-       }
-
     </div>
   );
 }
@@ -326,7 +265,7 @@ export const SetupOP=(props)=>{
     if( typeof component.operation === 'undefined' )
       component.operation = new initializeOp( component );
 
-      let {isValid, value} = isValidValue(overtimeCapacity);
+      let {isValid, value} = isValidValue(overtimeCost);
 
       if( !isValid )
         component.operation.dailyOvertimeCapacityPerEmployee=null;
@@ -372,14 +311,14 @@ export const SetupOP=(props)=>{
     let {isValid, value} = isValidValue(count);
 
     if( !isValid )
-      component.operation.minAllowedEmployeePerShift = null;
+      component.operation.maxAllowedEmployeePerShift = null;
     else
-      component.operation.minAllowedEmployeePerShift = value;
+      component.operation.maxAllowedEmployeePerShift = value;
 
     saveValidOpEntry(component);
   }
 
-  const setHiringCost=(cost, component)=>{
+  const setAverageHiringCost=(cost, component)=>{
     if( typeof component.operation === 'undefined' )
       component.operation = new initializeOp( component );
 
@@ -522,7 +461,7 @@ export const SetupOP=(props)=>{
           mouseEnterDelay={400}
           arrow={true}
           arrowStyle={{backgroundColor: `${styles.cciBgColor}`}}>
-          <span className={'text-primary'} >{t('commands:show-setup-BOM')}</span>
+          <span className={'text-primary'} >{t('commands:show-setup-OP')}</span>
       </Popup>
       :
       <Popup
@@ -551,6 +490,11 @@ export const SetupOP=(props)=>{
                 value={props.component.operation.employeeCount}
                 component={props.component}
                 handler={setEmployeeCount}/>
+               <SetupComponentOp
+                title='employee-count-quantity'
+                value={props.component.operation.averageTimePerComponentPerEmployee}
+                component={props.component}
+                handler={setTimePerComponentPerEmployee}/>  
               <a id={`${props.component.displayLogic.key}-SetupOP`}
                 href={`#${props.component.displayLogic.key}`}
                 className='text-danger m-0 py-1 px-1 fas fw fa-times-circle cursor-pointer'
@@ -560,76 +504,118 @@ export const SetupOP=(props)=>{
             <hr className='my-0 bg-info'
                   style={{borderStyle:'insert', borderWidth: '0.08em', borderColor:`${styles.cciInfoBlue}`}}/>
 
-            <SetupComponentOp
-                title='part-number'
-                value={props.component.operation.partNumber}
-                component={props.component}
-                handler={setPartNumber}/>
+            <div className={'bg-info d-flex'}>
+                <SetupComponentOp
+                    title='daily-time-capacity-per-person-quantity'
+                    value={props.component.operation.dailyTimeCapacityPerEmployee}
+                    component={props.component}
+                    handler={setDailyTimeCapacity}/>
 
-            <hr className='my-0 bg-info'
-                  style={{borderStyle:'insert', borderWidth: '0.08em', borderColor:`${styles.cciInfoBlue}`}}/>
-
-            { props.component.businessLogic.parentIds.length === 0 ?
-              <SetupComponentOp
-              title='required-quantity'
-                // value='' input will show placeholder text
-                value={(props.component.operation.requiredQty !== null && props.component.operation.requiredQty > 0 ) ? props.component.operation.requiredQty: ''}
-                component={props.component}
-                handler={setTotalRequiredQty}/>
-              :
-              <SetupComponentOp
-                title='unit-quantity'
-                // value='' input will show placeholder text
-                value={ props.component.operation.unitQty}
-                component={props.component}
-                handler={setUnitQty}/>
-            }
-
-            <hr className='my-0 bg-info'
-                style={{borderStyle:'insert', borderWidth: '0.08em', borderColor:`${styles.cciInfoBlue}`}}/>
-
-            <SetupComponentOp
-                title='unit-of-measure'
-                value={props.component.operation.unitOfMeasure }
-                component={props.component}
-                handler={setUnitOfMeasure}/>
-
-            <hr className='my-0 bg-info'
-                style={{borderStyle:'insert', borderWidth: '0.08em', borderColor:`${styles.cciInfoBlue}`}}/>
-
-            <SetupComponentOp
-              title='scrap-rate'
-              value={props.component.operation.scrapRate }
-              component={props.component}
-              handler={setScrapRate}/>
-
-            <hr className='my-0 bg-info'
-                style={{borderStyle:'insert', borderWidth: '0.08em', borderColor:`${styles.cciInfoBlue}`}}/>
-
-            <SetupComponentOp
-                title='procurement-type'
-                value={props.component.operation.procurementType }
-                component={props.component}
-                handler={setProcurementType}/>
-
-            <hr className='my-0 bg-info'
-                style={{borderStyle:'insert', borderWidth: '0.08em', borderColor:`${styles.cciInfoBlue}`}}/>
-
-            <SetupComponentOp
-                title='start-product-date'
-                value={props.component.operation.startDate }
-                component={props.component}
-                handler={setStartDate}/>
-
-            <hr className='my-0 bg-info'
-                style={{borderStyle:'insert', borderWidth: '0.08em', borderColor:`${styles.cciInfoBlue}`}}/>
-
-            <SetupComponentOp
-                title='product-complete-date'
-                value={props.component.operation.completeDate }
-                component={props.component}
-                handler={setCompleteDate}/>
+                 <SetupComponentOp
+                    title='daily-time-capacity-per-person-quantity'
+                    value={props.component.operation.averageHourlyCost}
+                    component={props.component}
+                    handler={setHourlyCost}/>
             </div>
+
+            <hr className='my-0 bg-info'
+              style={{borderStyle:'insert', borderWidth: '0.08em', borderColor:`${styles.cciInfoBlue}`}}/>
+
+            <div className={'bg-info d-flex'}>
+                  <SetupComponentOp
+                      title='daily-overtime-capacity-quantity'
+                      value={props.component.operation.dailyOvertimeCapacityPerEmployee}
+                      component={props.component}
+                      handler={setDailyOvertimeCapacity}/>
+
+                   <SetupComponentOp
+                      title='average-overtime-hourly-cost-quantity'
+                      value={props.component.operation.averageHourlyOvertimeCost}
+                      component={props.component}
+                      handler={setHourlyOvertimeCost}/>
+            </div>
+
+            <hr className='my-0 bg-info'
+              style={{borderStyle:'insert', borderWidth: '0.08em', borderColor:`${styles.cciInfoBlue}`}}/>
+        
+            <div className={'bg-info d-flex'}>
+                <SetupComponentOp
+                    title='min-allowed-employee-per-shift-quantity'
+                    value={props.component.operation.minAllowedEmployeePerShift}
+                    component={props.component}
+                    handler={setMinAllowedEmployee}/>
+
+                 <SetupComponentOp
+                    title='max-allowed-employee-per-shift-quantity'
+                    value={props.component.operation.minAllowedEmployeePerShift}
+                    component={props.component}
+                    handler={setMaxAllowedEmployee}/>
+            </div>
+
+            <hr className='my-0 bg-info'
+              style={{borderStyle:'insert', borderWidth: '0.08em', borderColor:`${styles.cciInfoBlue}`}}/>
+
+            <div className={'bg-info d-flex'}>
+                <SetupComponentOp
+                    title='hiring-cost-quantity'
+                    value={props.component.operation.averageHiringCostPerEmployee}
+                    component={props.component}
+                    handler={setAverageHiringCost}/>
+
+                 <SetupComponentOp
+                    title='dismissal-cost-quantity'
+                    value={props.component.operation.averageDismissalCostPerEmployee}
+                    component={props.component}
+                    handler={setDismissalCost}/>
+            </div>
+
+            <hr className='my-0 bg-info'
+              style={{borderStyle:'insert', borderWidth: '0.08em', borderColor:`${styles.cciInfoBlue}`}}/>
+
+            <div className={'bg-info d-flex'}>
+                <SetupComponentOp
+                    title='setup-cost-quantity'
+                    value={props.component.operation.setupCost }
+                    component={props.component}
+                    handler={setSetupCost}/>
+                <SetupComponentOp
+                  title='scrap-rate'
+                  value={props.component.operation.scrapRate }
+                  component={props.component}
+                  handler={setScrapRate}/>
+             </div>
+            <hr className='my-0 bg-info'
+                style={{borderStyle:'insert', borderWidth: '0.08em', borderColor:`${styles.cciInfoBlue}`}}/>
+
+            <div className={'bg-info d-flex'}>
+                <SetupComponentOp
+                    title='input-warehouse-name'
+                    value={props.component.operation.inputWarehouse }
+                    component={props.component}
+                    handler={setInputWarehouse}/>
+                <SetupComponentOp
+                  title='output-warehouse-name'
+                  value={props.component.operation.outputWarehouse }
+                  component={props.component}
+                  handler={setOutputWarehouse}/>
+            </div>
+            <hr className='my-0 bg-info'
+                style={{borderStyle:'insert', borderWidth: '0.08em', borderColor:`${styles.cciInfoBlue}`}}/>
+
+            <div className={'bg-info d-flex'}>
+              <SetupComponentOp
+                  title='start-product-date'
+                  value={props.component.operation.startDate }
+                  component={props.component}
+                  handler={setStartDate}/>
+
+              <SetupComponentOp
+                  title='workshop'
+                  value={props.component.operation.workshop }
+                  component={props.component}
+                  handler={setWorkshop}/>
+            </div>
+          </div>
             )
           }
       </Popup>

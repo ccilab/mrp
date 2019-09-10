@@ -27,7 +27,7 @@ import {TextResizeDetector } from "./TextResizeDetector"
 //json-loader load the *.json file
 import components from './../../data/components.json';
 import { initializeIRF } from "./CCiLabSetupIR";
-
+import {initializeOp} from "./CCiLabSetupOperation";
 
 //table includes assembly and paint process
 // simulate after loaded very top component and its direct  components
@@ -879,10 +879,12 @@ class CCiLabComponentList extends Component {
       // sessionStorage.setItem( `${newComponent.displayLogic.key}_${newComponent.businessLogic.name}_displayLogic`, JSON.stringify( newComponent.displayLogic ));
       newComponent.bom = new initializeBOM( newComponent );
       newComponent.pdp = new initializePDP( newComponent );
-      newComponent.irf = new initializeIRF( newComponent );
+      newComponent.irf = new initializeOp( newComponent );
+      newComponent.operation = new initializeIRF( newComponent );
       sessionStorage.setItem( `${newComponent.displayLogic.key}_${newComponent.businessLogic.name}_bom_core`, JSON.stringify( newComponent.bom.core ));
       sessionStorage.setItem( `${newComponent.displayLogic.key}_${newComponent.businessLogic.name}_pdp`, JSON.stringify( newComponent.pdp ));
       sessionStorage.setItem( `${newComponent.displayLogic.key}_${newComponent.businessLogic.name}_irf`, JSON.stringify( newComponent.irf ));
+      sessionStorage.setItem( `${newComponent.displayLogic.key}_${newComponent.businessLogic.name}_op`, JSON.stringify( newComponent.operation ));
       // need to check vertical scroll bar doesn't show
       // create vertical scroll bar based on the height of component list dynamically
       this.updateDimensions( updatedSessionComponents);

@@ -11,6 +11,7 @@ import './../../dist/css/popup-menu.css';
 import {SetupBOM} from './CCiLabSetupComponentBOM';
 import {SetupPDP } from './CCiLabSetupPDP';
 import {SetupIRF} from './CCiLabSetupIR';
+import {SetupOP} from './CCiLabSetupOperation';
 
 
 const ShowImage=(props)=>{
@@ -572,6 +573,7 @@ class CCiLabComponent extends Component {
                       }
                       <SetupPDP component={this.currentComponent}/>
                       <SetupIRF component={this.currentComponent}/>
+                      <SetupOP component={this.currentComponent}/>
 
                   </span>
                 }
