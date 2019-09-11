@@ -6,7 +6,8 @@ import styles from "./../../dist/css/ccilab-component-list.css"
 
 import { isValidString, isValidValue } from "./CCiLabUtility";
 
-
+// popup menu class doesn't support bootstrap e.g. d-flex, flex-fill class or native flex
+// const trigger = this.TriggerEl.getBoundingClientRect(); calculates static size of trigger element
 const SetupComponentPDP=(props)=>{
   const { t } = useTranslation(['component','commands'], {useSuspense: false});
 
@@ -74,9 +75,7 @@ const SetupComponentPDP=(props)=>{
 
   // https://medium.freecodecamp.org/reactjs-pass-parameters-to-event-handlers-ca1f5c422b9
   return (
-    <div className='d-flex justify-content-between'
-         style={{backgroundColor: `${styles.cciBgColor}`}}>
-
+    <span>
         <Popup
             trigger={
               <input className={`${inputClassName}`}
@@ -108,7 +107,7 @@ const SetupComponentPDP=(props)=>{
             </div>
         </Popup>
 
-    </div>
+    </span>
   );
 }
 
@@ -129,7 +128,7 @@ const _initializeMPS=()=>{
 export const SetupPDP=(props)=>{
   const { t } = useTranslation('commands', {useSuspense: false});
   
-  const _className = 'cursor-pointer text-primary border-0 p-1 fa fw fa-edit' + (props.component.displayLogic.selected ? ' bg-info' : ' ');
+  const _PDPIconClassName = 'cursor-pointer text-primary border-0 p-1 fa fw fa-edit' + (props.component.displayLogic.selected ? ' bg-info' : ' ');
 
 
   const [event, setEvent] = useState('hover'); // 'hover' is the initial state value
@@ -249,7 +248,7 @@ export const SetupPDP=(props)=>{
 
  const renderDemandDateInput=(uniqueKey, index, endDate, demand, isLastElement )=>{
   return(
-    <div key={uniqueKey} className={'bg-info d-flex'}>  
+    <div key={uniqueKey} className={'bg-info d-flex justify-content-between'}>  
       <SetupComponentPDP
          title='product-complete-date'   //array of completed date for each required quantity
          id={index}
@@ -300,7 +299,7 @@ export const SetupPDP=(props)=>{
             type="icon"
             onClick={setEventState}
             // 'cursor-pointer text-primary border-0 py-0 px-2 fa fw fa-edit' + (props.component.displayLogic.selected ? ' bg-info' : ' ');
-            className={`${_className}`}
+            className={`${_PDPIconClassName}`}
             style={{backgroundColor: `${styles.cciBgColor}`}}/>
         }
           closeOnDocumentClick={true}
@@ -321,8 +320,8 @@ export const SetupPDP=(props)=>{
             key={`component-${props.component.displayLogic.key}`}
             id={`#component-${props.component.displayLogic.key}`}
             type="icon"
-            // 'cursor-pointer text-primary border-0 py-0 px-2 fa fw fa-edit' + (props.component.displayLogic.selected ? ' bg-info' : ' ');
-            className={`${_className}`}
+            // _PDPIconClassName = 'cursor-pointer text-primary border-0 py-0 px-2 fa fw fa-edit' + (props.component.displayLogic.selected ? ' bg-info' : ' ');
+            className={`${_PDPIconClassName}`}
             style={{backgroundColor: `${styles.cciBgColor}`}}/>
         }
           closeOnDocumentClick={true}
@@ -332,10 +331,10 @@ export const SetupPDP=(props)=>{
           defaultOpen={false}  
           contentStyle={{ padding: '0px', border: 'none', backgroundColor: `${styles.cciBgColor}`}} 
           arrow={true}
-          arrowStyle={{backgroundColor: `${styles.cciBgColor}`}}>
+          arrowStyle={{backgroundColor: `${styles.cciBgColor}`}} >
           {close => (      
-              <div className={'bg-info d-flex flex-column'} >
-                <div className={'bg-info d-flex'}>
+              <div className={'d-flex flex-column'} >
+                <div className={'d-flex justify-content-between'} >
                   <SetupComponentPDP
                     title='customer-name'
                     id={-1}
