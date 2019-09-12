@@ -124,14 +124,16 @@ const SetupComponentIR=(props)=>{
 
 
   // https://medium.freecodecamp.org/reactjs-pass-parameters-to-event-handlers-ca1f5c422b9
-  return (
-    <div className='d-flex justify-content-between'
-         style={{backgroundColor: `${styles.cciBgColor}`}}>
+  // m-0 py-1 border-0
+  // return (className='d-flex justify-content-between'
+  return(
+    <div style={{backgroundColor: `${styles.cciBgColor}`}}>
        { inputProcurementType ?
           <Popup
-            trigger={
-              <div className='d-flex m-0 py-1 border-0'>
-                <span className='align-items-center m-0 p-0 border-0' >
+            trigger={ 
+              // <div className='d-flex  justify-content-between'>
+              <div className='d-flex' >
+                <span className='align-items-center m-0 y-0 border-0' >
                   <input className={`${inputClassName}`}
                         id={`${inputName}-1`}
                         type={inputType}
@@ -147,6 +149,7 @@ const SetupComponentIR=(props)=>{
                      {t(`inventoryRecords:in-house`)}
                   </label>
                 </span>
+                <hr className='my-0 bg-info'  style={{width:'1px', height:'auto', }}/>
                 <span className='align-items-center m-0 y-0 border-0'>
                   <input  className={`${inputClassName}`}
                           id={`${inputName}-2`}
@@ -499,13 +502,15 @@ export const SetupIRF=(props)=>{
 
  const renderSRInput=(uniqueKey, index, srDate, demand, isLastElement )=>{
   return(
-    <div key={uniqueKey} className={'bg-info d-flex'}>  
+    <div>
+    <div key={uniqueKey} className={'d-flex  justify-content-between'}>  
       <SetupComponentIR
          title='scheduled-receipts-date'   //array of completed date for each required quantity
          id={index}
          value={ srDate }
          component={props.component}
          handler={setSRDate}/>
+    <hr className='my-0 bg-info'  style={{width:'1px', height:'auto' }}/>
      
      <SetupComponentIR
          title='scheduled-receipts-quantity'
@@ -525,6 +530,8 @@ export const SetupIRF=(props)=>{
          style={{backgroundColor: `${styles.cciBgColor}`}}
          onClick={removeSREntry(index)}/>
      } 
+     </div>
+    <hr  className='my-0 bg-info' style={{width: '100%', height: '1px'}}/>
     </div>
   );
  }
@@ -584,14 +591,17 @@ export const SetupIRF=(props)=>{
           arrow={true}
           arrowStyle={{backgroundColor: `${styles.cciBgColor}`}}>
           {close => (
-            <div className={'bg-info d-flex flex-column'} >
-            <div className={'bg-info d-flex'}>
+            <div className={'d-flex flex-column'} style={{backgroundColor:`${styles.cciBgColor}`}}>
+            <div className={'d-flex justify-content-between'}>
               <SetupComponentIR
                 title='inventory-on-hand-quantity'
                 id={-1}
                 value={props.component.irf.inventoryOnHand}
                 component={props.component}
                 handler={setIOH}/>
+
+              <hr className='my-0 bg-info'  style={{width:'1px', height:'auto', }}/>
+
               <SetupComponentIR
                 title='lead-time-quantity'
                 id={-1}
@@ -603,21 +613,19 @@ export const SetupIRF=(props)=>{
                 style={{backgroundColor: `${styles.cciBgColor}`}}
                 onClick={ close }/> 
             </div>
-            <hr className='my-0 bg-info'
-                  style={{borderStyle:'insert', borderWidth: '0.08em', borderColor:`${styles.cciInfoBlue}`}}/>
+            <hr className='my-0 bg-info' style={{width: '100%', height: '1px'}}/>
 
             {renderSRInputs()}
             
-            <hr className='my-0 bg-info'
-                  style={{borderStyle:'insert', borderWidth: '0.08em', borderColor:`${styles.cciInfoBlue}`}}/>
-
-            <div className={'bg-info d-flex'}> 
+            <div className={'d-flex  justify-content-between'}> 
               <SetupComponentIR
                   title='mim-allowed-ending-inventory-quantity'
                   id={-1}
                   value={props.component.irf.minAllowedEndingInventory }
                   component={props.component}
                   handler={setSS}/>
+ 
+              <hr className='my-0 bg-info'  style={{width:'1px', height:'auto', }}/>
 
               <SetupComponentIR
                   title='max-allowed-ending-inventory-quantity'
@@ -627,8 +635,7 @@ export const SetupIRF=(props)=>{
                   handler={setMaxStock}/>
             </div>
 
-            <hr className='my-0 bg-info'
-                style={{borderStyle:'insert', borderWidth: '0.08em', borderColor:`${styles.cciInfoBlue}`}}/>
+            <hr className='my-0 bg-info' style={{width: '100%', height: '1px'}}/>
 
             <SetupComponentIR
                 title='procurement-type'
@@ -638,17 +645,18 @@ export const SetupIRF=(props)=>{
                 handler={setProcurementType}/>
 
 
-            <hr className='my-0 bg-info'
-                style={{borderStyle:'insert', borderWidth: '0.08em', borderColor:`${styles.cciInfoBlue}`}}/>
+            <hr className='my-0 bg-info' style={{width: '100%', height: '1px'}}/>
 
             { ( procurementType === 'Purchase' ? 
-                <div className={'bg-info d-flex'}>
+                <div className={'d-flex  justify-content-between'}>
                   <SetupComponentIR
                   title='supplier-name'
                   id={-1}
                   value={props.component.irf.supplier }
                   component={props.component}
                   handler={setSupplier}/>
+
+                  <hr className='my-0 bg-info'  style={{width:'1px', height:'auto', }}/>
 
                   <SetupComponentIR
                   title='supplied-part-number'
@@ -663,34 +671,30 @@ export const SetupIRF=(props)=>{
                 )
               }
             { ( procurementType === 'Purchase' ? 
-             <hr className='my-0 bg-info'
-                  style={{borderStyle:'insert', borderWidth: '0.08em', borderColor:`${styles.cciInfoBlue}`}}/>
+             <hr className='my-0 bg-info' style={{width: '100%', height: '1px'}}/>
                   :
                   null
                )
             }
 
-            <SetupComponentIR
-                title={ procurementType === null || procurementType === 'InHouse' ? 'other-production-cost-per-unit-quantity' : 'other-purchase-cost-per-unit-quantity'}
-                id={-1}
-                value={props.component.irf.otherProductionCostPerUnit }
-                component={props.component}
-                handler={setOtherCostPerUnit}/>
+            <div className={'d-flex  justify-content-between'}> 
+              <SetupComponentIR
+                  title={ procurementType === null || procurementType === 'InHouse' ? 'other-production-cost-per-unit-quantity' : 'other-purchase-cost-per-unit-quantity'}
+                  id={-1}
+                  value={props.component.irf.otherProductionCostPerUnit }
+                  component={props.component}
+                  handler={setOtherCostPerUnit}/>
 
-            <hr className='my-0 bg-info'
-                style={{borderStyle:'insert', borderWidth: '0.08em', borderColor:`${styles.cciInfoBlue}`}}/>
+              <hr className='my-0 bg-info'  style={{width:'1px', height:'auto', }}/>
+              <SetupComponentIR
+                  title='holding-cost-per-unit-quantity'
+                  id={-1}
+                  value={props.component.irf.holdingCostPerUnit }
+                  component={props.component}
+                  handler={setHoldingCostPerUnit}/>
+            </div>
 
-         
-
-            <SetupComponentIR
-                title='holding-cost-per-unit-quantity'
-                id={-1}
-                value={props.component.irf.holdingCostPerUnit }
-                component={props.component}
-                handler={setHoldingCostPerUnit}/>
-
-            <hr className='my-0 bg-info'
-                style={{borderStyle:'insert', borderWidth: '0.08em', borderColor:`${styles.cciInfoBlue}`}}/>
+            <hr className='my-0 bg-info' style={{width: '100%', height: '1px'}}/>
 
             <SetupComponentIR
                 title='interest-rate'

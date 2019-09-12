@@ -1,7 +1,7 @@
 {
     "inventory-on-hand-quantity": "Inventory on-hand",
-    "scheduled-receipts-date": "Scheduled Receipts Date",
-    "scheduled-receipts-quantity": "Scheduled Receipts Quantity",
+    "scheduled-receipts-date": "Receipts Date",
+    "scheduled-receipts-quantity": "Receipts Quantity",
     "max-allowed-ending-inventory-quantity": "Maximum Stock",
     "mim-allowed-ending-inventory-quantity": "Minimum Stock",
     "lead-time-quantity": "Lead Time",
