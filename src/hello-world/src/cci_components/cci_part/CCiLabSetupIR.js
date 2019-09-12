@@ -149,7 +149,7 @@ const SetupComponentIR=(props)=>{
                      {t(`inventoryRecords:in-house`)}
                   </label>
                 </span>
-                <hr className='my-0 bg-info'  style={{width:'1px', height:'auto', }}/>
+                <hr className='mx-1 my-0 bg-info'  style={{width:'1px', height:'auto', }}/>
                 <span className='align-items-center m-0 y-0 border-0'>
                   <input  className={`${inputClassName}`}
                           id={`${inputName}-2`}
@@ -510,7 +510,7 @@ export const SetupIRF=(props)=>{
          value={ srDate }
          component={props.component}
          handler={setSRDate}/>
-    <hr className='my-0 bg-info'  style={{width:'1px', height:'auto' }}/>
+    <hr className='m-0 bg-info'  style={{width:'1px', height:'auto' }}/>
      
      <SetupComponentIR
          title='scheduled-receipts-quantity'
