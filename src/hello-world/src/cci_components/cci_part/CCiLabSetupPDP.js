@@ -290,8 +290,8 @@ export const SetupPDP=(props)=>{
   return (
     // for manufacturing only show root pdp, all sub components are derived from it programmatically
     ( props.component.displayLogic.selected && ( props.component.businessLogic.parentIds.length === 0 || props.component.stocking )? 
-      ( `${event}` === 'hover' ?
-      <Popup
+      ( `${event}` === 'hover' ? 
+      <Popup  //show tool tip to setup PDP when mouse hover the icon
         trigger={
           <i
             key={`component-${props.component.displayLogic.key}`}
@@ -314,7 +314,7 @@ export const SetupPDP=(props)=>{
           <span className={'text-primary'} >{t('commands:show-setup-PDP')}</span>
       </Popup>
       :
-      <Popup
+      <Popup  //show setup menu when user clicks the icon
         trigger={
           <i
             key={`component-${props.component.displayLogic.key}`}
@@ -333,7 +333,7 @@ export const SetupPDP=(props)=>{
           arrow={true}
           arrowStyle={{backgroundColor: `${styles.cciBgColor}`}} >
           {close => (      
-              <div className={'d-flex flex-column'} >
+              <div className={'d-flex flex-column'} style={{borderColor:`${styles.cciInfoBlue}`}}>
                 <div className={'d-flex justify-content-between'} >
                   <SetupComponentPDP
                     title='customer-name'
@@ -346,9 +346,6 @@ export const SetupPDP=(props)=>{
                     style={{backgroundColor: `${styles.cciBgColor}`}}
                     onClick={ close }/>
                 </div>
-
-                <hr className='my-0 bg-info'
-                      style={{borderStyle:'insert', borderWidth: '0.08em', borderColor:`${styles.cciInfoBlue}`}}/>
 
                 {renderDemandDateInputs()}
               </div>
