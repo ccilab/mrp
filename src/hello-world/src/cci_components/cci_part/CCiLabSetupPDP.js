@@ -14,7 +14,8 @@ const SetupComponentPDP=(props)=>{
   let inputValue = (props.value === null)? '': props.value;
 
   let inputClassName = 'text-primary m-0 p-0 border-0 cursor-pointer';
-  let inputStyle={'backgroundColor': `${styles.cciBgColor}`};
+  let inputStyle={'backgroundColor': `${styles.cciBgColor}`, 
+                  outline: `1px solid ${styles.cciInfoBlue}`};
   let inputType='text';
   let tooltipOnMode=['click','hover'];
   let tooltipPosition='top left';
@@ -78,6 +79,7 @@ const SetupComponentPDP=(props)=>{
     <span>
         <Popup
             trigger={
+              // inputClassName = 'text-primary m-0 p-0 border-0 cursor-pointer'
               <input className={`${inputClassName}`}
                     id={inputName}
                     type={`${inputType}`}
@@ -157,10 +159,6 @@ export const SetupPDP=(props)=>{
     saveValidPDPEntry(component);
     console.log("SetupPDP - setCustomerName: " + component.pdp.customer);
   };
-
-  
-
-
 
   const setTotalRequiredQty=(index, qty, component)=>
   {
@@ -248,7 +246,7 @@ export const SetupPDP=(props)=>{
 
  const renderDemandDateInput=(uniqueKey, index, endDate, demand, isLastElement )=>{
   return(
-    <div key={uniqueKey} className={'bg-info d-flex justify-content-between'}>  
+    <div key={uniqueKey} className={'d-flex justify-content-between'} >  
       <SetupComponentPDP
          title='product-complete-date'   //array of completed date for each required quantity
          id={index}
@@ -333,7 +331,7 @@ export const SetupPDP=(props)=>{
           arrow={true}
           arrowStyle={{backgroundColor: `${styles.cciBgColor}`}} >
           {close => (      
-              <div className={'d-flex flex-column'} style={{borderColor:`${styles.cciInfoBlue}`}}>
+              <div className={'d-flex flex-column'} >
                 <div className={'d-flex justify-content-between'} >
                   <SetupComponentPDP
                     title='customer-name'
