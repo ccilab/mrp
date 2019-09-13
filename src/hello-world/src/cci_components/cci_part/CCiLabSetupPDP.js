@@ -4,7 +4,7 @@ import { useTranslation } from 'react-i18next';
 
 import styles from "./../../dist/css/ccilab-component-list.css"
 
-import { isValidString, isValidValue } from "./CCiLabUtility";
+import { dividerCCS, isValidString, isValidValue } from "./CCiLabUtility";
 
 // popup menu class doesn't support bootstrap e.g. d-flex, flex-fill class or native flex
 // const trigger = this.TriggerEl.getBoundingClientRect(); calculates static size of trigger element
@@ -134,6 +134,7 @@ export const SetupPDP=(props)=>{
 
   const [event, setEvent] = useState('hover'); // 'hover' is the initial state value
 
+
     
   if( props.component.pdp === null || typeof props.component.pdp === 'undefined' )
   {
@@ -255,7 +256,7 @@ export const SetupPDP=(props)=>{
          component={props.component}
          handler={setCompleteDate}/>
 
-     <hr className='m-0 bg-info'  style={{width:'1px', height:'auto' }}/>    
+     <hr className={dividerCCS.hDividerClassName }  style={dividerCCS.vDividerStyle}/>    
      
      <SetupComponentPDP
          title='required-quantity'
@@ -277,7 +278,11 @@ export const SetupPDP=(props)=>{
          onClick={removeDemandEntry(index)}/>
      } 
      </div>
-     <hr  className='my-0 bg-info' style={{width: '100%', height: '1px'}}/>
+    { isLastElement !== true ?
+      <hr  className={dividerCCS.hDividerClassName} style={dividerCCS.hDividerStyle}/>
+      :
+      null
+    }
      </div>
   );
  }
@@ -352,7 +357,7 @@ export const SetupPDP=(props)=>{
                     onClick={ close }/>
                 </div>
 
-                <hr className='my-0 bg-info' style={{width: '100%', height: '1px'}}/>
+                <hr className={dividerCCS.hDividerClassName} style={dividerCCS.hDividerStyle}/>
 
                 {renderDemandDateInputs()}
               </div>

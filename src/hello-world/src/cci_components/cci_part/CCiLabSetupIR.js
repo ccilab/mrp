@@ -4,7 +4,7 @@ import { useTranslation } from 'react-i18next';
 
 import styles from "./../../dist/css/ccilab-component-list.css"
 
-import { isValidString, isValidValue } from "./CCiLabUtility";
+import { dividerCCS, isValidString, isValidValue } from "./CCiLabUtility";
 
 
 const SetupComponentIR=(props)=>{
@@ -38,7 +38,7 @@ const SetupComponentIR=(props)=>{
   if( props.title.includes('procurement-type'))
   {
     inputClassName = 'm-0 p-0 border-0 cursor-pointer';
-    inputStyle={'backgroundColor': `${styles.cciBgColor}`, 'height':'1em','width':'1em'};
+    inputStyle={'backgroundColor': `${styles.cciBgColor}`, 'height':'20px','width':'20px'};
     inputType='radio';
   }
 
@@ -133,7 +133,7 @@ const SetupComponentIR=(props)=>{
           <Popup
             trigger={ 
               // <div className='d-flex  justify-content-between'>
-              <div className='d-flex' >
+              <div className='d-flex justify-content-between' >
                 <span className='align-items-center m-0 y-0 border-0' >
                   <input className={`${inputClassName}`}
                         id={`${inputName}-1`}
@@ -150,7 +150,7 @@ const SetupComponentIR=(props)=>{
                      {t(`inventoryRecords:in-house`)}
                   </label>
                 </span>
-                <hr className='mx-1 my-0 bg-info'  style={{width:'1px', height:'auto', }}/>
+                <hr className={dividerCCS.hDividerClassName }  style={dividerCCS.vDividerStyle}/>
                 <span className='align-items-center m-0 y-0 border-0'>
                   <input  className={`${inputClassName}`}
                           id={`${inputName}-2`}
@@ -504,17 +504,17 @@ export const SetupIRF=(props)=>{
  const renderSRInput=(uniqueKey, index, srDate, demand, isLastElement )=>{
   return(
     <div>
-    <div key={uniqueKey} className={'d-flex  justify-content-between'}>  
-      <SetupComponentIR
+      <div key={uniqueKey} className={'d-flex  justify-content-between'}>  
+        <SetupComponentIR
          title='scheduled-receipts-date'   //array of completed date for each required quantity
          id={index}
          cellCnt={2}
          value={ srDate }
          component={props.component}
          handler={setSRDate}/>
-    <hr className='m-0 bg-info'  style={{width:'1px', height:'auto' }}/>
+        <hr className={dividerCCS.hDividerClassName }  style={dividerCCS.vDividerStyle}/>
      
-     <SetupComponentIR
+        <SetupComponentIR
          title='scheduled-receipts-quantity'
          id={index}
          cellCnt={2}
@@ -522,8 +522,8 @@ export const SetupIRF=(props)=>{
          component={props.component}
          handler={setSRQty}/>
          
-     { isLastElement === true ?
-       <i id={`${index}`}
+      { isLastElement === true ?
+        <i id={`${index}`}
          className='text-info m-0 py-1 px-1 fas fw fa-plus-circle cursor-pointer'
          style={{backgroundColor: `${styles.cciBgColor}`}}
          onClick={AddNextSREntry(index)}/>
@@ -532,9 +532,9 @@ export const SetupIRF=(props)=>{
          className='text-danger m-0 py-1 px-1 fas fw fa-minus-circle cursor-pointer'
          style={{backgroundColor: `${styles.cciBgColor}`}}
          onClick={removeSREntry(index)}/>
-     } 
-     </div>
-    <hr  className='my-0 bg-info' style={{width: '100%', height: '1px'}}/>
+      } 
+      </div>
+      <hr  className={dividerCCS.hDividerClassName } style={dividerCCS.hDividerStyle}/>
     </div>
   );
  }
@@ -604,7 +604,7 @@ export const SetupIRF=(props)=>{
                 component={props.component}
                 handler={setIOH}/>
 
-              <hr className='my-0 bg-info'  style={{width:'1px', height:'auto'}}/>
+              <hr className={dividerCCS.hDividerClassName }  style={dividerCCS.vDividerStyle}/>
 
               <SetupComponentIR
                 title='lead-time-quantity'
@@ -618,7 +618,7 @@ export const SetupIRF=(props)=>{
                 style={{backgroundColor: `${styles.cciBgColor}`}}
                 onClick={ close }/> 
             </div>
-            <hr className='my-0 bg-info' style={{width: '100%', height: '1px'}}/>
+            <hr className={dividerCCS.hDividerClassName } style={dividerCCS.hDividerStyle}/>
 
             {renderSRInputs()}
             
@@ -631,7 +631,7 @@ export const SetupIRF=(props)=>{
                   component={props.component}
                   handler={setSS}/>
  
-              <hr className='my-0 bg-info'  style={{width:'1px', height:'auto' }}/>
+              <hr className={dividerCCS.hDividerClassName }  style={dividerCCS.vDividerStyle}/>
 
               <SetupComponentIR
                   title='max-allowed-ending-inventory-quantity'
@@ -642,7 +642,7 @@ export const SetupIRF=(props)=>{
                   handler={setMaxStock}/>
             </div>
 
-            <hr className='my-0 bg-info' style={{width: '100%', height: '1px'}}/>
+            <hr className={dividerCCS.hDividerClassName } style={dividerCCS.hDividerStyle}/>
 
             <SetupComponentIR
                 title='procurement-type'
@@ -653,7 +653,7 @@ export const SetupIRF=(props)=>{
                 handler={setProcurementType}/>
 
 
-            <hr className='my-0 bg-info' style={{width: '100%', height: '1px'}}/>
+            <hr className={dividerCCS.hDividerClassName } style={dividerCCS.hDividerStyle}/>
 
             { ( procurementType === 'Purchase' ? 
                 <div className={'d-flex  justify-content-between'}>
@@ -665,7 +665,7 @@ export const SetupIRF=(props)=>{
                   component={props.component}
                   handler={setSupplier}/>
 
-                  <hr className='my-0 bg-info'  style={{width:'1px', height:'auto', }}/>
+                  <hr className={dividerCCS.hDividerClassName }  style={dividerCCS.vDividerStyle}/>
 
                   <SetupComponentIR
                   title='supplied-part-number'
@@ -681,7 +681,7 @@ export const SetupIRF=(props)=>{
                 )
               }
             { ( procurementType === 'Purchase' ? 
-             <hr className='my-0 bg-info' style={{width: '100%', height: '1px'}}/>
+             <hr className={dividerCCS.hDividerClassName } style={dividerCCS.hDividerStyle}/>
                   :
                   null
                )
@@ -696,7 +696,7 @@ export const SetupIRF=(props)=>{
                   component={props.component}
                   handler={setOtherCostPerUnit}/>
 
-              <hr className='m-0 bg-info'  style={{width:'1px', height:'auto', }}/>
+              <hr className='m-0 bg-info'  style={dividerCCS.vDividerStyle}/>
               <SetupComponentIR
                   title='holding-cost-per-unit-quantity'
                   id={-1}
@@ -706,7 +706,7 @@ export const SetupIRF=(props)=>{
                   handler={setHoldingCostPerUnit}/>
             </div>
 
-            <hr className='my-0 bg-info' style={{width: '100%', height: '1px'}}/>
+            <hr className={dividerCCS.hDividerClassName } style={dividerCCS.hDividerStyle}/>
 
             <SetupComponentIR
                 title='interest-rate'
