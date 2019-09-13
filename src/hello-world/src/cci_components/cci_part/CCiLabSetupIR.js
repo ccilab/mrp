@@ -13,7 +13,8 @@ const SetupComponentIR=(props)=>{
   let inputValue = (props.value === null)? '': props.value;
 
   let inputClassName = 'text-primary m-0 p-0 border-0 cursor-pointer';
-  let inputStyle={'backgroundColor': `${styles.cciBgColor}`};
+  let cellWidth = (typeof props.cellCnt !== 'undefined' && props.cellCnt === 1) ?  '20rem' : '10rem';
+  let inputStyle={'backgroundColor': `${styles.cciBgColor}`, width: `${cellWidth}`};
   let inputType='text';
   let tooltipOnMode=['click','hover'];
   let tooltipPosition='top left';
@@ -162,7 +163,7 @@ const SetupComponentIR=(props)=>{
                           onClose={updateValue(props)}/>
                    <label className={'m-0 px-1 border-0 cursor-pointer'}
                     htmlFor={`${inputName}-2`}
-                    style={{'backgroundColor': `${styles.cciBgColor}`, 'color': inputValue.includes('Purchase') ? `${styles.cciInfoBlue}` : `${styles.cciHintRed}`}}>
+                    style={{'backgroundColor': `${styles.cciBgColor}`,  'color': inputValue.includes('Purchase') ? `${styles.cciInfoBlue}` : `${styles.cciHintRed}`}}>
                      {t('inventoryRecords:purchase') }
                     </label>
                 </span>
@@ -507,6 +508,7 @@ export const SetupIRF=(props)=>{
       <SetupComponentIR
          title='scheduled-receipts-date'   //array of completed date for each required quantity
          id={index}
+         cellCnt={2}
          value={ srDate }
          component={props.component}
          handler={setSRDate}/>
@@ -515,6 +517,7 @@ export const SetupIRF=(props)=>{
      <SetupComponentIR
          title='scheduled-receipts-quantity'
          id={index}
+         cellCnt={2}
          value={( demand !== null && demand >= 0 ) ? demand : ''} //array of demands for each period 
          component={props.component}
          handler={setSRQty}/>
@@ -596,15 +599,17 @@ export const SetupIRF=(props)=>{
               <SetupComponentIR
                 title='inventory-on-hand-quantity'
                 id={-1}
+                cellCnt={2}
                 value={props.component.irf.inventoryOnHand}
                 component={props.component}
                 handler={setIOH}/>
 
-              <hr className='my-0 bg-info'  style={{width:'1px', height:'auto', }}/>
+              <hr className='my-0 bg-info'  style={{width:'1px', height:'auto'}}/>
 
               <SetupComponentIR
                 title='lead-time-quantity'
                 id={-1}
+                cellCnt={2}
                 value={props.component.irf.leadTime }
                 component={props.component}
                 handler={setLeadTime}/>
@@ -621,15 +626,17 @@ export const SetupIRF=(props)=>{
               <SetupComponentIR
                   title='mim-allowed-ending-inventory-quantity'
                   id={-1}
+                  cellCnt={2}
                   value={props.component.irf.minAllowedEndingInventory }
                   component={props.component}
                   handler={setSS}/>
  
-              <hr className='my-0 bg-info'  style={{width:'1px', height:'auto', }}/>
+              <hr className='my-0 bg-info'  style={{width:'1px', height:'auto' }}/>
 
               <SetupComponentIR
                   title='max-allowed-ending-inventory-quantity'
                   id={-1}
+                  cellCnt={2}
                   value={ ( props.component.irf.maxAllowedEndingInventory !== null ) && ( props.component.irf.minAllowedEndingInventory > props.component.irf.maxAllowedEndingInventory )  ?  props.component.irf.minAllowedEndingInventory : props.component.irf.maxAllowedEndingInventory}
                   component={props.component}
                   handler={setMaxStock}/>
@@ -640,6 +647,7 @@ export const SetupIRF=(props)=>{
             <SetupComponentIR
                 title='procurement-type'
                 id={-1}
+                cellCnt={1}
                 value={props.component.irf.procurementType }
                 component={props.component}
                 handler={setProcurementType}/>
@@ -652,6 +660,7 @@ export const SetupIRF=(props)=>{
                   <SetupComponentIR
                   title='supplier-name'
                   id={-1}
+                  cellCnt={2}
                   value={props.component.irf.supplier }
                   component={props.component}
                   handler={setSupplier}/>
@@ -661,6 +670,7 @@ export const SetupIRF=(props)=>{
                   <SetupComponentIR
                   title='supplied-part-number'
                   id={-1}
+                  cellCnt={2}
                   value={props.component.irf.supplierPartNumber }
                   component={props.component}
                   handler={setSupplierPartNumber}/>
@@ -681,14 +691,16 @@ export const SetupIRF=(props)=>{
               <SetupComponentIR
                   title={ procurementType === null || procurementType === 'InHouse' ? 'other-production-cost-per-unit-quantity' : 'other-purchase-cost-per-unit-quantity'}
                   id={-1}
+                  cellCnt={2}
                   value={props.component.irf.otherProductionCostPerUnit }
                   component={props.component}
                   handler={setOtherCostPerUnit}/>
 
-              <hr className='my-0 bg-info'  style={{width:'1px', height:'auto', }}/>
+              <hr className='m-0 bg-info'  style={{width:'1px', height:'auto', }}/>
               <SetupComponentIR
                   title='holding-cost-per-unit-quantity'
                   id={-1}
+                  cellCnt={2}
                   value={props.component.irf.holdingCostPerUnit }
                   component={props.component}
                   handler={setHoldingCostPerUnit}/>
@@ -699,6 +711,7 @@ export const SetupIRF=(props)=>{
             <SetupComponentIR
                 title='interest-rate'
                 id={-1}
+                cellCnt={1}
                 value={props.component.irf.interest }
                 component={props.component}
                 handler={setInterest}/>

@@ -14,8 +14,8 @@ const SetupComponentPDP=(props)=>{
   let inputValue = (props.value === null)? '': props.value;
 
   let inputClassName = 'text-primary m-0 p-0 border-0 cursor-pointer';
-  let inputStyle={'backgroundColor': `${styles.cciBgColor}`, 
-                  outline: `1px solid ${styles.cciInfoBlue}`};
+  let cellWidth = (typeof props.cellCnt !== 'undefined' && props.cellCnt === 1) ?  '20rem' : '10rem'; 
+  let inputStyle={'backgroundColor': `${styles.cciBgColor}`, width: `${cellWidth}`};
   let inputType='text';
   let tooltipOnMode=['click','hover'];
   let tooltipPosition='top left';
@@ -76,7 +76,7 @@ const SetupComponentPDP=(props)=>{
 
   // https://medium.freecodecamp.org/reactjs-pass-parameters-to-event-handlers-ca1f5c422b9
   return (
-    <span>
+    <div style={{backgroundColor: `${styles.cciBgColor}`}}>
         <Popup
             trigger={
               // inputClassName = 'text-primary m-0 p-0 border-0 cursor-pointer'
@@ -108,8 +108,7 @@ const SetupComponentPDP=(props)=>{
               {t(`component:${props.title}`)}
             </div>
         </Popup>
-
-    </span>
+    </div>
   );
 }
 
@@ -246,17 +245,22 @@ export const SetupPDP=(props)=>{
 
  const renderDemandDateInput=(uniqueKey, index, endDate, demand, isLastElement )=>{
   return(
+    <div>
     <div key={uniqueKey} className={'d-flex justify-content-between'} >  
       <SetupComponentPDP
          title='product-complete-date'   //array of completed date for each required quantity
          id={index}
+         cellCnt={2}
          value={ endDate }
          component={props.component}
          handler={setCompleteDate}/>
+
+     <hr className='m-0 bg-info'  style={{width:'1px', height:'auto' }}/>    
      
      <SetupComponentPDP
          title='required-quantity'
          id={index}
+         cellCnt={2}
          value={( demand !== null && demand > 0 ) ? demand : ''} //array of demands for each period 
          component={props.component}
          handler={setTotalRequiredQty}/>
@@ -272,6 +276,8 @@ export const SetupPDP=(props)=>{
          style={{backgroundColor: `${styles.cciBgColor}`}}
          onClick={removeDemandEntry(index)}/>
      } 
+     </div>
+     <hr  className='my-0 bg-info' style={{width: '100%', height: '1px'}}/>
      </div>
   );
  }
@@ -331,11 +337,12 @@ export const SetupPDP=(props)=>{
           arrow={true}
           arrowStyle={{backgroundColor: `${styles.cciBgColor}`}} >
           {close => (      
-              <div className={'d-flex flex-column'} >
+              <div className={'d-flex flex-column'} style={{backgroundColor:`${styles.cciBgColor}`}}>
                 <div className={'d-flex justify-content-between'} >
                   <SetupComponentPDP
                     title='customer-name'
                     id={-1}
+                    cellCnt={1}
                     value={props.component.pdp.customer} //array of demands for each period 
                     component={props.component}
                     handler={setCustomerName}/>
@@ -344,6 +351,8 @@ export const SetupPDP=(props)=>{
                     style={{backgroundColor: `${styles.cciBgColor}`}}
                     onClick={ close }/>
                 </div>
+
+                <hr className='my-0 bg-info' style={{width: '100%', height: '1px'}}/>
 
                 {renderDemandDateInputs()}
               </div>
