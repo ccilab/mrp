@@ -4,7 +4,7 @@ import { useTranslation } from 'react-i18next';
 
 import styles from "./../../dist/css/ccilab-component-list.css"
 
-import { isValidString, isValidValue } from "./CCiLabUtility";
+import { dividerCCS, isValidString, isValidValue } from "./CCiLabUtility";
 
 
 const SetupComponentOp=(props)=>{
@@ -13,7 +13,8 @@ const SetupComponentOp=(props)=>{
   let inputValue = (props.value === null)? '': props.value;
 
   let inputClassName = 'text-primary m-0 p-0 border-0 cursor-pointer';
-  let inputStyle={'backgroundColor': `${styles.cciBgColor}`};
+  let cellWidth = (typeof props.cellCnt !== 'undefined' && props.cellCnt === 1) ?  '20rem' : '10rem';
+  let inputStyle={'backgroundColor': `${styles.cciBgColor}`, width: `${cellWidth}`};
   let inputType='text';
   let tooltipOnMode=['click','hover'];
   let tooltipPosition='top left';
@@ -483,16 +484,18 @@ export const SetupOP=(props)=>{
           arrow={true}
           arrowStyle={{backgroundColor: `${styles.cciBgColor}`}}>
           {close => (
-            <div className={'bg-info d-flex flex-column'} >
-            <div className={'bg-info d-flex'}>
+            <div className={'d-flex flex-column'} style={{backgroundColor:`${styles.cciBgColor}`}} >
+            <div className={'d-flex justify-content-between'}>
               <SetupComponentOp
                 title='employee-count-quantity'
+                cellCnt={2}
                 value={props.component.operation.employeeCount}
                 component={props.component}
                 handler={setEmployeeCount}/>
-             
+              <hr className={dividerCCS.hDividerClassName }  style={dividerCCS.vDividerStyle}/>    
                <SetupComponentOp
                 title='employee-count-quantity'
+                cellCnt={2}
                 value={props.component.operation.averageTimePerComponentPerEmployee}
                 component={props.component}
                 handler={setTimePerComponentPerEmployee} /> 
@@ -502,119 +505,170 @@ export const SetupOP=(props)=>{
                 onClick={ close }/> 
                
             </div>
-            <hr className='my-0 bg-info'
-                  style={{borderStyle:'insert', borderWidth: '0.08em', borderColor:`${styles.cciInfoBlue}`}}/>
+           
+            <hr className={dividerCCS.hDividerClassName} style={dividerCCS.hDividerStyle}/>
 
-            <div className={'bg-info d-flex'}>
+            <div className={'d-flex  justify-content-between'}>
                 <SetupComponentOp
                     title='daily-time-capacity-per-person-quantity'
+                    cellCnt={2}
                     value={props.component.operation.dailyTimeCapacityPerEmployee}
                     component={props.component}
                     handler={setDailyTimeCapacity}/>
-
+                <hr className={dividerCCS.hDividerClassName }  style={dividerCCS.vDividerStyle}/>    
                  <SetupComponentOp
                     title='daily-time-capacity-per-person-quantity'
+                    cellCnt={2}
                     value={props.component.operation.averageHourlyCost}
                     component={props.component}
                     handler={setHourlyCost}/>
+                <i id={`${props.component.displayLogic.key}-SetupOP`}
+                    className='text-danger m-0 py-1 px-1 fas fw fa-times-circle cursor-pointer'
+                    style={{backgroundColor: `${styles.cciBgColor}`}}
+                    onClick={ close }/> 
             </div>
 
-            <hr className='my-0 bg-info'
-              style={{borderStyle:'insert', borderWidth: '0.08em', borderColor:`${styles.cciInfoBlue}`}}/>
+            <hr className={dividerCCS.hDividerClassName} style={dividerCCS.hDividerStyle}/>
 
-            <div className={'bg-info d-flex'}>
+            <div className={'d-flex  justify-content-between'}>
                   <SetupComponentOp
                       title='daily-overtime-capacity-quantity'
+                      cellCnt={2}
                       value={props.component.operation.dailyOvertimeCapacityPerEmployee}
                       component={props.component}
                       handler={setDailyOvertimeCapacity}/>
-
-                   <SetupComponentOp
+                  <hr className={dividerCCS.hDividerClassName }  style={dividerCCS.vDividerStyle}/>    
+                  <SetupComponentOp
                       title='average-overtime-hourly-cost-quantity'
+                      cellCnt={2}
                       value={props.component.operation.averageHourlyOvertimeCost}
                       component={props.component}
                       handler={setHourlyOvertimeCost}/>
+                  <i id={`${props.component.displayLogic.key}-SetupOP`}
+                      className='text-danger m-0 py-1 px-1 fas fw fa-times-circle cursor-pointer'
+                      style={{backgroundColor: `${styles.cciBgColor}`}}
+                      onClick={ close }/> 
             </div>
 
-            <hr className='my-0 bg-info'
-              style={{borderStyle:'insert', borderWidth: '0.08em', borderColor:`${styles.cciInfoBlue}`}}/>
-        
-            <div className={'bg-info d-flex'}>
+            <hr className={dividerCCS.hDividerClassName} style={dividerCCS.hDividerStyle}/>
+
+            <div className={'d-flex  justify-content-between'}>
                 <SetupComponentOp
                     title='min-allowed-employee-per-shift-quantity'
+                    cellCnt={2}
                     value={props.component.operation.minAllowedEmployeePerShift}
                     component={props.component}
                     handler={setMinAllowedEmployee}/>
 
-                 <SetupComponentOp
+                <hr className={dividerCCS.hDividerClassName }  style={dividerCCS.vDividerStyle}/>    
+
+                <SetupComponentOp
                     title='max-allowed-employee-per-shift-quantity'
+                    cellCnt={2}
                     value={props.component.operation.minAllowedEmployeePerShift}
                     component={props.component}
                     handler={setMaxAllowedEmployee}/>
+                <i id={`${props.component.displayLogic.key}-SetupOP`}
+                    className='text-danger m-0 py-1 px-1 fas fw fa-times-circle cursor-pointer'
+                    style={{backgroundColor: `${styles.cciBgColor}`}}
+                    onClick={ close }/> 
             </div>
 
-            <hr className='my-0 bg-info'
-              style={{borderStyle:'insert', borderWidth: '0.08em', borderColor:`${styles.cciInfoBlue}`}}/>
+            <hr className={dividerCCS.hDividerClassName} style={dividerCCS.hDividerStyle}/>
 
-            <div className={'bg-info d-flex'}>
+            <div className={'d-flex  justify-content-between'}>
                 <SetupComponentOp
                     title='hiring-cost-quantity'
+                    cellCnt={2}
                     value={props.component.operation.averageHiringCostPerEmployee}
                     component={props.component}
                     handler={setAverageHiringCost}/>
 
-                 <SetupComponentOp
+                <hr className={dividerCCS.hDividerClassName }  style={dividerCCS.vDividerStyle}/>    
+
+                <SetupComponentOp
                     title='dismissal-cost-quantity'
+                    cellCnt={2}
                     value={props.component.operation.averageDismissalCostPerEmployee}
                     component={props.component}
                     handler={setDismissalCost}/>
+
+                <i id={`${props.component.displayLogic.key}-SetupOP`}
+                    className='text-danger m-0 py-1 px-1 fas fw fa-times-circle cursor-pointer'
+                    style={{backgroundColor: `${styles.cciBgColor}`}}
+                    onClick={ close }/> 
             </div>
 
-            <hr className='my-0 bg-info'
-              style={{borderStyle:'insert', borderWidth: '0.08em', borderColor:`${styles.cciInfoBlue}`}}/>
+            <hr className={dividerCCS.hDividerClassName }  style={dividerCCS.hDividerStyle}/>    
 
-            <div className={'bg-info d-flex'}>
+            <div className={'d-flex  justify-content-between'}>
                 <SetupComponentOp
                     title='setup-cost-quantity'
+                    cellCnt={2}
                     value={props.component.operation.setupCost }
                     component={props.component}
                     handler={setSetupCost}/>
+                <hr className={dividerCCS.hDividerClassName }  style={dividerCCS.vDividerStyle}/>    
                 <SetupComponentOp
                   title='scrap-rate'
+                  cellCnt={2}
                   value={props.component.operation.scrapRate }
                   component={props.component}
                   handler={setScrapRate}/>
+                <i id={`${props.component.displayLogic.key}-SetupOP`}
+                  className='text-danger m-0 py-1 px-1 fas fw fa-times-circle cursor-pointer'
+                  style={{backgroundColor: `${styles.cciBgColor}`}}
+                  onClick={ close }/> 
              </div>
-            <hr className='my-0 bg-info'
-                style={{borderStyle:'insert', borderWidth: '0.08em', borderColor:`${styles.cciInfoBlue}`}}/>
+             
+            <hr className={dividerCCS.hDividerClassName} style={dividerCCS.hDividerStyle}/>
 
-            <div className={'bg-info d-flex'}>
+            <div className={'d-flex  justify-content-between'}>
                 <SetupComponentOp
                     title='input-warehouse-name'
+                    cellCnt={2}
                     value={props.component.operation.inputWarehouse }
                     component={props.component}
                     handler={setInputWarehouse}/>
+
+                <hr className={dividerCCS.hDividerClassName }  style={dividerCCS.vDividerStyle}/>    
+
                 <SetupComponentOp
                   title='output-warehouse-name'
+                  cellCnt={2}
                   value={props.component.operation.outputWarehouse }
                   component={props.component}
                   handler={setOutputWarehouse}/>
-            </div>
-            <hr className='my-0 bg-info'
-                style={{borderStyle:'insert', borderWidth: '0.08em', borderColor:`${styles.cciInfoBlue}`}}/>
 
-            <div className={'bg-info d-flex'}>
+                <i id={`${props.component.displayLogic.key}-SetupOP`}
+                  className='text-danger m-0 py-1 px-1 fas fw fa-times-circle cursor-pointer'
+                  style={{backgroundColor: `${styles.cciBgColor}`}}
+                  onClick={ close }/> 
+            </div>
+            
+            <hr className={dividerCCS.hDividerClassName} style={dividerCCS.hDividerStyle}/>
+
+            <div className={'d-flex  justify-content-between'}>
               <SetupComponentOp
                   title='start-product-date'
+                  cellCnt={2}
                   value={props.component.operation.startDate }
                   component={props.component}
                   handler={setStartDate}/>
+     
+              <hr className={dividerCCS.hDividerClassName }  style={dividerCCS.vDividerStyle}/>    
 
               <SetupComponentOp
                   title='workshop'
+                  cellCnt={2}
                   value={props.component.operation.workshop }
                   component={props.component}
                   handler={setWorkshop}/>
+
+              <i id={`${props.component.displayLogic.key}-SetupOP`}
+                className='text-danger m-0 py-1 px-1 fas fw fa-times-circle cursor-pointer'
+                style={{backgroundColor: `${styles.cciBgColor}`}}
+                onClick={ close }/> 
             </div>
           </div>
             )

@@ -4,7 +4,7 @@ import { useTranslation } from 'react-i18next';
 
 import styles from "./../../dist/css/ccilab-component-list.css"
 
-import { isValidString, isValidValue } from "./CCiLabUtility";
+import { dividerCCS, isValidString, isValidValue } from "./CCiLabUtility";
 
 
 const SetupComponentBOM=(props)=>{
@@ -13,7 +13,8 @@ const SetupComponentBOM=(props)=>{
   let inputValue = (props.value === null)? '': props.value;
 
   let inputClassName = 'text-primary m-0 p-0 border-0 cursor-pointer';
-  let inputStyle={'backgroundColor': `${styles.cciBgColor}`};
+  let cellWidth = (typeof props.cellCnt !== 'undefined' && props.cellCnt === 1) ?  '20rem' : '10rem';
+  let inputStyle={'backgroundColor': `${styles.cciBgColor}`, width: `${cellWidth}`};
   let inputType='text';
   let tooltipOnMode=['click','hover'];
   let tooltipPosition='top left';
@@ -386,53 +387,73 @@ export const SetupBOM=(props)=>{
           arrow={true}
           arrowStyle={{backgroundColor: `${styles.cciBgColor}`}}>
           {close => (
-            <div className={'bg-info d-flex flex-column'} >
-            <div className={'bg-info d-flex'}>
+            <div className={'d-flex flex-column'} style={{backgroundColor:`${styles.cciBgColor}`}}>
+            <div className={'d-flex  justify-content-between'}>
               <SetupComponentBOM
                 title='part-name'
+                cellCnt={1}
                 value={props.component.businessLogic.name}
                 component={props.component}
                 handler={setPartName}/>
-              <a id={`${props.component.displayLogic.key}-setupBOM`}
-                href={`#${props.component.displayLogic.key}`}
+              <i id={`${props.component.displayLogic.key}-setupBOM`}
                 className='text-danger m-0 py-1 px-1 fas fw fa-times-circle cursor-pointer'
                 style={{backgroundColor: `${styles.cciBgColor}`}}
-                onClick={ close }> </a>
+                onClick={ close }/> 
             </div>
-            <hr className='my-0 bg-info'
-                  style={{borderStyle:'insert', borderWidth: '0.08em', borderColor:`${styles.cciInfoBlue}`}}/>
-
-            <SetupComponentBOM
-                title='part-number'
-                value={props.component.bom.core.partNumber}
-                component={props.component}
-                handler={setPartNumber}/>
-
-            <hr className='my-0 bg-info'
-                  style={{borderStyle:'insert', borderWidth: '0.08em', borderColor:`${styles.cciInfoBlue}`}}/>
-
+          
+            <hr  className={dividerCCS.hDividerClassName} style={dividerCCS.hDividerStyle}/>
+            
+            <div className={'d-flex  justify-content-between'}>
+              <SetupComponentBOM
+                  title='part-number'
+                  value={props.component.bom.core.partNumber}
+                  component={props.component}
+                  handler={setPartNumber}/>
+              <i id={`${props.component.displayLogic.key}-setupBOM`}
+                  className='text-danger m-0 py-1 px-1 fas fw fa-times-circle cursor-pointer'
+                  style={{backgroundColor: `${styles.cciBgColor}`}}
+                  onClick={ close }/> 
+            </div>
             { props.component.businessLogic.parentIds.length === 0 ?
               null
               :
-              <SetupComponentBOM
-                title='unit-quantity'
-                // value='' input will show placeholder text
-                value={ props.component.bom.core.unitQty}
-                component={props.component}
-                handler={setUnitQty}/>
+              <div>
+              <hr  className={dividerCCS.hDividerClassName} style={dividerCCS.hDividerStyle}/>
+                <div className={'d-flex  justify-content-between'}>
+                  
+
+                  <SetupComponentBOM
+                    title='unit-quantity'
+                    cellCnt={1}
+                    // value='' input will show placeholder text
+                    value={ props.component.bom.core.unitQty}
+                    component={props.component}
+                    handler={setUnitQty}/>
+
+                  <i id={`${props.component.displayLogic.key}-setupBOM`}
+                    className='text-danger m-0 py-1 px-1 fas fw fa-times-circle cursor-pointer'
+                    style={{backgroundColor: `${styles.cciBgColor}`}}
+                    onClick={ close }/> 
+                </div>
+                </div>
             }
 
-            <hr className='my-0 bg-info'
-                style={{borderStyle:'insert', borderWidth: '0.08em', borderColor:`${styles.cciInfoBlue}`}}/>
+            <hr  className={dividerCCS.hDividerClassName} style={dividerCCS.hDividerStyle}/>
 
-            <SetupComponentBOM
-                title='unit-of-measure'
-                value={props.component.bom.core.unitOfMeasure }
-                component={props.component}
-                handler={setUnitOfMeasure}/>
+            <div className={'d-flex  justify-content-between'}>
+              <SetupComponentBOM
+                  title='unit-of-measure'
+                  cellCnt={1}
+                  value={props.component.bom.core.unitOfMeasure }
+                  component={props.component}
+                  handler={setUnitOfMeasure}/>
+              <i id={`${props.component.displayLogic.key}-setupBOM`}
+                  className='text-danger m-0 py-1 px-1 fas fw fa-times-circle cursor-pointer'
+                  style={{backgroundColor: `${styles.cciBgColor}`}}
+                  onClick={ close }/> 
+            </div>
 
-            <hr className='my-0 bg-info'
-                style={{borderStyle:'insert', borderWidth: '0.08em', borderColor:`${styles.cciInfoBlue}`}}/>
+            <hr  className={dividerCCS.hDividerClassName} style={dividerCCS.hDividerStyle}/>
             </div> 
             )
           }
