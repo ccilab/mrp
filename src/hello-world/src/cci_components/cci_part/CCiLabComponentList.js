@@ -879,8 +879,8 @@ class CCiLabComponentList extends Component {
       // sessionStorage.setItem( `${newComponent.displayLogic.key}_${newComponent.businessLogic.name}_displayLogic`, JSON.stringify( newComponent.displayLogic ));
       newComponent.bom = new initializeBOM( newComponent );
       newComponent.pdp = new initializePDP( newComponent );
-      newComponent.irf = new initializeOp( newComponent );
-      newComponent.operation = new initializeIRF( newComponent );
+      newComponent.irf = new initializeIRF( newComponent );
+      newComponent.operation = new initializeOp( newComponent );
       sessionStorage.setItem( `${newComponent.displayLogic.key}_${newComponent.businessLogic.name}_bom_core`, JSON.stringify( newComponent.bom.core ));
       sessionStorage.setItem( `${newComponent.displayLogic.key}_${newComponent.businessLogic.name}_pdp`, JSON.stringify( newComponent.pdp ));
       sessionStorage.setItem( `${newComponent.displayLogic.key}_${newComponent.businessLogic.name}_irf`, JSON.stringify( newComponent.irf ));

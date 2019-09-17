@@ -93,7 +93,7 @@ const SetupComponentOp=(props)=>{
 
       console.log("SetupComponentOp - updateValue: " + target.value);
 
-      props.handler(target.value, props.component);
+      props.handler(props.id, target.value, props.component);
 
     }
   }
@@ -183,7 +183,7 @@ const _initializeOp=()=>{
    operation.inputWarehouse='';    // where is prerequisite component/raw material stored
    operation.outputWarehouse='';    // where is component stored
    operation.workshop='';           //
-   operation.shiftCount=1;         // how many different shifts are needed
+   operation.shiftInfoArray=[[null,null]];         // how many different shifts are needed
    return operation;
 }
 
@@ -200,8 +200,12 @@ export const SetupOP=(props)=>{
     props.component.operation = new initializeOp(props.component);
   }
 
+  const [shiftInfoArray, setShiftInfoArray] = useState(props.component.operation.shiftInfoArray);
+
+
    // 
    const saveValidOpEntry=( component )=>{
+    component.operation.shiftInfoArray = shiftInfoArray;
     sessionStorage.setItem( `${component.displayLogic.key}_${component.businessLogic.name}_op`, JSON.stringify( component.operation ));
   }
   
@@ -423,6 +427,48 @@ export const SetupOP=(props)=>{
 
     saveValidOpEntry(component);
   }
+
+  const setShiftName=(index, name, component)=>{
+    if( typeof component.operation === 'undefined' )
+      component.operation = new initializeOp( component );
+
+    if( isValidString( name ))
+    {
+      for( let item of shiftInfoArray )
+      {
+        const id = shiftInfoArray.indexOf( item );
+        if( id === index )
+        {
+          item[0] = name;
+          break;
+        }
+      }
+    }
+
+    saveValidOpEntry(component);
+  }
+
+  const setShiftTeamName=(index, name, component)=>{
+    if( typeof component.operation === 'undefined' )
+      component.operation = new initializeOp( component );
+
+    if( isValidString( name ))
+    {
+      for( let item of shiftInfoArray )
+      {
+        const id = shiftInfoArray.indexOf( item );
+        if( id === index )
+        {
+          item[1] = name;
+          break;
+        }
+      }
+    }
+
+    saveValidOpEntry(component);
+  }
+
+
   //hover to popup tooltip, click/focus to popup setup BOM inputs
   // based on event from mouse or click for desktop devices, click for touch devices
   const setEventState=()=>
@@ -437,6 +483,82 @@ export const SetupOP=(props)=>{
       setEvent('click');
       return;
     }
+  }
+
+  const AddNextShiftEntry=(index)=>(e)=>{
+    shiftInfoArray.push([null,null]);
+    saveValidOpEntry(props.component);
+    setShiftInfoArray( shiftInfoArray );
+    window.dispatchEvent(new Event('resize'));  //resize popup menu
+  }
+
+  const removeShiftEntry=(index)=>(e)=>{
+    for( let item of shiftInfoArray )
+    {
+      const id = shiftInfoArray.indexOf( item );
+      if( id === index )
+      {
+        shiftInfoArray.splice(id, 1);
+      }
+    }
+    
+    saveValidOpEntry(props.component);
+    setShiftInfoArray( shiftInfoArray );
+    window.dispatchEvent(new Event('resize'));   //resize popup menu
+  }
+
+  
+
+ const renderShiftInfoInput=(uniqueKey, index, endDate, demand, isLastElement )=>{
+  return(
+    <div>
+    <div key={uniqueKey} className={'d-flex justify-content-between'} >  
+      <SetupComponentOp
+         title='shift'   //array of completed date for each required quantity
+         id={index}
+         cellCnt={2}
+         value={ endDate }
+         component={props.component}
+         handler={setShiftName}/>
+
+     <hr className={dividerCCS.hDividerClassName }  style={dividerCCS.vDividerStyle}/>    
+     
+     <SetupComponentOp
+         title='team-name'
+         id={index}
+         cellCnt={2}
+         value={( demand !== null && demand > 0 ) ? demand : ''} //array of demands for each period 
+         component={props.component}
+         handler={setShiftTeamName}/>
+         
+     { isLastElement === true ?
+       <i id={`${index}`}
+         className='text-info m-0 py-1 px-1 fas fw fa-plus-circle cursor-pointer'
+         style={{backgroundColor: `${styles.cciBgColor}`}}
+         onClick={AddNextShiftEntry(index)}/>
+         :
+         <i id={`${index}`}
+         className='text-danger m-0 py-1 px-1 fas fw fa-minus-circle cursor-pointer'
+         style={{backgroundColor: `${styles.cciBgColor}`}}
+         onClick={removeShiftEntry(index)}/>
+     } 
+     </div>
+    { isLastElement !== true ?
+      <hr  className={dividerCCS.hDividerClassName} style={dividerCCS.hDividerStyle}/>
+      :
+      null
+    }
+     </div>
+  );
+ }
+
+  const renderShiftInfoInputs=()=>{
+    return (
+      shiftInfoArray.map( ( item )=>{
+        let id = shiftInfoArray.indexOf(item);
+        return renderShiftInfoInput( Math.random(), id, item[0], item[1], id ===  shiftInfoArray.length - 1 ? true : false )
+      } )
+    )
   }
 
   return (
@@ -488,6 +610,7 @@ export const SetupOP=(props)=>{
             <div className={'d-flex justify-content-between'}>
               <SetupComponentOp
                 title='employee-count-quantity'
+                id={-1}
                 cellCnt={2}
                 value={props.component.operation.employeeCount}
                 component={props.component}
@@ -495,6 +618,7 @@ export const SetupOP=(props)=>{
               <hr className={dividerCCS.hDividerClassName }  style={dividerCCS.vDividerStyle}/>    
                <SetupComponentOp
                 title='employee-count-quantity'
+                id={-1}
                 cellCnt={2}
                 value={props.component.operation.averageTimePerComponentPerEmployee}
                 component={props.component}
@@ -511,6 +635,7 @@ export const SetupOP=(props)=>{
             <div className={'d-flex  justify-content-between'}>
                 <SetupComponentOp
                     title='daily-time-capacity-per-person-quantity'
+                    id={-1}
                     cellCnt={2}
                     value={props.component.operation.dailyTimeCapacityPerEmployee}
                     component={props.component}
@@ -518,6 +643,7 @@ export const SetupOP=(props)=>{
                 <hr className={dividerCCS.hDividerClassName }  style={dividerCCS.vDividerStyle}/>    
                  <SetupComponentOp
                     title='daily-time-capacity-per-person-quantity'
+                    id={-1}
                     cellCnt={2}
                     value={props.component.operation.averageHourlyCost}
                     component={props.component}
@@ -534,12 +660,14 @@ export const SetupOP=(props)=>{
                   <SetupComponentOp
                       title='daily-overtime-capacity-quantity'
                       cellCnt={2}
+                      id={-1}
                       value={props.component.operation.dailyOvertimeCapacityPerEmployee}
                       component={props.component}
                       handler={setDailyOvertimeCapacity}/>
                   <hr className={dividerCCS.hDividerClassName }  style={dividerCCS.vDividerStyle}/>    
                   <SetupComponentOp
                       title='average-overtime-hourly-cost-quantity'
+                      id={-1}
                       cellCnt={2}
                       value={props.component.operation.averageHourlyOvertimeCost}
                       component={props.component}
@@ -555,6 +683,7 @@ export const SetupOP=(props)=>{
             <div className={'d-flex  justify-content-between'}>
                 <SetupComponentOp
                     title='min-allowed-employee-per-shift-quantity'
+                    id={-1}
                     cellCnt={2}
                     value={props.component.operation.minAllowedEmployeePerShift}
                     component={props.component}
@@ -564,6 +693,7 @@ export const SetupOP=(props)=>{
 
                 <SetupComponentOp
                     title='max-allowed-employee-per-shift-quantity'
+                    id={-1}
                     cellCnt={2}
                     value={props.component.operation.minAllowedEmployeePerShift}
                     component={props.component}
@@ -579,6 +709,7 @@ export const SetupOP=(props)=>{
             <div className={'d-flex  justify-content-between'}>
                 <SetupComponentOp
                     title='hiring-cost-quantity'
+                    id={-1}
                     cellCnt={2}
                     value={props.component.operation.averageHiringCostPerEmployee}
                     component={props.component}
@@ -588,6 +719,7 @@ export const SetupOP=(props)=>{
 
                 <SetupComponentOp
                     title='dismissal-cost-quantity'
+                    id={-1}
                     cellCnt={2}
                     value={props.component.operation.averageDismissalCostPerEmployee}
                     component={props.component}
@@ -604,6 +736,7 @@ export const SetupOP=(props)=>{
             <div className={'d-flex  justify-content-between'}>
                 <SetupComponentOp
                     title='setup-cost-quantity'
+                    id={-1}
                     cellCnt={2}
                     value={props.component.operation.setupCost }
                     component={props.component}
@@ -611,6 +744,7 @@ export const SetupOP=(props)=>{
                 <hr className={dividerCCS.hDividerClassName }  style={dividerCCS.vDividerStyle}/>    
                 <SetupComponentOp
                   title='scrap-rate'
+                  id={-1}
                   cellCnt={2}
                   value={props.component.operation.scrapRate }
                   component={props.component}
@@ -626,6 +760,7 @@ export const SetupOP=(props)=>{
             <div className={'d-flex  justify-content-between'}>
                 <SetupComponentOp
                     title='input-warehouse-name'
+                    id={-1}
                     cellCnt={2}
                     value={props.component.operation.inputWarehouse }
                     component={props.component}
@@ -635,6 +770,7 @@ export const SetupOP=(props)=>{
 
                 <SetupComponentOp
                   title='output-warehouse-name'
+                  id={-1}
                   cellCnt={2}
                   value={props.component.operation.outputWarehouse }
                   component={props.component}
@@ -651,6 +787,7 @@ export const SetupOP=(props)=>{
             <div className={'d-flex  justify-content-between'}>
               <SetupComponentOp
                   title='start-product-date'
+                  id={-1}
                   cellCnt={2}
                   value={props.component.operation.startDate }
                   component={props.component}
@@ -660,6 +797,7 @@ export const SetupOP=(props)=>{
 
               <SetupComponentOp
                   title='workshop'
+                  id={-1}
                   cellCnt={2}
                   value={props.component.operation.workshop }
                   component={props.component}
@@ -670,6 +808,10 @@ export const SetupOP=(props)=>{
                 style={{backgroundColor: `${styles.cciBgColor}`}}
                 onClick={ close }/> 
             </div>
+
+            <hr className={dividerCCS.hDividerClassName} style={dividerCCS.hDividerStyle}/>
+
+            {renderShiftInfoInputs()}
           </div>
             )
           }
