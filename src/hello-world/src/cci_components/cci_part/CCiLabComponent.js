@@ -557,6 +557,7 @@ class CCiLabComponent extends Component {
                   <span>
                     <SetupBOM
                       component={this.currentComponent}
+                      updateSubTitle={this.props.changeMRPTitle}
                       updateComponent={this.props.updateComponentHandler}/>
                       {  ( draggableSetting === 'true') ?
                         <span>
@@ -571,9 +572,9 @@ class CCiLabComponent extends Component {
                           :
                           null
                       }
-                      <SetupPDP component={this.currentComponent}/>
-                      <SetupIRF component={this.currentComponent}/>
-                      <SetupOP component={this.currentComponent}/>
+                      <SetupPDP component={this.currentComponent} updateSubTitle={this.props.changeMRPTitle}/>
+                      <SetupIRF component={this.currentComponent} updateSubTitle={this.props.changeMRPTitle}/>
+                      <SetupOP component={this.currentComponent} updateSubTitle={this.props.changeMRPTitle}/>
 
                   </span>
                 }

@@ -332,6 +332,7 @@ export const SetupBOM=(props)=>{
   {
     if( event === 'click' )
     {
+       props.updateSubTitle( true, 'show-setup-BOM' );
        setEvent('hover');
        return;
     }

@@ -383,11 +383,11 @@ const ComponentListTitle =(props)=>{
   const { t, i18n } = useTranslation('componentList', {useSuspense: false});
 
   const setupBOM=(e)=>{
-    props.changeBOMHandler(true)
+    props.changeBOMHandler(true, 'subTitle-BOM-data')
   }
 
   const showProgress=(e)=>{
-    props.changeBOMHandler(false)
+    props.changeBOMHandler(false, 'subTitle-Progress-status')
   }
 
   const languageChangeHandler=(language)=>(e)=>{
@@ -511,7 +511,8 @@ class CCiLabComponentList extends Component {
               fontSize: 23, //default browser medium font size in px
               isDropToSameParentWarning: false,
               isDropToItselfWarning: false,
-              isUpdateToItselfWarning: false};
+              isUpdateToItselfWarning: false,
+              subTitle: 'subTitle-Progress-status'};
 
     initialized = false;  //needed to avoid render without DOM
     slidingComponentListIconClassName;
@@ -689,6 +690,9 @@ class CCiLabComponentList extends Component {
       this.state.visible = false;
       // eslint-disable-next-line
       this.state.setupBOM = this.state.setupBOM ? this.state.setupBOM : (this.state.greetings.length <= 1 ? true : false);
+
+      // eslint-disable-next-line
+      this.state.subTitle = this.state.setupBOM ? 'subTitle-BOM-data' : 'subTitle-Progress-status';
 
     }
 
@@ -1195,8 +1199,17 @@ class CCiLabComponentList extends Component {
       }
     };
 
-    showSetupBOM=( isShowSetupBOM )=>{
-      this.setState({setupBOM: isShowSetupBOM});
+    showSetupBOM=( isShowSetupBOM, subTitle )=>{
+      if( typeof isShowSetupBOM === 'undefined')
+      {
+        this.setState({subTitle: subTitle});
+      }
+      else
+      {
+          this.setState({setupBOM: isShowSetupBOM,
+                         subTitle: subTitle});
+      }
+    
     }
 
     //need to update showMyself to true after button is clicked to canExpend
@@ -1240,6 +1253,7 @@ class CCiLabComponentList extends Component {
                                           moveComponentHandler={this.moveComponentHandler}
                                           updateComponentHandler={this.updateComponent}
                                           isSetupBOM={this.state.setupBOM}
+                                          changeMRPTitle = {this.showSetupBOM}
                                           permissionStatus={this.state.permissionEnabled}/> ;
                 }
                 else
@@ -1335,7 +1349,7 @@ class CCiLabComponentList extends Component {
                   { this.state.setupBOM ?
                       <ComponentListSubTitle
                         name='subTitle-BOM-create-component'
-                        rateType='subTitle-BOM-data'
+                        rateType={this.state.subTitle}
                         height={this.componentTitleHeight}
                         width={this.componentListWidth}
                         className={listTitleClassName}
@@ -1343,7 +1357,7 @@ class CCiLabComponentList extends Component {
                         ratePositionLeft={this.statusTitleLeft}/> :
                       <ComponentListSubTitle
                         name='subTitle-Progress-component-name'
-                        rateType='subTitle-Progress-status'
+                        rateType={this.state.subTitle}
                         height={this.componentTitleHeight}
                         width={this.componentListWidth}
                         className={listTitleClassName}
