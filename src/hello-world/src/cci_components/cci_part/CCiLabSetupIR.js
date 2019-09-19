@@ -467,11 +467,13 @@ export const SetupIRF=(props)=>{
   {
     if( event === 'click' )
     {
-       setEvent('hover');
-       return;
+      props.updateSubTitle( undefined, 'subTitle-BOM-data' );
+      setEvent('hover');
+      return;
     }
     if( event === 'hover' )
     {
+      props.updateSubTitle( undefined, 'show-setup-IRF' );
       setEvent('click');
       return;
     }
@@ -563,8 +565,8 @@ export const SetupIRF=(props)=>{
             className={`${_className}`}
             style={{backgroundColor: `${styles.cciBgColor}`}}/>
         }
-          closeOnDocumentClick={true}
-          on={`${event}`}
+          closeOnDocumentClick={false}
+          on={event}
           position={'right top'}
           defaultOpen={false}
           contentStyle={{ padding: '0px', border: 'none', backgroundColor: `${styles.cciBgColor}`}} 
@@ -585,8 +587,8 @@ export const SetupIRF=(props)=>{
             className={`${_className}`}
             style={{backgroundColor: `${styles.cciBgColor}`}}/>
         }
-          closeOnDocumentClick={true}
-          on={`${event}`}
+          closeOnDocumentClick={false}
+          on={event}
           onClose={setEventState}
           position={'right top'}
           defaultOpen={false}  

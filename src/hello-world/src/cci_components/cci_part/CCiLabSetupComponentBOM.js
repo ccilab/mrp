@@ -332,13 +332,16 @@ export const SetupBOM=(props)=>{
   {
     if( event === 'click' )
     {
-       props.updateSubTitle( true, 'show-setup-BOM' );
+       props.updateSubTitle( undefined, 'subTitle-BOM-data' );
        setEvent('hover');
+       console.log('from click to ' + event);
        return;
     }
     if( event === 'hover' )
     {
+      props.updateSubTitle( undefined, 'show-setup-BOM' );
       setEvent('click');
+      console.log('from hover to ' + event );
       return;
     }
   }
@@ -357,8 +360,8 @@ export const SetupBOM=(props)=>{
             className={`${_className}`}
             style={{backgroundColor: `${styles.cciBgColor}`}}/>
         }
-          closeOnDocumentClick={true}
-          on={`${event}`}
+          closeOnDocumentClick={false}
+          on={event}
           position={'right top'}
           defaultOpen={false}
           contentStyle={{ padding: '0px', border: 'none', backgroundColor: `${styles.cciBgColor}`}} 
@@ -379,8 +382,8 @@ export const SetupBOM=(props)=>{
             className={`${_className}`}
             style={{backgroundColor: `${styles.cciBgColor}`}}/>
         }
-          closeOnDocumentClick={true}
-          on={`${event}`}
+          closeOnDocumentClick={false}
+          on={event}
           onClose={setEventState}
           position={'right top'}
           defaultOpen={false}  

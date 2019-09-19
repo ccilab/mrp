@@ -380,7 +380,7 @@ const ComponentListTitle =(props)=>{
   // console.log("call - ComponentListTitle:" + props.title );
   // https://react.i18next.com/latest/usetranslation-hook fa-spinner
   // https://stackoverflow.com/questions/17737182/how-can-i-overlay-a-number-on-top-of-a-fontawesome-glyph
-  const { t, i18n } = useTranslation('componentList', {useSuspense: false});
+  const { t, i18n } = useTranslation(['componentList','commands'], {useSuspense: false});
 
   const setupBOM=(e)=>{
     props.changeBOMHandler(true, 'subTitle-BOM-data')
@@ -493,7 +493,7 @@ const ComponentListSubTitle = (props)=>{
     <div className='d-flex align-items-center fa'
         style={{ 'height': `${props.height}rem`, 'width': `${props.width}`, backgroundColor: `${styles.cciBgColor}`, fontFamily: `${fontFamily}`, fontWeight: 'normal' }}>
         <span id='subTitle-name' className={props.className} style={{'position':'relative',  'left':`${props.positionLeft}rem`, fontSize: '0.95rem'}}>{t(`${props.name}`)}</span>
-        <span id='subTitle-type' className={props.className} style={{'position':'relative', 'left':`${props.ratePositionLeft}rem`, fontSize: '0.95rem'}}>{t(`${props.rateType}`)}
+        <span id='subTitle-type' className={props.className} style={{'position':'relative', 'left':`${props.ratePositionLeft}rem`, fontSize: '0.95rem'}}>{t([`componentList:${props.rateType}`, `commands:${props.rateType}`])}
         </span>
         {/* #todo - make title editable by user */}
         {/* <a id='subTitle-edit' href='#edit-title' className='border-0 text-primary text-nowrap p-0 nav-link fa fa-edit' style={{'position':'absolute', 'right':'0'}}></a> */}

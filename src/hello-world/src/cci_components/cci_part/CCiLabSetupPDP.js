@@ -210,11 +210,13 @@ export const SetupPDP=(props)=>{
   {
     if( event === 'click' )
     {
+       props.updateSubTitle( undefined, 'subTitle-BOM-data' );
        setEvent('hover');
        return;
     }
     if( event === 'hover' )
     {
+      props.updateSubTitle( undefined, 'show-setup-PDP' );
       setEvent('click');
       return;
     }
@@ -311,8 +313,8 @@ export const SetupPDP=(props)=>{
             className={`${_PDPIconClassName}`}
             style={{backgroundColor: `${styles.cciBgColor}`}}/>
         }
-          closeOnDocumentClick={true}
-          on={`${event}`}
+          closeOnDocumentClick={false}
+          on={event}
           position={'right top'}
           defaultOpen={false}
           contentStyle={{ padding: '0px', border: 'none', backgroundColor: `${styles.cciBgColor}`}} 
@@ -333,8 +335,8 @@ export const SetupPDP=(props)=>{
             className={`${_PDPIconClassName}`}
             style={{backgroundColor: `${styles.cciBgColor}`}}/>
         }
-          closeOnDocumentClick={true}
-          on={`${event}`}
+          closeOnDocumentClick={false}
+          on={event}
           onClose={setEventState}
           position={'right top'}
           defaultOpen={false}  
