@@ -1,4 +1,4 @@
-﻿Input:
+Input:
 1) BOM summary table - the output of setup BOM tree ( generated from top menu )
    - the structure of each item/raw material and quantity requirements to produce a single product  
    - template base - "A Bill of Materials Template for Manufacturers.pdf"

@@ -196,9 +196,9 @@ export const SetupOP=(props)=>{
   const [event, setEvent] = useState('hover'); // '' is the initial state value
 
   if( props.component.operation === null || typeof props.component.operation === 'undefined' )
-  {
+      {
     props.component.operation = new initializeOp(props.component);
-  }
+      }
 
   const [shiftInfoArray, setShiftInfoArray] = useState(props.component.operation.shiftInfoArray);
 
@@ -207,8 +207,8 @@ export const SetupOP=(props)=>{
    const saveValidOpEntry=( component )=>{
     component.operation.shiftInfoArray = shiftInfoArray;
     sessionStorage.setItem( `${component.displayLogic.key}_${component.businessLogic.name}_op`, JSON.stringify( component.operation ));
-  }
-  
+          }
+
 
   const setEmployeeCount=(count, component)=>{
     if( typeof component.operation === 'undefined' )
@@ -250,7 +250,7 @@ export const SetupOP=(props)=>{
       component.operation.averageHourlyCost=value;
 
     saveValidOpEntry(component);
-  }
+    }
 
   const setDailyOvertimeCapacity=(overtimeCapacity, component)=>{
     if( typeof component.operation === 'undefined' )
@@ -274,22 +274,22 @@ export const SetupOP=(props)=>{
 
       if( !isValid )
         component.operation.dailyOvertimeCapacityPerEmployee=null;
-      else
+    else
         component.operation.dailyOvertimeCapacityPerEmployee=value;
-  
+
       saveValidOpEntry(component);
   }
 
-  
+
   const setTimePerComponentPerEmployee=(timePerComponent, component)=>{
     if( typeof component.operation === 'undefined' )
       component.operation = new initializeOp( component );
 
       let {isValid, value} = isValidValue(timePerComponent);
 
-      if( !isValid )
+    if( !isValid )
         component.operation.averageTimePerComponentPerEmployee = null;
-      else
+    else
         component.operation.averageTimePerComponentPerEmployee = value;
   
     saveValidOpEntry(component);
@@ -476,8 +476,8 @@ export const SetupOP=(props)=>{
     if( event === 'click' )
     {
       props.updateSubTitle( undefined, 'subTitle-BOM-data' );
-      setEvent('hover');
-      return;
+       setEvent('hover');
+       return;
     }
     if( event === 'hover' )
     {
@@ -651,8 +651,8 @@ export const SetupOP=(props)=>{
                     component={props.component}
                     handler={setHourlyCost}/>
                 <i id={`${props.component.displayLogic.key}-SetupOP`}
-                    className='text-danger m-0 py-1 px-1 fas fw fa-times-circle cursor-pointer'
-                    style={{backgroundColor: `${styles.cciBgColor}`}}
+                className='text-danger m-0 py-1 px-1 fas fw fa-times-circle cursor-pointer'
+                style={{backgroundColor: `${styles.cciBgColor}`}}
                     onClick={ close }/> 
             </div>
 
@@ -672,7 +672,7 @@ export const SetupOP=(props)=>{
                       id={-1}
                       cellCnt={2}
                       value={props.component.operation.averageHourlyOvertimeCost}
-                      component={props.component}
+                component={props.component}
                       handler={setHourlyOvertimeCost}/>
                   <i id={`${props.component.displayLogic.key}-SetupOP`}
                       className='text-danger m-0 py-1 px-1 fas fw fa-times-circle cursor-pointer'
@@ -688,7 +688,7 @@ export const SetupOP=(props)=>{
                     id={-1}
                     cellCnt={2}
                     value={props.component.operation.minAllowedEmployeePerShift}
-                    component={props.component}
+                component={props.component}
                     handler={setMinAllowedEmployee}/>
 
                 <hr className={dividerCCS.hDividerClassName }  style={dividerCCS.vDividerStyle}/>    
@@ -714,7 +714,7 @@ export const SetupOP=(props)=>{
                     id={-1}
                     cellCnt={2}
                     value={props.component.operation.averageHiringCostPerEmployee}
-                    component={props.component}
+                component={props.component}
                     handler={setAverageHiringCost}/>
 
                 <hr className={dividerCCS.hDividerClassName }  style={dividerCCS.vDividerStyle}/>    
@@ -724,7 +724,7 @@ export const SetupOP=(props)=>{
                     id={-1}
                     cellCnt={2}
                     value={props.component.operation.averageDismissalCostPerEmployee}
-                    component={props.component}
+                component={props.component}
                     handler={setDismissalCost}/>
 
                 <i id={`${props.component.displayLogic.key}-SetupOP`}
@@ -745,18 +745,18 @@ export const SetupOP=(props)=>{
                     handler={setSetupCost}/>
                 <hr className={dividerCCS.hDividerClassName }  style={dividerCCS.vDividerStyle}/>    
                 <SetupComponentOp
-                  title='scrap-rate'
+              title='scrap-rate'
                   id={-1}
                   cellCnt={2}
                   value={props.component.operation.scrapRate }
-                  component={props.component}
-                  handler={setScrapRate}/>
+              component={props.component}
+              handler={setScrapRate}/>
                 <i id={`${props.component.displayLogic.key}-SetupOP`}
                   className='text-danger m-0 py-1 px-1 fas fw fa-times-circle cursor-pointer'
                   style={{backgroundColor: `${styles.cciBgColor}`}}
                   onClick={ close }/> 
              </div>
-             
+
             <hr className={dividerCCS.hDividerClassName} style={dividerCCS.hDividerStyle}/>
 
             <div className={'d-flex  justify-content-between'}>
@@ -765,7 +765,7 @@ export const SetupOP=(props)=>{
                     id={-1}
                     cellCnt={2}
                     value={props.component.operation.inputWarehouse }
-                    component={props.component}
+                component={props.component}
                     handler={setInputWarehouse}/>
 
                 <hr className={dividerCCS.hDividerClassName }  style={dividerCCS.vDividerStyle}/>    
@@ -788,13 +788,13 @@ export const SetupOP=(props)=>{
 
             <div className={'d-flex  justify-content-between'}>
               <SetupComponentOp
-                  title='start-product-date'
+                title='start-product-date'
                   id={-1}
                   cellCnt={2}
                   value={props.component.operation.startDate }
-                  component={props.component}
-                  handler={setStartDate}/>
-     
+                component={props.component}
+                handler={setStartDate}/>
+
               <hr className={dividerCCS.hDividerClassName }  style={dividerCCS.vDividerStyle}/>    
 
               <SetupComponentOp
@@ -802,7 +802,7 @@ export const SetupOP=(props)=>{
                   id={-1}
                   cellCnt={2}
                   value={props.component.operation.workshop }
-                  component={props.component}
+                component={props.component}
                   handler={setWorkshop}/>
 
               <i id={`${props.component.displayLogic.key}-SetupOP`}
@@ -814,7 +814,7 @@ export const SetupOP=(props)=>{
             <hr className={dividerCCS.hDividerClassName} style={dividerCCS.hDividerStyle}/>
 
             {renderShiftInfoInputs()}
-          </div>
+            </div>
             )
           }
       </Popup>

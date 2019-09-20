@@ -127,11 +127,11 @@ const SetupComponentIR=(props)=>{
   // https://medium.freecodecamp.org/reactjs-pass-parameters-to-event-handlers-ca1f5c422b9
   // m-0 py-1 border-0
   // return (className='d-flex justify-content-between'
-  return(
+  return (
     <div style={{backgroundColor: `${styles.cciBgColor}`}}>
        { inputProcurementType ?
           <Popup
-            trigger={ 
+            trigger={
               // <div className='d-flex  justify-content-between'>
               <div className='d-flex' >
                 <span className='align-items-center m-0 y-0 border-0' >
@@ -148,7 +148,7 @@ const SetupComponentIR=(props)=>{
                     htmlFor={`${inputName}-1`}
                     style={{'backgroundColor': `${styles.cciBgColor}`, 'color': inputValue.includes('InHouse') ? `${styles.cciInfoBlue}` : `${styles.cciHintRed}`}}>
                      {t(`inventoryRecords:in-house`)}
-                  </label>
+                    </label>
                 </span>
                 {/* <hr className={dividerCCS.hDividerClassName }  style={dividerCCS.vDividerStyle}/> */}
                 <span className='align-items-center m-0 y-0 border-0'>
@@ -163,7 +163,7 @@ const SetupComponentIR=(props)=>{
                           onClose={updateValue(props)}/>
                    <label className={'m-0 px-1 border-0 cursor-pointer'}
                     htmlFor={`${inputName}-2`}
-                    style={{'backgroundColor': `${styles.cciBgColor}`,  'color': inputValue.includes('Purchase') ? `${styles.cciInfoBlue}` : `${styles.cciHintRed}`}}>
+                    style={{'backgroundColor': `${styles.cciBgColor}`, 'color': inputValue.includes('Purchase') ? `${styles.cciInfoBlue}` : `${styles.cciHintRed}`}}>
                      {t('inventoryRecords:purchase') }
                     </label>
                 </span>
@@ -181,7 +181,7 @@ const SetupComponentIR=(props)=>{
             <div className='text-nowrap m-0 p-1'>
               {t(`inventoryRecords:${props.title}`)}
             </div>
-          </Popup>
+        </Popup>
           :
           <Popup
               trigger={
@@ -257,9 +257,9 @@ export const SetupIRF=(props)=>{
   const [event, setEvent] = useState('hover'); // '' is the initial state value
 
   if( props.component.irf === null || typeof props.component.irf === 'undefined' )
-  {
+      {
     props.component.irf = new initializeIRF(props.component);
-  }
+      }
 
   const [SRArray, setSRArray] = useState(props.component.irf.scheduledReceipts);
 
@@ -269,7 +269,7 @@ export const SetupIRF=(props)=>{
   const saveValidIRFEntry=( component )=>{
     component.irf.scheduledReceipts = SRArray;
     sessionStorage.setItem( `${component.displayLogic.key}_${component.businessLogic.name}_irf`, JSON.stringify( component.irf ));
-  }
+          }
 
   const setIOH=(index, ioh, component)=>{
     if( typeof component.irf === 'undefined' )
@@ -293,7 +293,7 @@ export const SetupIRF=(props)=>{
       let {isValid, value} = isValidValue(qty);
 
       if( isValid )
-      {
+          {
           for( let item of SRArray )
           {
             const id = SRArray.indexOf( item );
@@ -303,8 +303,8 @@ export const SetupIRF=(props)=>{
               break;
             }
           }
-       }
-  
+      }
+
        saveValidIRFEntry(component);
   };
 
@@ -312,7 +312,7 @@ export const SetupIRF=(props)=>{
     const setSRDate=(index, completeDate, component)=>{
       if( typeof component.irf === 'undefined' )
         component.irf = new initializeIRF( component );
-  
+
       if( isValidString( completeDate ))
       {
         for( let item of SRArray )
@@ -324,8 +324,8 @@ export const SetupIRF=(props)=>{
             break;
           }
         }
-      }
-  
+  }
+
       saveValidIRFEntry(component);
     }
 
@@ -334,16 +334,16 @@ export const SetupIRF=(props)=>{
     {
       component.irf = new initializeIRF( component );
     }
-       
+
     //validation of value is done inside onUpdateValueEnterKey 
     let {isValid, value} = isValidValue(qty);
     if( !isValid )
       component.irf.maxAllowedEndingInventory=null;
     else
-    {
+  {
       component.irf.maxAllowedEndingInventory=value;
-    }
-   
+  }
+
     saveValidIRFEntry(component); 
   }
 
@@ -360,10 +360,10 @@ export const SetupIRF=(props)=>{
       component.irf.minAllowedEndingInventory=value;
 
       if( component.irf.maxAllowedEndingInventory < value )
-      {
+    {
         component.irf.maxAllowedEndingInventory = value;
       }
-        
+
     }
 
 
@@ -398,7 +398,7 @@ export const SetupIRF=(props)=>{
 
     saveValidIRFEntry(component); 
   }
-  
+
   //unit in local currency
   const setOtherCostPerUnit=(index, cost, component)=>{
     if( typeof component.irf === 'undefined' )
@@ -413,7 +413,7 @@ export const SetupIRF=(props)=>{
 
     saveValidIRFEntry(component); 
   }
-  
+
 
   const setHoldingCostPerUnit=(index, cost, component)=>{
     if( typeof component.irf === 'undefined' )
@@ -468,8 +468,8 @@ export const SetupIRF=(props)=>{
     if( event === 'click' )
     {
       props.updateSubTitle( undefined, 'subTitle-BOM-data' );
-      setEvent('hover');
-      return;
+       setEvent('hover');
+       return;
     }
     if( event === 'hover' )
     {
@@ -635,10 +635,10 @@ export const SetupIRF=(props)=>{
                     handler={setProcurementType}/>
 
                 <i id={`${props.component.displayLogic.key}-SetupIRF`}
-                      className='text-danger m-0 py-1 px-1 fas fw fa-times-circle cursor-pointer'
-                      style={{backgroundColor: `${styles.cciBgColor}`}}
+                className='text-danger m-0 py-1 px-1 fas fw fa-times-circle cursor-pointer'
+                style={{backgroundColor: `${styles.cciBgColor}`}}
                       onClick={ close }/> 
-              </div>
+            </div>
               <hr className={dividerCCS.hDividerClassName } style={dividerCCS.hDividerStyle}/>
 
               { ( procurementType === 'Purchase' ? 
@@ -648,7 +648,7 @@ export const SetupIRF=(props)=>{
                     id={-1}
                     cellCnt={2}
                     value={props.component.irf.supplier }
-                    component={props.component}
+                component={props.component}
                     handler={setSupplier}/>
 
                     <hr className={dividerCCS.hDividerClassName }  style={dividerCCS.vDividerStyle}/>
@@ -658,7 +658,7 @@ export const SetupIRF=(props)=>{
                     id={-1}
                     cellCnt={2}
                     value={props.component.irf.supplierPartNumber }
-                    component={props.component}
+                component={props.component}
                     handler={setSupplierPartNumber}/>
 
                     <i id={`${props.component.displayLogic.key}-SetupIRF`}
@@ -667,7 +667,7 @@ export const SetupIRF=(props)=>{
                       onClick={ close }/> 
                   </div>
                 
-                  : 
+              :
                   null
                   )
                 }
@@ -676,7 +676,7 @@ export const SetupIRF=(props)=>{
                       :
                       null
                   )
-                }
+            }
 
                 <div className={'d-flex  justify-content-between'}> 
                   <SetupComponentIR
@@ -684,7 +684,7 @@ export const SetupIRF=(props)=>{
                       id={-1}
                       cellCnt={2}
                       value={props.component.irf.otherProductionCostPerUnit }
-                      component={props.component}
+                component={props.component}
                       handler={setOtherCostPerUnit}/>
 
                   <hr className='m-0 bg-info'  style={dividerCCS.vDividerStyle}/>
@@ -693,7 +693,7 @@ export const SetupIRF=(props)=>{
                       id={-1}
                       cellCnt={2}
                       value={props.component.irf.holdingCostPerUnit }
-                      component={props.component}
+              component={props.component}
                       handler={setHoldingCostPerUnit}/>
                     <i id={`${props.component.displayLogic.key}-SetupIRF`}
                       className='text-danger m-0 py-1 px-1 fas fw fa-times-circle cursor-pointer'
@@ -709,9 +709,9 @@ export const SetupIRF=(props)=>{
                       id={-1}
                       cellCnt={2}
                       value={props.component.irf.minAllowedEndingInventory }
-                      component={props.component}
+                component={props.component}
                       handler={setSS}/>
-    
+
                   <hr className={dividerCCS.hDividerClassName }  style={dividerCCS.vDividerStyle}/>
 
                   <SetupComponentIR
@@ -719,7 +719,7 @@ export const SetupIRF=(props)=>{
                       id={-1}
                       cellCnt={2}
                       value={ ( props.component.irf.maxAllowedEndingInventory !== null ) && ( props.component.irf.minAllowedEndingInventory > props.component.irf.maxAllowedEndingInventory )  ?  props.component.irf.minAllowedEndingInventory : props.component.irf.maxAllowedEndingInventory}
-                      component={props.component}
+                component={props.component}
                       handler={setMaxStock}/>
                   <i id={`${props.component.displayLogic.key}-SetupIRF`}
                       className='text-danger m-0 py-1 px-1 fas fw fa-times-circle cursor-pointer'
@@ -735,14 +735,14 @@ export const SetupIRF=(props)=>{
                       id={-1}
                       cellCnt={1}
                       value={props.component.irf.interest }
-                      component={props.component}
+                component={props.component}
                       handler={setInterest}/>
                   <i id={`${props.component.displayLogic.key}-SetupIRF`}
                         className='text-danger m-0 py-1 px-1 fas fw fa-times-circle cursor-pointer'
                         style={{backgroundColor: `${styles.cciBgColor}`}}
                         onClick={ close }/> 
                 </div>
-          </div>
+            </div>
             )
           }
       </Popup>
