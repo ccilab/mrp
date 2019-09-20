@@ -1,0 +1,17 @@
+{
+    "inventory-on-hand-quantity": "Inventory on-hand",
+    "scheduled-receipts-date": "Receipts Date",
+    "scheduled-receipts-quantity": "Receipts Quantity",
+    "max-allowed-ending-inventory-quantity": "Maximum Stock",
+    "mim-allowed-ending-inventory-quantity": "Minimum Stock",
+    "lead-time-quantity": "Lead Time",
+    "procurement-type": "* Procurement Type",
+    "in-house": "In house production",
+    "purchase" : "External Purchase",
+    "other-production-cost-per-unit-quantity": "Other cost per unit",
+    "other-purchase-cost-per-unit-quantity" : "Purchase cost per unit",
+    "holding-cost-per-unit-quantity": "Holding cost per unit",
+    "interest-rate" :"interest",
+    "supplier-name" : "Supplier Name",
+    "supplied-part-number" : "Supplied Part Name"
+}

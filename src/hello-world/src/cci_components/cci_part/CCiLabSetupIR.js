@@ -4,16 +4,17 @@ import { useTranslation } from 'react-i18next';
 
 import styles from "./../../dist/css/ccilab-component-list.css"
 
-import { isValidString, isValidValue } from "./CCiLabUtility";
+import { dividerCCS, isValidString, isValidValue } from "./CCiLabUtility";
 
 
-const SetupComponentBOM=(props)=>{
-  const { t } = useTranslation(['component','commands'], {useSuspense: false});
+const SetupComponentIR=(props)=>{
+  const { t } = useTranslation(['inventoryRecords','commands'], {useSuspense: false});
 
   let inputValue = (props.value === null)? '': props.value;
 
   let inputClassName = 'text-primary m-0 p-0 border-0 cursor-pointer';
-  let inputStyle={'backgroundColor': `${styles.cciBgColor}`};
+  let cellWidth = (typeof props.cellCnt !== 'undefined' && props.cellCnt === 1) ?  '20rem' : '10rem';
+  let inputStyle={'backgroundColor': `${styles.cciBgColor}`, width: `${cellWidth}`};
   let inputType='text';
   let tooltipOnMode=['click','hover'];
   let tooltipPosition='top left';
@@ -23,12 +24,8 @@ const SetupComponentBOM=(props)=>{
 
   let rateInputElement = React.createRef();
 
-  if( props.value === 'add-part')
-  {
-    inputValue = '';
-  }
 
-  if( props.title.includes('part-name'))
+  if( props.title.includes('inventory-on-hand'))
   {
     tooltipPosition='bottom left';
   }
@@ -41,7 +38,7 @@ const SetupComponentBOM=(props)=>{
   if( props.title.includes('procurement-type'))
   {
     inputClassName = 'm-0 p-0 border-0 cursor-pointer';
-    inputStyle={'backgroundColor': `${styles.cciBgColor}`, 'height':'1em','width':'1em'};
+    inputStyle={'backgroundColor': `${styles.cciBgColor}`, 'height':'20px','width':'20px'};
     inputType='radio';
   }
 
@@ -84,27 +81,25 @@ const SetupComponentBOM=(props)=>{
 
   // https://blog.bitsrc.io/understanding-currying-in-javascript-ceb2188c339
   const updateValue=(props)=>(e)=>{
-    //   if( typeof props.handler !== 'undefined')
-    //   {
-    //     if( typeof e.target !== 'undefined' && e.target.value === '' && props.title ==='part-name')
-    //       e.target.value = 'add-part';
-
-    //     console.log("SetupComponentBOM - updateValue: " + e.target.value);
-
-    //     props.handler(e.target.value, props.component);
-    //   }
     onUpdateValueEnterKey( props, e.target);
   }
 
   const onUpdateValueEnterKey=(props, target )=>{
     if( typeof props.handler !== 'undefined')
     {
-      if( typeof target !== 'undefined' && target.value === '' && props.title ==='part-name')
-        target.value = 'add-part';
+      let value = target.value;
+      if( props.title.includes('max-allowed-ending-inventory-quantity') )
+      {
+        let _value=parseFloat(value);
+        if( isNaN(_value) || _value < props.component.irf.minAllowedEndingInventory )
+        {
+          value=props.component.irf.minAllowedEndingInventory;
+          setInput(value);
+        }
+      }
+      console.log("SetupComponentIR - updateValue: " + target.value);
 
-      console.log("SetupComponentBOM - updateValue: " + target.value);
-
-      props.handler(target.value, props.component);
+      props.handler(props.id, value, props.component);
 
     }
   }
@@ -124,20 +119,22 @@ const SetupComponentBOM=(props)=>{
   };
 
   const updateChange=(props)=>(e)=>{
-    console.log("SetupComponentBOM - updateChange: " + e.target.value);
+    console.log("SetupComponentIR - updateChange: " + e.target.value);
   }
 
 
 
   // https://medium.freecodecamp.org/reactjs-pass-parameters-to-event-handlers-ca1f5c422b9
+  // m-0 py-1 border-0
+  // return (className='d-flex justify-content-between'
   return (
-    <div className='d-flex justify-content-between'
-         style={{backgroundColor: `${styles.cciBgColor}`}}>
+    <div style={{backgroundColor: `${styles.cciBgColor}`}}>
        { inputProcurementType ?
           <Popup
             trigger={
-              <div className='d-flex flex-column m-0 py-1 border-0'>
-                <div className='d-inline-flex align-items-center m-0 p-0 border-0' >
+              // <div className='d-flex  justify-content-between'>
+              <div className='d-flex' >
+                <span className='align-items-center m-0 y-0 border-0' >
                   <input className={`${inputClassName}`}
                         id={`${inputName}-1`}
                         type={inputType}
@@ -150,10 +147,11 @@ const SetupComponentBOM=(props)=>{
                   <label className={'m-0 px-1 border-0 cursor-pointer'}
                     htmlFor={`${inputName}-1`}
                     style={{'backgroundColor': `${styles.cciBgColor}`, 'color': inputValue.includes('InHouse') ? `${styles.cciInfoBlue}` : `${styles.cciHintRed}`}}>
-                     {t(`component:in-house`)}
+                     {t(`inventoryRecords:in-house`)}
                     </label>
-                </div>
-                <div className='d-inline-flex align-items-center m-0 y-0 border-0'>
+                </span>
+                {/* <hr className={dividerCCS.hDividerClassName }  style={dividerCCS.vDividerStyle}/> */}
+                <span className='align-items-center m-0 y-0 border-0'>
                   <input  className={`${inputClassName}`}
                           id={`${inputName}-2`}
                           type={inputType}
@@ -166,9 +164,9 @@ const SetupComponentBOM=(props)=>{
                    <label className={'m-0 px-1 border-0 cursor-pointer'}
                     htmlFor={`${inputName}-2`}
                     style={{'backgroundColor': `${styles.cciBgColor}`, 'color': inputValue.includes('Purchase') ? `${styles.cciInfoBlue}` : `${styles.cciHintRed}`}}>
-                     {t('component:purchase') }
+                     {t('inventoryRecords:purchase') }
                     </label>
-                </div>
+                </span>
               </div>
             }
             id={`${props.component.displayLogic.key}-tooltip`}
@@ -181,21 +179,22 @@ const SetupComponentBOM=(props)=>{
             mouseEnterDelay={0}
             contentStyle={{  padding: '0px' }}>
             <div className='text-nowrap m-0 p-1'>
-              {t(`component:${props.title}`)}
+              {t(`inventoryRecords:${props.title}`)}
             </div>
         </Popup>
           :
           <Popup
               trigger={
-                <input className={`${inputClassName}`}
+                <input key={props.id}
+                      className={`${inputClassName}`}
                       ref={ appendPercentage? rateInputElement : null }
                       id={inputName}
                       type={`${inputType}`}
                       style={inputStyle}
-                      placeholder={t(`component:${props.title}`)}
+                      placeholder={t(`inventoryRecords:${props.title}`)}
                       name={inputName}
                       value={ input }
-                      min = { inputType.includes('number') ? 1 : null}
+                      min = { inputType.includes('number') ? 0: null}
                       onChange={appendPercentage ? updateValue(props) : updateChange(props)}
                       onClose={updateValue(props)}
                       onInput={(e)=>{filterInputValue(e)}}
@@ -213,7 +212,7 @@ const SetupComponentBOM=(props)=>{
               contentStyle={{ padding: '0px'}}
               >
               <div className='text-nowrap m-0 px-1'>
-                {t(`component:${props.title}`)}
+                {t(`inventoryRecords:${props.title}`)}
               </div>
           </Popup>
        }
@@ -222,280 +221,245 @@ const SetupComponentBOM=(props)=>{
   );
 }
 
-export const CanEnableInlineMenu = ( component )=>{
-  if( isValidString( component.businessLogic.name) &&
-      component.bom !== null &&
-      typeof component.bom !== 'undefined' &&
-      typeof component.bom.core !== 'undefined' &&
-      component.bom.core !== null &&
-      isValidString( component.bom.core.partNumber ) &&
-      ( isValidValue( component.bom.core.requiredQty ).isValid ||
-        isValidValue( component.bom.core.unitQty ).isValid ) &&
-      isValidValue( component.bom.core.scrapRate).isValid &&
-      isValidString( component.bom.core.procurementType) &&
-      isValidString( component.bom.core.startDate) &&
-      isValidString( component.bom.core.completeDate)
-)
-  {
-    component.displayLogic.inlineMenuEnabled = true;
-  }
-  else
-  {
-    component.displayLogic.inlineMenuEnabled = false;
-  }
+
+export const initializeIRF=( component )=>{
+  let irf= JSON.parse(sessionStorage.getItem(`${component.displayLogic.key}_${component.businessLogic.name}_irf`)) || _initializeIRF();
+  return irf;
 }
 
-export const initializeBOM=( component )=>{
-  let bom={};
-  bom.core= JSON.parse(sessionStorage.getItem(`${component.displayLogic.key}_${component.businessLogic.name}_bom_core`)) || initializeBOMCore();
-  bom.extra=JSON.parse(sessionStorage.getItem(`${component.displayLogic.key}_${component.businessLogic.name}_bom_extra`)) ||initializeBOMExtra();
-  return bom;
+const _initializeIRF=()=>{
+   let irf={};
+   irf.inventoryOnHand=null;  //Initial Inventory, Beginning Inventory  
+   irf.scheduledReceipts=[[null,null]];  //SR - date-quantity pair
+   irf.maxAllowedEndingInventory=null; // Maximum Stock
+   irf.minAllowedEndingInventory= null; //Safe Stock (SS)
+   irf.procurementType=null;  //'InHouse'(to produce production order), 'Purchase'(to produce purchase order)
+   irf.leadTime=null;
+   irf.otherProductionCostPerUnit=null; //other than employee costs
+   irf.holdingCostPerUnit=null;  //Inventory holding cost per unit
+   irf.interest=null;
+   irf.supplier='';   //string initialized to ''
+   irf.supplierPartNumber='';
+   irf.maxPurchasingAllowed=0;   //doesn't allowed for now
+   irf.purchasingCostPerUnit=0;  //doesn't allowed for now
+   irf.maxBackOrderAllowed=0;    //doesn't allowed for now
+   irf.backOrderCostPerUnit=0;  //doesn't allowed for now
+ 
+   return irf;
 }
 
-// requiredQtyPerShift calculates based on its parent component's unitQty
-// #todo - need to re-design how to handle it
-const initializeBOMCore=()=>{
-   let core={};
-   core.partNumber=null;
-   core.unitQty=null;
-   core.unitOfMeasure=''; // may doesn't have unit
-   core.requiredQty= null; //required quantity of component/part
-   core.startDate=null;
-   core.completeDate=null;
-   core.scrapRate=null;    // in %, need /100 when uses it
-   core.procurementType=null;  //'InHouse'(to produce production order), 'Purchase'(to produce purchase order)
-   core.warehouse=null;
-   core.leadTime=null;
-   core.workshop=null;
-   core.supplier=null;
-   core.supplierPartNumber=null;
-   core.requiredQtyPerShift=null;  // required quantity for per shift per run
-   core.shiftCount=1;         // how many different shifts are needed
-   core.sameShiftRunCount=1;  //same shift runs how many times
-   return core;
-}
-
-const initializeBOMExtra=()=>{
-  let extra={};
-  extra.SKU='';
-  extra.barCode='';
-  extra.revision='';
-  extra.refDesignator='';
-  extra.phase='';
-  extra.category='';
-  extra.material='';
-  extra.process='';
-  extra.unitCost='';
-  extra.assemblyLine='';
-  extra.description='';
-  extra.note='';
-  return extra;
-};
-
-export const SetupBOM=(props)=>{
+//Inventory Records File
+export const SetupIRF=(props)=>{
   const { t } = useTranslation('commands', {useSuspense: false});
   
   const _className = 'cursor-pointer text-primary border-0 p-1 fa fw fa-edit' + (props.component.displayLogic.selected ? ' bg-info' : ' ');
 
   const [event, setEvent] = useState('hover'); // '' is the initial state value
 
-  // deep copy object that doesn't have function inside object
-  const originComponent = JSON.parse(JSON.stringify(props.component));
-
-   // component.displayLogic.inlineMenuEnabled needs set to true
-  const IsClosePopupMenu=( component )=>{
-      CanEnableInlineMenu( component );
-      if( component.displayLogic.inlineMenuEnabled )
+  if( props.component.irf === null || typeof props.component.irf === 'undefined' )
       {
-        props.updateComponent(originComponent, component);
+    props.component.irf = new initializeIRF(props.component);
       }
 
-      // update component name
-      if( isValidString( component.businessLogic.name) && props.updateComponent(originComponent, component))
-      {
-          // originComponent.businessLogic.name could be hard-coded 'add-part' or other user given name
-          // if( originComponent.businessLogic.name !== component.businessLogic.name )
-          // {
-          //   sessionStorage.removeItem(`${props.component.displayLogic.key}_${originComponent.businessLogic.name}_displayLogic`);
-          // }
-          // component name may or may not change, but the component.displayLogic.inlineMenuEnabled will change if passed the checking
-          // sessionStorage.setItem( `${component.displayLogic.key}_${component.businessLogic.name}_displayLogic`, JSON.stringify( component.displayLogic ));
+  const [SRArray, setSRArray] = useState(props.component.irf.scheduledReceipts);
 
-          // update component name if user changes it
-          if( originComponent.businessLogic.name !== component.businessLogic.name )
-          {
-              sessionStorage.removeItem(`${props.component.displayLogic.key}_${originComponent.businessLogic.name}_businessLogic`);
-              sessionStorage.setItem( `${component.displayLogic.key}_${component.businessLogic.name}_businessLogic`, JSON.stringify( component.businessLogic ));
+  const [procurementType, setProcurement] = useState(props.component.irf.procurementType);
+
+   // 
+  const saveValidIRFEntry=( component )=>{
+    component.irf.scheduledReceipts = SRArray;
+    sessionStorage.setItem( `${component.displayLogic.key}_${component.businessLogic.name}_irf`, JSON.stringify( component.irf ));
           }
 
-          if( originComponent.businessLogic.name !== component.businessLogic.name )
-          {
-            sessionStorage.removeItem( `${component.displayLogic.key}_${originComponent.businessLogic.name}_bom_core`);
-          }
-          sessionStorage.setItem( `${component.displayLogic.key}_${component.businessLogic.name}_bom_core`, JSON.stringify( component.bom.core ));
-      }
+  const setIOH=(index, ioh, component)=>{
+    if( typeof component.irf === 'undefined' )
+      component.irf = new initializeIRF( component );
 
+    let {isValid, value} = isValidValue(ioh);
 
-  }
-
-
-
-  if( props.component.bom === null || typeof props.component.bom === 'undefined' )
-  {
-    props.component.bom = new initializeBOM(props.component);
-  }
-
-  // const isValidString=( name )=>{
-  //   return ( typeof name === 'string' &&
-  //       name.length > 0 ) ? true : false
-  // };
-
-  // const isValidValue=(valueToCheck)=>{
-
-  //   let value = parseFloat(valueToCheck);
-  //   let valid = isNaN( value ) ? false : true;
-
-  //   let rt={};
-  //   rt.isValid = valid;
-  //   rt.value = value;
-  //   return rt;
-  // };
-
-  const calQuantityPerShift=(component)=>{
-    const bomCore = component.bom.core;
-    if( component.bom.core.requiredQty !== null &&
-      component.bom.core.unitQty !== null &&
-      component.bom.core.scrapRate !== null
-    )
-    {
-
-      bomCore.requiredQtyPerShift =((bomCore.requiredQty * bomCore.unitQty)/(bomCore.shiftCount * bomCore.sameShiftRunCount )) * (1 + bomCore.scrapRate/100) ;
-    }
+     if( !isValid )
+      component.irf.inventoryOnHand=null;
     else
-      bomCore.requiredQtyPerShift=null;
-  };
-
-  const setPartName=(partName, component)=>{
-    if( isValidString( partName ))
-        component.businessLogic.name=partName;
-    else
-      component.businessLogic.name='';  //reset to initial value to fail IsClosePopupMenu evaluation
-
-    IsClosePopupMenu(component);
-    console.log("SetupBOM - setPartName: " + component.businessLogic.name);
-  };
-
-  const setPartNumber=(partNumber, component)=>{
-    if( typeof component.bom === 'undefined' )
-      component.bom = new initializeBOM( component );
-
-    if( isValidString( partNumber ))
-      component.bom.core.partNumber=partNumber;
-    else
-      component.businessLogic.name=null;  //reset to initial value to fail IsClosePopupMenu evaluation
-
-    IsClosePopupMenu(component);
-
-    console.log("SetupBOM - setPartNumber: " + component.bom.core.partNumber);
-  };
-
-  const setUnitQty=(unitQty, component)=>{
-    if( typeof component.bom === 'undefined' )
-      component.bom = new initializeBOM( component );
-
-    let {isValid, value} = isValidValue(unitQty);
-
-    if( !isValid )
-      component.bom.core.unitQty=null;
-    else
-      component.bom.core.unitQty=value;
+      component.irf.inventoryOnHand=value;
 
     // required quantity for per shift per run
-    calQuantityPerShift(component); //reset requiredQtyPerShift to null if component.bom.core.unitQty is null
-    IsClosePopupMenu(component);
+    saveValidIRFEntry(component);
+  };
 
-    console.log( 'setUnitQty: requiredQty='+component.bom.core.requiredQty);
-    console.log( 'setUnitQty: requiredQtyPerShift='+component.bom.core.requiredQtyPerShift);
+  const setSRQty=(index, qty, component)=>{
+    if( typeof component.irf === 'undefined' )
+      component.irf = new initializeIRF( component );
+
+      let {isValid, value} = isValidValue(qty);
+
+      if( isValid )
+          {
+          for( let item of SRArray )
+          {
+            const id = SRArray.indexOf( item );
+            if( id === index )
+            {
+              item[1] = value;
+              break;
+            }
+          }
+      }
+
+       saveValidIRFEntry(component);
+  };
+
+    //have to be in-sync with SR Qty
+    const setSRDate=(index, completeDate, component)=>{
+      if( typeof component.irf === 'undefined' )
+        component.irf = new initializeIRF( component );
+
+      if( isValidString( completeDate ))
+      {
+        for( let item of SRArray )
+        {
+          const id = SRArray.indexOf( item );
+          if( id === index )
+          {
+            item[0] = completeDate;
+            break;
+          }
+        }
   }
 
-  const setTotalRequiredQty=(qty, component)=>{
-    if( typeof component.bom === 'undefined' )
-      component.bom = new initializeBOM( component );
+      saveValidIRFEntry(component);
+    }
+
+  const setMaxStock=(index, qty, component)=>{
+    if( typeof component.irf === 'undefined' )
+    {
+      component.irf = new initializeIRF( component );
+    }
+
+    //validation of value is done inside onUpdateValueEnterKey 
+    let {isValid, value} = isValidValue(qty);
+    if( !isValid )
+      component.irf.maxAllowedEndingInventory=null;
+    else
+  {
+      component.irf.maxAllowedEndingInventory=value;
+  }
+
+    saveValidIRFEntry(component); 
+  }
+
+  const setSS=(index, qty, component)=>{
+    if( typeof component.irf === 'undefined' )
+      component.irf = new initializeIRF( component );
 
     let {isValid, value} = isValidValue(qty);
 
     if( !isValid )
-      component.bom.core.requiredQty=null;
+      component.irf.minAllowedEndingInventory=null;
     else
-      component.bom.core.requiredQty=value;
+    {
+      component.irf.minAllowedEndingInventory=value;
 
-    calQuantityPerShift(component);
-    IsClosePopupMenu(component);
+      if( component.irf.maxAllowedEndingInventory < value )
+    {
+        component.irf.maxAllowedEndingInventory = value;
+      }
 
-    console.log('setTotalRequiredQty - ' + component.bom.core.requiredQty);
+    }
+
+
+    saveValidIRFEntry(component); 
   }
 
-  const setUnitOfMeasure=(unitOfMeasure, component)=>{
-    if( typeof component.bom === 'undefined' )
-      component.bom = new initializeBOM( component );
-
-    component.bom.core.unitOfMeasure=unitOfMeasure;
-  }
-
-  const setScrapRate=(scrapRate, component)=>{
-    if( typeof component.bom === 'undefined' )
-      component.bom = new initializeBOM( component );
-
-    let {isValid, value} = isValidValue(scrapRate);
-
-    if( !isValid )
-      component.bom.core.scrapRate = null;
-    else
-      component.bom.core.scrapRate = value;
-
-    IsClosePopupMenu(component);
-    console.log('setScrapRate - ' + component.bom.core.scrapRate);
-  }
-
-  const setProcurementType=(procurementType, component)=>{
-    if( typeof component.bom === 'undefined' )
-      component.bom = new initializeBOM( component );
+  const setProcurementType=(index, procurementType, component)=>{
+    if( typeof component.irf === 'undefined' )
+      component.irf = new initializeIRF( component );
 
     if( isValidString(procurementType) )
-      component.bom.core.procurementType = procurementType;
+      component.irf.procurementType = procurementType;
     else
-      component.bom.core.procurementType = null;
+      component.irf.procurementType = null;
 
-    IsClosePopupMenu(component);
-    console.log( 'setProcurementType : ' + component.bom.core.procurementType );
+    setProcurement(component.irf.procurementType);
+
+    saveValidIRFEntry(component); 
   }
 
-  const setStartDate=(startDate, component)=>{
-    if( typeof component.bom === 'undefined' )
-      component.bom = new initializeBOM( component );
+  // followed with unit (days, weeks, months)
+  const setLeadTime=(index, qty, component)=>{
+    if( typeof component.irf === 'undefined' )
+      component.irf = new initializeIRF( component );
 
-    if( isValidString( startDate ))
-      component.bom.core.startDate=startDate;
+    let {isValid, value} = isValidValue(qty);
+
+    if( !isValid )
+      component.irf.leadTime=null;
     else
-      component.bom.core.startDate = null;
+      component.irf.leadTime=value;
 
-    IsClosePopupMenu(component);
-    console.log( 'setStartDate : ' + component.bom.core.startDate);
+    saveValidIRFEntry(component); 
   }
 
-  const setCompleteDate=(completeDate, component)=>{
-    if( typeof component.bom === 'undefined' )
-      component.bom = new initializeBOM( component );
+  //unit in local currency
+  const setOtherCostPerUnit=(index, cost, component)=>{
+    if( typeof component.irf === 'undefined' )
+      component.irf = new initializeIRF( component );
 
-    if( isValidString( completeDate ))
-      component.bom.core.completeDate=completeDate;
+    let {isValid, value} = isValidValue(cost);
+
+    if( !isValid )
+      component.irf.otherProductionCostPerUnit=null;
     else
-      component.bom.core.completeDate = null;
+      component.irf.otherProductionCostPerUnit=value;
 
-    IsClosePopupMenu(component);
-    console.log( 'setCompleteDate : ' + component.bom.core.completeDate);
+    saveValidIRFEntry(component); 
   }
 
+
+  const setHoldingCostPerUnit=(index, cost, component)=>{
+    if( typeof component.irf === 'undefined' )
+      component.irf = new initializeIRF( component );
+
+    let {isValid, value} = isValidValue(cost);
+
+    if( !isValid )
+      component.irf.holdingCostPerUnit=null;
+    else
+      component.irf.holdingCostPerUnit=value;
+
+    saveValidIRFEntry(component); 
+  }
+
+  const setInterest=(index, interest, component)=>{
+    if( typeof component.irf === 'undefined' )
+      component.irf = new initializeIRF( component );
+
+    let {isValid, value} = isValidValue(interest);
+
+    if( !isValid )
+      component.irf.interest=null;
+    else
+      component.irf.interest=value;
+
+    saveValidIRFEntry(component); 
+  }
+
+  const setSupplier=(index, supplierName, component)=>{
+    if( isValidString( supplierName ))
+        component.irf.supplier=supplierName;
+    else
+      component.irf.supplier='';  
+
+      saveValidIRFEntry(component); 
+  };
+
+  const setSupplierPartNumber=(index, supplierPartNumber, component)=>{
+    if( isValidString( supplierPartNumber ))
+        component.irf.supplierPartNumber=supplierPartNumber;
+    else
+      component.irf.supplierPartNumber='';  
+
+      saveValidIRFEntry(component); 
+  };
 
   //hover to popup tooltip, click/focus to popup setup BOM inputs
   // based on event from mouse or click for desktop devices, click for touch devices
@@ -503,15 +467,89 @@ export const SetupBOM=(props)=>{
   {
     if( event === 'click' )
     {
+      props.updateSubTitle( undefined, 'subTitle-BOM-data' );
        setEvent('hover');
        return;
     }
     if( event === 'hover' )
     {
+      props.updateSubTitle( undefined, 'show-setup-IRF' );
       setEvent('click');
       return;
     }
   }
+
+  const AddNextSREntry=(index)=>(e)=>{
+    SRArray.push([null,null]);
+    saveValidIRFEntry(props.component);
+    setSRArray( SRArray );
+    window.dispatchEvent(new Event('resize'));  //resize popup menu
+  }
+
+  const removeSREntry=(index)=>(e)=>{
+    for( let item of SRArray )
+    {
+      const id = SRArray.indexOf( item );
+      if( id === index )
+      {
+        SRArray.splice(id, 1);
+      }
+    }
+    
+    saveValidIRFEntry(props.component);
+    setSRArray( SRArray );
+    window.dispatchEvent(new Event('resize'));   //resize popup menu
+  }
+
+  
+
+ const renderSRInput=(uniqueKey, index, srDate, demand, isLastElement )=>{
+  return(
+    <div>
+      <div key={uniqueKey} className={'d-flex  justify-content-between'}>  
+        <SetupComponentIR
+         title='scheduled-receipts-date'   //array of completed date for each required quantity
+         id={index}
+         cellCnt={2}
+         value={ srDate }
+         component={props.component}
+         handler={setSRDate}/>
+        <hr className={dividerCCS.hDividerClassName }  style={dividerCCS.vDividerStyle}/>
+     
+        <SetupComponentIR
+         title='scheduled-receipts-quantity'
+         id={index}
+         cellCnt={2}
+         value={( demand !== null && demand >= 0 ) ? demand : ''} //array of demands for each period 
+         component={props.component}
+         handler={setSRQty}/>
+         
+      { isLastElement === true ?
+        <i id={`${index}`}
+         className='text-info m-0 py-1 px-1 fas fw fa-plus-circle cursor-pointer'
+         style={{backgroundColor: `${styles.cciBgColor}`}}
+         onClick={AddNextSREntry(index)}/>
+         :
+         <i id={`${index}`}
+         className='text-danger m-0 py-1 px-1 fas fw fa-minus-circle cursor-pointer'
+         style={{backgroundColor: `${styles.cciBgColor}`}}
+         onClick={removeSREntry(index)}/>
+      } 
+      </div>
+      <hr  className={dividerCCS.hDividerClassName } style={dividerCCS.hDividerStyle}/>
+    </div>
+  );
+ }
+
+  const renderSRInputs=()=>{
+    return (
+      SRArray.map( ( item )=>{
+        let id = SRArray.indexOf(item);
+        return renderSRInput( Math.random(), id, item[0], item[1], id ===  SRArray.length - 1 ? true : false )
+      } )
+    )
+  }
+
 
   return (
     ( props.component.displayLogic.selected ?
@@ -527,8 +565,8 @@ export const SetupBOM=(props)=>{
             className={`${_className}`}
             style={{backgroundColor: `${styles.cciBgColor}`}}/>
         }
-          closeOnDocumentClick={true}
-          on={`${event}`}
+          closeOnDocumentClick={false}
+          on={event}
           position={'right top'}
           defaultOpen={false}
           contentStyle={{ padding: '0px', border: 'none', backgroundColor: `${styles.cciBgColor}`}} 
@@ -536,7 +574,7 @@ export const SetupBOM=(props)=>{
           mouseEnterDelay={400}
           arrow={true}
           arrowStyle={{backgroundColor: `${styles.cciBgColor}`}}>
-          <span className={'text-primary'} >{t('commands:show-setup-BOM')}</span>
+          <span className={'text-primary'} >{t('commands:show-setup-IRF')}</span>
       </Popup>
       :
       <Popup
@@ -549,8 +587,8 @@ export const SetupBOM=(props)=>{
             className={`${_className}`}
             style={{backgroundColor: `${styles.cciBgColor}`}}/>
         }
-          closeOnDocumentClick={true}
-          on={`${event}`}
+          closeOnDocumentClick={false}
+          on={event}
           onClose={setEventState}
           position={'right top'}
           defaultOpen={false}  
@@ -558,91 +596,152 @@ export const SetupBOM=(props)=>{
           arrow={true}
           arrowStyle={{backgroundColor: `${styles.cciBgColor}`}}>
           {close => (
-            <div className={'bg-info d-flex flex-column'} >
-            <div className={'bg-info d-flex'}>
-              <SetupComponentBOM
-                title='part-name'
-                value={props.component.businessLogic.name}
-                component={props.component}
-                handler={setPartName}/>
-              <a id={`${props.component.displayLogic.key}-setupBOM`}
-                href={`#${props.component.displayLogic.key}`}
+            <div className={'d-flex flex-column'} style={{backgroundColor:`${styles.cciBgColor}`}}>
+              <div className={'d-flex justify-content-between'}>
+                  <SetupComponentIR
+                    title='inventory-on-hand-quantity'
+                    id={-1}
+                    cellCnt={2}
+                    value={props.component.irf.inventoryOnHand}
+                    component={props.component}
+                    handler={setIOH}/>
+
+                <hr className={dividerCCS.hDividerClassName }  style={dividerCCS.vDividerStyle}/>
+
+                  <SetupComponentIR
+                    title='lead-time-quantity'
+                    id={-1}
+                    cellCnt={2}
+                    value={props.component.irf.leadTime }
+                    component={props.component}
+                    handler={setLeadTime}/>
+                  <i id={`${props.component.displayLogic.key}-SetupIRF`}
+                    className='text-danger m-0 py-1 px-1 fas fw fa-times-circle cursor-pointer'
+                    style={{backgroundColor: `${styles.cciBgColor}`}}
+                    onClick={ close }/> 
+                
+              </div>
+              <hr className={dividerCCS.hDividerClassName } style={dividerCCS.hDividerStyle}/>
+
+              {renderSRInputs()}
+              
+              <div className={'d-flex  justify-content-between'}>
+                <SetupComponentIR
+                    title='procurement-type'
+                    id={-1}
+                    cellCnt={1}
+                    value={props.component.irf.procurementType }
+                    component={props.component}
+                    handler={setProcurementType}/>
+
+                <i id={`${props.component.displayLogic.key}-SetupIRF`}
                 className='text-danger m-0 py-1 px-1 fas fw fa-times-circle cursor-pointer'
                 style={{backgroundColor: `${styles.cciBgColor}`}}
-                onClick={ close }> </a>
+                      onClick={ close }/> 
             </div>
-            <hr className='my-0 bg-info'
-                  style={{borderStyle:'insert', borderWidth: '0.08em', borderColor:`${styles.cciInfoBlue}`}}/>
+              <hr className={dividerCCS.hDividerClassName } style={dividerCCS.hDividerStyle}/>
 
-            <SetupComponentBOM
-                title='part-number'
-                value={props.component.bom.core.partNumber}
+              { ( procurementType === 'Purchase' ? 
+                  <div className={'d-flex  justify-content-between'}>
+                    <SetupComponentIR
+                    title='supplier-name'
+                    id={-1}
+                    cellCnt={2}
+                    value={props.component.irf.supplier }
                 component={props.component}
-                handler={setPartNumber}/>
+                    handler={setSupplier}/>
 
-            <hr className='my-0 bg-info'
-                  style={{borderStyle:'insert', borderWidth: '0.08em', borderColor:`${styles.cciInfoBlue}`}}/>
+                    <hr className={dividerCCS.hDividerClassName }  style={dividerCCS.vDividerStyle}/>
 
-            { props.component.businessLogic.parentIds.length === 0 ?
-              <SetupComponentBOM
-              title='required-quantity'
-                // value='' input will show placeholder text
-                value={(props.component.bom.core.requiredQty !== null && props.component.bom.core.requiredQty > 0 ) ? props.component.bom.core.requiredQty: ''}
+                    <SetupComponentIR
+                    title='supplied-part-number'
+                    id={-1}
+                    cellCnt={2}
+                    value={props.component.irf.supplierPartNumber }
                 component={props.component}
-                handler={setTotalRequiredQty}/>
+                    handler={setSupplierPartNumber}/>
+
+                    <i id={`${props.component.displayLogic.key}-SetupIRF`}
+                      className='text-danger m-0 py-1 px-1 fas fw fa-times-circle cursor-pointer'
+                      style={{backgroundColor: `${styles.cciBgColor}`}}
+                      onClick={ close }/> 
+                  </div>
+                
               :
-              <SetupComponentBOM
-                title='unit-quantity'
-                // value='' input will show placeholder text
-                value={ props.component.bom.core.unitQty}
-                component={props.component}
-                handler={setUnitQty}/>
+                  null
+                  )
+                }
+                { ( procurementType === 'Purchase' ? 
+                <hr className={dividerCCS.hDividerClassName } style={dividerCCS.hDividerStyle}/>
+                      :
+                      null
+                  )
             }
 
-            <hr className='my-0 bg-info'
-                style={{borderStyle:'insert', borderWidth: '0.08em', borderColor:`${styles.cciInfoBlue}`}}/>
-
-            <SetupComponentBOM
-                title='unit-of-measure'
-                value={props.component.bom.core.unitOfMeasure }
+                <div className={'d-flex  justify-content-between'}> 
+                  <SetupComponentIR
+                      title={ procurementType === null || procurementType === 'InHouse' ? 'other-production-cost-per-unit-quantity' : 'other-purchase-cost-per-unit-quantity'}
+                      id={-1}
+                      cellCnt={2}
+                      value={props.component.irf.otherProductionCostPerUnit }
                 component={props.component}
-                handler={setUnitOfMeasure}/>
+                      handler={setOtherCostPerUnit}/>
 
-            <hr className='my-0 bg-info'
-                style={{borderStyle:'insert', borderWidth: '0.08em', borderColor:`${styles.cciInfoBlue}`}}/>
-
-            <SetupComponentBOM
-              title='scrap-rate'
-              value={props.component.bom.core.scrapRate }
+                  <hr className='m-0 bg-info'  style={dividerCCS.vDividerStyle}/>
+                  <SetupComponentIR
+                      title='holding-cost-per-unit-quantity'
+                      id={-1}
+                      cellCnt={2}
+                      value={props.component.irf.holdingCostPerUnit }
               component={props.component}
-              handler={setScrapRate}/>
+                      handler={setHoldingCostPerUnit}/>
+                    <i id={`${props.component.displayLogic.key}-SetupIRF`}
+                      className='text-danger m-0 py-1 px-1 fas fw fa-times-circle cursor-pointer'
+                      style={{backgroundColor: `${styles.cciBgColor}`}}
+                      onClick={ close }/> 
+                </div>
 
-            <hr className='my-0 bg-info'
-                style={{borderStyle:'insert', borderWidth: '0.08em', borderColor:`${styles.cciInfoBlue}`}}/>
+                <hr className={dividerCCS.hDividerClassName } style={dividerCCS.hDividerStyle}/>
 
-            <SetupComponentBOM
-                title='procurement-type'
-                value={props.component.bom.core.procurementType }
+                <div className={'d-flex  justify-content-between'}> 
+                  <SetupComponentIR
+                      title='mim-allowed-ending-inventory-quantity'
+                      id={-1}
+                      cellCnt={2}
+                      value={props.component.irf.minAllowedEndingInventory }
                 component={props.component}
-                handler={setProcurementType}/>
+                      handler={setSS}/>
 
-            <hr className='my-0 bg-info'
-                style={{borderStyle:'insert', borderWidth: '0.08em', borderColor:`${styles.cciInfoBlue}`}}/>
+                  <hr className={dividerCCS.hDividerClassName }  style={dividerCCS.vDividerStyle}/>
 
-            <SetupComponentBOM
-                title='start-product-date'
-                value={props.component.bom.core.startDate }
+                  <SetupComponentIR
+                      title='max-allowed-ending-inventory-quantity'
+                      id={-1}
+                      cellCnt={2}
+                      value={ ( props.component.irf.maxAllowedEndingInventory !== null ) && ( props.component.irf.minAllowedEndingInventory > props.component.irf.maxAllowedEndingInventory )  ?  props.component.irf.minAllowedEndingInventory : props.component.irf.maxAllowedEndingInventory}
                 component={props.component}
-                handler={setStartDate}/>
+                      handler={setMaxStock}/>
+                  <i id={`${props.component.displayLogic.key}-SetupIRF`}
+                      className='text-danger m-0 py-1 px-1 fas fw fa-times-circle cursor-pointer'
+                      style={{backgroundColor: `${styles.cciBgColor}`}}
+                      onClick={ close }/> 
+                </div>
 
-            <hr className='my-0 bg-info'
-                style={{borderStyle:'insert', borderWidth: '0.08em', borderColor:`${styles.cciInfoBlue}`}}/>
+                <hr className={dividerCCS.hDividerClassName } style={dividerCCS.hDividerStyle}/>
 
-            <SetupComponentBOM
-                title='product-complete-date'
-                value={props.component.bom.core.completeDate }
+                <div className={'d-flex  justify-content-between'}>
+                  <SetupComponentIR
+                      title='interest-rate'
+                      id={-1}
+                      cellCnt={1}
+                      value={props.component.irf.interest }
                 component={props.component}
-                handler={setCompleteDate}/>
+                      handler={setInterest}/>
+                  <i id={`${props.component.displayLogic.key}-SetupIRF`}
+                        className='text-danger m-0 py-1 px-1 fas fw fa-times-circle cursor-pointer'
+                        style={{backgroundColor: `${styles.cciBgColor}`}}
+                        onClick={ close }/> 
+                </div>
             </div>
             )
           }

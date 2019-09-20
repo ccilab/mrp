@@ -4,7 +4,7 @@ import { useTranslation } from 'react-i18next';
 
 import styles from "./../../dist/css/ccilab-component-list.css"
 
-import { isValidString, isValidValue } from "./CCiLabUtility";
+import { dividerCCS, isValidString, isValidValue } from "./CCiLabUtility";
 
 
 const SetupComponentBOM=(props)=>{
@@ -13,12 +13,12 @@ const SetupComponentBOM=(props)=>{
   let inputValue = (props.value === null)? '': props.value;
 
   let inputClassName = 'text-primary m-0 p-0 border-0 cursor-pointer';
-  let inputStyle={'backgroundColor': `${styles.cciBgColor}`};
+  let cellWidth = (typeof props.cellCnt !== 'undefined' && props.cellCnt === 1) ?  '20rem' : '10rem';
+  let inputStyle={'backgroundColor': `${styles.cciBgColor}`, width: `${cellWidth}`};
   let inputType='text';
   let tooltipOnMode=['click','hover'];
   let tooltipPosition='top left';
   let inputName=props.title;
-  let inputProcurementType = props.title.includes('procurement-type') ? true : false;
   let appendPercentage = props.title.includes('-rate')  ? true : false;
 
   let rateInputElement = React.createRef();
@@ -133,58 +133,6 @@ const SetupComponentBOM=(props)=>{
   return (
     <div className='d-flex justify-content-between'
          style={{backgroundColor: `${styles.cciBgColor}`}}>
-       { inputProcurementType ?
-          <Popup
-            trigger={
-              <div className='d-flex flex-column m-0 py-1 border-0'>
-                <div className='d-inline-flex align-items-center m-0 p-0 border-0' >
-                  <input className={`${inputClassName}`}
-                        id={`${inputName}-1`}
-                        type={inputType}
-                        name={inputName}
-                        style={inputStyle}
-                        value={'InHouse'}
-                        defaultChecked ={ inputValue.includes('InHouse') ? true : false}
-                        onChange={updateValue(props)}
-                        onClose={updateValue(props)}/>
-                  <label className={'m-0 px-1 border-0 cursor-pointer'}
-                    htmlFor={`${inputName}-1`}
-                    style={{'backgroundColor': `${styles.cciBgColor}`, 'color': inputValue.includes('InHouse') ? `${styles.cciInfoBlue}` : `${styles.cciHintRed}`}}>
-                     {t(`component:in-house`)}
-                    </label>
-                </div>
-                <div className='d-inline-flex align-items-center m-0 y-0 border-0'>
-                  <input  className={`${inputClassName}`}
-                          id={`${inputName}-2`}
-                          type={inputType}
-                          name={inputName}
-                          style={inputStyle}
-                          value={'Purchase'}
-                          defaultChecked ={ inputValue.includes('Purchase') ? true : false}
-                          onChange={updateValue(props)}
-                          onClose={updateValue(props)}/>
-                   <label className={'m-0 px-1 border-0 cursor-pointer'}
-                    htmlFor={`${inputName}-2`}
-                    style={{'backgroundColor': `${styles.cciBgColor}`, 'color': inputValue.includes('Purchase') ? `${styles.cciInfoBlue}` : `${styles.cciHintRed}`}}>
-                     {t('component:purchase') }
-                    </label>
-                </div>
-              </div>
-            }
-            id={`${props.component.displayLogic.key}-tooltip`}
-            position={tooltipPosition}
-            closeOnDocumentClick
-            on={tooltipOnMode}
-            arrow={true}
-            arrowStyle={{backgroundColor: 'white'}}
-            mouseLeaveDelay={0}
-            mouseEnterDelay={0}
-            contentStyle={{  padding: '0px' }}>
-            <div className='text-nowrap m-0 p-1'>
-              {t(`component:${props.title}`)}
-            </div>
-        </Popup>
-          :
           <Popup
               trigger={
                 <input className={`${inputClassName}`}
@@ -216,8 +164,6 @@ const SetupComponentBOM=(props)=>{
                 {t(`component:${props.title}`)}
               </div>
           </Popup>
-       }
-
     </div>
   );
 }
@@ -311,8 +257,10 @@ export const SetupBOM=(props)=>{
           // update component name if user changes it
           if( originComponent.businessLogic.name !== component.businessLogic.name )
           {
-              sessionStorage.removeItem( `${component.displayLogic.key}_${originComponent.businessLogic.name}_mps`);
-              sessionStorage.setItem( `${component.displayLogic.key}_${component.businessLogic.name}_mps`, JSON.stringify( component.mps ));
+              sessionStorage.removeItem( `${component.displayLogic.key}_${originComponent.businessLogic.name}_pdp`);
+              sessionStorage.setItem( `${component.displayLogic.key}_${component.businessLogic.name}_pdp`, JSON.stringify( component.pdp ));
+              sessionStorage.removeItem( `${component.displayLogic.key}_${originComponent.businessLogic.name}_irf`);
+              sessionStorage.setItem( `${component.displayLogic.key}_${component.businessLogic.name}_irf`, JSON.stringify( component.irf ));
               sessionStorage.removeItem( `${component.displayLogic.key}_${originComponent.businessLogic.name}_bom_core`);
               sessionStorage.removeItem(`${props.component.displayLogic.key}_${originComponent.businessLogic.name}_businessLogic`);
               sessionStorage.setItem( `${component.displayLogic.key}_${component.businessLogic.name}_businessLogic`, JSON.stringify( component.businessLogic ));
@@ -384,12 +332,16 @@ export const SetupBOM=(props)=>{
   {
     if( event === 'click' )
     {
+       props.updateSubTitle( undefined, 'subTitle-BOM-data' );
        setEvent('hover');
+       console.log('from click to ' + event);
        return;
     }
     if( event === 'hover' )
     {
+      props.updateSubTitle( undefined, 'show-setup-BOM' );
       setEvent('click');
+      console.log('from hover to ' + event );
       return;
     }
   }
@@ -408,8 +360,8 @@ export const SetupBOM=(props)=>{
             className={`${_className}`}
             style={{backgroundColor: `${styles.cciBgColor}`}}/>
         }
-          closeOnDocumentClick={true}
-          on={`${event}`}
+          closeOnDocumentClick={false}
+          on={event}
           position={'right top'}
           defaultOpen={false}
           contentStyle={{ padding: '0px', border: 'none', backgroundColor: `${styles.cciBgColor}`}} 
@@ -430,8 +382,8 @@ export const SetupBOM=(props)=>{
             className={`${_className}`}
             style={{backgroundColor: `${styles.cciBgColor}`}}/>
         }
-          closeOnDocumentClick={true}
-          on={`${event}`}
+          closeOnDocumentClick={false}
+          on={event}
           onClose={setEventState}
           position={'right top'}
           defaultOpen={false}  
@@ -439,53 +391,73 @@ export const SetupBOM=(props)=>{
           arrow={true}
           arrowStyle={{backgroundColor: `${styles.cciBgColor}`}}>
           {close => (
-            <div className={'bg-info d-flex flex-column'} >
-            <div className={'bg-info d-flex'}>
+            <div className={'d-flex flex-column'} style={{backgroundColor:`${styles.cciBgColor}`}}>
+            <div className={'d-flex  justify-content-between'}>
               <SetupComponentBOM
                 title='part-name'
+                cellCnt={1}
                 value={props.component.businessLogic.name}
                 component={props.component}
                 handler={setPartName}/>
-              <a id={`${props.component.displayLogic.key}-setupBOM`}
-                href={`#${props.component.displayLogic.key}`}
+              <i id={`${props.component.displayLogic.key}-setupBOM`}
                 className='text-danger m-0 py-1 px-1 fas fw fa-times-circle cursor-pointer'
                 style={{backgroundColor: `${styles.cciBgColor}`}}
-                onClick={ close }> </a>
+                onClick={ close }/> 
             </div>
-            <hr className='my-0 bg-info'
-                  style={{borderStyle:'insert', borderWidth: '0.08em', borderColor:`${styles.cciInfoBlue}`}}/>
 
+            <hr  className={dividerCCS.hDividerClassName} style={dividerCCS.hDividerStyle}/>
+            
+            <div className={'d-flex  justify-content-between'}>
             <SetupComponentBOM
                 title='part-number'
                 value={props.component.bom.core.partNumber}
                 component={props.component}
                 handler={setPartNumber}/>
-
-            <hr className='my-0 bg-info'
-                  style={{borderStyle:'insert', borderWidth: '0.08em', borderColor:`${styles.cciInfoBlue}`}}/>
-
+              <i id={`${props.component.displayLogic.key}-setupBOM`}
+                  className='text-danger m-0 py-1 px-1 fas fw fa-times-circle cursor-pointer'
+                  style={{backgroundColor: `${styles.cciBgColor}`}}
+                  onClick={ close }/> 
+            </div>
             { props.component.businessLogic.parentIds.length === 0 ?
               null
               :
+              <div>
+              <hr  className={dividerCCS.hDividerClassName} style={dividerCCS.hDividerStyle}/>
+                <div className={'d-flex  justify-content-between'}>
+                  
+
               <SetupComponentBOM
                 title='unit-quantity'
+                    cellCnt={1}
                 // value='' input will show placeholder text
                 value={ props.component.bom.core.unitQty}
                 component={props.component}
                 handler={setUnitQty}/>
+
+                  <i id={`${props.component.displayLogic.key}-setupBOM`}
+                    className='text-danger m-0 py-1 px-1 fas fw fa-times-circle cursor-pointer'
+                    style={{backgroundColor: `${styles.cciBgColor}`}}
+                    onClick={ close }/> 
+                </div>
+                </div>
             }
 
-            <hr className='my-0 bg-info'
-                style={{borderStyle:'insert', borderWidth: '0.08em', borderColor:`${styles.cciInfoBlue}`}}/>
+            <hr  className={dividerCCS.hDividerClassName} style={dividerCCS.hDividerStyle}/>
 
+            <div className={'d-flex  justify-content-between'}>
             <SetupComponentBOM
                 title='unit-of-measure'
+                  cellCnt={1}
                 value={props.component.bom.core.unitOfMeasure }
                 component={props.component}
                 handler={setUnitOfMeasure}/>
+              <i id={`${props.component.displayLogic.key}-setupBOM`}
+                  className='text-danger m-0 py-1 px-1 fas fw fa-times-circle cursor-pointer'
+                  style={{backgroundColor: `${styles.cciBgColor}`}}
+                  onClick={ close }/> 
+            </div>
 
-            <hr className='my-0 bg-info'
-                style={{borderStyle:'insert', borderWidth: '0.08em', borderColor:`${styles.cciInfoBlue}`}}/>
+            <hr  className={dividerCCS.hDividerClassName} style={dividerCCS.hDividerStyle}/>
             </div> 
             )
           }

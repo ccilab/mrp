@@ -3,12 +3,51 @@ Input:
    - the structure of each item/raw material and quantity requirements to produce a single product  
    - template base - "A Bill of Materials Template for Manufacturers.pdf"
    
-2) MPS - master production schedule - from forecast or customer order - need to be configured and show MPS table  for both setup and monitoring
-	- Master Production Schedule - J Beasley.pdf - repeated productions
-	- The Only Master Production Schedule Guide You Will Ever Need.pdf - agile productions
+2) MPS - master production schedule - a process based on cost driven to find minimum cost 
+       - The master production schedule expresses how much of each item is wanted and when it is wanted, and how it is wanted
+        - reference: Master Production Schedule - J Beasley.pdf 
+        - linear algorithm - 
+        - input: * demand plan - from forecast or customer order or out-going inventory setup,  e.g. completed-date/demand pair
+		 
+		 * Number of employee, 
+		   time/employee, 
+		   cost/hour/employee, 
+		   overtime/employee, 
+		   overtime-cost/hour/employee,
+		   time-needed/unit/employee,
+		   hiring and dismissal cost/employee,
+		   maximum and minimum employee allowed, 
+		   start date,
+	           shift,
+		   scrapRate,
+		   Setup Cost - from product operation setup
 
-3) Inventory summary for each item/raw material (Inventory Records File IRF) - need to be configured and show IR table  for both setup and monitoring
-   - Material Requirements Planning -J-Beasley.pdf
+		 * Scheduled Receipts (SR)
+		   Initial Inventory or backorder ( Begining Inventory BI, Inventory On-hand)
+		   Maximum ending Inventory Allowed
+		   Minimum ending Inventory Allowed (SS)
+		   Procurement
+		   Lead Time
+ 		   Other Unit production Cost  // this is the cost of producing one unit of the product that is not already accounted for by employee costs - here zero 
+		   Unit Inventory holding Cost
+		   Maximum purchasing (subcontracting) allowed  
+		   Unit subcontracting cost
+		   Maximum backorder Allowed
+		   Unit backorder cost 
+		   Interest - from IRF Setup
+		 		 
+
+	- The Only Master Production Schedule Guide You Will Ever Need.pdf - agile productions not cost driven
+
+        - need to be configured and show MPS table  for both setup and monitoring	
+	
+
+3) Inventory Control - a process to find EOC (Qd) for each item/raw material (Inventory Records File IRF) 
+    - input IRF
+    - need to be configured and show IR table  for both setup and monitoring
+    - references: 
+      - choice of lot size rule -J-Beasley.pdf
+      - Inventory Control -J-Beasley.pdf - decide Quantity Demanded (Qd) - Lot Size Disipline
 
 4) production operation plan - workshop/warehouse/assembly line usage planning - need to be configured and show shift PO table for both setup and monitoring 
    - Production Planning and Scheduling.pdf
@@ -16,8 +55,8 @@ Input:
    - coordinate operations within a shift 
 
  
-MRP the process - works backward from a production plan for finished goods to develop requirements 
-for components and raw materials.
+MRP the process - is stockout driven, not cost driven
+    - works backward from a production plan for finished goods to develop requirements for components and raw materials.
   MBA-resource planning MRP.pdf
   Material Requirements Planning -J-Beasley.pdf
   Ch14-MRP.ppt
@@ -25,9 +64,9 @@ for components and raw materials.
   
 
 The information input into MRP systems comes from three main sources: 
-a bill of materials, (done)
-a master production schedule , (from customer order or forecast demand, to do )
-and an inventory records file. ( to do )
+a input:  bill of materials, (done)
+output master production schedule , (from input customer order or forecast demand, to do )
+and an input inventory records file. ( to do )
 
 Output:
 primary outputs:

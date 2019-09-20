@@ -13,7 +13,7 @@ import CCiLabComponent from "./CCiLabComponent";
 import DropComponentWarningModal from "./CCiLabDropComponentCheckFailedModal";
 import { setListHeight, setListWidth, getTextRect} from "./CCiLabUtility";
 import {CanEnableInlineMenu, initializeBOM } from './CCiLabSetupComponentBOM';
-import { initializeMPS } from './CCiLabSetupMPS';
+import { initializePDP } from './CCiLabSetupPDP';
 
 
 // // based on https://github.com/ccilab/react-i18next/blob/master/example/react/src/index.js
@@ -26,7 +26,8 @@ import {TextResizeDetector } from "./TextResizeDetector"
 
 //json-loader load the *.json file
 import components from './../../data/components.json';
-
+import { initializeIRF } from "./CCiLabSetupIR";
+import {initializeOp} from "./CCiLabSetupOperation";
 
 //table includes assembly and paint process
 // simulate after loaded very top component and its direct  components
@@ -379,14 +380,14 @@ const ComponentListTitle =(props)=>{
   // console.log("call - ComponentListTitle:" + props.title );
   // https://react.i18next.com/latest/usetranslation-hook fa-spinner
   // https://stackoverflow.com/questions/17737182/how-can-i-overlay-a-number-on-top-of-a-fontawesome-glyph
-  const { t, i18n } = useTranslation('componentList', {useSuspense: false});
+  const { t, i18n } = useTranslation(['componentList','commands'], {useSuspense: false});
 
   const setupBOM=(e)=>{
-    props.changeBOMHandler(true)
+    props.changeBOMHandler(true, 'subTitle-BOM-data')
   }
 
   const showProgress=(e)=>{
-    props.changeBOMHandler(false)
+    props.changeBOMHandler(false, 'subTitle-Progress-status')
   }
 
   const languageChangeHandler=(language)=>(e)=>{
@@ -492,7 +493,7 @@ const ComponentListSubTitle = (props)=>{
     <div className='d-flex align-items-center fa'
         style={{ 'height': `${props.height}rem`, 'width': `${props.width}`, backgroundColor: `${styles.cciBgColor}`, fontFamily: `${fontFamily}`, fontWeight: 'normal' }}>
         <span id='subTitle-name' className={props.className} style={{'position':'relative',  'left':`${props.positionLeft}rem`, fontSize: '0.95rem'}}>{t(`${props.name}`)}</span>
-        <span id='subTitle-type' className={props.className} style={{'position':'relative', 'left':`${props.ratePositionLeft}rem`, fontSize: '0.95rem'}}>{t(`${props.rateType}`)}
+        <span id='subTitle-type' className={props.className} style={{'position':'relative', 'left':`${props.ratePositionLeft}rem`, fontSize: '0.95rem'}}>{t([`componentList:${props.rateType}`, `commands:${props.rateType}`])}
         </span>
         {/* #todo - make title editable by user */}
         {/* <a id='subTitle-edit' href='#edit-title' className='border-0 text-primary text-nowrap p-0 nav-link fa fa-edit' style={{'position':'absolute', 'right':'0'}}></a> */}
@@ -510,7 +511,8 @@ class CCiLabComponentList extends Component {
               fontSize: 23, //default browser medium font size in px
               isDropToSameParentWarning: false,
               isDropToItselfWarning: false,
-              isUpdateToItselfWarning: false};
+              isUpdateToItselfWarning: false,
+              subTitle: 'subTitle-Progress-status'};
 
     initialized = false;  //needed to avoid render without DOM
     slidingComponentListIconClassName;
@@ -688,6 +690,9 @@ class CCiLabComponentList extends Component {
       this.state.visible = false;
       // eslint-disable-next-line
       this.state.setupBOM = this.state.setupBOM ? this.state.setupBOM : (this.state.greetings.length <= 1 ? true : false);
+
+      // eslint-disable-next-line
+      this.state.subTitle = this.state.setupBOM ? 'subTitle-BOM-data' : 'subTitle-Progress-status';
 
     }
 
@@ -877,9 +882,13 @@ class CCiLabComponentList extends Component {
 
       // sessionStorage.setItem( `${newComponent.displayLogic.key}_${newComponent.businessLogic.name}_displayLogic`, JSON.stringify( newComponent.displayLogic ));
       newComponent.bom = new initializeBOM( newComponent );
-      newComponent.mps = new initializeMPS( newComponent );
+      newComponent.pdp = new initializePDP( newComponent );
+      newComponent.irf = new initializeIRF( newComponent );
+      newComponent.operation = new initializeOp( newComponent );
       sessionStorage.setItem( `${newComponent.displayLogic.key}_${newComponent.businessLogic.name}_bom_core`, JSON.stringify( newComponent.bom.core ));
-      sessionStorage.setItem( `${newComponent.displayLogic.key}_${newComponent.businessLogic.name}_mps`, JSON.stringify( newComponent.mps ));
+      sessionStorage.setItem( `${newComponent.displayLogic.key}_${newComponent.businessLogic.name}_pdp`, JSON.stringify( newComponent.pdp ));
+      sessionStorage.setItem( `${newComponent.displayLogic.key}_${newComponent.businessLogic.name}_irf`, JSON.stringify( newComponent.irf ));
+      sessionStorage.setItem( `${newComponent.displayLogic.key}_${newComponent.businessLogic.name}_op`, JSON.stringify( newComponent.operation ));
       // need to check vertical scroll bar doesn't show
       // create vertical scroll bar based on the height of component list dynamically
       this.updateDimensions( updatedSessionComponents);
@@ -1190,8 +1199,17 @@ class CCiLabComponentList extends Component {
       }
     };
 
-    showSetupBOM=( isShowSetupBOM )=>{
-      this.setState({setupBOM: isShowSetupBOM});
+    showSetupBOM=( isShowSetupBOM, subTitle )=>{
+      if( typeof isShowSetupBOM === 'undefined')
+      {
+        this.setState({subTitle: subTitle});
+      }
+      else
+      {
+          this.setState({setupBOM: isShowSetupBOM,
+                         subTitle: subTitle});
+      }
+    
     }
 
     //need to update showMyself to true after button is clicked to canExpend
@@ -1235,6 +1253,7 @@ class CCiLabComponentList extends Component {
                                           moveComponentHandler={this.moveComponentHandler}
                                           updateComponentHandler={this.updateComponent}
                                           isSetupBOM={this.state.setupBOM}
+                                          changeMRPTitle = {this.showSetupBOM}
                                           permissionStatus={this.state.permissionEnabled}/> ;
                 }
                 else
@@ -1330,7 +1349,7 @@ class CCiLabComponentList extends Component {
                   { this.state.setupBOM ?
                       <ComponentListSubTitle
                         name='subTitle-BOM-create-component'
-                        rateType='subTitle-BOM-data'
+                        rateType={this.state.subTitle}
                         height={this.componentTitleHeight}
                         width={this.componentListWidth}
                         className={listTitleClassName}
@@ -1338,7 +1357,7 @@ class CCiLabComponentList extends Component {
                         ratePositionLeft={this.statusTitleLeft}/> :
                       <ComponentListSubTitle
                         name='subTitle-Progress-component-name'
-                        rateType='subTitle-Progress-status'
+                        rateType={this.state.subTitle}
                         height={this.componentTitleHeight}
                         width={this.componentListWidth}
                         className={listTitleClassName}

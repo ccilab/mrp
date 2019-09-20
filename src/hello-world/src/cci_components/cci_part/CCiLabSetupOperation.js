@@ -4,31 +4,26 @@ import { useTranslation } from 'react-i18next';
 
 import styles from "./../../dist/css/ccilab-component-list.css"
 
-import { isValidString, isValidValue } from "./CCiLabUtility";
+import { dividerCCS, isValidString, isValidValue } from "./CCiLabUtility";
 
 
-const SetupComponentBOM=(props)=>{
-  const { t } = useTranslation(['component','commands'], {useSuspense: false});
+const SetupComponentOp=(props)=>{
+  const { t } = useTranslation(['operations','commands'], {useSuspense: false});
 
   let inputValue = (props.value === null)? '': props.value;
 
   let inputClassName = 'text-primary m-0 p-0 border-0 cursor-pointer';
-  let inputStyle={'backgroundColor': `${styles.cciBgColor}`};
+  let cellWidth = (typeof props.cellCnt !== 'undefined' && props.cellCnt === 1) ?  '20rem' : '10rem';
+  let inputStyle={'backgroundColor': `${styles.cciBgColor}`, width: `${cellWidth}`};
   let inputType='text';
   let tooltipOnMode=['click','hover'];
   let tooltipPosition='top left';
   let inputName=props.title;
-  let inputProcurementType = props.title.includes('procurement-type') ? true : false;
   let appendPercentage = props.title.includes('-rate')  ? true : false;
 
   let rateInputElement = React.createRef();
 
-  if( props.value === 'add-part')
-  {
-    inputValue = '';
-  }
-
-  if( props.title.includes('part-name'))
+  if( props.title.includes('employee-count') || props.title.includes('component-per-employee') )
   {
     tooltipPosition='bottom left';
   }
@@ -38,12 +33,6 @@ const SetupComponentBOM=(props)=>{
     inputType='date';
   }
 
-  if( props.title.includes('procurement-type'))
-  {
-    inputClassName = 'm-0 p-0 border-0 cursor-pointer';
-    inputStyle={'backgroundColor': `${styles.cciBgColor}`, 'height':'1em','width':'1em'};
-    inputType='radio';
-  }
 
   if( props.title.includes('-quantity') )
   {
@@ -89,7 +78,7 @@ const SetupComponentBOM=(props)=>{
     //     if( typeof e.target !== 'undefined' && e.target.value === '' && props.title ==='part-name')
     //       e.target.value = 'add-part';
 
-    //     console.log("SetupComponentBOM - updateValue: " + e.target.value);
+    //     console.log("SetupComponentOp - updateValue: " + e.target.value);
 
     //     props.handler(e.target.value, props.component);
     //   }
@@ -102,9 +91,9 @@ const SetupComponentBOM=(props)=>{
       if( typeof target !== 'undefined' && target.value === '' && props.title ==='part-name')
         target.value = 'add-part';
 
-      console.log("SetupComponentBOM - updateValue: " + target.value);
+      console.log("SetupComponentOp - updateValue: " + target.value);
 
-      props.handler(target.value, props.component);
+      props.handler(props.id, target.value, props.component);
 
     }
   }
@@ -124,7 +113,7 @@ const SetupComponentBOM=(props)=>{
   };
 
   const updateChange=(props)=>(e)=>{
-    console.log("SetupComponentBOM - updateChange: " + e.target.value);
+    console.log("SetupComponentOp - updateChange: " + e.target.value);
   }
 
 
@@ -133,58 +122,6 @@ const SetupComponentBOM=(props)=>{
   return (
     <div className='d-flex justify-content-between'
          style={{backgroundColor: `${styles.cciBgColor}`}}>
-       { inputProcurementType ?
-          <Popup
-            trigger={
-              <div className='d-flex flex-column m-0 py-1 border-0'>
-                <div className='d-inline-flex align-items-center m-0 p-0 border-0' >
-                  <input className={`${inputClassName}`}
-                        id={`${inputName}-1`}
-                        type={inputType}
-                        name={inputName}
-                        style={inputStyle}
-                        value={'InHouse'}
-                        defaultChecked ={ inputValue.includes('InHouse') ? true : false}
-                        onChange={updateValue(props)}
-                        onClose={updateValue(props)}/>
-                  <label className={'m-0 px-1 border-0 cursor-pointer'}
-                    htmlFor={`${inputName}-1`}
-                    style={{'backgroundColor': `${styles.cciBgColor}`, 'color': inputValue.includes('InHouse') ? `${styles.cciInfoBlue}` : `${styles.cciHintRed}`}}>
-                     {t(`component:in-house`)}
-                    </label>
-                </div>
-                <div className='d-inline-flex align-items-center m-0 y-0 border-0'>
-                  <input  className={`${inputClassName}`}
-                          id={`${inputName}-2`}
-                          type={inputType}
-                          name={inputName}
-                          style={inputStyle}
-                          value={'Purchase'}
-                          defaultChecked ={ inputValue.includes('Purchase') ? true : false}
-                          onChange={updateValue(props)}
-                          onClose={updateValue(props)}/>
-                   <label className={'m-0 px-1 border-0 cursor-pointer'}
-                    htmlFor={`${inputName}-2`}
-                    style={{'backgroundColor': `${styles.cciBgColor}`, 'color': inputValue.includes('Purchase') ? `${styles.cciInfoBlue}` : `${styles.cciHintRed}`}}>
-                     {t('component:purchase') }
-                    </label>
-                </div>
-              </div>
-            }
-            id={`${props.component.displayLogic.key}-tooltip`}
-            position={tooltipPosition}
-            closeOnDocumentClick
-            on={tooltipOnMode}
-            arrow={true}
-            arrowStyle={{backgroundColor: 'white'}}
-            mouseLeaveDelay={0}
-            mouseEnterDelay={0}
-            contentStyle={{  padding: '0px' }}>
-            <div className='text-nowrap m-0 p-1'>
-              {t(`component:${props.title}`)}
-            </div>
-        </Popup>
-          :
           <Popup
               trigger={
                 <input className={`${inputClassName}`}
@@ -192,7 +129,7 @@ const SetupComponentBOM=(props)=>{
                       id={inputName}
                       type={`${inputType}`}
                       style={inputStyle}
-                      placeholder={t(`component:${props.title}`)}
+                      placeholder={t(`operations:${props.title}`)}
                       name={inputName}
                       value={ input }
                       min = { inputType.includes('number') ? 1 : null}
@@ -213,287 +150,322 @@ const SetupComponentBOM=(props)=>{
               contentStyle={{ padding: '0px'}}
               >
               <div className='text-nowrap m-0 px-1'>
-                {t(`component:${props.title}`)}
+                {t(`operations:${props.title}`)}
               </div>
           </Popup>
-       }
-
     </div>
   );
 }
 
-export const CanEnableInlineMenu = ( component )=>{
-  if( isValidString( component.businessLogic.name) &&
-      component.bom !== null &&
-      typeof component.bom !== 'undefined' &&
-      typeof component.bom.core !== 'undefined' &&
-      component.bom.core !== null &&
-      isValidString( component.bom.core.partNumber ) &&
-      ( isValidValue( component.bom.core.requiredQty ).isValid ||
-        isValidValue( component.bom.core.unitQty ).isValid ) &&
-      isValidValue( component.bom.core.scrapRate).isValid &&
-      isValidString( component.bom.core.procurementType) &&
-      isValidString( component.bom.core.startDate) &&
-      isValidString( component.bom.core.completeDate)
-)
-  {
-    component.displayLogic.inlineMenuEnabled = true;
-  }
-  else
-  {
-    component.displayLogic.inlineMenuEnabled = false;
-  }
-}
 
-export const initializeBOM=( component )=>{
-  let bom={};
-  bom.core= JSON.parse(sessionStorage.getItem(`${component.displayLogic.key}_${component.businessLogic.name}_bom_core`)) || initializeBOMCore();
-  bom.extra=JSON.parse(sessionStorage.getItem(`${component.displayLogic.key}_${component.businessLogic.name}_bom_extra`)) ||initializeBOMExtra();
-  return bom;
+export const initializeOp=( component )=>{
+  let operation= JSON.parse(sessionStorage.getItem(`${component.displayLogic.key}_${component.businessLogic.name}_op`)) || _initializeOp();
+  return operation;
 }
 
 // requiredQtyPerShift calculates based on its parent component's unitQty
 // #todo - need to re-design how to handle it
-const initializeBOMCore=()=>{
-   let core={};
-   core.partNumber=null;
-   core.unitQty=null;
-   core.unitOfMeasure=''; // may doesn't have unit
-   core.requiredQty= null; //required quantity of component/part
-   core.startDate=null;
-   core.completeDate=null;
-   core.scrapRate=null;    // in %, need /100 when uses it
-   core.procurementType=null;  //'InHouse'(to produce production order), 'Purchase'(to produce purchase order)
-   core.warehouse=null;
-   core.leadTime=null;
-   core.workshop=null;
-   core.supplier=null;
-   core.supplierPartNumber=null;
-   core.requiredQtyPerShift=null;  // required quantity for per shift per run
-   core.shiftCount=1;         // how many different shifts are needed
-   core.sameShiftRunCount=1;  //same shift runs how many times
-   return core;
+const _initializeOp=()=>{
+   let operation={};
+   operation.employeeCount=null;  //number of employees to produce the demand of a component
+   operation.dailyTimeCapacityPerEmployee=null;  //in hour
+   operation.averageHourlyCost=null; 
+   operation.dailyOvertimeCapacityPerEmployee=null;  //in hour
+   operation.averageHourlyOvertimeCost= null; //required quantity of component/part
+   operation.averageTimePerComponentPerEmployee=null; //in hour, time needed to produce one component per employee
+   operation.minAllowedEmployeePerShift=null;
+   operation.maxAllowedEmployeePerShift=null;
+   operation.averageHiringCostPerEmployee = null;
+   operation.averageDismissalCostPerEmployee = null; //local currency
+   operation.startDate=null;
+   operation.scrapRate=null;    // in %, need /100 when uses it 
+   operation.setupCost=null;    // initial cost to produce the component
+   operation.inputWarehouse='';    // where is prerequisite component/raw material stored
+   operation.outputWarehouse='';    // where is component stored
+   operation.workshop='';           //
+   operation.shiftInfoArray=[[null,null]];         // how many different shifts are needed
+   return operation;
 }
 
-const initializeBOMExtra=()=>{
-  let extra={};
-  extra.SKU='';
-  extra.barCode='';
-  extra.revision='';
-  extra.refDesignator='';
-  extra.phase='';
-  extra.category='';
-  extra.material='';
-  extra.process='';
-  extra.unitCost='';
-  extra.assemblyLine='';
-  extra.description='';
-  extra.note='';
-  return extra;
-};
-
-export const SetupBOM=(props)=>{
+//Operation
+export const SetupOP=(props)=>{
   const { t } = useTranslation('commands', {useSuspense: false});
   
   const _className = 'cursor-pointer text-primary border-0 p-1 fa fw fa-edit' + (props.component.displayLogic.selected ? ' bg-info' : ' ');
 
   const [event, setEvent] = useState('hover'); // '' is the initial state value
 
-  // deep copy object that doesn't have function inside object
-  const originComponent = JSON.parse(JSON.stringify(props.component));
-
-   // component.displayLogic.inlineMenuEnabled needs set to true
-  const IsClosePopupMenu=( component )=>{
-      CanEnableInlineMenu( component );
-      if( component.displayLogic.inlineMenuEnabled )
+  if( props.component.operation === null || typeof props.component.operation === 'undefined' )
       {
-        props.updateComponent(originComponent, component);
+    props.component.operation = new initializeOp(props.component);
       }
 
-      // update component name
-      if( isValidString( component.businessLogic.name) && props.updateComponent(originComponent, component))
-      {
-          // originComponent.businessLogic.name could be hard-coded 'add-part' or other user given name
-          // if( originComponent.businessLogic.name !== component.businessLogic.name )
-          // {
-          //   sessionStorage.removeItem(`${props.component.displayLogic.key}_${originComponent.businessLogic.name}_displayLogic`);
-          // }
-          // component name may or may not change, but the component.displayLogic.inlineMenuEnabled will change if passed the checking
-          // sessionStorage.setItem( `${component.displayLogic.key}_${component.businessLogic.name}_displayLogic`, JSON.stringify( component.displayLogic ));
+  const [shiftInfoArray, setShiftInfoArray] = useState(props.component.operation.shiftInfoArray);
 
-          // update component name if user changes it
-          if( originComponent.businessLogic.name !== component.businessLogic.name )
-          {
-              sessionStorage.removeItem(`${props.component.displayLogic.key}_${originComponent.businessLogic.name}_businessLogic`);
-              sessionStorage.setItem( `${component.displayLogic.key}_${component.businessLogic.name}_businessLogic`, JSON.stringify( component.businessLogic ));
+
+   // 
+   const saveValidOpEntry=( component )=>{
+    component.operation.shiftInfoArray = shiftInfoArray;
+    sessionStorage.setItem( `${component.displayLogic.key}_${component.businessLogic.name}_op`, JSON.stringify( component.operation ));
           }
 
-          if( originComponent.businessLogic.name !== component.businessLogic.name )
-          {
-            sessionStorage.removeItem( `${component.displayLogic.key}_${originComponent.businessLogic.name}_bom_core`);
-          }
-          sessionStorage.setItem( `${component.displayLogic.key}_${component.businessLogic.name}_bom_core`, JSON.stringify( component.bom.core ));
-      }
 
+  const setEmployeeCount=(count, component)=>{
+    if( typeof component.operation === 'undefined' )
+      component.operation = new initializeOp( component );
 
-  }
+    let {isValid, value} = isValidValue(count);
 
+     if( !isValid )
+      component.operation.employeeCount=null;
+    else
+      component.operation.employeeCount=value;
 
+    saveValidOpEntry(component);
+  };
 
-  if( props.component.bom === null || typeof props.component.bom === 'undefined' )
-  {
-    props.component.bom = new initializeBOM(props.component);
-  }
+  const setDailyTimeCapacity=(capacity, component)=>{
+    if( typeof component.operation === 'undefined' )
+      component.operation = new initializeOp( component );
 
-  // const isValidString=( name )=>{
-  //   return ( typeof name === 'string' &&
-  //       name.length > 0 ) ? true : false
-  // };
+      let {isValid, value} = isValidValue(capacity);
 
-  // const isValidValue=(valueToCheck)=>{
+      if( !isValid )
+       component.operation.dailyTimeCapacityPerEmployee=null;
+     else
+       component.operation.dailyTimeCapacityPerEmployee=value;
 
-  //   let value = parseFloat(valueToCheck);
-  //   let valid = isNaN( value ) ? false : true;
+    saveValidOpEntry(component);
+  };
 
-  //   let rt={};
-  //   rt.isValid = valid;
-  //   rt.value = value;
-  //   return rt;
-  // };
+  const setHourlyCost=(hourlyCost, component)=>{
+    if( typeof component.operation === 'undefined' )
+      component.operation = new initializeOp( component );
 
-  const calQuantityPerShift=(component)=>{
-    const bomCore = component.bom.core;
-    if( component.bom.core.requiredQty !== null &&
-      component.bom.core.unitQty !== null &&
-      component.bom.core.scrapRate !== null
-    )
-    {
+    let {isValid, value} = isValidValue(hourlyCost);
 
-      bomCore.requiredQtyPerShift =((bomCore.requiredQty * bomCore.unitQty)/(bomCore.shiftCount * bomCore.sameShiftRunCount )) * (1 + bomCore.scrapRate/100) ;
+    if( !isValid )
+      component.operation.averageHourlyCost=null;
+    else
+      component.operation.averageHourlyCost=value;
+
+    saveValidOpEntry(component);
     }
-    else
-      bomCore.requiredQtyPerShift=null;
-  };
 
-  const setPartName=(partName, component)=>{
-    if( isValidString( partName ))
-        component.businessLogic.name=partName;
-    else
-      component.businessLogic.name='';  //reset to initial value to fail IsClosePopupMenu evaluation
+  const setDailyOvertimeCapacity=(overtimeCapacity, component)=>{
+    if( typeof component.operation === 'undefined' )
+      component.operation = new initializeOp( component );
 
-    IsClosePopupMenu(component);
-    console.log("SetupBOM - setPartName: " + component.businessLogic.name);
-  };
-
-  const setPartNumber=(partNumber, component)=>{
-    if( typeof component.bom === 'undefined' )
-      component.bom = new initializeBOM( component );
-
-    if( isValidString( partNumber ))
-      component.bom.core.partNumber=partNumber;
-    else
-      component.businessLogic.name=null;  //reset to initial value to fail IsClosePopupMenu evaluation
-
-    IsClosePopupMenu(component);
-
-    console.log("SetupBOM - setPartNumber: " + component.bom.core.partNumber);
-  };
-
-  const setUnitQty=(unitQty, component)=>{
-    if( typeof component.bom === 'undefined' )
-      component.bom = new initializeBOM( component );
-
-    let {isValid, value} = isValidValue(unitQty);
+    let {isValid, value} = isValidValue(overtimeCapacity);
 
     if( !isValid )
-      component.bom.core.unitQty=null;
+      component.operation.dailyOvertimeCapacityPerEmployee=null;
     else
-      component.bom.core.unitQty=value;
+      component.operation.dailyOvertimeCapacityPerEmployee=value;
 
-    // required quantity for per shift per run
-    calQuantityPerShift(component); //reset requiredQtyPerShift to null if component.bom.core.unitQty is null
-    IsClosePopupMenu(component);
-
-    console.log( 'setUnitQty: requiredQty='+component.bom.core.requiredQty);
-    console.log( 'setUnitQty: requiredQtyPerShift='+component.bom.core.requiredQtyPerShift);
+    saveValidOpEntry(component);
   }
 
-  const setTotalRequiredQty=(qty, component)=>{
-    if( typeof component.bom === 'undefined' )
-      component.bom = new initializeBOM( component );
+  const setHourlyOvertimeCost=(overtimeCost, component)=>{
+    if( typeof component.operation === 'undefined' )
+      component.operation = new initializeOp( component );
 
-    let {isValid, value} = isValidValue(qty);
+      let {isValid, value} = isValidValue(overtimeCost);
+
+      if( !isValid )
+        component.operation.dailyOvertimeCapacityPerEmployee=null;
+    else
+        component.operation.dailyOvertimeCapacityPerEmployee=value;
+
+      saveValidOpEntry(component);
+  }
+
+
+  const setTimePerComponentPerEmployee=(timePerComponent, component)=>{
+    if( typeof component.operation === 'undefined' )
+      component.operation = new initializeOp( component );
+
+      let {isValid, value} = isValidValue(timePerComponent);
 
     if( !isValid )
-      component.bom.core.requiredQty=null;
+        component.operation.averageTimePerComponentPerEmployee = null;
     else
-      component.bom.core.requiredQty=value;
-
-    calQuantityPerShift(component);
-    IsClosePopupMenu(component);
-
-    console.log('setTotalRequiredQty - ' + component.bom.core.requiredQty);
+        component.operation.averageTimePerComponentPerEmployee = value;
+  
+    saveValidOpEntry(component);
   }
 
-  const setUnitOfMeasure=(unitOfMeasure, component)=>{
-    if( typeof component.bom === 'undefined' )
-      component.bom = new initializeBOM( component );
+  const setMinAllowedEmployee=(count, component)=>{
+    if( typeof component.operation === 'undefined' )
+      component.operation = new initializeOp( component );
 
-    component.bom.core.unitOfMeasure=unitOfMeasure;
+    let {isValid, value} = isValidValue(count);
+
+    if( !isValid )
+      component.operation.minAllowedEmployeePerShift = null;
+    else
+      component.operation.minAllowedEmployeePerShift = value;
+
+    saveValidOpEntry(component);
+  }
+
+  const setMaxAllowedEmployee=(count, component)=>{
+    if( typeof component.operation === 'undefined' )
+      component.operation = new initializeOp( component );
+
+    let {isValid, value} = isValidValue(count);
+
+    if( !isValid )
+      component.operation.maxAllowedEmployeePerShift = null;
+    else
+      component.operation.maxAllowedEmployeePerShift = value;
+
+    saveValidOpEntry(component);
+  }
+
+  const setAverageHiringCost=(cost, component)=>{
+    if( typeof component.operation === 'undefined' )
+      component.operation = new initializeOp( component );
+
+    let {isValid, value} = isValidValue(cost);
+
+    if( !isValid )
+      component.operation.averageHiringCostPerEmployee = null;
+    else
+      component.operation.averageHiringCostPerEmployee = value;
+
+    saveValidOpEntry(component);
+  }
+
+  const setDismissalCost=(cost, component)=>{
+    if( typeof component.operation === 'undefined' )
+      component.operation = new initializeOp( component );
+
+    let {isValid, value} = isValidValue(cost);
+
+    if( !isValid )
+      component.operation.averageDismissalCostPerEmployee = null;
+    else
+      component.operation.averageDismissalCostPerEmployee = value;
+
+    saveValidOpEntry(component);
   }
 
   const setScrapRate=(scrapRate, component)=>{
-    if( typeof component.bom === 'undefined' )
-      component.bom = new initializeBOM( component );
+    if( typeof component.operation === 'undefined' )
+      component.operation = new initializeOp( component );
 
     let {isValid, value} = isValidValue(scrapRate);
 
     if( !isValid )
-      component.bom.core.scrapRate = null;
+      component.operation.scrapRate = null;
     else
-      component.bom.core.scrapRate = value;
+      component.operation.scrapRate = value;
 
-    IsClosePopupMenu(component);
-    console.log('setScrapRate - ' + component.bom.core.scrapRate);
+    saveValidOpEntry(component);
   }
 
-  const setProcurementType=(procurementType, component)=>{
-    if( typeof component.bom === 'undefined' )
-      component.bom = new initializeBOM( component );
-
-    if( isValidString(procurementType) )
-      component.bom.core.procurementType = procurementType;
-    else
-      component.bom.core.procurementType = null;
-
-    IsClosePopupMenu(component);
-    console.log( 'setProcurementType : ' + component.bom.core.procurementType );
-  }
 
   const setStartDate=(startDate, component)=>{
-    if( typeof component.bom === 'undefined' )
-      component.bom = new initializeBOM( component );
+    if( typeof component.operation === 'undefined' )
+      component.operation = new initializeOp( component );
 
     if( isValidString( startDate ))
-      component.bom.core.startDate=startDate;
+      component.operation.startDate=startDate;
     else
-      component.bom.core.startDate = null;
+      component.operation.startDate = null;
 
-    IsClosePopupMenu(component);
-    console.log( 'setStartDate : ' + component.bom.core.startDate);
+    saveValidOpEntry(component);
   }
 
-  const setCompleteDate=(completeDate, component)=>{
-    if( typeof component.bom === 'undefined' )
-      component.bom = new initializeBOM( component );
+  const setSetupCost=(cost, component)=>{
+    if( typeof component.operation === 'undefined' )
+      component.operation = new initializeOp( component );
 
-    if( isValidString( completeDate ))
-      component.bom.core.completeDate=completeDate;
+    let {isValid, value} = isValidValue(cost);
+
+    if( !isValid )
+      component.operation.setupCost = null;
     else
-      component.bom.core.completeDate = null;
+      component.operation.setupCost = value;
 
-    IsClosePopupMenu(component);
-    console.log( 'setCompleteDate : ' + component.bom.core.completeDate);
+    saveValidOpEntry(component);
+  }
+
+  const setInputWarehouse=(name, component)=>{
+    if( typeof component.operation === 'undefined' )
+      component.operation = new initializeOp( component );
+
+    if( isValidString( name ))
+      component.operation.inputWarehouse=name;
+    else
+      component.operation.inputWarehouse = '';
+
+    saveValidOpEntry(component);
+  }
+
+  const setOutputWarehouse=(name, component)=>{
+    if( typeof component.operation === 'undefined' )
+      component.operation = new initializeOp( component );
+
+    if( isValidString( name ))
+      component.operation.outputWarehouse=name;
+    else
+      component.operation.outputWarehouse = '';
+
+    saveValidOpEntry(component);
+  }
+
+  const setWorkshop=(name, component)=>{
+    if( typeof component.operation === 'undefined' )
+      component.operation = new initializeOp( component );
+
+    if( isValidString( name ))
+      component.operation.workshop=name;
+    else
+      component.operation.workshop = '';
+
+    saveValidOpEntry(component);
+  }
+
+  const setShiftName=(index, name, component)=>{
+    if( typeof component.operation === 'undefined' )
+      component.operation = new initializeOp( component );
+
+    if( isValidString( name ))
+    {
+      for( let item of shiftInfoArray )
+      {
+        const id = shiftInfoArray.indexOf( item );
+        if( id === index )
+        {
+          item[0] = name;
+          break;
+        }
+      }
+    }
+
+    saveValidOpEntry(component);
+  }
+
+  const setShiftTeamName=(index, name, component)=>{
+    if( typeof component.operation === 'undefined' )
+      component.operation = new initializeOp( component );
+
+    if( isValidString( name ))
+    {
+      for( let item of shiftInfoArray )
+      {
+        const id = shiftInfoArray.indexOf( item );
+        if( id === index )
+        {
+          item[1] = name;
+          break;
+        }
+      }
+    }
+
+    saveValidOpEntry(component);
   }
 
 
@@ -503,14 +475,92 @@ export const SetupBOM=(props)=>{
   {
     if( event === 'click' )
     {
+      props.updateSubTitle( undefined, 'subTitle-BOM-data' );
        setEvent('hover');
        return;
     }
     if( event === 'hover' )
     {
+      props.updateSubTitle( undefined, 'show-setup-OP' );
       setEvent('click');
       return;
     }
+  }
+
+  const AddNextShiftEntry=(index)=>(e)=>{
+    shiftInfoArray.push([null,null]);
+    saveValidOpEntry(props.component);
+    setShiftInfoArray( shiftInfoArray );
+    window.dispatchEvent(new Event('resize'));  //resize popup menu
+  }
+
+  const removeShiftEntry=(index)=>(e)=>{
+    for( let item of shiftInfoArray )
+    {
+      const id = shiftInfoArray.indexOf( item );
+      if( id === index )
+      {
+        shiftInfoArray.splice(id, 1);
+      }
+    }
+    
+    saveValidOpEntry(props.component);
+    setShiftInfoArray( shiftInfoArray );
+    window.dispatchEvent(new Event('resize'));   //resize popup menu
+  }
+
+  
+
+ const renderShiftInfoInput=(uniqueKey, index, endDate, demand, isLastElement )=>{
+  return(
+    <div>
+    <div key={uniqueKey} className={'d-flex justify-content-between'} >  
+      <SetupComponentOp
+         title='shift'   //array of completed date for each required quantity
+         id={index}
+         cellCnt={2}
+         value={ endDate }
+         component={props.component}
+         handler={setShiftName}/>
+
+     <hr className={dividerCCS.hDividerClassName }  style={dividerCCS.vDividerStyle}/>    
+     
+     <SetupComponentOp
+         title='team-name'
+         id={index}
+         cellCnt={2}
+         value={( demand !== null && demand > 0 ) ? demand : ''} //array of demands for each period 
+         component={props.component}
+         handler={setShiftTeamName}/>
+         
+     { isLastElement === true ?
+       <i id={`${index}`}
+         className='text-info m-0 py-1 px-1 fas fw fa-plus-circle cursor-pointer'
+         style={{backgroundColor: `${styles.cciBgColor}`}}
+         onClick={AddNextShiftEntry(index)}/>
+         :
+         <i id={`${index}`}
+         className='text-danger m-0 py-1 px-1 fas fw fa-minus-circle cursor-pointer'
+         style={{backgroundColor: `${styles.cciBgColor}`}}
+         onClick={removeShiftEntry(index)}/>
+     } 
+     </div>
+    { isLastElement !== true ?
+      <hr  className={dividerCCS.hDividerClassName} style={dividerCCS.hDividerStyle}/>
+      :
+      null
+    }
+     </div>
+  );
+ }
+
+  const renderShiftInfoInputs=()=>{
+    return (
+      shiftInfoArray.map( ( item )=>{
+        let id = shiftInfoArray.indexOf(item);
+        return renderShiftInfoInput( Math.random(), id, item[0], item[1], id ===  shiftInfoArray.length - 1 ? true : false )
+      } )
+    )
   }
 
   return (
@@ -527,8 +577,8 @@ export const SetupBOM=(props)=>{
             className={`${_className}`}
             style={{backgroundColor: `${styles.cciBgColor}`}}/>
         }
-          closeOnDocumentClick={true}
-          on={`${event}`}
+          closeOnDocumentClick={false}
+          on={event}
           position={'right top'}
           defaultOpen={false}
           contentStyle={{ padding: '0px', border: 'none', backgroundColor: `${styles.cciBgColor}`}} 
@@ -536,7 +586,7 @@ export const SetupBOM=(props)=>{
           mouseEnterDelay={400}
           arrow={true}
           arrowStyle={{backgroundColor: `${styles.cciBgColor}`}}>
-          <span className={'text-primary'} >{t('commands:show-setup-BOM')}</span>
+          <span className={'text-primary'} >{t('commands:show-setup-OP')}</span>
       </Popup>
       :
       <Popup
@@ -549,8 +599,8 @@ export const SetupBOM=(props)=>{
             className={`${_className}`}
             style={{backgroundColor: `${styles.cciBgColor}`}}/>
         }
-          closeOnDocumentClick={true}
-          on={`${event}`}
+          closeOnDocumentClick={false}
+          on={event}
           onClose={setEventState}
           position={'right top'}
           defaultOpen={false}  
@@ -558,91 +608,212 @@ export const SetupBOM=(props)=>{
           arrow={true}
           arrowStyle={{backgroundColor: `${styles.cciBgColor}`}}>
           {close => (
-            <div className={'bg-info d-flex flex-column'} >
-            <div className={'bg-info d-flex'}>
-              <SetupComponentBOM
-                title='part-name'
-                value={props.component.businessLogic.name}
+            <div className={'d-flex flex-column'} style={{backgroundColor:`${styles.cciBgColor}`}} >
+            <div className={'d-flex justify-content-between'}>
+              <SetupComponentOp
+                title='employee-count-quantity'
+                id={-1}
+                cellCnt={2}
+                value={props.component.operation.employeeCount}
                 component={props.component}
-                handler={setPartName}/>
-              <a id={`${props.component.displayLogic.key}-setupBOM`}
-                href={`#${props.component.displayLogic.key}`}
+                handler={setEmployeeCount}/>
+              <hr className={dividerCCS.hDividerClassName }  style={dividerCCS.vDividerStyle}/>    
+               <SetupComponentOp
+                title='employee-count-quantity'
+                id={-1}
+                cellCnt={2}
+                value={props.component.operation.averageTimePerComponentPerEmployee}
+                component={props.component}
+                handler={setTimePerComponentPerEmployee} /> 
+               <i id={`${props.component.displayLogic.key}-SetupOP`}
                 className='text-danger m-0 py-1 px-1 fas fw fa-times-circle cursor-pointer'
                 style={{backgroundColor: `${styles.cciBgColor}`}}
-                onClick={ close }> </a>
+                onClick={ close }/> 
+               
             </div>
-            <hr className='my-0 bg-info'
-                  style={{borderStyle:'insert', borderWidth: '0.08em', borderColor:`${styles.cciInfoBlue}`}}/>
+           
+            <hr className={dividerCCS.hDividerClassName} style={dividerCCS.hDividerStyle}/>
 
-            <SetupComponentBOM
-                title='part-number'
-                value={props.component.bom.core.partNumber}
+            <div className={'d-flex  justify-content-between'}>
+                <SetupComponentOp
+                    title='daily-time-capacity-per-person-quantity'
+                    id={-1}
+                    cellCnt={2}
+                    value={props.component.operation.dailyTimeCapacityPerEmployee}
+                    component={props.component}
+                    handler={setDailyTimeCapacity}/>
+                <hr className={dividerCCS.hDividerClassName }  style={dividerCCS.vDividerStyle}/>    
+                 <SetupComponentOp
+                    title='daily-time-capacity-per-person-quantity'
+                    id={-1}
+                    cellCnt={2}
+                    value={props.component.operation.averageHourlyCost}
+                    component={props.component}
+                    handler={setHourlyCost}/>
+                <i id={`${props.component.displayLogic.key}-SetupOP`}
+                className='text-danger m-0 py-1 px-1 fas fw fa-times-circle cursor-pointer'
+                style={{backgroundColor: `${styles.cciBgColor}`}}
+                    onClick={ close }/> 
+            </div>
+
+            <hr className={dividerCCS.hDividerClassName} style={dividerCCS.hDividerStyle}/>
+
+            <div className={'d-flex  justify-content-between'}>
+                  <SetupComponentOp
+                      title='daily-overtime-capacity-quantity'
+                      cellCnt={2}
+                      id={-1}
+                      value={props.component.operation.dailyOvertimeCapacityPerEmployee}
+                      component={props.component}
+                      handler={setDailyOvertimeCapacity}/>
+                  <hr className={dividerCCS.hDividerClassName }  style={dividerCCS.vDividerStyle}/>    
+                  <SetupComponentOp
+                      title='average-overtime-hourly-cost-quantity'
+                      id={-1}
+                      cellCnt={2}
+                      value={props.component.operation.averageHourlyOvertimeCost}
                 component={props.component}
-                handler={setPartNumber}/>
+                      handler={setHourlyOvertimeCost}/>
+                  <i id={`${props.component.displayLogic.key}-SetupOP`}
+                      className='text-danger m-0 py-1 px-1 fas fw fa-times-circle cursor-pointer'
+                      style={{backgroundColor: `${styles.cciBgColor}`}}
+                      onClick={ close }/> 
+            </div>
 
-            <hr className='my-0 bg-info'
-                  style={{borderStyle:'insert', borderWidth: '0.08em', borderColor:`${styles.cciInfoBlue}`}}/>
+            <hr className={dividerCCS.hDividerClassName} style={dividerCCS.hDividerStyle}/>
 
-            { props.component.businessLogic.parentIds.length === 0 ?
-              <SetupComponentBOM
-              title='required-quantity'
-                // value='' input will show placeholder text
-                value={(props.component.bom.core.requiredQty !== null && props.component.bom.core.requiredQty > 0 ) ? props.component.bom.core.requiredQty: ''}
+            <div className={'d-flex  justify-content-between'}>
+                <SetupComponentOp
+                    title='min-allowed-employee-per-shift-quantity'
+                    id={-1}
+                    cellCnt={2}
+                    value={props.component.operation.minAllowedEmployeePerShift}
                 component={props.component}
-                handler={setTotalRequiredQty}/>
-              :
-              <SetupComponentBOM
-                title='unit-quantity'
-                // value='' input will show placeholder text
-                value={ props.component.bom.core.unitQty}
+                    handler={setMinAllowedEmployee}/>
+
+                <hr className={dividerCCS.hDividerClassName }  style={dividerCCS.vDividerStyle}/>    
+
+                <SetupComponentOp
+                    title='max-allowed-employee-per-shift-quantity'
+                    id={-1}
+                    cellCnt={2}
+                    value={props.component.operation.minAllowedEmployeePerShift}
+                    component={props.component}
+                    handler={setMaxAllowedEmployee}/>
+                <i id={`${props.component.displayLogic.key}-SetupOP`}
+                    className='text-danger m-0 py-1 px-1 fas fw fa-times-circle cursor-pointer'
+                    style={{backgroundColor: `${styles.cciBgColor}`}}
+                    onClick={ close }/> 
+            </div>
+
+            <hr className={dividerCCS.hDividerClassName} style={dividerCCS.hDividerStyle}/>
+
+            <div className={'d-flex  justify-content-between'}>
+                <SetupComponentOp
+                    title='hiring-cost-quantity'
+                    id={-1}
+                    cellCnt={2}
+                    value={props.component.operation.averageHiringCostPerEmployee}
                 component={props.component}
-                handler={setUnitQty}/>
-            }
+                    handler={setAverageHiringCost}/>
 
-            <hr className='my-0 bg-info'
-                style={{borderStyle:'insert', borderWidth: '0.08em', borderColor:`${styles.cciInfoBlue}`}}/>
+                <hr className={dividerCCS.hDividerClassName }  style={dividerCCS.vDividerStyle}/>    
 
-            <SetupComponentBOM
-                title='unit-of-measure'
-                value={props.component.bom.core.unitOfMeasure }
+                <SetupComponentOp
+                    title='dismissal-cost-quantity'
+                    id={-1}
+                    cellCnt={2}
+                    value={props.component.operation.averageDismissalCostPerEmployee}
                 component={props.component}
-                handler={setUnitOfMeasure}/>
+                    handler={setDismissalCost}/>
 
-            <hr className='my-0 bg-info'
-                style={{borderStyle:'insert', borderWidth: '0.08em', borderColor:`${styles.cciInfoBlue}`}}/>
+                <i id={`${props.component.displayLogic.key}-SetupOP`}
+                    className='text-danger m-0 py-1 px-1 fas fw fa-times-circle cursor-pointer'
+                    style={{backgroundColor: `${styles.cciBgColor}`}}
+                    onClick={ close }/> 
+            </div>
 
-            <SetupComponentBOM
+            <hr className={dividerCCS.hDividerClassName }  style={dividerCCS.hDividerStyle}/>    
+
+            <div className={'d-flex  justify-content-between'}>
+                <SetupComponentOp
+                    title='setup-cost-quantity'
+                    id={-1}
+                    cellCnt={2}
+                    value={props.component.operation.setupCost }
+                    component={props.component}
+                    handler={setSetupCost}/>
+                <hr className={dividerCCS.hDividerClassName }  style={dividerCCS.vDividerStyle}/>    
+                <SetupComponentOp
               title='scrap-rate'
-              value={props.component.bom.core.scrapRate }
+                  id={-1}
+                  cellCnt={2}
+                  value={props.component.operation.scrapRate }
               component={props.component}
               handler={setScrapRate}/>
+                <i id={`${props.component.displayLogic.key}-SetupOP`}
+                  className='text-danger m-0 py-1 px-1 fas fw fa-times-circle cursor-pointer'
+                  style={{backgroundColor: `${styles.cciBgColor}`}}
+                  onClick={ close }/> 
+             </div>
 
-            <hr className='my-0 bg-info'
-                style={{borderStyle:'insert', borderWidth: '0.08em', borderColor:`${styles.cciInfoBlue}`}}/>
+            <hr className={dividerCCS.hDividerClassName} style={dividerCCS.hDividerStyle}/>
 
-            <SetupComponentBOM
-                title='procurement-type'
-                value={props.component.bom.core.procurementType }
+            <div className={'d-flex  justify-content-between'}>
+                <SetupComponentOp
+                    title='input-warehouse-name'
+                    id={-1}
+                    cellCnt={2}
+                    value={props.component.operation.inputWarehouse }
                 component={props.component}
-                handler={setProcurementType}/>
+                    handler={setInputWarehouse}/>
 
-            <hr className='my-0 bg-info'
-                style={{borderStyle:'insert', borderWidth: '0.08em', borderColor:`${styles.cciInfoBlue}`}}/>
+                <hr className={dividerCCS.hDividerClassName }  style={dividerCCS.vDividerStyle}/>    
 
-            <SetupComponentBOM
+                <SetupComponentOp
+                  title='output-warehouse-name'
+                  id={-1}
+                  cellCnt={2}
+                  value={props.component.operation.outputWarehouse }
+                  component={props.component}
+                  handler={setOutputWarehouse}/>
+
+                <i id={`${props.component.displayLogic.key}-SetupOP`}
+                  className='text-danger m-0 py-1 px-1 fas fw fa-times-circle cursor-pointer'
+                  style={{backgroundColor: `${styles.cciBgColor}`}}
+                  onClick={ close }/> 
+            </div>
+            
+            <hr className={dividerCCS.hDividerClassName} style={dividerCCS.hDividerStyle}/>
+
+            <div className={'d-flex  justify-content-between'}>
+              <SetupComponentOp
                 title='start-product-date'
-                value={props.component.bom.core.startDate }
+                  id={-1}
+                  cellCnt={2}
+                  value={props.component.operation.startDate }
                 component={props.component}
                 handler={setStartDate}/>
 
-            <hr className='my-0 bg-info'
-                style={{borderStyle:'insert', borderWidth: '0.08em', borderColor:`${styles.cciInfoBlue}`}}/>
+              <hr className={dividerCCS.hDividerClassName }  style={dividerCCS.vDividerStyle}/>    
 
-            <SetupComponentBOM
-                title='product-complete-date'
-                value={props.component.bom.core.completeDate }
+              <SetupComponentOp
+                  title='workshop'
+                  id={-1}
+                  cellCnt={2}
+                  value={props.component.operation.workshop }
                 component={props.component}
-                handler={setCompleteDate}/>
+                  handler={setWorkshop}/>
+
+              <i id={`${props.component.displayLogic.key}-SetupOP`}
+                className='text-danger m-0 py-1 px-1 fas fw fa-times-circle cursor-pointer'
+                style={{backgroundColor: `${styles.cciBgColor}`}}
+                onClick={ close }/> 
+            </div>
+
+            <hr className={dividerCCS.hDividerClassName} style={dividerCCS.hDividerStyle}/>
+
+            {renderShiftInfoInputs()}
             </div>
             )
           }

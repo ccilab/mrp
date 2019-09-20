@@ -8,5 +8,7 @@
     "add-part" : "new part",
     "show-setup-BOM" : "Setup BOM",
     "bom-setup-uncompleted" : "Warning: BOM setup is not completed!",
-    "show-setup-MPS" : "Setup MPS"
+    "show-setup-PDP" : "Setup Product Demand",
+    "show-setup-IRF" : "Setup Inventory Records",
+    "show-setup-OP" : "Setup Operation"
 }
