@@ -29,6 +29,15 @@ import components from './../../data/components.json';
 import { initializeIRF } from "./CCiLabSetupIR";
 import {initializeOp} from "./CCiLabSetupOperation";
 
+export const tables = {
+  sysInfo: 'sysInfoTbl',
+  mps: 'mpsTable',
+  bom: 'bomTable',
+  productionOrder: 'productionOrderTable',
+  purchaseOrder: 'purchaseOrderTable',
+  materialOrder:  'materialPlanTable',
+  assetUsage:  'assetUsageTable'
+}
 //table includes assembly and paint process
 // simulate after loaded very top component and its direct  components
 // eslint-disable-next-line
@@ -458,7 +467,7 @@ const ComponentListTitle =(props)=>{
          ),
         'update-progress': null,
         'read-only':null
-        }[props.permissionStatus]}
+      }[props.permissionStatus]}
 
      {/* popup menu to change language */}
      <Popup
@@ -502,7 +511,7 @@ const ComponentListSubTitle = (props)=>{
 }
 
 
-class CCiLabComponentList extends Component {
+export class CCiLabComponentList extends Component {
     state = { greetings: undefined,
               visible: true,
               selected: 0,
@@ -1389,4 +1398,4 @@ class CCiLabComponentList extends Component {
     };
 }
 
-export default CCiLabComponentList;
+// export default CCiLabComponentList;
