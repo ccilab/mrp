@@ -4,6 +4,8 @@ import 'raf/polyfill'
 import React, { Component } from "react";
 import {CCiLabComponentList, tables} from "./CCiLabComponentList";
 import {detectOSVersion} from "./CCiLabUtility";
+import BOMTable from "./CCiLabBOMTable"
+import MPSTable from "./CCiLabMPSTable"
 
 
 
@@ -11,7 +13,7 @@ class ComponentContainer extends Component {
   
 
   state = {  width: 0 ,
-             show: tables.sysInfo}; //'system-info'
+             show: tables.mpsTable}; //'system-info'
 
   osVersion = detectOSVersion();
 
@@ -66,8 +68,8 @@ class ComponentContainer extends Component {
         {
           {
           'sysInfoTbl' : this.sysInfo(),
-          'mpsTable' : null,
-          'bomTable' : null,
+          'mpsTable' : {MPSTable},
+          'bomTable' :{BOMTable},
           'productionOrderTable' : null,
           'purchaseOrderTable' : null,
           'materialPlanTable' : null,

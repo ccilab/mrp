@@ -5,12 +5,12 @@ import { useTranslation } from 'react-i18next';
 import styles from "./../../dist/css/ccilab-component-list.css"
 
 
-const MPSTable=(props)=>{
+const BOMTable=(props)=>{
     return (
         <div>
-            "MPS table"
+            "BOM table"
         </div>
     )
 }
 
-export default MPSTable;
+export default BOMTable;
