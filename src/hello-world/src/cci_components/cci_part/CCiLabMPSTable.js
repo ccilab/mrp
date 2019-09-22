@@ -7,8 +7,14 @@ import styles from "./../../dist/css/ccilab-component-list.css"
 
 const MPSTable=(props)=>{
     return (
-        <div>
-            "MPS table"
+        <div className='table-responsive'>
+            <table className='table table-bordered'>
+                <tr>
+                    <th>Master Production Schedule Table</th>
+                </tr>
+
+            </table>
+           
         </div>
     )
 }

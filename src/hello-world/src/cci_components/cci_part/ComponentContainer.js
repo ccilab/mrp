@@ -13,7 +13,7 @@ class ComponentContainer extends Component {
   
 
   state = {  width: 0 ,
-             show: tables.mpsTable}; //'system-info'
+             show: tables.bom}; //'system-info'
 
   osVersion = detectOSVersion();
 
@@ -68,8 +68,8 @@ class ComponentContainer extends Component {
         {
           {
           'sysInfoTbl' : this.sysInfo(),
-          'mpsTable' : {MPSTable},
-          'bomTable' :{BOMTable},
+          'mpsTable' :  <MPSTable/>,
+          'bomTable' :  <BOMTable/>,
           'productionOrderTable' : null,
           'purchaseOrderTable' : null,
           'materialPlanTable' : null,
