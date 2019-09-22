@@ -7,8 +7,8 @@ import styles from "./../../dist/css/ccilab-component-list.css"
 
 const BOMTable=(props)=>{
     return (
-        <div className='table-responsive'>
-        <table className='table table-bordered'>
+        <div className='table-responsive-sm'>
+        <table className='table table-bordered table-stiped'>
             <tr>
                 <th>BOM Summary Table</th>
             </tr>
