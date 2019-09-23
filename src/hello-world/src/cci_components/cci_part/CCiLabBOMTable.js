@@ -8,16 +8,25 @@ import styles from "./../../dist/css/ccilab-component-list.css"
 const BOMTable=(props)=>{
     return (
         <div className='table-responsive-sm'>
-        <table className='table table-bordered table-stiped'>
+        <table className='table table-bordered table-striped'>
             <tr>
-                <th>BOM Summary Table</th>
+                <th className='text-center' colSpan='5' >BOM Summary Table</th>
             </tr>
+
             <tr>
                 <th>Product Name: </th>
                 <td>Table</td>
-                <th>Approved By:</th>
-                <td>...</td>
+                <th>Designed By:</th>
+                <td>first-name, last-name</td>
                 <th>Product Image:</th>
+            </tr>
+
+            <tr>
+                <th>Customer Order Name: </th>
+                <td>Phoenix Furniture Square Table, Australia</td>
+                <th>Designed Date:</th>
+                <td>22/Sept/2019</td>
+                <td>Product Image</td>
             </tr>
 
         </table>
