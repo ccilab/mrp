@@ -419,8 +419,13 @@ const ComponentListTitle =(props)=>{
        <i key='submit-bom' className='text-primary cursor-pointer p-1 fa fa-cloud-upload-alt'/>
       :
       null
-     }
-    </span>
+    }
+    </span>  
+   
+    <i key='show-bom' 
+      className='text-primary p-1 fa fa-bars cursor-pointer' 
+      style={{position: 'absolute', right :'3.0rem'}}/>
+
     {/* https://www.robinwieruch.de/conditional-rendering-react/ */}
     {{
        'setup-bom':
@@ -551,7 +556,7 @@ export class CCiLabComponentList extends Component {
       this.componentListHeight= this.componentListMinHeight;  //minimum height
     }
 
-    init=(props)=>{
+    init=()=>{
       this.slidingComponentListIconClassName = this.state.visible? 'fa fa-angle-double-left' : 'fa fa-angle-double-right';
 
       this.componentListTranslateStyle=this.state.visible ? `translate3d(0, 0, 0)`: `translate3d(-${this.hideListWidth}, 0, 0)`;
@@ -649,7 +654,7 @@ export class CCiLabComponentList extends Component {
 
     // initialize first component's childKeyIds, reorder in following order: the first component, alarm status, warning status, no_issue status
     componentWillMount=()=>{
-      this.init(this.props);
+      this.init();
 
       TextResizeDetector.TARGET_ELEMENT_ID = 'temp-item';
       TextResizeDetector.USER_INIT_FUNC = this.initTextResizeDetector;
@@ -695,6 +700,8 @@ export class CCiLabComponentList extends Component {
 
       // eslint-disable-next-line
       this.state.greetings=currentSessionComponents;
+
+      this.props.getComponents( currentSessionComponents );
       // eslint-disable-next-line
       this.state.visible = false;
       // eslint-disable-next-line
@@ -1012,6 +1019,7 @@ export class CCiLabComponentList extends Component {
       let currentSessionComponents=this.state.greetings;
       currentSessionComponents.forEach( (item)=>{setComponentSelected(item, selectedComponent.displayLogic.key);});
 
+      this.props.getComponents( currentSessionComponents );
       if( highlight === true )
       {
         // console.log("CCiLabComponentList - selectedComponentHandler");

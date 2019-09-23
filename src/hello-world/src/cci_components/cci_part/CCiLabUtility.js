@@ -298,7 +298,7 @@ export  const detectOSVersion = () =>{
 
       <div> Browser version: {osVersion.browserMajorVersion}</div>
 
-      <div> OS version: {osVersion.os} {this.osVersion.osVersion} major: {this.osVersion.osMajorVersion}</div>
+      <div> OS version: {osVersion.os} {osVersion.osVersion} major: {osVersion.osMajorVersion}</div>
 
           <div> Language: {window.navigator.language} </div>
 

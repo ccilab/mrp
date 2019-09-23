@@ -5,6 +5,25 @@ import { useTranslation } from 'react-i18next';
 
 
 const BOMTable=(props)=>{
+    let componentList;
+
+    let imgName='';
+    let rootElement ;
+    const setRootImagePath=( components )=>{
+        let rootElement = components.find( ({element})=> element.businessLogic.parentIds.length === 0 )
+        
+        if( typeof rootElement !== 'undefined')
+        {
+            imgName = (rootElement.businessLogic.imgFile.length !==0 ) ? '/images/'+ rootElement.businessLogic.imgFile : '';
+        }
+        
+    }
+
+    if( typeof rootElement === 'undefined'  )
+    {
+        componentList = props.components;
+        setRootImagePath(componentList);
+    }
     return (
         <div className='table-responsive-sm'>
         <table className='table table-bordered table-striped'>
@@ -25,7 +44,10 @@ const BOMTable=(props)=>{
                 <td>Phoenix Furniture Square Table, Australia</td>
                 <th>Designed Date:</th>
                 <td>22/Sept/2019</td>
-                <td>Product Image</td>
+                <td><img className='cci-component__img align-self-center'
+                         src={imgName}
+                         alt={rootElement.businessLogic.name}/>
+                </td>
             </tr>
 
         </table>

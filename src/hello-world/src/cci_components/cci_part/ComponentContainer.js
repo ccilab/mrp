@@ -13,7 +13,7 @@ class ComponentContainer extends Component {
   
 
   state = {  width: 0 ,
-             show: tables.bom}; //'system-info'
+             show: tables.sysInfo}; //'system-info'
 
   componentList = null;
 
@@ -26,6 +26,9 @@ class ComponentContainer extends Component {
     this.setState( {show: tableType} );
   }
 
+  componentWillMount=()=>{
+
+  }
   getComponentList=(componentListSrc)=>{
     this.componentList=componentListSrc;
   }
@@ -42,8 +45,8 @@ class ComponentContainer extends Component {
         {
           {
           'sysInfoTbl' : <SysInfo/>,
-          'mpsTable' :  <MPSTable/>,
-          'bomTable' :  <BOMTable/>,
+          'mpsTable' :  <MPSTable />,
+          'bomTable' :  <BOMTable components={this.componentList} />,
           'productionOrderTable' : null,
           'purchaseOrderTable' : null,
           'materialPlanTable' : null,
