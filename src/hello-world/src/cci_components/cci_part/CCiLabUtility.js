@@ -1,3 +1,5 @@
+import React from 'react';
+
 // http://exploringjs.com/es6/ch_modules.html#sec_importing-exporting-details
 
 export const dividerCCS = {
@@ -277,6 +279,42 @@ export  const detectOSVersion = () =>{
       };
       return jscd;
   }
+
+  export const SysInfo=()=>{
+    let osVersion = detectOSVersion();
+    return (
+      <ul>
+      <div>  window.screen.width width is :   {window.screen.width} </div>
+
+      <div > window.innerWidth is view port width: {window.innerWidth }; </div>
+
+      <div> documentElement.clientWidth is: {document.documentElement.clientWidth}</div> 
+
+      <div > window.innerHeight is view port height: {window.innerHeight}</div>
+
+      <div> documentElement.clientHeight is: {document.documentElement.clientHeight}</div>
+
+      <div> Browser is: {osVersion.browser}</div>
+
+      <div> Browser version: {osVersion.browserMajorVersion}</div>
+
+      <div> OS version: {osVersion.os} {this.osVersion.osVersion} major: {this.osVersion.osMajorVersion}</div>
+
+          <div> Language: {window.navigator.language} </div>
+
+      <div> Languages: {window.navigator.languages[0]}, 
+                        {window.navigator.languages[1]}, 
+                        {window.navigator.languages[2]},
+                        {window.navigator.languages[3]} </div>
+    </ul>
+    )
+  }
+
+
+
+
+
+
 
 // getTextWidth("hello there!", "bold 12pt arial")
 // return unit CSS px - 96css is 1 inch
