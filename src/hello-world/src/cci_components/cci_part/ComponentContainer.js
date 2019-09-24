@@ -29,7 +29,8 @@ class ComponentContainer extends Component {
     console.log( "ComponentContainer - current show: " +  tableType)
     if( this.previousTableType !== tableType )
     {
-      this.setState( {show: tableType} );
+      // this.setState( {show: tableType} );
+      this.state.show = tableType;
       this.previousTableType = tableType;
     }
     
