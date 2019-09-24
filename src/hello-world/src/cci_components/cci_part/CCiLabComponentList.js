@@ -7,7 +7,7 @@ import React, { Component } from "react";
 
 import styles from "./../../dist/css/ccilab-component-list.css"
 
-import './../../dist/css/popup-menu.css'
+//import './../../dist/css/popup-menu.css'
 
 import CCiLabComponent from "./CCiLabComponent";
 import DropComponentWarningModal from "./CCiLabDropComponentCheckFailedModal";
@@ -437,8 +437,8 @@ const ComponentListTitle =(props)=>{
       arrow={true}
       arrowStyle={{backgroundColor: `${styles.cciBgColor}`}}>
       <div >
-        <i key='bom-table'  className={'cursor-pointer nav-link p-1 m-0 text-info'} style={{fontSize: '0.7rem'}} onClick={props.updateTableHandler(tables.bom)}>{t('componentList:bom-table')}</i>
-        <i key='mps-table'  className={'cursor-pointer nav-link p-1 m-0 text-info'} style={{fontSize: '0.7rem'}} onClick={props.updateTableHandler(tables.mps)}>{t('componentList:mps-table')}</i>
+        {/* <i key='bom-table'  className={'cursor-pointer nav-link p-1 m-0 text-info'} style={{fontSize: '0.7rem'}} onClick={props.updateTableHandler(tables.bom)}>{t('componentList:bom-table')}</i> */}
+        {/* <i key='mps-table'  className={'cursor-pointer nav-link p-1 m-0 text-info'} style={{fontSize: '0.7rem'}} onClick={props.updateTableHandler(tables.mps)}>{t('componentList:mps-table')}</i> */}
       </div>
 
    </Popup>
