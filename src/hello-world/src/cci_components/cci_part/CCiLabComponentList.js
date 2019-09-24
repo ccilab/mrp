@@ -413,7 +413,7 @@ const ComponentListTitle =(props)=>{
     <div className='d-flex align-items-center bg-info fa'
          style={{ 'height': `${props.titleHeight}rem`, 'width': `${props.titleWidth}`, fontFamily: `${fontFamily}`, fontWeight: 'normal'}}>
 
-    <span  id='title-name' className={props.titleClassName} style={{'position':'relative', 'left':`${props.titlePositionLeft}rem`, fontSize: '1rem'}}>{t(`${props.title}`)}
+    <span  id='title-name' className={props.titleClassName} style={{'position':'relative', 'left':`${props.titlePositionLeft}rem`, fontSize: '1rem'}}>{t(`componentList:${props.title}`)}
 
     { props.setupBOM ?
        <i key='submit-bom' className='text-primary cursor-pointer p-1 fa fa-cloud-upload-alt'/>
@@ -422,9 +422,27 @@ const ComponentListTitle =(props)=>{
     }
     </span>  
    
-    <i key='show-bom' 
-      className='text-primary p-1 fa fa-bars cursor-pointer' 
-      style={{position: 'absolute', right :'3.0rem'}}/>
+   <Popup 
+      trigger = {
+         <i key='show-tables' 
+          className='text-primary p-1 fa fa-bars cursor-pointer' 
+          style={{position: 'absolute', right :'3.0rem'}}/>
+      }
+      closeOnDocumentClick
+      on={'hover'} //['click', 'focus','hover']
+      position={ 'bottom right' }
+      mouseLeaveDelay={200}
+      mouseEnterDelay={0}
+      contentStyle={{ border: 'none', backgroundColor: `${styles.cciBgColor}`}}
+      arrow={true}
+      arrowStyle={{backgroundColor: `${styles.cciBgColor}`}}>
+      <div >
+        <i key='bom-table'  className={'cursor-pointer nav-link p-1 m-0 text-info'} style={{fontSize: '0.7rem'}} onClick={props.updateTableHandler(tables.bom)}>{t('componentList:bom-table')}</i>
+        <i key='mps-table'  className={'cursor-pointer nav-link p-1 m-0 text-info'} style={{fontSize: '0.7rem'}} onClick={props.updateTableHandler(tables.mps)}>{t('componentList:mps-table')}</i>
+      </div>
+
+   </Popup>
+
 
     {/* https://www.robinwieruch.de/conditional-rendering-react/ */}
     {{
@@ -446,7 +464,7 @@ const ComponentListTitle =(props)=>{
               arrow={true}
               arrowStyle={{backgroundColor: `${styles.cciBgColor}`}}>
               <span className={'text-info text-nowrap p-1'}>
-                {t('show-setup-MRP')}
+                {t('componentList:show-setup-MRP')}
               </span>
           </Popup>
           :
@@ -466,7 +484,7 @@ const ComponentListTitle =(props)=>{
             arrow={true}
             arrowStyle={{backgroundColor: `${styles.cciBgColor}`}}>
             <span className={'text-info text-nowrap p-1'}>
-              {t('show-progress')}
+              {t('componentList:show-progress')}
             </span>
         </Popup>
          ),
@@ -506,7 +524,7 @@ const ComponentListSubTitle = (props)=>{
   return (
     <div className='d-flex align-items-center fa'
         style={{ 'height': `${props.height}rem`, 'width': `${props.width}`, backgroundColor: `${styles.cciBgColor}`, fontFamily: `${fontFamily}`, fontWeight: 'normal' }}>
-        <span id='subTitle-name' className={props.className} style={{'position':'relative',  'left':`${props.positionLeft}rem`, fontSize: '0.95rem'}}>{t(`${props.name}`)}</span>
+        <span id='subTitle-name' className={props.className} style={{'position':'relative',  'left':`${props.positionLeft}rem`, fontSize: '0.95rem'}}>{t(`componentList:${props.name}`)}</span>
         <span id='subTitle-type' className={props.className} style={{'position':'relative', 'left':`${props.ratePositionLeft}rem`, fontSize: '0.95rem'}}>{t([`componentList:${props.rateType}`, `commands:${props.rateType}`])}
         </span>
         {/* #todo - make title editable by user */}
@@ -1345,6 +1363,7 @@ export class CCiLabComponentList extends Component {
                                       titlePositionLeft= {this.componentTitleLeft}
                                       titleClassName = {listTitleClassName}
                                       setupBOM = {this.state.setupBOM}
+                                      updateTableHandler={this.props.updateTableHandler}
                                       permissionStatus = {this.state.permissionEnabled}
                                       changeBOMHandler = {this.showSetupBOM}/> :
                                 <ComponentListTitle title='title-Progress'
@@ -1353,6 +1372,7 @@ export class CCiLabComponentList extends Component {
                                       titlePositionLeft= {this.componentTitleLeft}
                                       titleClassName = {listTitleClassName}
                                       setupBOM = {this.state.setupBOM}
+                                      updateTableHandler={this.props.updateTableHandler}
                                       permissionStatus = {this.state.permissionEnabled}
                                       changeBOMHandler = {this.showSetupBOM}/>
                   }

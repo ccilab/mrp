@@ -15,6 +15,8 @@ class ComponentContainer extends Component {
   state = {  width: 0 ,
              show: tables.sysInfo}; //'system-info'
 
+  previousTableType = tables.sysInfo;
+
   componentList = null;
 
   updateDimensions=()=>{
@@ -23,12 +25,17 @@ class ComponentContainer extends Component {
   }
 
   updateTableType=(tableType)=>{
-    this.setState( {show: tableType} );
+    console.log("ComponentContainer - previous show: " + this.previousTableType);
+    console.log( "ComponentContainer - current show: " +  tableType)
+    if( this.previousTableType !== tableType )
+    {
+      this.setState( {show: tableType} );
+      this.previousTableType = tableType;
+    }
+    
   }
 
-  componentWillMount=()=>{
-
-  }
+ 
   getComponentList=(componentListSrc)=>{
     this.componentList=componentListSrc;
   }
