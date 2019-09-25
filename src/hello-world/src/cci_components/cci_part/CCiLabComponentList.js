@@ -403,6 +403,9 @@ const ComponentListTitle =(props)=>{
     i18n.changeLanguage(language);
   }
 
+  const tableChangeHandler=(tableType)=>(e)=>{
+    props.updateTableHandler(tableType);
+  }
   // console.log("CCiLabComponentList - ComponentListTitle: i18n.language = " + i18n.language );
 
   // set setupBOM or progress icon at right side of the title bar
@@ -437,8 +440,8 @@ const ComponentListTitle =(props)=>{
       arrow={true}
       arrowStyle={{backgroundColor: `${styles.cciBgColor}`}}>
       <div >
-        <i key='bom-table'  className={'cursor-pointer nav-link p-1 m-0 text-info'} style={{fontSize: '0.7rem'}} onClick={props.updateTableHandler(tables.bom)}>{t('componentList:bom-table')}</i>
-        <i key='mps-table'  className={'cursor-pointer nav-link p-1 m-0 text-info'} style={{fontSize: '0.7rem'}} onClick={props.updateTableHandler(tables.mps)}>{t('componentList:mps-table')}</i>
+        <i key='bom-table'  className={'cursor-pointer nav-link p-1 m-0 text-info'} style={{fontSize: '0.7rem'}} onClick={tableChangeHandler(tables.bom)}>{t('componentList:bom-table')}</i>
+        <i key='mps-table'  className={'cursor-pointer nav-link p-1 m-0 text-info'} style={{fontSize: '0.7rem'}} onClick={tableChangeHandler(tables.mps)}>{t('componentList:mps-table')}</i>
       </div>
 
    </Popup>

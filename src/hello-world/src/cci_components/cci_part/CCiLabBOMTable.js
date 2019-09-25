@@ -10,7 +10,10 @@ const BOMTable=(props)=>{
     let imgName='';
     let rootElement ;
     const setRootImagePath=( components )=>{
-        let rootElement = components.find( ({element})=> element.businessLogic.parentIds.length === 0 )
+        if( typeof components === 'undefined')
+            return;
+
+        let rootElement = components.find( (element)=> { return element.businessLogic.parentIds.length === 0 ; } )
         
         if( typeof rootElement !== 'undefined')
         {
@@ -46,7 +49,7 @@ const BOMTable=(props)=>{
                 <td>22/Sept/2019</td>
                 <td><img className='cci-component__img align-self-center'
                          src={imgName}
-                         alt={rootElement.businessLogic.name}/>
+                         alt={ typeof rootElement !== 'undefined' ? rootElement.businessLogic.name : 'add new part'}/>
                 </td>
             </tr>
 

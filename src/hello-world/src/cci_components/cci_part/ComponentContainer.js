@@ -15,7 +15,7 @@ class ComponentContainer extends Component {
   state = {  width: 0 ,
              show: tables.sysInfo}; //'system-info'
 
-  previousTableType = tables.sysInfo;
+  previousTableType = this.state.show;
 
   componentList = null;
 
@@ -29,12 +29,31 @@ class ComponentContainer extends Component {
     console.log( "ComponentContainer - current show: " +  tableType)
     if( this.previousTableType !== tableType )
     {
-      // this.setState( {show: tableType} );
+      this.setState( {show: tableType} );
       this.state.show = tableType;
       this.previousTableType = tableType;
     }
-    
   }
+    
+  renderTables=(tableType)=>{
+    return(
+      <div>
+      {
+        {
+        'sysInfoTbl' : <SysInfo/>,
+        'mpsTable' :  <MPSTable />,
+        'bomTable' :  <BOMTable components={this.componentList} />,
+        'productionOrderTable' : null,
+        'purchaseOrderTable' : null,
+        'materialPlanTable' : null,
+        'assetUsageTable' : null,
+        default: null
+        }[tableType]
+      }
+      </div>
+    )
+  }
+    
 
  
   getComponentList=(componentListSrc)=>{
@@ -50,19 +69,7 @@ class ComponentContainer extends Component {
                                  getComponents={this.getComponentList} />
         </div>     
 
-        {
-          {
-          'sysInfoTbl' : <SysInfo/>,
-          'mpsTable' :  <MPSTable />,
-          'bomTable' :  <BOMTable components={this.componentList} />,
-          'productionOrderTable' : null,
-          'purchaseOrderTable' : null,
-          'materialPlanTable' : null,
-          'assetUsageTable' : null,
-           default: null
-          }[this.state.show]
-        }
-       
+        {this.renderTables(this.state.show)}
 
       </div>
     );
