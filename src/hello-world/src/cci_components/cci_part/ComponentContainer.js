@@ -30,7 +30,7 @@ class ComponentContainer extends Component {
     if( this.previousTableType !== tableType )
     {
       this.setState( {show: tableType} );
-      this.state.show = tableType;
+      // this.state.show = tableType;
       this.previousTableType = tableType;
     }
   }
@@ -41,7 +41,7 @@ class ComponentContainer extends Component {
       {
         {
         'sysInfoTbl' : <SysInfo/>,
-        'mpsTable' :  <MPSTable />,
+        'mpsTable' :  <MPSTable components={this.componentList}/>,
         'bomTable' :  <BOMTable components={this.componentList} />,
         'productionOrderTable' : null,
         'purchaseOrderTable' : null,
@@ -54,7 +54,7 @@ class ComponentContainer extends Component {
     )
   }
     
-
+ 
  
   getComponentList=(componentListSrc)=>{
     this.componentList=componentListSrc;

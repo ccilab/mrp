@@ -27,6 +27,7 @@ const BOMTable=(props)=>{
         componentList = props.components;
         setRootImagePath(componentList);
     }
+
     return (
         <div className='table-responsive-sm'>
         <table className='table table-bordered table-striped'>
@@ -35,19 +36,20 @@ const BOMTable=(props)=>{
             </tr>
 
             <tr>
-                <th>Product Name: </th>
-                <td>Table</td>
-                <th>Designed By:</th>
-                <td>first-name, last-name</td>
-                <th>Product Image:</th>
+                <th className='align-middle'>Product Name: </th>
+                <td className='align-middle'>Table</td>
+                <th className='align-middle'>Designed By:</th>
+                <td className='align-middle'>first-name, last-name</td>
+                <th className='align-middle text-center'>Product Image:</th>
             </tr>
 
             <tr>
-                <th>Customer Order Name: </th>
-                <td>Phoenix Furniture Square Table, Australia</td>
-                <th>Designed Date:</th>
-                <td>22/Sept/2019</td>
-                <td><img className='cci-component__img align-self-center'
+                <th className='align-middle'>Customer Order Name: </th>
+                <td className='align-middle'>Phoenix Furniture Square Table, Australia</td>
+                <th className='align-middle'>Designed Date:</th>
+                <td className='align-middle'> 22/Sept/2019</td>
+                <td className='align-middle'> <img className='cci-component__img align-self-center'
+                         style={{'height': '10rem', 'width': '10rem'}}
                          src={imgName}
                          alt={ typeof rootElement !== 'undefined' ? rootElement.businessLogic.name : 'add new part'}/>
                 </td>
