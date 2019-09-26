@@ -1,3 +1,5 @@
+@import "./../../../vendors/bootstrap-4.0.0-alpha.6/scss/variables";
+
 $text_color_theme: rgba(36, 37, 34, 0.596);
 $border_color: rgba(35, 56, 73, 0.842);
 
@@ -27,3 +29,4 @@ $component_columns_margin: 0.625;
 :export {cciInfoBlue: $cci-info-blue;}
 :export {cciBgColor: $cci-bg-color;}
 :export {cciHintRed: $cci-hint-red;}
+:export {bootstrapPopover: $zindex-popover;}

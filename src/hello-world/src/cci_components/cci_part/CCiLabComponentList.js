@@ -414,7 +414,10 @@ const ComponentListTitle =(props)=>{
 
   return (
     <div className='d-flex align-items-center bg-info fa'
-         style={{ 'height': `${props.titleHeight}rem`, 'width': `${props.titleWidth}`, fontFamily: `${fontFamily}`, fontWeight: 'normal'}}>
+         style={{ height: `${props.titleHeight}rem`, 
+                  width: `${props.titleWidth}`, 
+                  fontFamily: `${fontFamily}`, 
+                  fontWeight: 'normal'}}>
 
     <span  id='title-name' className={props.titleClassName} style={{'position':'relative', 'left':`${props.titlePositionLeft}rem`, fontSize: '1rem'}}>{t(`componentList:${props.title}`)}
 
@@ -436,12 +439,20 @@ const ComponentListTitle =(props)=>{
       position={ 'bottom right' }
       mouseLeaveDelay={200}
       mouseEnterDelay={0}
-      contentStyle={{ border: 'none', backgroundColor: `${styles.cciBgColor}`}}
+      contentStyle={{ 'z-index' : `${styles.bootstrapPopover}`,  border: 'none', backgroundColor: `${styles.cciBgColor}`}}
       arrow={true}
       arrowStyle={{backgroundColor: `${styles.cciBgColor}`}}>
       <div >
-        <i key='bom-table'  className={'cursor-pointer nav-link p-1 m-0 text-info'} style={{fontSize: '0.7rem'}} onClick={tableChangeHandler(tables.bom)}>{t('componentList:bom-table')}</i>
-        <i key='mps-table'  className={'cursor-pointer nav-link p-1 m-0 text-info'} style={{fontSize: '0.7rem'}} onClick={tableChangeHandler(tables.mps)}>{t('componentList:mps-table')}</i>
+        <table className='table table-hover m-0'>
+          <tbody>
+            <tr>
+                <i key='bom-table'  className={'cursor-pointer nav-link p-1 m-0 text-info'} style={{fontSize: '0.7rem'}} onClick={tableChangeHandler(tables.bom)}>{t('componentList:bom-table')}</i>
+            </tr>
+            <tr>
+              <i key='mps-table'  className={'cursor-pointer nav-link p-1 m-0 text-info'} style={{fontSize: '0.7rem'}} onClick={tableChangeHandler(tables.mps)}>{t('componentList:mps-table')}</i>
+            </tr>
+          </tbody>
+        </table>
       </div>
 
    </Popup>
@@ -483,7 +494,7 @@ const ComponentListTitle =(props)=>{
             position={ 'bottom right' }
             mouseLeaveDelay={0}
             mouseEnterDelay={0}
-            contentStyle={{ border: 'none', backgroundColor: `${styles.cciBgColor}`, fontSize: '0.8rem'}}
+            contentStyle={{'z-index' : `${styles.bootstrapPopover}`, border: 'none', backgroundColor: `${styles.cciBgColor}`, fontSize: '0.8rem'}}
             arrow={true}
             arrowStyle={{backgroundColor: `${styles.cciBgColor}`}}>
             <span className={'text-info text-nowrap p-1'}>
@@ -507,16 +518,24 @@ const ComponentListTitle =(props)=>{
       }
       closeOnDocumentClick
       on={'hover'} //['click', 'focus','hover']
-      position={ 'right top' }
+      position={ 'bottom left' }
       mouseLeaveDelay={200}
       mouseEnterDelay={0}
-      contentStyle={{ border: 'none', backgroundColor: `${styles.cciBgColor}`}}
+      contentStyle={{ 'z-index' : `${styles.bootstrapPopover}`, border: 'none', backgroundColor: `${styles.cciBgColor}`}}
       arrow={true}
       arrowStyle={{backgroundColor: `${styles.cciBgColor}`}}>
-      <div >
-        <a key='en' href='#English' className={'nav-link p-1 m-0 text-info'} style={{fontSize: '0.7rem'}} onClick={languageChangeHandler('en')}>English</a>
-        <a key='zh-CN' href='#中文' className={'nav-link p-1 m-0 text-info'} style={{fontSize: '0.7rem'}} onClick={languageChangeHandler('zh-CN')}>中文</a>
-      </div>
+      {/* <div > */}
+      <table className='table table-hover m-0'>
+        <tbody>
+          <tr>
+            <i key='en'  className={'cursor-pointer nav-link p-1 m-0 text-info'} style={{fontSize: '0.7rem'}} onClick={languageChangeHandler('en')}>English</i>
+          </tr>
+          <tr>
+            <i key='zh-CN' className={'cursor-pointer nav-link p-1 m-0 text-info'} style={{fontSize: '0.7rem'}} onClick={languageChangeHandler('zh-CN')}>中文</i>
+          </tr>
+          </tbody>
+        </table>
+      {/* </div> */}
      </Popup>
   </div>
   );
