@@ -10,7 +10,7 @@
     "reference-designators": "Reference Designators",
     "supplier": "Supplier",
     "supplier-part-number": "Supplier Part Number",
-    "customer-name": "Customer name",
+    "customer-name": "Customer order name",
     "order-quantity": "Order Quantity",
     "product-complete-date": "* Production complete date",
     "revision": "Revision",
@@ -31,6 +31,5 @@
     "less-produced-by-shift":"Warning: missed by ",
     "excess-consumed-by-shift": "Warning: exceeded by ",
     "warning-missed":"Warning: missed",
-    "warning-exceed": "Waring: over used",
-    "customer-name": "Customer name"
+    "warning-exceed": "Waring: over used"
 }

@@ -1,14 +1,18 @@
-import React, { useState } from 'react';
+import React from 'react';
 
 import { useTranslation } from 'react-i18next';
 
 
 
 const BOMTable=(props)=>{
+    const { t } = useTranslation('component', {useSuspense: false});
+  
     let componentList;
 
     let imgName='';
     let rootElement ;
+
+
     const setRootImagePath=( components )=>{
         if( typeof components === 'undefined')
             return;
@@ -29,7 +33,7 @@ const BOMTable=(props)=>{
     }
 
     return (
-        <div className='table-responsive-sm'>
+        <div className='table-responsive-sm' style={{width: `100%`}}>
         <table className='table table-bordered table-striped'>
             <tr>
                 <th className='text-center' colSpan='5' >BOM Summary Table</th>
@@ -44,7 +48,7 @@ const BOMTable=(props)=>{
             </tr>
 
             <tr>
-                <th className='align-middle'>Customer Order Name: </th>
+                <th className='align-middle'>{t('component:customer-name')}: </th>
                 <td className='align-middle'>Phoenix Furniture Square Table, Australia</td>
                 <th className='align-middle'>Designed Date:</th>
                 <td className='align-middle'> 22/Sept/2019</td>

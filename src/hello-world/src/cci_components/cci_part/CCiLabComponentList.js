@@ -570,6 +570,10 @@ export class CCiLabComponentList extends Component {
     componentListMinHeight;
     componentListHeight;  //minimum height
 
+    updateTableSize=( tableWidth )=>{
+      this.props.updateTableSize( tableWidth );
+    }
+
     setDefaultListDimension=()=>{
       this.componentListWidth= setListWidth(1.0); //in px or vw,
       this.hideListWidth = setListWidth(0.99); //in px or vw
@@ -659,10 +663,21 @@ export class CCiLabComponentList extends Component {
     toggleHideShowComponentList = () =>{
       // console.log('container: clicked before: - ', this.state.visible ? 'true' : 'false' );
       // console.log("CCiLabComponentList - toggleHideShowComponentList");
+
+      if( !this.state.visible )
+      {
+        this.updateTableSize( `${window.innerWidth}`);
+      }
+      else
+      {
+        this.updateTableSize( `${window.innerWidth}-${this.hideListWidth}`);
+      }
+      
       this.setState( { visible: this.state.visible ? false : true } );
 
       this.componentListTranslateStyle = this.state.visible ? `translate3d(0, 0, 0)`: `translate3d(-${this.hideListWidth}, 0, 0)`;
       this.slidingComponentListIconClassName = this.state.visible? 'fa fa-angle-double-left' : 'fa fa-angle-double-right';
+
       // console.log('container: clicked after: - ', this.state.visible ? 'true' : 'false' );
     }
 

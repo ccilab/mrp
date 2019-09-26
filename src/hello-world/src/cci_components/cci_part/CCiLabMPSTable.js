@@ -1,11 +1,11 @@
-import React, { useState } from 'react';
+import React from 'react';
 
 import { useTranslation } from 'react-i18next';
 
-import styles from "./../../dist/css/ccilab-component-list.css"
 
 
 const MPSTable=(props)=>{
+    const { t } = useTranslation('component', {useSuspense: false});
     return (
         <div className='table-responsive'>
             <table className='table table-bordered'>
