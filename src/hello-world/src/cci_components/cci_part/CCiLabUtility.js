@@ -102,6 +102,10 @@ export  const isValidValue=(valueToCheck)=>{
   };
 
 
+  export const getRandomInt=(max)=>{
+    return Math.floor(Math.random() * Math.floor(max));
+  }
+
   //http://jsfiddle.net/ChristianL/AVyND/
   //  const detectBrowserMajorVersion = () =>{
   //   let browser = navigator.appName;

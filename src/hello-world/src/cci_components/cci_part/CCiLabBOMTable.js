@@ -31,9 +31,9 @@ const BOMTable=(props)=>{
         componentList = props.components;
         setRootImagePath(componentList);
     }
-
+// key ={props.tableKey}
     return (
-        <div className='table-responsive-sm' style={{width: `100%`}}>
+        <div  className='table-responsive-sm' >
         <table className='table table-bordered table-striped'>
             <tr>
                 <th className='text-center' colSpan='5' >BOM Summary Table</th>

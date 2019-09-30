@@ -589,8 +589,8 @@ export class CCiLabComponentList extends Component {
     componentListMinHeight;
     componentListHeight;  //minimum height
 
-    updateTableSize=( tableWidth )=>{
-      this.props.updateTableSize( tableWidth );
+    updateTableSize=( listWidth )=>{
+      this.props.updateTableSize( listWidth );
     }
 
     setDefaultListDimension=()=>{
@@ -685,13 +685,13 @@ export class CCiLabComponentList extends Component {
 
       if( !this.state.visible )
       {
-        this.updateTableSize( `${window.innerWidth}`);
+        this.updateTableSize( parseInt(this.componentListWidth)*0.05 );  //hideListWidth=this.componentListWidth*0.99
       }
       else
       {
-        this.updateTableSize( `${window.innerWidth}-${this.hideListWidth}`);
+        this.updateTableSize( 0 );
       }
-      
+      // this.updateTableSize();
       this.setState( { visible: this.state.visible ? false : true } );
 
       this.componentListTranslateStyle = this.state.visible ? `translate3d(0, 0, 0)`: `translate3d(-${this.hideListWidth}, 0, 0)`;

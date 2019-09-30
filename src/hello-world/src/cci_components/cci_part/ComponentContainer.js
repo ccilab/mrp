@@ -20,8 +20,8 @@ class ComponentContainer extends Component {
 
   componentList = null;
 
-  updateDimensions=(width)=>{
-    this.setState({width: width});  
+  updateDimensions=( listWidth )=>{
+    this.setState({width: listWidth});  
     console.log("ComponentContainer - updateDimensions width: " + this.state.width);
   }
 
@@ -36,20 +36,20 @@ class ComponentContainer extends Component {
     }
   }
     
-  renderTables=(tableType)=>{
+  renderTables=(state)=>{
     return(
-      <div>
+      <div className={'m-4'}>
       {
         {
         'sysInfoTbl' : <SysInfo/>,
-        'mpsTable' :  <MPSTable components={this.componentList}/>,
-        'bomTable' :  <BOMTable components={this.componentList} tableWidth={this.state.width} />,
+        'mpsTable' :  <MPSTable components={this.componentList} />,
+        'bomTable' :  <BOMTable components={this.componentList} />,
         'productionOrderTable' : null,
         'purchaseOrderTable' : null,
         'materialPlanTable' : null,
         'assetUsageTable' : null,
         default: null
-        }[tableType]
+        }[state.show]
       }
       </div>
     )
@@ -61,17 +61,17 @@ class ComponentContainer extends Component {
     this.componentList=componentListSrc;
   }
 
-
+// key={this.state.key}
   render () {
     return (
-      <div className={`d-flex flex-row`}> 
-        <div>
+      <div  className={`d-flex flex-row`}> 
+        <div style={{width: this.state.width===0 ? 'auto' : `${this.state.width}px`}}>
             <CCiLabComponentList  updateTableHandler={this.updateTableType}
                                   updateTableSize={this.updateDimensions}
                                   getComponents={this.getComponentList} />
         </div>     
 
-        {this.renderTables(this.state.show)}
+        {this.renderTables(this.state)}
 
       </div>
     );

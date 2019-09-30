@@ -4,7 +4,7 @@ import { useTranslation } from 'react-i18next';
 
 import styles from "./../../dist/css/ccilab-component-list.css"
 
-import { dividerCCS, isValidString, isValidValue } from "./CCiLabUtility";
+import { dividerCCS, isValidString, isValidValue, getRandomInt } from "./CCiLabUtility";
 
 
 const SetupComponentIR=(props)=>{
@@ -545,7 +545,7 @@ export const SetupIRF=(props)=>{
     return (
       SRArray.map( ( item )=>{
         let id = SRArray.indexOf(item);
-        return renderSRInput( Math.random(), id, item[0], item[1], id ===  SRArray.length - 1 ? true : false )
+        return renderSRInput(getRandomInt(100), id, item[0], item[1], id ===  SRArray.length - 1 ? true : false )
       } )
     )
   }

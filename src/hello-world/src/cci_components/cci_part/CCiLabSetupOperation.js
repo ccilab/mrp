@@ -4,7 +4,7 @@ import { useTranslation } from 'react-i18next';
 
 import styles from "./../../dist/css/ccilab-component-list.css"
 
-import { dividerCCS, isValidString, isValidValue } from "./CCiLabUtility";
+import { dividerCCS, isValidString, isValidValue, getRandomInt } from "./CCiLabUtility";
 
 
 const SetupComponentOp=(props)=>{
@@ -210,7 +210,7 @@ export const SetupOP=(props)=>{
           }
 
 
-  const setEmployeeCount=(count, component)=>{
+  const setEmployeeCount=(index, count, component)=>{
     if( typeof component.operation === 'undefined' )
       component.operation = new initializeOp( component );
 
@@ -224,7 +224,7 @@ export const SetupOP=(props)=>{
     saveValidOpEntry(component);
   };
 
-  const setDailyTimeCapacity=(capacity, component)=>{
+  const setDailyTimeCapacity=(index, capacity, component)=>{
     if( typeof component.operation === 'undefined' )
       component.operation = new initializeOp( component );
 
@@ -238,7 +238,7 @@ export const SetupOP=(props)=>{
     saveValidOpEntry(component);
   };
 
-  const setHourlyCost=(hourlyCost, component)=>{
+  const setHourlyCost=(index, hourlyCost, component)=>{
     if( typeof component.operation === 'undefined' )
       component.operation = new initializeOp( component );
 
@@ -252,7 +252,7 @@ export const SetupOP=(props)=>{
     saveValidOpEntry(component);
     }
 
-  const setDailyOvertimeCapacity=(overtimeCapacity, component)=>{
+  const setDailyOvertimeCapacity=(index, overtimeCapacity, component)=>{
     if( typeof component.operation === 'undefined' )
       component.operation = new initializeOp( component );
 
@@ -266,7 +266,7 @@ export const SetupOP=(props)=>{
     saveValidOpEntry(component);
   }
 
-  const setHourlyOvertimeCost=(overtimeCost, component)=>{
+  const setHourlyOvertimeCost=(index, overtimeCost, component)=>{
     if( typeof component.operation === 'undefined' )
       component.operation = new initializeOp( component );
 
@@ -281,7 +281,7 @@ export const SetupOP=(props)=>{
   }
 
 
-  const setTimePerComponentPerEmployee=(timePerComponent, component)=>{
+  const setTimePerComponentPerEmployee=(index, timePerComponent, component)=>{
     if( typeof component.operation === 'undefined' )
       component.operation = new initializeOp( component );
 
@@ -295,7 +295,7 @@ export const SetupOP=(props)=>{
     saveValidOpEntry(component);
   }
 
-  const setMinAllowedEmployee=(count, component)=>{
+  const setMinAllowedEmployee=(index, count, component)=>{
     if( typeof component.operation === 'undefined' )
       component.operation = new initializeOp( component );
 
@@ -309,7 +309,7 @@ export const SetupOP=(props)=>{
     saveValidOpEntry(component);
   }
 
-  const setMaxAllowedEmployee=(count, component)=>{
+  const setMaxAllowedEmployee=(index, count, component)=>{
     if( typeof component.operation === 'undefined' )
       component.operation = new initializeOp( component );
 
@@ -323,7 +323,7 @@ export const SetupOP=(props)=>{
     saveValidOpEntry(component);
   }
 
-  const setAverageHiringCost=(cost, component)=>{
+  const setAverageHiringCost=(index, cost, component)=>{
     if( typeof component.operation === 'undefined' )
       component.operation = new initializeOp( component );
 
@@ -337,7 +337,7 @@ export const SetupOP=(props)=>{
     saveValidOpEntry(component);
   }
 
-  const setDismissalCost=(cost, component)=>{
+  const setDismissalCost=(index, cost, component)=>{
     if( typeof component.operation === 'undefined' )
       component.operation = new initializeOp( component );
 
@@ -351,7 +351,7 @@ export const SetupOP=(props)=>{
     saveValidOpEntry(component);
   }
 
-  const setScrapRate=(scrapRate, component)=>{
+  const setScrapRate=(index, scrapRate, component)=>{
     if( typeof component.operation === 'undefined' )
       component.operation = new initializeOp( component );
 
@@ -366,7 +366,7 @@ export const SetupOP=(props)=>{
   }
 
 
-  const setStartDate=(startDate, component)=>{
+  const setStartDate=(index, startDate, component)=>{
     if( typeof component.operation === 'undefined' )
       component.operation = new initializeOp( component );
 
@@ -378,7 +378,7 @@ export const SetupOP=(props)=>{
     saveValidOpEntry(component);
   }
 
-  const setSetupCost=(cost, component)=>{
+  const setSetupCost=(index, cost, component)=>{
     if( typeof component.operation === 'undefined' )
       component.operation = new initializeOp( component );
 
@@ -392,7 +392,7 @@ export const SetupOP=(props)=>{
     saveValidOpEntry(component);
   }
 
-  const setInputWarehouse=(name, component)=>{
+  const setInputWarehouse=(index, name, component)=>{
     if( typeof component.operation === 'undefined' )
       component.operation = new initializeOp( component );
 
@@ -404,7 +404,7 @@ export const SetupOP=(props)=>{
     saveValidOpEntry(component);
   }
 
-  const setOutputWarehouse=(name, component)=>{
+  const setOutputWarehouse=(index, name, component)=>{
     if( typeof component.operation === 'undefined' )
       component.operation = new initializeOp( component );
 
@@ -416,7 +416,7 @@ export const SetupOP=(props)=>{
     saveValidOpEntry(component);
   }
 
-  const setWorkshop=(name, component)=>{
+  const setWorkshop=(index, name, component)=>{
     if( typeof component.operation === 'undefined' )
       component.operation = new initializeOp( component );
 
@@ -511,7 +511,7 @@ export const SetupOP=(props)=>{
 
   
 
- const renderShiftInfoInput=(uniqueKey, index, endDate, demand, isLastElement )=>{
+ const renderShiftInfoInput=(uniqueKey, index, shiftName, teamName, isLastElement )=>{
   return(
     <div>
     <div key={uniqueKey} className={'d-flex justify-content-between'} >  
@@ -519,7 +519,7 @@ export const SetupOP=(props)=>{
          title='shift'   //array of completed date for each required quantity
          id={index}
          cellCnt={2}
-         value={ endDate }
+         value={ shiftName }
          component={props.component}
          handler={setShiftName}/>
 
@@ -529,7 +529,7 @@ export const SetupOP=(props)=>{
          title='team-name'
          id={index}
          cellCnt={2}
-         value={( demand !== null && demand > 0 ) ? demand : ''} //array of demands for each period 
+         value={( teamName !== null ) ? teamName : ''} //array of demands for each period 
          component={props.component}
          handler={setShiftTeamName}/>
          
@@ -558,7 +558,7 @@ export const SetupOP=(props)=>{
     return (
       shiftInfoArray.map( ( item )=>{
         let id = shiftInfoArray.indexOf(item);
-        return renderShiftInfoInput( Math.random(), id, item[0], item[1], id ===  shiftInfoArray.length - 1 ? true : false )
+        return renderShiftInfoInput( getRandomInt(100), id, item[0], item[1], id ===  shiftInfoArray.length - 1 ? true : false )
       } )
     )
   }

@@ -4,7 +4,7 @@ import { useTranslation } from 'react-i18next';
 
 import styles from "./../../dist/css/ccilab-component-list.css"
 
-import { dividerCCS, isValidString, isValidValue } from "./CCiLabUtility";
+import { dividerCCS, isValidString, isValidValue, getRandomInt } from "./CCiLabUtility";
 
 // popup menu class doesn't support bootstrap e.g. d-flex, flex-fill class or native flex
 // const trigger = this.TriggerEl.getBoundingClientRect(); calculates static size of trigger element
@@ -293,7 +293,7 @@ export const SetupPDP=(props)=>{
     return (
       demandDateArray.map( ( item )=>{
         let id = demandDateArray.indexOf(item);
-        return renderDemandDateInput( Math.random(), id, item[0], item[1], id ===  demandDateArray.length - 1 ? true : false )
+        return renderDemandDateInput( getRandomInt(100), id, item[0], item[1], id ===  demandDateArray.length - 1 ? true : false )
       } )
     )
   }
