@@ -8,8 +8,6 @@
     "unit-of-measure": "Unit of Measure",
     "required-quantity": "* Required Quantity",
     "reference-designators": "Reference Designators",
-    "supplier": "Supplier",
-    "supplier-part-number": "Supplier Part Number",
     "customer-name": "Customer order name",
     "order-quantity": "Order Quantity",
     "product-complete-date": "* Production complete date",
@@ -31,5 +29,11 @@
     "less-produced-by-shift":"Warning: missed by ",
     "excess-consumed-by-shift": "Warning: exceeded by ",
     "warning-missed":"Warning: missed",
-    "warning-exceed": "Waring: over used"
+    "warning-exceed": "Waring: over used",
+    "th-table-title" : "BOM Summary Table",
+    "th-product-name":"Product Name",
+    "th-designed-by": "Designed By",
+    "th-product-image": "Product Image",
+    "th-designed-date": "Designed Date",
+    "th-no-image-name": "[... Image is not available]"
 }

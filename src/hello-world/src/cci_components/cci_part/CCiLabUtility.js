@@ -287,30 +287,62 @@ export  const detectOSVersion = () =>{
   export const SysInfo=()=>{
     let osVersion = detectOSVersion();
     return (
-      <ul>
-      <div>  window.screen.width width is :   {window.screen.width} </div>
+        <div  className='table-responsive-sm' >
+            <table className='table table-bordered table-striped'>
+                <tbody>
+                <tr>
+                    <th className='align-middle'>  window.screen.width width is: </th>
+                    <th  className='align-middle'>{window.screen.width} </th>
+                </tr>
+                
+                <tr>
+                    <th className='align-middle'>  window.innerWidth is view port width:  </th>
+                    <th  className='align-middle'>{window.innerWidth } </th>
+                </tr>
 
-      <div > window.innerWidth is view port width: {window.innerWidth }; </div>
+                <tr>
+                    <th className='align-middle'>  documentElement.clientWidth is:  </th>
+                    <th  className='align-middle'>{document.documentElement.clientWidth} </th>
+                </tr>
 
-      <div> documentElement.clientWidth is: {document.documentElement.clientWidth}</div> 
+                <tr>
+                    <th className='align-middle'>  window.innerHeight is view port height:  </th>
+                    <th  className='align-middle'>{window.innerHeight} </th>
+                </tr>
 
-      <div > window.innerHeight is view port height: {window.innerHeight}</div>
+                <tr>
+                    <th className='align-middle'>  documentElement.clientHeight is:  </th>
+                    <th  className='align-middle'>{document.documentElement.clientHeight} </th>
+                </tr>
 
-      <div> documentElement.clientHeight is: {document.documentElement.clientHeight}</div>
+                <tr>
+                    <th className='align-middle'>  Browser is:  </th>
+                    <th  className='align-middle'>{osVersion.browser}</th>
+                </tr>
 
-      <div> Browser is: {osVersion.browser}</div>
+                <tr>
+                    <th className='align-middle'>   Browser version:   </th>
+                    <th  className='align-middle'>{osVersion.browserMajorVersion}</th>
+                </tr>
 
-      <div> Browser version: {osVersion.browserMajorVersion}</div>
+                <tr>
+                    <th className='align-middle'>  OS version (major):   </th>
+                    <th  className='align-middle'>{osVersion.os} {osVersion.osVersion} ({osVersion.osMajorVersion})</th>
+                </tr>
 
-      <div> OS version: {osVersion.os} {osVersion.osVersion} major: {osVersion.osMajorVersion}</div>
+                <tr>
+                    <th className='align-middle'> Current browser language:   </th>
+                    <th  className='align-middle'>{window.navigator.language}</th>
+                </tr>
 
-          <div> Language: {window.navigator.language} </div>
-
-      <div> Languages: {window.navigator.languages[0]}, 
-                        {window.navigator.languages[1]}, 
-                        {window.navigator.languages[2]},
-                        {window.navigator.languages[3]} </div>
-    </ul>
+                <tr>
+                    <th className='align-middle'> Added browser languages:    </th>
+                    <th className='align-middle text-wrap'>{window.navigator.languages.map((item) => (item=`${item}, `))}</th>
+                </tr>
+                </tbody>
+            </table>
+       
+       </div>
     )
   }
 

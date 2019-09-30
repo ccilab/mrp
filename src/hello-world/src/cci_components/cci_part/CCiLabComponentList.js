@@ -445,6 +445,9 @@ const ComponentListTitle =(props)=>{
       <div >
         <table className='table table-hover m-0'>
           <tbody>
+          <tr>
+                <i key='sysInfo-table'  className={'cursor-pointer nav-link p-1 m-0 text-info'} style={{fontSize: '0.7rem'}} onClick={tableChangeHandler(tables.sysInfo)}>{t('componentList:sys-table')}</i>
+            </tr>
             <tr>
                 <i key='bom-table'  className={'cursor-pointer nav-link p-1 m-0 text-info'} style={{fontSize: '0.7rem'}} onClick={tableChangeHandler(tables.bom)}>{t('componentList:bom-table')}</i>
             </tr>
