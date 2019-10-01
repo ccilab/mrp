@@ -122,6 +122,7 @@ const _initializeMPS=()=>{
    let pdp={};
    pdp.demandAndEndDateArray= [[null,null]]; //array - required quantity of product/component and completed date as key-value 
    pdp.customer=null;
+   pdp.orderNumber=null;
    return pdp;
 }
 
@@ -157,7 +158,16 @@ export const SetupPDP=(props)=>{
       component.pdp.customer='';  //reset to initial value to fail saveValidPDPEntry evaluation
 
     saveValidPDPEntry(component);
-    console.log("SetupPDP - setCustomerName: " + component.pdp.customer);
+    // console.log("SetupPDP - setCustomerName: " + component.pdp.customer);
+  };
+
+  const setCustomerOrder=(index, OrderNumber, component)=>{
+    if( isValidString( OrderNumber ))
+        component.pdp.orderNumber=OrderNumber;
+    else
+      component.pdp.orderNumber='';  //reset to initial value to fail saveValidPDPEntry evaluation
+
+    saveValidPDPEntry(component);
   };
 
   const setTotalRequiredQty=(index, qty, component)=>
@@ -359,6 +369,22 @@ export const SetupPDP=(props)=>{
                     onClick={ close }/>
                 </div>
 
+                <hr className={dividerCCS.hDividerClassName} style={dividerCCS.hDividerStyle}/>
+
+                <div className={'d-flex justify-content-between'} >
+                  <SetupComponentPDP
+                    title='customer-order-number'
+                    id={-1}
+                    cellCnt={1}
+                    value={props.component.pdp.orderNumber} //array of demands for each period 
+                    component={props.component}
+                    handler={setCustomerOrder}/>
+                  <i id={`${props.component.displayLogic.key}-SetupPDP`}
+                    className='text-danger m-0 py-1 px-1 fas fw fa-times-circle cursor-pointer'
+                    style={{backgroundColor: `${styles.cciBgColor}`}}
+                    onClick={ close }/>
+                </div>
+                
                 <hr className={dividerCCS.hDividerClassName} style={dividerCCS.hDividerStyle}/>
 
                 {renderDemandDateInputs()}
