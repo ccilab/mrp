@@ -1,4 +1,5 @@
 import React from 'react';
+import styles from "./../../dist/css/ccilab-component-list.css"
 
 import { useTranslation } from 'react-i18next';
 
@@ -72,8 +73,8 @@ const BOMTableHeader=(props)=>{
     }
     return (
         
-            <tbody>
-                <tr>
+            <tbody >
+                <tr >
                     <th className='align-middle'>{t('component:th-product-name')}: </th>
                     <td className='align-middle' colSpan='2'> {(typeof rootElement !== 'undefined') ? rootElement.businessLogic.name : `${t('component:part-name')}`}</td>
                     <th className='align-middle'>{t('component:th-designed-by')}:</th>
@@ -106,7 +107,7 @@ const BOMTableHeader=(props)=>{
 const BOMHeaderRow=()=>{
     const { t } = useTranslation('component', {useSuspense: false});
     return (
-        <tr className='table-active'>
+        <tr style={{backgroundColor: `${styles.cciBgColor}`}}>
             <th>BOM Level</th>
             <th>BOM Count</th>
             <th>Component Name</th>
@@ -123,12 +124,16 @@ const ComponentRow=(props)=>{
 
 }
 
+// const printPage=()=>{
+//     window.print();
+// }
+
 const BOMTable=(props)=>{
     const { t } = useTranslation('component', {useSuspense: false});
     return (
-        <div  className='table-responsive-sm' >
+        <div  className='d-flex flex-row table-responsive-sm' >
             <table className='table table-bordered '>
-                <tr>
+                <tr style={{backgroundColor: `${styles.cciBgColor}`}}>
                     <th className='text-center' colSpan='8' >{t('component:th-table-title')}</th>
                 </tr>
 
@@ -137,8 +142,12 @@ const BOMTable=(props)=>{
                 {<BOMHeaderRow/>}
                
             </table>
-       
+         {/* <i id={1}
+            className='m-0 py-1 px-1 fas fw fa-print cursor-pointer'
+            style ={{backgroundColor: `${styles.cciBgColor}`}}
+            onClick={ printPage }/> */}
        </div>
+      
 
     )
 }

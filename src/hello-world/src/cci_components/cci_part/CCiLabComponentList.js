@@ -604,7 +604,7 @@ export class CCiLabComponentList extends Component {
     }
 
     init=()=>{
-      this.slidingComponentListIconClassName = this.state.visible? 'fa fa-angle-double-left' : 'fa fa-angle-double-right';
+      this.slidingComponentListIconClassName = this.state.visible? 'fas fw fa-angle-double-left' : 'fas fw fa-angle-double-right';
 
       this.componentListTranslateStyle=this.state.visible ? `translate3d(0, 0, 0)`: `translate3d(-${this.hideListWidth}, 0, 0)`;
       this.lastScrollYPosition = 0;
@@ -698,7 +698,7 @@ export class CCiLabComponentList extends Component {
       this.setState( { visible: this.state.visible ? false : true } );
 
       this.componentListTranslateStyle = this.state.visible ? `translate3d(0, 0, 0)`: `translate3d(-${this.hideListWidth}, 0, 0)`;
-      this.slidingComponentListIconClassName = this.state.visible? 'fa fa-angle-double-left' : 'fa fa-angle-double-right';
+      this.slidingComponentListIconClassName = this.state.visible? 'fas fw fa-angle-double-left' : 'fas fw fa-angle-double-right';
 
       // console.log('container: clicked after: - ', this.state.visible ? 'true' : 'false' );
     }
@@ -1351,6 +1351,10 @@ export class CCiLabComponentList extends Component {
       this.setState({isUpdateToItselfWarning: false});
     }
 
+    printPage=()=>{
+      window.print();
+  }
+
     render() {
       if( this.initialized === false )
         return null;
@@ -1451,13 +1455,21 @@ export class CCiLabComponentList extends Component {
                     {this.renderGreetings()}
                   </div>
               </div>
-              <a href="#show-hide-component-list"
-                className='nav-link pl-0 py-4 pr-4 cci-component-list_transition'
-                style={{'transform': `${this.componentListTranslateStyle}`,
-                        'WebkitTransform':`${this.componentListTranslateStyle}`}}
+              <span  className='d-flex cci-component-list_transition'
+                 style={{'transform': `${this.componentListTranslateStyle}`,
+                 'WebkitTransform':`${this.componentListTranslateStyle}`}}>
+             
+                <i className={`badge-pill badge-info ${this.slidingComponentListIconClassName} cursor-pointer nav-link ml-0 mr-1 my-1 px-3 pt-2 pb-1`}
                 onClick={this.showHideComponentList} >
-                <span className={`badge-pill badge-info ${this.slidingComponentListIconClassName}`}></span>
-              </a>
+                {/* <span className={`py-1 `}/> */}
+                </i>
+                {/* <span> */}
+                <i className='badge-pill badge-info nav-link m-1 pt-2 pb-2 px-2 fas fw fa-print cursor-pointer bg-info'
+                  onClick={ this.printPage }/>
+                {/* </span> */}
+              {/* </i> */}
+              </span>
+
             {DropToSameParentWarningModal }
             {DropToItselfWarningModal }
             {UpdateToItselfWarningModal}
