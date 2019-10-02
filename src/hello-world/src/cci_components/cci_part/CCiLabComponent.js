@@ -558,6 +558,7 @@ class CCiLabComponent extends Component {
                     <SetupBOM
                       component={this.currentComponent}
                       updateSubTitle={this.props.changeMRPTitle}
+                      updateTable={this.props.updateTableHandler}
                       updateComponent={this.props.updateComponentHandler}/>
                       {  ( draggableSetting === 'true') ?
                         <span>

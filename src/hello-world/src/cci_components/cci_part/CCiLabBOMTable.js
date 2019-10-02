@@ -41,9 +41,12 @@ const BOMTableHeader=(props)=>{
             if( typeof rootElement !== 'undefined')
             {
                 lName = (rootElement.pdp.customer !==null ) ? rootElement.pdp.customer : '';
+                console.log("BOMTable - BOMTableHeader - part name: " + rootElement.businessLogic.name);
             }
         }
       
+      
+   
         return lName;
 
     }
@@ -70,6 +73,10 @@ const BOMTableHeader=(props)=>{
         imgName = setRootImagePath(componentList);
         customerOrderName = getCustomerName(componentList);
         customerOrderNumber= getOrderNumber(componentList);
+    }
+    else
+    {
+        console.log("BOMTable - BOMTableHeader - part name: " + rootElement.businessLogic.name);
     }
     return (
         
@@ -107,6 +114,7 @@ const BOMTableHeader=(props)=>{
 const BOMHeaderRow=()=>{
     const { t } = useTranslation('component', {useSuspense: false});
     return (
+        <tbody>
         <tr style={{backgroundColor: `${styles.cciBgColor}`}}>
             <th>BOM Level</th>
             <th>BOM Count</th>
@@ -117,6 +125,7 @@ const BOMHeaderRow=()=>{
             <th>{t('component:description')}</th>
             <th>{t('component:note')}</th>
         </tr>
+        </tbody>
     )
 }
 
@@ -133,19 +142,17 @@ const BOMTable=(props)=>{
     return (
         <div  className='d-flex flex-row table-responsive-sm' >
             <table className='table table-bordered '>
+                <tbody>
                 <tr style={{backgroundColor: `${styles.cciBgColor}`}}>
                     <th className='text-center' colSpan='8' >{t('component:th-table-title')}</th>
                 </tr>
+                </tbody>
 
                 { <BOMTableHeader components = {props.components}/>}
                 
                 {<BOMHeaderRow/>}
                
             </table>
-         {/* <i id={1}
-            className='m-0 py-1 px-1 fas fw fa-print cursor-pointer'
-            style ={{backgroundColor: `${styles.cciBgColor}`}}
-            onClick={ printPage }/> */}
        </div>
       
 

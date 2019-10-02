@@ -4,7 +4,7 @@ import { useTranslation } from 'react-i18next';
 
 import styles from "./../../dist/css/ccilab-component-list.css"
 
-import { dividerCCS, isValidString, isValidValue } from "./CCiLabUtility";
+import { dividerCCS, isValidString, isValidValue, tables } from "./CCiLabUtility";
 
 
 const SetupComponentBOM=(props)=>{
@@ -245,10 +245,12 @@ export const SetupBOM=(props)=>{
 
    // component.displayLogic.inlineMenuEnabled needs set to true
   const saveValidBOMEntry=( component )=>{
+      props.updateTable(tables.bom);
       CanEnableInlineMenu( component );
       if( component.displayLogic.inlineMenuEnabled )
       {
         props.updateComponent(originComponent, component);
+       
       }
 
       // update component name

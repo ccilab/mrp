@@ -1,7 +1,16 @@
 import React from 'react';
 
 // http://exploringjs.com/es6/ch_modules.html#sec_importing-exporting-details
-
+export const tables = {
+    sysInfo: 'sysInfoTbl',
+    mps: 'mpsTable',
+    bom: 'bomTable',
+    productionOrder: 'productionOrderTable',
+    purchaseOrder: 'purchaseOrderTable',
+    materialOrder:  'materialPlanTable',
+    assetUsage:  'assetUsageTable'
+  }
+  
 export const dividerCCS = {
     hDividerClassName : 'm-0 bg-info',
     hDividerStyle : {width: '100%', height: '1px'},

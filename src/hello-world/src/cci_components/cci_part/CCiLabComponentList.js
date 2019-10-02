@@ -11,7 +11,7 @@ import styles from "./../../dist/css/ccilab-component-list.css"
 
 import CCiLabComponent from "./CCiLabComponent";
 import DropComponentWarningModal from "./CCiLabDropComponentCheckFailedModal";
-import { setListHeight, setListWidth, getTextRect} from "./CCiLabUtility";
+import { setListHeight, setListWidth, getTextRect, tables} from "./CCiLabUtility";
 import {CanEnableInlineMenu, initializeBOM } from './CCiLabSetupComponentBOM';
 import { initializePDP } from './CCiLabSetupPDP';
 
@@ -29,15 +29,7 @@ import components from './../../data/components.json';
 import { initializeIRF } from "./CCiLabSetupIR";
 import {initializeOp} from "./CCiLabSetupOperation";
 
-export const tables = {
-  sysInfo: 'sysInfoTbl',
-  mps: 'mpsTable',
-  bom: 'bomTable',
-  productionOrder: 'productionOrderTable',
-  purchaseOrder: 'purchaseOrderTable',
-  materialOrder:  'materialPlanTable',
-  assetUsage:  'assetUsageTable'
-}
+
 //table includes assembly and paint process
 // simulate after loaded very top component and its direct  components
 // eslint-disable-next-line
@@ -439,7 +431,7 @@ const ComponentListTitle =(props)=>{
       position={ 'bottom right' }
       mouseLeaveDelay={200}
       mouseEnterDelay={0}
-      contentStyle={{ 'z-index' : `${styles.bootstrapPopover}`,  border: 'none', backgroundColor: `${styles.cciBgColor}`}}
+      contentStyle={{zIndex : `${styles.bootstrapPopover}`,  border: 'none', backgroundColor: `${styles.cciBgColor}`}}
       arrow={true}
       arrowStyle={{backgroundColor: `${styles.cciBgColor}`}}>
       <div >
@@ -477,7 +469,7 @@ const ComponentListTitle =(props)=>{
               position={ 'bottom right' }
               mouseLeaveDelay={0}
               mouseEnterDelay={0}
-              contentStyle={{  border: 'none', backgroundColor: `${styles.cciBgColor}`, fontSize: '0.8rem'}}
+              contentStyle={{ zIndex : `${styles.bootstrapPopover}`,  border: 'none', backgroundColor: `${styles.cciBgColor}`, fontSize: '0.8rem'}}
               arrow={true}
               arrowStyle={{backgroundColor: `${styles.cciBgColor}`}}>
               <span className={'text-info text-nowrap p-1'}>
@@ -497,7 +489,7 @@ const ComponentListTitle =(props)=>{
             position={ 'bottom right' }
             mouseLeaveDelay={0}
             mouseEnterDelay={0}
-            contentStyle={{'z-index' : `${styles.bootstrapPopover}`, border: 'none', backgroundColor: `${styles.cciBgColor}`, fontSize: '0.8rem'}}
+            contentStyle={{zIndex : `${styles.bootstrapPopover}`, border: 'none', backgroundColor: `${styles.cciBgColor}`, fontSize: '0.8rem'}}
             arrow={true}
             arrowStyle={{backgroundColor: `${styles.cciBgColor}`}}>
             <span className={'text-info text-nowrap p-1'}>
@@ -524,7 +516,7 @@ const ComponentListTitle =(props)=>{
       position={ 'bottom left' }
       mouseLeaveDelay={200}
       mouseEnterDelay={0}
-      contentStyle={{ 'z-index' : `${styles.bootstrapPopover}`, border: 'none', backgroundColor: `${styles.cciBgColor}`}}
+      contentStyle={{ zIndex : `${styles.bootstrapPopover}`, border: 'none', backgroundColor: `${styles.cciBgColor}`}}
       arrow={true}
       arrowStyle={{backgroundColor: `${styles.cciBgColor}`}}>
       {/* <div > */}
@@ -1327,6 +1319,7 @@ export class CCiLabComponentList extends Component {
                                           selectedComponentHandler={this.selectedComponentHandler}
                                           moveComponentHandler={this.moveComponentHandler}
                                           updateComponentHandler={this.updateComponent}
+                                          updateTableHandler={this.props.updateTableHandler}
                                           isSetupBOM={this.state.setupBOM}
                                           changeMRPTitle = {this.showSetupBOM}
                                           permissionStatus={this.state.permissionEnabled}/> ;
@@ -1455,19 +1448,16 @@ export class CCiLabComponentList extends Component {
                     {this.renderGreetings()}
                   </div>
               </div>
-              <span  className='d-flex cci-component-list_transition'
+              <span  className='cci-component-list_transition'
                  style={{'transform': `${this.componentListTranslateStyle}`,
                  'WebkitTransform':`${this.componentListTranslateStyle}`}}>
              
-                <i className={`badge-pill badge-info ${this.slidingComponentListIconClassName} cursor-pointer nav-link ml-0 mr-1 my-1 px-3 pt-2 pb-1`}
-                onClick={this.showHideComponentList} >
-                {/* <span className={`py-1 `}/> */}
-                </i>
-                {/* <span> */}
-                <i className='badge-pill badge-info nav-link m-1 pt-2 pb-2 px-2 fas fw fa-print cursor-pointer bg-info'
+                <i className={`badge-pill badge-info cursor-pointer nav-link ml-0 mr-1 my-1 px-3 py-1 ${this.slidingComponentListIconClassName}`}
+                onClick={this.showHideComponentList} />
+             
+             
+                <i className='badge-pill badge-info cursor-pointer nav-link m-1 py-2 px-2 fas fw fa-print'
                   onClick={ this.printPage }/>
-                {/* </span> */}
-              {/* </i> */}
               </span>
 
             {DropToSameParentWarningModal }

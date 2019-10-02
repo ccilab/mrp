@@ -2,8 +2,8 @@ import 'raf/polyfill'
 // import 'core-js/es6/set'
 // import 'core-js/es6/map'
 import React, { Component } from "react";
-import {CCiLabComponentList, tables} from "./CCiLabComponentList";
-import {SysInfo} from "./CCiLabUtility";
+import {CCiLabComponentList} from "./CCiLabComponentList";
+import {SysInfo, tables} from "./CCiLabUtility";
 import BOMTable from "./CCiLabBOMTable"
 import MPSTable from "./CCiLabMPSTable"
 
@@ -28,17 +28,19 @@ class ComponentContainer extends Component {
   updateTableType=(tableType)=>{
     // console.log("ComponentContainer - previous show: " + this.previousTableType);
     // console.log( "ComponentContainer - current show: " +  tableType)
-    if( this.previousTableType !== tableType )
+    // if( this.previousTableType !== tableType )
     {
       this.setState( {show: tableType} );
       // this.state.show = tableType;
       this.previousTableType = tableType;
+
+      console.log("ComponentContainer - updateTableType : " + JSON.stringify(this.state.show) );
     }
   }
     
   renderTables=(state)=>{
     return(
-      <div className={'m-4'}>
+      <div className={'m-2'}>
       {
         {
         'sysInfoTbl' : <SysInfo/>,
