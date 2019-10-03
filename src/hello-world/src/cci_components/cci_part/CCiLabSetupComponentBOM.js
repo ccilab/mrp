@@ -245,6 +245,7 @@ export const SetupBOM=(props)=>{
 
    // component.displayLogic.inlineMenuEnabled needs set to true
   const saveValidBOMEntry=( component )=>{
+      console.log("SetupBOM - saveValidBOMEntry:  " + tables.bom);
       props.updateTable(tables.bom);
       CanEnableInlineMenu( component );
       if( component.displayLogic.inlineMenuEnabled )

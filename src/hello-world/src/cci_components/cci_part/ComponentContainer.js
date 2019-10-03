@@ -3,7 +3,8 @@ import 'raf/polyfill'
 // import 'core-js/es6/map'
 import React, { Component } from "react";
 import {CCiLabComponentList} from "./CCiLabComponentList";
-import {SysInfo, tables} from "./CCiLabUtility";
+// eslint-disable-next-line
+import {SysInfo, tables, getRandomInt} from "./CCiLabUtility";
 import BOMTable from "./CCiLabBOMTable"
 import MPSTable from "./CCiLabMPSTable"
 
@@ -16,9 +17,11 @@ class ComponentContainer extends Component {
              show: tables.sysInfo}; //'system-info'
 
              
-  previousTableType = this.state.show;
+  // previousTableType = this.state.show;
 
   componentList = null;
+
+  // tableKey = getRandomInt(100);
 
   updateDimensions=( listWidth )=>{
     this.setState({width: listWidth});  
@@ -29,14 +32,17 @@ class ComponentContainer extends Component {
     // console.log("ComponentContainer - previous show: " + this.previousTableType);
     // console.log( "ComponentContainer - current show: " +  tableType)
     // if( this.previousTableType !== tableType )
-    {
       this.setState( {show: tableType} );
       // this.state.show = tableType;
-      this.previousTableType = tableType;
+      // this.previousTableType = tableType;
+
+      // this.tableKey = getRandomInt(100);
 
       console.log("ComponentContainer - updateTableType : " + JSON.stringify(this.state.show) );
-    }
+      
+      // console.log("ComponentContainer -  tableKey: " +  this.tableKey.toString() );
   }
+
     
   renderTables=(state)=>{
     return(
@@ -45,7 +51,7 @@ class ComponentContainer extends Component {
         {
         'sysInfoTbl' : <SysInfo/>,
         'mpsTable' :  <MPSTable components={this.componentList} />,
-        'bomTable' :  <BOMTable components={this.componentList} />,
+        'bomTable' :  <BOMTable components={this.componentList} />,  //updateKey={this.tableKey}
         'productionOrderTable' : null,
         'purchaseOrderTable' : null,
         'materialPlanTable' : null,

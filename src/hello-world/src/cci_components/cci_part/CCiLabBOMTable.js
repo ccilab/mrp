@@ -1,6 +1,7 @@
 import React from 'react';
 import styles from "./../../dist/css/ccilab-component-list.css"
 
+
 import { useTranslation } from 'react-i18next';
 
 
@@ -36,12 +37,12 @@ const BOMTableHeader=(props)=>{
         let lName='';
         if( typeof components !== 'undefined' )
         {
-            let rootElement = components.find( (element)=> { return element.businessLogic.parentIds.length === 0 ; } )
+            rootElement = components.find( (element)=> { return element.businessLogic.parentIds.length === 0 ; } )
         
             if( typeof rootElement !== 'undefined')
             {
                 lName = (rootElement.pdp.customer !==null ) ? rootElement.pdp.customer : '';
-                console.log("BOMTable - BOMTableHeader - part name: " + rootElement.businessLogic.name);
+                console.log("BOMTable - getCustomerName - part name: " + rootElement.businessLogic.name);
             }
         }
       
@@ -78,12 +79,14 @@ const BOMTableHeader=(props)=>{
     {
         console.log("BOMTable - BOMTableHeader - part name: " + rootElement.businessLogic.name);
     }
+
+    //  {(typeof rootElement !== 'undefined') ? rootElement.businessLogic.name : `${t('component:part-name')}`}
     return (
         
             <tbody >
                 <tr >
                     <th className='align-middle'>{t('component:th-product-name')}: </th>
-                    <td className='align-middle' colSpan='2'> {(typeof rootElement !== 'undefined') ? rootElement.businessLogic.name : `${t('component:part-name')}`}</td>
+                    <td className='align-middle' colSpan='2'> {(typeof rootElement !== 'undefined' && rootElement.businessLogic.name !== 'add-part') ? rootElement.businessLogic.name : `${t('component:part-name')}`}</td>
                     <th className='align-middle'>{t('component:th-designed-by')}:</th>
                     <td className='align-middle' colSpan='2'>first-name, last-name</td>
                     <th className='align-middle text-center' colSpan='2'>{t('component:th-product-image')}</th>
@@ -129,16 +132,31 @@ const BOMHeaderRow=()=>{
     )
 }
 
+// https://dev.to/abdulbasit313/an-easy-way-to-create-a-customize-dynamic-table-in-react-js-3igg
+// students: [
+//     { id: 1, name: 'Wasif', age: 21, email: 'wasif@email.com' },
+//     { id: 2, name: 'Ali', age: 19, email: 'ali@email.com' },
+//     { id: 3, name: 'Saad', age: 16, email: 'saad@email.com' },
+//     { id: 4, name: 'Asad', age: 25, email: 'asad@email.com' }
+//  ]
 const ComponentRow=(props)=>{
-
+    return this.state.students.map((student, index) => {
+        const { id, name, age, email } = student //destructuring
+        return (
+           <tr key={id}>
+              <td>{id}</td>
+              <td>{name}</td>
+              <td>{age}</td>
+              <td>{email}</td>
+           </tr>
+        )
+     })
 }
 
-// const printPage=()=>{
-//     window.print();
-// }
 
 const BOMTable=(props)=>{
     const { t } = useTranslation('component', {useSuspense: false});
+
     return (
         <div  className='d-flex flex-row table-responsive-sm' >
             <table className='table table-bordered '>
@@ -148,7 +166,7 @@ const BOMTable=(props)=>{
                 </tr>
                 </tbody>
 
-                { <BOMTableHeader components = {props.components}/>}
+                { <BOMTableHeader components = {props.components} />}
                 
                 {<BOMHeaderRow/>}
                

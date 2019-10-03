@@ -35,7 +35,7 @@ i18n
   // init i18next
   // for all options read: https://www.i18next.com/overview/configuration-options
   .init({
-    ns:['componentList', 'warning'],  //name space localized json file names
+    ns:['commands','componentList', 'warning', 'component', 'inventoryRecords', 'operations'],  //name space localized json file names
     defaultNS: 'componentList',
     fallbackLng: 'en',
     debug: true,  // console log
@@ -44,6 +44,10 @@ i18n
     interpolation: {
       escapeValue: false, // not needed for react as it escapes by default, https://www.i18next.com/translation-function/interpolation
     },
-  });
+    
+    backend: {
+        loadPath: "./locales/{{lng}}/{{ns}}.json"   //parent folder is public
+      },
+ });
 
 export default i18n;

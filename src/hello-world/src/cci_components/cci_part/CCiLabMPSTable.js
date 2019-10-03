@@ -9,10 +9,12 @@ const MPSTable=(props)=>{
     return (
         <div  className='table-responsive-sm'>
             <table className='table table-bordered'>
-                <tr>
-                    <th>Master Production Schedule Table</th>
-                </tr>
-
+                <tbody>
+                    <tr>
+                        <th>Master Production Schedule Table</th>
+                    </tr>
+                </tbody>
+                
             </table>
            
         </div>

@@ -431,20 +431,26 @@ const ComponentListTitle =(props)=>{
       position={ 'bottom right' }
       mouseLeaveDelay={200}
       mouseEnterDelay={0}
-      contentStyle={{zIndex : `${styles.bootstrapPopover}`,  border: 'none', backgroundColor: `${styles.cciBgColor}`}}
+      contentStyle={{padding: '0', zIndex : `${styles.bootstrapPopover}`,  border: 'none', backgroundColor: `${styles.cciBgColor}`}}
       arrow={true}
       arrowStyle={{backgroundColor: `${styles.cciBgColor}`}}>
       <div >
-        <table className='table table-hover m-0'>
+        <table className='table-sm table-hover m-0'>
           <tbody>
-          <tr>
-                <i key='sysInfo-table'  className={'cursor-pointer nav-link p-1 m-0 text-info'} style={{fontSize: '0.7rem'}} onClick={tableChangeHandler(tables.sysInfo)}>{t('componentList:sys-table')}</i>
+            <tr>
+              <td>
+                <span key='sysInfo-table'  className={'cursor-pointer  p-1 m-0 text-info'} style={{fontSize: '0.7rem'}} onClick={tableChangeHandler(tables.sysInfo)}>{t('componentList:sys-table')}</span>
+              </td>
             </tr>
             <tr>
-                <i key='bom-table'  className={'cursor-pointer nav-link p-1 m-0 text-info'} style={{fontSize: '0.7rem'}} onClick={tableChangeHandler(tables.bom)}>{t('componentList:bom-table')}</i>
+              <td>
+                <span key='bom-table'  className={'cursor-pointer p-1 m-0 text-info'} style={{fontSize: '0.7rem'}} onClick={tableChangeHandler(tables.bom)}>{t('componentList:bom-table')} </span>
+              </td>
             </tr>
             <tr>
-              <i key='mps-table'  className={'cursor-pointer nav-link p-1 m-0 text-info'} style={{fontSize: '0.7rem'}} onClick={tableChangeHandler(tables.mps)}>{t('componentList:mps-table')}</i>
+              <td>
+              <span key='mps-table'  className={'cursor-pointer p-1 m-0 text-info'} style={{fontSize: '0.7rem'}} onClick={tableChangeHandler(tables.mps)}>{t('componentList:mps-table')}</span>
+              </td>
             </tr>
           </tbody>
         </table>
@@ -516,20 +522,24 @@ const ComponentListTitle =(props)=>{
       position={ 'bottom left' }
       mouseLeaveDelay={200}
       mouseEnterDelay={0}
-      contentStyle={{ zIndex : `${styles.bootstrapPopover}`, border: 'none', backgroundColor: `${styles.cciBgColor}`}}
+      contentStyle={{ padding: '0', zIndex : `${styles.bootstrapPopover}`, border: 'none', backgroundColor: `${styles.cciBgColor}`}}
       arrow={true}
       arrowStyle={{backgroundColor: `${styles.cciBgColor}`}}>
       {/* <div > */}
-      <table className='table table-hover m-0'>
-        <tbody>
-          <tr>
-            <i key='en'  className={'cursor-pointer nav-link p-1 m-0 text-info'} style={{fontSize: '0.7rem'}} onClick={languageChangeHandler('en')}>English</i>
+      <table className='table-sm table-hover m-0'>
+        <tbody >
+          <tr >
+            <td>
+              <span key='en'  className={'cursor-pointer p-0 m-0 text-info'} style={{fontSize: '0.7rem'}} onClick={languageChangeHandler('en')}>English</span>
+            </td>
           </tr>
           <tr>
-            <i key='zh-CN' className={'cursor-pointer nav-link p-1 m-0 text-info'} style={{fontSize: '0.7rem'}} onClick={languageChangeHandler('zh-CN')}>中文</i>
+            <td>
+              <span key='zh-CN' className={'cursor-pointer p-1 m-0 text-info'} style={{fontSize: '0.7rem'}} onClick={languageChangeHandler('zh-CN')}>中文</span>
+            </td>
           </tr>
-          </tbody>
-        </table>
+        </tbody>
+      </table>
       {/* </div> */}
      </Popup>
   </div>
