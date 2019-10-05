@@ -146,6 +146,9 @@ export const SetupPDP=(props)=>{
 
   // component.displayLogic.inlineMenuEnabled needs set to true
   const saveValidPDPEntry=( component )=>{
+    
+    console.log("SetupPDP - saveValidPDPEntry:  update current table");
+    props.updateTable();
     component.pdp.demandAndEndDateArray = demandDateArray;
     sessionStorage.setItem( `${component.displayLogic.key}_${component.businessLogic.name}_pdp`, JSON.stringify( component.pdp ));
   }
@@ -258,8 +261,8 @@ export const SetupPDP=(props)=>{
 
  const renderDemandDateInput=(uniqueKey, index, endDate, demand, isLastElement )=>{
   return(
-    <div>
-    <div key={uniqueKey} className={'d-flex justify-content-between'} >  
+    <div key={uniqueKey} >
+    <div className={'d-flex justify-content-between'} >  
       <SetupComponentPDP
          title='product-complete-date'   //array of completed date for each required quantity
          id={index}

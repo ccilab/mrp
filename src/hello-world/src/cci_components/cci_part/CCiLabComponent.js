@@ -4,6 +4,7 @@ import { useTranslation } from 'react-i18next';
 
 import {UpdateStatus} from './CCiLabUpdateComponentStatus.js';
 import {creatHiddenImgInputTag} from "../file_save/CCiLabLocalFileAccess";
+import { tables } from "./CCiLabUtility";
 
 
 import styles from './../../dist/css/ccilab-component.css';
@@ -390,6 +391,7 @@ class CCiLabComponent extends Component {
     updateImage=()=>{
       sessionStorage.setItem( `${this.currentComponent.displayLogic.key}_${this.currentComponent.businessLogic.name}_businessLogic`, JSON.stringify( this.currentComponent.businessLogic ));
       this.setState({updateImg:true});
+      this.props.updateTableHandler();
     };
 
     render=()=>{
@@ -573,9 +575,9 @@ class CCiLabComponent extends Component {
                           :
                           null
                       }
-                      <SetupPDP component={this.currentComponent} updateSubTitle={this.props.changeMRPTitle}/>
-                      <SetupIRF component={this.currentComponent} updateSubTitle={this.props.changeMRPTitle}/>
-                      <SetupOP component={this.currentComponent} updateSubTitle={this.props.changeMRPTitle}/>
+                      <SetupPDP component={this.currentComponent} updateSubTitle={this.props.changeMRPTitle}  updateTable={this.props.updateTableHandler}/>
+                      <SetupIRF component={this.currentComponent} updateSubTitle={this.props.changeMRPTitle}  updateTable={this.props.updateTableHandler}/>
+                      <SetupOP component={this.currentComponent} updateSubTitle={this.props.changeMRPTitle}  updateTable={this.props.updateTableHandler}/>
 
                   </span>
                 }

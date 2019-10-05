@@ -17,7 +17,7 @@ class ComponentContainer extends Component {
              show: tables.sysInfo}; //'system-info'
 
              
-  // previousTableType = this.state.show;
+  currentTableType = this.state.show;
 
   componentList = null;
 
@@ -29,17 +29,26 @@ class ComponentContainer extends Component {
   }
 
   updateTableType=(tableType)=>{
-    // console.log("ComponentContainer - previous show: " + this.previousTableType);
+    // console.log("ComponentContainer - previous show: " + this.currentTableType);
     // console.log( "ComponentContainer - current show: " +  tableType)
-    // if( this.previousTableType !== tableType )
-      this.setState( {show: tableType} );
-      // this.state.show = tableType;
-      // this.previousTableType = tableType;
+    // if( this.currentTableType !== tableType )
+      if( typeof tableType !== 'undefined')
+      {
+        this.currentTableType = tableType;
+        this.setState( {show: tableType} );
+      }
+      else
+      {
+        this.setState( {show: this.currentTableType} );
+      }
+    
+     
 
       // this.tableKey = getRandomInt(100);
 
-      console.log("ComponentContainer - updateTableType : " + JSON.stringify(this.state.show) );
+      console.log("ComponentContainer - state:show : " + JSON.stringify(this.state.show) );
       
+      console.log("ComponentContainer - updateTableType : " + this.currentTableType );
       // console.log("ComponentContainer -  tableKey: " +  this.tableKey.toString() );
   }
 

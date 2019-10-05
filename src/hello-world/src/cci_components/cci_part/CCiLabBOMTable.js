@@ -42,7 +42,7 @@ const BOMTableHeader=(props)=>{
             if( typeof rootElement !== 'undefined')
             {
                 lName = (rootElement.pdp.customer !==null ) ? rootElement.pdp.customer : '';
-                console.log("BOMTable - getCustomerName - part name: " + rootElement.businessLogic.name);
+                console.log("BOMTable - getCustomerName - customer name: " + lName);
             }
         }
       
@@ -56,7 +56,7 @@ const BOMTableHeader=(props)=>{
         let lOrderNumber='';
         if( typeof components !== 'undefined' )
         {
-            let rootElement = components.find( (element)=> { return element.businessLogic.parentIds.length === 0 ; } )
+            rootElement = components.find( (element)=> { return element.businessLogic.parentIds.length === 0 ; } )
         
             if( typeof rootElement !== 'undefined')
             {
