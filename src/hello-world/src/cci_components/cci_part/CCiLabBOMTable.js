@@ -119,10 +119,10 @@ const BOMHeaderRow=()=>{
     return (
         <tbody>
         <tr style={{backgroundColor: `${styles.cciBgColor}`}}>
-            <th>BOM Level</th>
-            <th>BOM Count</th>
-            <th>Component Name</th>
-            <th>Component Id</th>
+            <th>{t('component:th-bom-level')}</th>
+            <th>{t('component:th-bom-count')}</th>
+            <th>{t('component:th-part-name')}</th>
+            <th>{t('component:part-number')}</th>
             <th>{t('component:unit-quantity')}</th>
             <th>{t('component:unit-of-measure')}</th> 
             <th>{t('component:description')}</th>
@@ -140,14 +140,23 @@ const BOMHeaderRow=()=>{
 //     { id: 4, name: 'Asad', age: 25, email: 'asad@email.com' }
 //  ]
 const ComponentRow=(props)=>{
-    return this.state.students.map((student, index) => {
-        const { id, name, age, email } = student //destructuring
+    let count = 0;
+    return props.components.map((component) => {
+        const {key} = component.displayLogic;
+        const {id, name, parentIds, childIds } = component.businessLogic;
+        const { partNumber, unitQty, unitOfMeasure } = component.bom; //destructuring
+
+        //based on component_design_guide.txt, any component only has a single parent, 
+        // root component doesn't have a parent
+        const bomLevel = parentIds.length === 0 ? 1 : parentIds[0]+1; 
         return (
-           <tr key={id}>
-              <td>{id}</td>
+           <tr key={key}>
+              <td>{bomLevel}</td>
+              <td>{++count}</td>
               <td>{name}</td>
-              <td>{age}</td>
-              <td>{email}</td>
+              <td>{partNumber}</td>
+              <td>{unitQty}</td>
+              <td>{unitOfMeasure}</td>
            </tr>
         )
      })
@@ -169,6 +178,8 @@ const BOMTable=(props)=>{
                 { <BOMTableHeader components = {props.components} />}
                 
                 {<BOMHeaderRow/>}
+
+                {<ComponentRow components = {props.components}/>}
                
             </table>
        </div>

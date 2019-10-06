@@ -956,6 +956,9 @@ export class CCiLabComponentList extends Component {
         setComponentSelected( item, newComponent.displayLogic.key );
       });
 
+      // update component list in container class
+      this.props.getComponents( updatedSessionComponents );
+
       // sessionStorage.setItem( `${newComponent.displayLogic.key}_${newComponent.businessLogic.name}_displayLogic`, JSON.stringify( newComponent.displayLogic ));
       newComponent.bom = new initializeBOM( newComponent );
       newComponent.pdp = new initializePDP( newComponent );
@@ -968,6 +971,7 @@ export class CCiLabComponentList extends Component {
       // need to check vertical scroll bar doesn't show
       // create vertical scroll bar based on the height of component list dynamically
       this.updateDimensions( updatedSessionComponents);
+
       return newComponent;
     };
 
@@ -1008,10 +1012,16 @@ export class CCiLabComponentList extends Component {
         return component.displayLogic.key !== deletedComponentId;
       });
 
+      // update component list in container class
+      this.props.getComponents( filteredGreetings );
+
       sessionStorage.removeItem(`${deletedComponent.displayLogic.key}_${deletedComponent.businessLogic.name}_businessLogic`);
       // sessionStorage.removeItem(`${deletedComponent.displayLogic.key}_${deletedComponent.businessLogic.name}_displayLogic`);
       sessionStorage.removeItem(`${deletedComponent.displayLogic.key}_${deletedComponent.businessLogic.name}_bom_core`);
-      sessionStorage.removeItem(`${deletedComponent.displayLogic.key}_${deletedComponent.businessLogic.name}_bom_extra`);
+      sessionStorage.removeItem( `${deletedComponent.displayLogic.key}_${deletedComponent.businessLogic.name}_pdp`);
+      sessionStorage.removeItem( `${deletedComponent.displayLogic.key}_${deletedComponent.businessLogic.name}_irf`);
+      sessionStorage.removeItem( `${deletedComponent.displayLogic.key}_${deletedComponent.businessLogic.name}_op`);
+     
 
       this.setState({ greetings: filteredGreetings });
     };
@@ -1267,6 +1277,8 @@ export class CCiLabComponentList extends Component {
             setComponentSelected( item, rmMovedComponent.displayLogic.key );
           });
 
+          // update component list in container class
+          this.props.getComponents( updatedSessionComponents );
           //check if moved component progress status need to change (#todo)
 
           // update greetings list

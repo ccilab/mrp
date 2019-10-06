@@ -37,6 +37,8 @@
     "th-product-image": "Product Image",
     "th-designed-date": "Approved Date",
     "th-no-image-name": " ... [ Image is not available ]",
-    "th-component-count":"Component Count"
-
+    "th-component-count":"Component Count",
+    "th-bom-level":"BOM Level",
+    "th-bom-count":"BOM Count",
+    "th-part-name": "Part Name"
 }

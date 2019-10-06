@@ -300,12 +300,14 @@ class CCiLabComponent extends Component {
         this.props.deleteComponent(this.currentComponent);
         CCiLabComponent.inlineMenu.itemId='undefined';
         CCiLabComponent.inlineMenu.cmd = 'select';
+        this.props.updateTableHandler();
     };
 
     addComponent = () =>{
       this.props.addComponent(this.currentComponent);
       CCiLabComponent.inlineMenu.itemId='undefined';
       CCiLabComponent.inlineMenu.cmd = 'select';
+      this.props.updateTableHandler();
     }
     showOrHideChildren = (isShow) =>{
       this.props.showOrHideChildren(this.currentComponent, isShow)
@@ -329,6 +331,7 @@ class CCiLabComponent extends Component {
           this.props.moveComponentHandler(CCiLabComponent.inlineMenu.itemId, this.currentComponent);
           CCiLabComponent.inlineMenu.itemId='undefined';
           CCiLabComponent.inlineMenu.cmd = 'select';
+          this.props.updateTableHandler();
         }
       }
      }
