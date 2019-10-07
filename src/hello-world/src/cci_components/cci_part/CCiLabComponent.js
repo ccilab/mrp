@@ -4,7 +4,7 @@ import { useTranslation } from 'react-i18next';
 
 import {UpdateStatus} from './CCiLabUpdateComponentStatus.js';
 import {creatHiddenImgInputTag} from "../file_save/CCiLabLocalFileAccess";
-import { tables } from "./CCiLabUtility";
+// import { tables } from "./CCiLabUtility";
 
 
 import styles from './../../dist/css/ccilab-component.css';

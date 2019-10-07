@@ -290,25 +290,28 @@ export const UpdateStatus=(props)=>{
        quantityValue = props.component.bom.core.requiredQtyPerShift !== null ? props.component.bom.core.requiredQtyPerShift : 'undefined';
     }
   }
-  else{
-    if (typeof props.component.bom !== 'undefined' )
-    {
-      // root component
-      if( props.component.businessLogic.parentIds.length === 0 )
-          quantityValue = props.component.bom.core.requiredQty !== null ? props.component.bom.core.requiredQty : 'undefined';
-      else
-      {
-         if( props.component.bom.core !== null && parseInt(props.component.bom.core.requiredQtyPerShift, 10 ) )
-         {
-            quantityValue = props.component.bom.core.requiredQtyPerShift !== null ?  props.component.bom.core.requiredQtyPerShift : 'undefined';
-         }
-         else
-         {
-            quantityValue = 'undefined';
-         }
-      }
-    }
-  };
+  // else{
+  //   if (typeof props.component.bom !== 'undefined' )
+  //   {
+  //     // root component
+  //     if( props.component.businessLogic.parentIds.length === 0 )
+  //     {
+  //        quantityValue = ( typeof props.component.bom.core !== 'undefined' && props.component.bom.core.unitQty !== null ) ? props.component.bom.core.unitQty : 'undefined';
+  //     }
+         
+  //     else
+  //     {
+  //        if( props.component.bom.core !== null && parseInt(props.component.bom.core.requiredQtyPerShift, 10 ) )
+  //        {
+  //           quantityValue = props.component.bom.core.requiredQtyPerShift !== null ?  props.component.bom.core.requiredQtyPerShift : 'undefined';
+  //        }
+  //        else
+  //        {
+  //           quantityValue = 'undefined';
+  //        }
+  //     }
+  //   }
+  // };
 
   const initializeProduction=()=>{
     let production={};

@@ -123,7 +123,7 @@ const BOMHeaderRow=()=>{
         <tbody>
         <tr style={{backgroundColor: `${styles.cciBgColor}`}}>
             <th>{t('component:th-bom-level')}</th>
-            <th>{t('component:th-bom-count')}</th>
+            <th>{t('component:th-component-count')}</th>
             <th>{t('component:th-part-name')}</th>
             <th>{t('component:part-number')}</th>
             <th>{t('component:unit-quantity')}</th>
@@ -146,7 +146,7 @@ const ComponentRow=(props)=>{
     let count = 0;
     return props.components.map((component) => {
         const {key} = component.displayLogic;
-        const {id, name, parentIds, childIds } = component.businessLogic;
+        const { name, parentIds } = component.businessLogic;
         const { partNumber, unitQty, unitOfMeasure } = component.bom.core; //destructuring
 
         //based on component_design_guide.txt, any component only has a single parent, 

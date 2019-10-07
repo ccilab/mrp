@@ -228,9 +228,11 @@ const findMaxDisplayKey = ( componentList )=>{
 // store businessLogic to session storage for each component in newComponentList
 const initializeComponents = ( atComponent, existingComponentList, newComponentList, targetComponentList)=>{
   if( typeof existingComponentList !== "undefined" && existingComponentList !== null )
-    existingComponentList.forEach( (existingComponent)=>{ 
-                                  CanEnableInlineMenu(existingComponent);
-                                  targetComponentList.push( existingComponent ) } );
+  {
+      existingComponentList.forEach( (existingComponent)=>{ 
+                              CanEnableInlineMenu(existingComponent);
+                              targetComponentList.push( existingComponent ) } );
+  }
 
   // initialize displayLogic items, create unique key value for latest components from data layer
   // this guarantees that displayLogic.key is unique, (newly added component won't show itself until
@@ -267,9 +269,13 @@ const initializeComponents = ( atComponent, existingComponentList, newComponentL
           let idxInsertAt = targetComponentList.findIndex((component)=>{return component.displayLogic.key === atComponentKey});
           // component without childIs[] is always above components with childIds[] for display/expending purpose
           if( element.businessLogic.childIds.length === 0 )
-            targetComponentList.splice( idxInsertAt+1,0,element);
+          {
+             targetComponentList.splice( idxInsertAt+1,0,element);
+          }
           else
-            targetComponentList.push(element);
+          {
+             targetComponentList.push(element);
+          }
       }
 
       // read component from session storage first time,  
@@ -346,16 +352,16 @@ const populateComponentDisplayLogicChildIds = (selectedComponent, cachedComponen
 
 // turn off childKeyIds[] recursively but we don't want to turn off childKeyIds[] unless
 // its direct parent's canExpended = false (the parent is expended already
-const hideChildren = (aComponent, aComponents, aShowStatus)=>{
+const setVisibility = (aComponent, aComponents, aShow)=>{
   if( !aComponent.displayLogic.canExpend && aComponent.displayLogic.childKeyIds.length )
   {
     aComponents.forEach( (component)=>{
       if( aComponent.displayLogic.childKeyIds.includes(component.displayLogic.key) )
       {
-        component.displayLogic.showMyself = aShowStatus;
+        component.displayLogic.showMyself = aShow;
         // sessionStorage.setItem( `${component.displayLogic.key}_${component.businessLogic.name}_displayLogic`, JSON.stringify( component.displayLogic ));
 
-        hideChildren(component, aComponents, aShowStatus)
+        setVisibility(component, aComponents, aShow)
       }
     });
   }
@@ -396,6 +402,8 @@ const ComponentListTitle =(props)=>{
   }
 
   const tableChangeHandler=(tableType)=>(e)=>{
+    let allComponents = props.showAllComponents();
+    props.getComponents( allComponents );
     props.updateTableHandler(tableType);
   }
   // console.log("CCiLabComponentList - ComponentListTitle: i18n.language = " + i18n.language );
@@ -846,9 +854,49 @@ export class CCiLabComponentList extends Component {
     }
 
     // expend the list for BOM Table
-    showAllComponents=()=>{
-      let rootComponent = this.state.greetings.find(component=>component.businessLogic.parentIds.length === 0);
-      return this.showOrHideChildren( rootComponent, true, false); // populate the table but don't render it
+    showAllComponents=( components, selectedComponent )=>{
+      let allComponents = (typeof components === 'undefined') ? JSON.parse(JSON.stringify(this.state.greetings)) : [] ;
+
+      let chosenComponent = ( typeof selectedComponent === 'undefined' ) ? allComponents.find(component=>component.businessLogic.parentIds.length === 0) : selectedComponent;
+
+      if( typeof components !== 'undefined' && typeof selectedComponent !== 'undefined' )
+      {
+        let children = getChildComponentsFromDataSource(selectedComponent);
+
+        initializeComponents(selectedComponent, components, children, allComponents);
+
+        return allComponents;
+      }
+      
+
+      // looping through entire component list to find the component included inside child component list
+      allComponents.forEach( (item)=>{
+        // setComponentSelected(item, chosenComponent.displayLogic.key);
+
+        // skip the first component
+        if( item.displayLogic.key !== chosenComponent.displayLogic.key )
+        {
+            // find the component that has the child components, and show or hide the show status of this component's childKeyIds
+          if( chosenComponent.displayLogic.childKeyIds.includes(item.displayLogic.key) )
+          {
+            // item.displayLogic.showMyself = true;
+
+            // recursively hide childKeyIds[] of child component included in childKeyIds[] of current component,
+            // but we don't want to hide child component's childKeyIds[] unless its direct parent's canExpend = false;
+            // stored displayLogic to session storage
+            // setVisibility(item, allComponents, true);
+
+             //expend the item if it has children
+             if(  item.businessLogic.childIds.length )
+             {
+                allComponents = this.showAllComponents( allComponents, item );
+             }
+            
+          }
+        }
+      });
+    
+      return allComponents; // populate the table but don't render it
     }
     // need to check following:
     //  1 - if component is the root component, then needs to re-cal all component's requiredQty (#todo)
@@ -1079,7 +1127,7 @@ export class CCiLabComponentList extends Component {
                 // recursively hide childKeyIds[] of child component included in childKeyIds[] of current component,
                 // but we don't want to hide child component's childKeyIds[] unless its direct parent's canExpend = false;
                 // stored displayLogic to session storage
-                hideChildren(item, currentSessionComponents, showStatus);
+                setVisibility(item, currentSessionComponents, showStatus);
               }
             }
 
@@ -1444,6 +1492,8 @@ export class CCiLabComponentList extends Component {
                                       titlePositionLeft= {this.componentTitleLeft}
                                       titleClassName = {listTitleClassName}
                                       setupBOM = {this.state.setupBOM}
+                                      showAllComponents={this.showAllComponents}
+                                      getComponents={this.props.getComponents}
                                       updateTableHandler={this.props.updateTableHandler}
                                       permissionStatus = {this.state.permissionEnabled}
                                       changeBOMHandler = {this.showSetupBOM}/> :
@@ -1453,6 +1503,8 @@ export class CCiLabComponentList extends Component {
                                       titlePositionLeft= {this.componentTitleLeft}
                                       titleClassName = {listTitleClassName}
                                       setupBOM = {this.state.setupBOM}
+                                      showAllComponents={this.showAllComponents}
+                                      getComponents={this.props.getComponents}
                                       updateTableHandler={this.props.updateTableHandler}
                                       permissionStatus = {this.state.permissionEnabled}
                                       changeBOMHandler = {this.showSetupBOM}/>
