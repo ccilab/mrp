@@ -41,15 +41,15 @@ const BOMTableHeader=(props)=>{
         
             if( typeof rootElement !== 'undefined')
             {
-                lName = (rootElement.pdp.customer !==null ) ? rootElement.pdp.customer : '';
-                console.log("BOMTable - getCustomerName - customer name: " + lName);
+                if( typeof rootElement.pdp !== 'undefined')
+                {
+                    lName = (rootElement.pdp.customer !==null ) ? rootElement.pdp.customer : '';
+                    console.log("BOMTable - getCustomerName - customer name: " + lName);
+                }
             }
         }
-      
-      
    
         return lName;
-
     }
 
     const getOrderNumber=( components )=>{
@@ -60,7 +60,10 @@ const BOMTableHeader=(props)=>{
         
             if( typeof rootElement !== 'undefined')
             {
-                lOrderNumber = (rootElement.pdp.orderNumber !==null ) ? rootElement.pdp.orderNumber : '';
+                if( typeof rootElement.pdp !== 'undefined')
+                {
+                    lOrderNumber = (rootElement.pdp.orderNumber !==null ) ? rootElement.pdp.orderNumber : '';
+                }
             }
         }
       
@@ -144,18 +147,20 @@ const ComponentRow=(props)=>{
     return props.components.map((component) => {
         const {key} = component.displayLogic;
         const {id, name, parentIds, childIds } = component.businessLogic;
-        const { partNumber, unitQty, unitOfMeasure } = component.bom; //destructuring
+        const { partNumber, unitQty, unitOfMeasure } = component.bom.core; //destructuring
 
         //based on component_design_guide.txt, any component only has a single parent, 
         // root component doesn't have a parent
         const bomLevel = parentIds.length === 0 ? 1 : parentIds[0]+1; 
+        const unitQtyTd = component.businessLogic.parentIds.length === 0 ? '1' : unitQty === null ? '0' : unitQty;
+
         return (
            <tr key={key}>
               <td>{bomLevel}</td>
               <td>{++count}</td>
               <td>{name}</td>
               <td>{partNumber}</td>
-              <td>{unitQty}</td>
+              <td>{unitQtyTd}</td>
               <td>{unitOfMeasure}</td>
            </tr>
         )

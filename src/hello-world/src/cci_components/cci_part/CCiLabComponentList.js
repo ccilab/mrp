@@ -761,7 +761,10 @@ export class CCiLabComponentList extends Component {
       // eslint-disable-next-line
       this.state.greetings=currentSessionComponents;
 
-      this.props.getComponents( currentSessionComponents );
+      let allComponents = this.showAllComponents();
+      this.props.getComponents( allComponents );
+      this.props.updateTableHandler();
+
       // eslint-disable-next-line
       this.state.visible = false;
       // eslint-disable-next-line
@@ -842,6 +845,11 @@ export class CCiLabComponentList extends Component {
       this.initialized = true;
     }
 
+    // expend the list for BOM Table
+    showAllComponents=()=>{
+      let rootComponent = this.state.greetings.find(component=>component.businessLogic.parentIds.length === 0);
+      return this.showOrHideChildren( rootComponent, true, false); // populate the table but don't render it
+    }
     // need to check following:
     //  1 - if component is the root component, then needs to re-cal all component's requiredQty (#todo)
     //  2 - updated component can't be the same as its own parent ( done )
@@ -956,8 +964,7 @@ export class CCiLabComponentList extends Component {
         setComponentSelected( item, newComponent.displayLogic.key );
       });
 
-      // update component list in container class
-      this.props.getComponents( updatedSessionComponents );
+   
 
       // sessionStorage.setItem( `${newComponent.displayLogic.key}_${newComponent.businessLogic.name}_displayLogic`, JSON.stringify( newComponent.displayLogic ));
       newComponent.bom = new initializeBOM( newComponent );
@@ -971,6 +978,11 @@ export class CCiLabComponentList extends Component {
       // need to check vertical scroll bar doesn't show
       // create vertical scroll bar based on the height of component list dynamically
       this.updateDimensions( updatedSessionComponents);
+
+       // update component list in container class
+      let allComponents = this.showAllComponents();
+      this.props.getComponents( allComponents );  
+      this.props.updateTableHandler();
 
       return newComponent;
     };
@@ -1012,9 +1024,6 @@ export class CCiLabComponentList extends Component {
         return component.displayLogic.key !== deletedComponentId;
       });
 
-      // update component list in container class
-      this.props.getComponents( filteredGreetings );
-
       sessionStorage.removeItem(`${deletedComponent.displayLogic.key}_${deletedComponent.businessLogic.name}_businessLogic`);
       // sessionStorage.removeItem(`${deletedComponent.displayLogic.key}_${deletedComponent.businessLogic.name}_displayLogic`);
       sessionStorage.removeItem(`${deletedComponent.displayLogic.key}_${deletedComponent.businessLogic.name}_bom_core`);
@@ -1024,6 +1033,11 @@ export class CCiLabComponentList extends Component {
      
 
       this.setState({ greetings: filteredGreetings });
+
+      // update component list in container class
+      let allComponents = this.showAllComponents();
+      this.props.getComponents( allComponents );
+      this.props.updateTableHandler();
     };
 
 
@@ -1089,11 +1103,15 @@ export class CCiLabComponentList extends Component {
       let currentSessionComponents=this.state.greetings;
       currentSessionComponents.forEach( (item)=>{setComponentSelected(item, selectedComponent.displayLogic.key);});
 
-      this.props.getComponents( currentSessionComponents );
+     
       if( highlight === true )
-      {
+      { 
         // console.log("CCiLabComponentList - selectedComponentHandler");
         this.setState( { greetings: currentSessionComponents });
+
+        let allComponents = this.showAllComponents();
+        this.props.getComponents( allComponents );
+        this.props.updateTableHandler();
       }
     }
 
@@ -1277,13 +1295,17 @@ export class CCiLabComponentList extends Component {
             setComponentSelected( item, rmMovedComponent.displayLogic.key );
           });
 
-          // update component list in container class
-          this.props.getComponents( updatedSessionComponents );
           //check if moved component progress status need to change (#todo)
 
           // update greetings list
           // console.log("CCiLabComponentList - moveComponentHandler 4 ")
           this.setState( { greetings: updatedSessionComponents });
+
+          // update component list in container class
+          let allComponents = this.showAllComponents();
+          this.props.getComponents( allComponents );
+          this.props.updateTableHandler();
+           
         }
       }
     };

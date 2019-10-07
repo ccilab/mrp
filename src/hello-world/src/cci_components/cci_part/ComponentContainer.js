@@ -23,6 +23,13 @@ class ComponentContainer extends Component {
 
   // tableKey = getRandomInt(100);
 
+   
+ 
+  getComponentList=(componentListSrc)=>{
+    this.componentList=componentListSrc;
+  }
+
+
   updateDimensions=( listWidth )=>{
     this.setState({width: listWidth});  
     console.log("ComponentContainer - updateDimensions width: " + this.state.width);
@@ -72,11 +79,6 @@ class ComponentContainer extends Component {
     )
   }
     
- 
- 
-  getComponentList=(componentListSrc)=>{
-    this.componentList=componentListSrc;
-  }
 
 // key={this.state.key}
   render () {
