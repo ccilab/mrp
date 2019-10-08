@@ -402,8 +402,10 @@ const ComponentListTitle =(props)=>{
   }
 
   const tableChangeHandler=(tableType)=>(e)=>{
-    let allComponents = props.showAllComponents();
-    props.getComponents( allComponents );
+    // let allComponents = props.showAllComponents();
+    // props.getComponents( allComponents );
+
+    // props.getComponents( this.state.greetings );
     props.updateTableHandler(tableType);
   }
   // console.log("CCiLabComponentList - ComponentListTitle: i18n.language = " + i18n.language );
@@ -769,9 +771,9 @@ export class CCiLabComponentList extends Component {
       // eslint-disable-next-line
       this.state.greetings=currentSessionComponents;
 
-      let allComponents = this.showAllComponents();
-      this.props.getComponents( allComponents );
-      this.props.updateTableHandler();
+      // let allComponents = this.showAllComponents();
+      // this.props.getComponents( allComponents );
+      // this.props.updateTableHandler();
 
       // eslint-disable-next-line
       this.state.visible = false;
@@ -1029,9 +1031,10 @@ export class CCiLabComponentList extends Component {
       this.updateDimensions( updatedSessionComponents);
 
        // update component list in container class
-      let allComponents = this.showAllComponents();
-      this.props.getComponents( allComponents );  
-      this.props.updateTableHandler();
+      // let allComponents = this.showAllComponents();
+      // this.props.getComponents( allComponents );  
+      // this.props.updateTableHandler();
+      this.props.getComponents( this.state.greetings );
 
       return newComponent;
     };
@@ -1084,9 +1087,11 @@ export class CCiLabComponentList extends Component {
       this.setState({ greetings: filteredGreetings });
 
       // update component list in container class
-      let allComponents = this.showAllComponents();
-      this.props.getComponents( allComponents );
-      this.props.updateTableHandler();
+      // let allComponents = this.showAllComponents();
+      // this.props.getComponents( allComponents );
+      // this.props.updateTableHandler();
+
+      this.props.getComponents( this.state.greetings );
     };
 
 
@@ -1158,9 +1163,9 @@ export class CCiLabComponentList extends Component {
         // console.log("CCiLabComponentList - selectedComponentHandler");
         this.setState( { greetings: currentSessionComponents });
 
-        let allComponents = this.showAllComponents();
-        this.props.getComponents( allComponents );
-        this.props.updateTableHandler();
+        // let allComponents = this.showAllComponents();
+        // this.props.getComponents( allComponents );
+        // this.props.updateTableHandler();
       }
     }
 
@@ -1351,9 +1356,11 @@ export class CCiLabComponentList extends Component {
           this.setState( { greetings: updatedSessionComponents });
 
           // update component list in container class
-          let allComponents = this.showAllComponents();
-          this.props.getComponents( allComponents );
-          this.props.updateTableHandler();
+          // let allComponents = this.showAllComponents();
+          // this.props.getComponents( allComponents );
+          // this.props.updateTableHandler();
+
+          this.props.getComponents( this.state.greetings );
            
         }
       }

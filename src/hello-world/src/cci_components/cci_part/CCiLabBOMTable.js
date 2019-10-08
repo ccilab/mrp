@@ -20,7 +20,7 @@ const BOMTableHeader=(props)=>{
 
     const setRootImagePath=( components )=>{
         let lImgName='';
-        if( typeof components !== 'undefined' )
+        if( typeof components !== 'undefined' && components !== null )
         {
             let rootElement = components.find( (element)=> { return element.businessLogic.parentIds.length === 0 ; } )
         
@@ -35,7 +35,7 @@ const BOMTableHeader=(props)=>{
 
     const getCustomerName=( components )=>{
         let lName='';
-        if( typeof components !== 'undefined' )
+        if( typeof components !== 'undefined' && components !== null )
         {
             rootElement = components.find( (element)=> { return element.businessLogic.parentIds.length === 0 ; } )
         
@@ -54,7 +54,7 @@ const BOMTableHeader=(props)=>{
 
     const getOrderNumber=( components )=>{
         let lOrderNumber='';
-        if( typeof components !== 'undefined' )
+        if( typeof components !== 'undefined' && components !== null)
         {
             rootElement = components.find( (element)=> { return element.businessLogic.parentIds.length === 0 ; } )
         
@@ -111,7 +111,7 @@ const BOMTableHeader=(props)=>{
                     <th className='align-middle'>{t('component:customer-order-number')}: </th>
                     <td className='align-middle' colSpan='2'> {customerOrderNumber}</td>
                     <th className='align-middle'>{t('component:th-component-count')}:</th>
-                     <td className='align-middle' colSpan='2'> {componentList.length}</td>
+                     <td className='align-middle' colSpan='2'> {(typeof componentList !== 'undefined' && componentList !== null) ? componentList.length : 0 }</td>
                 </tr>
             </tbody>
     )
@@ -144,7 +144,7 @@ const BOMHeaderRow=()=>{
 //  ]
 const ComponentRow=(props)=>{
     let count = 0;
-    return props.components.map((component) => {
+    return (typeof props.components !== 'undefined' && props.components !== null ) ? props.components.map( (component) => {
         const {key} = component.displayLogic;
         const { name, parentIds } = component.businessLogic;
         const { partNumber, unitQty, unitOfMeasure } = (typeof component.bom !== 'undefined' && component.bom.core !== null) ? component.bom.core : {partNumber:'', unitQty:'', unitOfMeasure:''}; //destructuring
@@ -165,6 +165,8 @@ const ComponentRow=(props)=>{
            </tr>
         )
      })
+     :
+     null;
 }
 
 
@@ -184,7 +186,10 @@ const BOMTable=(props)=>{
                 
                 {<BOMHeaderRow/>}
 
-                {<ComponentRow components = {props.components}/>}
+                <tbody>
+                    {<ComponentRow components = {props.components}/>}
+                </tbody>
+                                
                
             </table>
        </div>

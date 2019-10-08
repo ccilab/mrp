@@ -146,11 +146,10 @@ export const SetupPDP=(props)=>{
 
   // component.displayLogic.inlineMenuEnabled needs set to true
   const saveValidPDPEntry=( component )=>{
-    
     console.log("SetupPDP - saveValidPDPEntry:  update current table");
-    props.updateTable();
     component.pdp.demandAndEndDateArray = demandDateArray;
     sessionStorage.setItem( `${component.displayLogic.key}_${component.businessLogic.name}_pdp`, JSON.stringify( component.pdp ));
+    props.updateTable();
   }
 
 

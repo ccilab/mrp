@@ -246,7 +246,7 @@ export const SetupBOM=(props)=>{
    // component.displayLogic.inlineMenuEnabled needs set to true
   const saveValidBOMEntry=( component )=>{
       console.log("SetupBOM - saveValidBOMEntry:  ");
-      props.updateTable();
+  
       CanEnableInlineMenu( component );
       if( component.displayLogic.inlineMenuEnabled )
       {
@@ -278,6 +278,7 @@ export const SetupBOM=(props)=>{
 
           sessionStorage.setItem( `${component.displayLogic.key}_${component.businessLogic.name}_bom_core`, JSON.stringify( component.bom.core ));
       }
+      props.updateTable();
   }
 
 
