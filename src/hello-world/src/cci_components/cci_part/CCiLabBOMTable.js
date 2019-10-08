@@ -147,7 +147,7 @@ const ComponentRow=(props)=>{
     return props.components.map((component) => {
         const {key} = component.displayLogic;
         const { name, parentIds } = component.businessLogic;
-        const { partNumber, unitQty, unitOfMeasure } = component.bom.core; //destructuring
+        const { partNumber, unitQty, unitOfMeasure } = (typeof component.bom !== 'undefined' && component.bom.core !== null) ? component.bom.core : {partNumber:'', unitQty:'', unitOfMeasure:''}; //destructuring
 
         //based on component_design_guide.txt, any component only has a single parent, 
         // root component doesn't have a parent

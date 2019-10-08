@@ -276,20 +276,20 @@ export const UpdateStatus=(props)=>{
   let quantityValue;
   let producedValue=0;
 
-  if( typeof props.component.production !== 'undefined' &&
-      props.component.production.shiftQty > 0 )
-  {
-    producedValue = props.component.production.shiftQty;
+  // if( typeof props.component.production !== 'undefined' &&
+  //     props.component.production.shiftQty > 0 )
+  // {
+  //   producedValue = props.component.production.shiftQty;
 
-    if( props.component.businessLogic.parentIds.length === 0 )
-    {
-      quantityValue = props.component.bom.core.requiredQty !== null ? props.component.bom.core.requiredQty : 'undefined';
-    }
-    else
-    {
-       quantityValue = props.component.bom.core.requiredQtyPerShift !== null ? props.component.bom.core.requiredQtyPerShift : 'undefined';
-    }
-  }
+  //   if( props.component.businessLogic.parentIds.length === 0 )
+  //   {
+  //     quantityValue = props.component.bom.core.requiredQty !== null ? props.component.bom.core.requiredQty : 'undefined';
+  //   }
+  //   else
+  //   {
+  //      quantityValue = props.component.bom.core.requiredQtyPerShift !== null ? props.component.bom.core.requiredQtyPerShift : 'undefined';
+  //   }
+  // }
   // else{
   //   if (typeof props.component.bom !== 'undefined' )
   //   {
@@ -311,7 +311,7 @@ export const UpdateStatus=(props)=>{
   //        }
   //     }
   //   }
-  // };
+  // }
 
   const initializeProduction=()=>{
     let production={};

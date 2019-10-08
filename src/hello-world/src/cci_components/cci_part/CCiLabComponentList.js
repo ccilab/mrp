@@ -1025,6 +1025,7 @@ export class CCiLabComponentList extends Component {
       sessionStorage.setItem( `${newComponent.displayLogic.key}_${newComponent.businessLogic.name}_op`, JSON.stringify( newComponent.operation ));
       // need to check vertical scroll bar doesn't show
       // create vertical scroll bar based on the height of component list dynamically
+      //update state.greetings inside this function
       this.updateDimensions( updatedSessionComponents);
 
        // update component list in container class
