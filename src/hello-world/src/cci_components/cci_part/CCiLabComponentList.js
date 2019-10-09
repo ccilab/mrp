@@ -774,6 +774,8 @@ export class CCiLabComponentList extends Component {
       // let allComponents = this.showAllComponents();
       // this.props.getComponents( allComponents );
       // this.props.updateTableHandler();
+      this.props.getComponents(  this.state.greetings );
+      this.props.updateTableHandler();
 
       // eslint-disable-next-line
       this.state.visible = false;
@@ -856,7 +858,11 @@ export class CCiLabComponentList extends Component {
     }
 
     // expend the list for BOM Table
-    showAllComponents=( components, selectedComponent )=>{
+    // return the completed component list includes shown and hide component
+    // select from bom table should select component on the component tree too
+    // using businessLogic only to expend the component list, because displayLogic 
+    // may not available if component isn't shown
+    showAllComponents=( shownComponentList, selectedComponent )=>{
       let allComponents = (typeof components === 'undefined') ? JSON.parse(JSON.stringify(this.state.greetings)) : [] ;
 
       let chosenComponent = ( typeof selectedComponent === 'undefined' ) ? allComponents.find(component=>component.businessLogic.parentIds.length === 0) : selectedComponent;

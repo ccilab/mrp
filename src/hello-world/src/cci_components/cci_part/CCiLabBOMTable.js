@@ -117,6 +117,8 @@ const BOMTableHeader=(props)=>{
     )
 }
 
+//consider to use displayLogic to intend child items
+//may don't need bom level, consider to show image
 const BOMHeaderRow=()=>{
     const { t } = useTranslation('component', {useSuspense: false});
     return (
