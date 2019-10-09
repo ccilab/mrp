@@ -124,12 +124,12 @@ const BOMHeaderRow=()=>{
     return (
         <tbody>
         <tr style={{backgroundColor: `${styles.cciBgColor}`}}>
-            <th>{t('component:th-bom-level')}</th>
-            <th>{t('component:th-component-count')}</th>
+            {/* <th>{t('component:th-bom-level')}</th> */}
             <th>{t('component:th-part-name')}</th>
             <th>{t('component:part-number')}</th>
             <th>{t('component:unit-quantity')}</th>
             <th>{t('component:unit-of-measure')}</th> 
+            <th>{t('component:th-component-count')}</th>
             <th>{t('component:description')}</th>
             <th>{t('component:note')}</th>
         </tr>
@@ -153,18 +153,21 @@ const ComponentRow=(props)=>{
 
         //based on component_design_guide.txt, any component only has a single parent, 
         // root component doesn't have a parent
-        const bomLevel = parentIds.length === 0 ? 1 : parentIds[0]+1; 
+        // const bomLevel = parentIds.length === 0 ? 1 : parentIds[0]+1; 
+        const lImgName = (component.businessLogic.imgFile.length !==0 ) ? '/images/'+ component.businessLogic.imgFile : '';
         const unitQtyTd = component.businessLogic.parentIds.length === 0 ? '1' : unitQty === null ? '0' : unitQty;
 
         return (
-           <tr key={key}>
-              <td>{bomLevel}</td>
-              <td>{++count}</td>
-              <td>{name}</td>
-              <td>{partNumber}</td>
-              <td>{unitQtyTd}</td>
-              <td>{unitOfMeasure}</td>
-           </tr>
+            <tr key={key}>
+                {/* <td>{bomLevel}</td> */}
+                <td> <img className='cci-component__img align-self-center'
+                            style={{'height': '2em', 'width': '2em'}}
+                            src={lImgName}/>-{name}</td>
+                <td>{partNumber}</td>
+                <td>{unitQtyTd}</td>
+                <td>{unitOfMeasure}</td>
+                <td>{++count}</td>
+            </tr>
         )
      })
      :

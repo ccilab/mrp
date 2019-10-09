@@ -862,16 +862,18 @@ export class CCiLabComponentList extends Component {
     // select from bom table should select component on the component tree too
     // using businessLogic only to expend the component list, because displayLogic 
     // may not available if component isn't shown
-    showAllComponents=( shownComponentList, selectedComponent )=>{
-      let allComponents = (typeof components === 'undefined') ? JSON.parse(JSON.stringify(this.state.greetings)) : [] ;
+    showAllComponents=( shownComponents, selectedComponent )=>{
+      let allComponents = (typeof shownComponents === 'undefined') ? JSON.parse(JSON.stringify(this.state.greetings)) : [] ;
 
       let chosenComponent = ( typeof selectedComponent === 'undefined' ) ? allComponents.find(component=>component.businessLogic.parentIds.length === 0) : selectedComponent;
 
-      if( typeof components !== 'undefined' && typeof selectedComponent !== 'undefined' )
+      if( typeof shownComponents !== 'undefined' && typeof selectedComponent !== 'undefined' )
       {
+        //get new components from server or local session date
         let children = getChildComponentsFromDataSource(selectedComponent);
 
-        initializeComponents(selectedComponent, components, children, allComponents);
+        //allComponents is [], rebuild allComponents
+        initializeComponents(selectedComponent, shownComponents, children, allComponents);
 
         return allComponents;
       }
