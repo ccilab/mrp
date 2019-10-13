@@ -147,7 +147,7 @@ const BOMHeaderRow=()=>{
 const ComponentRow=(props)=>{
     let count = 0;
     return (typeof props.components !== 'undefined' && props.components !== null ) ? props.components.map( (component) => {
-        const {key} = component.displayLogic;
+        // const {key} = component.displayLogic;
         const { name, parentIds } = component.businessLogic;
         const { partNumber, unitQty, unitOfMeasure } = (typeof component.bom !== 'undefined' && component.bom.core !== null) ? component.bom.core : {partNumber:'', unitQty:'', unitOfMeasure:''}; //destructuring
 
@@ -155,14 +155,17 @@ const ComponentRow=(props)=>{
         // root component doesn't have a parent
         // const bomLevel = parentIds.length === 0 ? 1 : parentIds[0]+1; 
         const lImgName = (component.businessLogic.imgFile.length !==0 ) ? '/images/'+ component.businessLogic.imgFile : '';
-        const unitQtyTd = component.businessLogic.parentIds.length === 0 ? '1' : unitQty === null ? '0' : unitQty;
+        const unitQtyTd = parentIds.length === 0 ? '1' : unitQty === null ? '0' : unitQty;
 
         return (
-            <tr key={key}>
+            <tr >
                 {/* <td>{bomLevel}</td> */}
-                <td> <img className='cci-component__img align-self-center'
+                <td> 
+                    <img className='cci-component__img align-self-center'
                             style={{'height': '2em', 'width': '2em'}}
-                            src={lImgName}/>-{name}</td>
+                            alt={' '}   //has to be empty string for alt prop
+                            src={lImgName}/>-{name}
+                </td>
                 <td>{partNumber}</td>
                 <td>{unitQtyTd}</td>
                 <td>{unitOfMeasure}</td>
