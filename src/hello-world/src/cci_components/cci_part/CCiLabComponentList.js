@@ -456,8 +456,12 @@ const ComponentListTitle =(props)=>{
   }
 
   const tableChangeHandler=(tableType)=>(e)=>{
-    let allComponents = props.getAllComponents();
-    props.getComponents( allComponents );
+    if( tableType !== 'sysInfoTbl')
+    {
+      let allComponents = props.getAllComponents();
+      props.getComponents( allComponents );
+    }
+   
 
     // props.getComponents( this.state.greetings );
     props.updateTableHandler(tableType);
@@ -959,7 +963,7 @@ export class CCiLabComponentList extends Component {
     // select from bom table should select component on the component tree too
     // 
     getAllComponents=()=>{
-      let allComponents = [];
+     
       let availableBusinessLogicKeys=[];
       let availableSetupBomCoreKeys=[];
       let availablePDPKeys=[];
@@ -1008,37 +1012,61 @@ export class CCiLabComponentList extends Component {
       let availableSortedPDPKeys = availablePDPKeys.sort();
       let availableSortedIRFKeys = availableIRFKeys.sort();
       let availableSortedOpKeys = availableOpKeys.sort();
+
+      let allComponents = []; //in order parent-children
     
       // if no available display keys from sessionStorage
-      // build up the array
+      // build up the array in parent->children order
+      let childKeys=[];
       availableSortedBusinessLogicKeys.forEach( (businessLogicKey)=>
-      {
-        let component = {};
-        component.businessLogic=JSON.parse(sessionStorage.getItem(businessLogicKey));
-    
-        const componentKey=parseInt(businessLogicKey, 10);
-    
-        let coreBomKey = availableSortedSetupBomCoreKeys.find( (key)=>{return  parseInt(key, 10) === componentKey } )
-       
-        // let core = {};
-        // core = JSON.parse(sessionStorage.getItem(coreBomKey));
-        let core = typeof coreBomKey !== 'undefined' ? JSON.parse(sessionStorage.getItem(coreBomKey)) : 'undefined';
-        component.bom={};
-        component.bom.core = core;
-     
-        let pdpKey = availableSortedPDPKeys.find( (Key)=>{return  parseInt(Key, 10) === componentKey } )
-        let pdp = typeof pdpKey !== 'undefined' ? JSON.parse(sessionStorage.getItem(pdpKey)): 'undefined';
-        component.pdp = pdp;
-    
-        let irfKey = availableSortedIRFKeys.find( (Key)=>{return  parseInt(Key, 10) === componentKey } )
-        let irf = typeof irfKey !== 'undefined' ? JSON.parse(sessionStorage.getItem(irfKey)): 'undefined';
-        component.irf = irf;
-    
-        let opKey = availableSortedOpKeys.find( (Key)=>{return  parseInt(Key, 10) === componentKey } )
-        let op = typeof opKey !== 'undefined' ? JSON.parse(sessionStorage.getItem(opKey)) : 'undefined';
-        component.op = op;
+      { 
+        if( childKeys.length === 0 || typeof ( childKeys.find( (childKey)=>{return childKey === businessLogicKey}) ) === 'undefined' )
+        {
+          let component = {};
+          component.businessLogic=JSON.parse(sessionStorage.getItem(businessLogicKey));
+      
+          const componentKey=parseInt(businessLogicKey, 10);
+          
+          component.bom={};   
+          let coreBomKey = availableSortedSetupBomCoreKeys.find( (key)=>{return  parseInt(key, 10) === componentKey } )
+          let core = typeof coreBomKey !== 'undefined' ? JSON.parse(sessionStorage.getItem(coreBomKey)) : 'undefined';
+          component.bom.core = core;
+      
+          let pdpKey = availableSortedPDPKeys.find( (Key)=>{return  parseInt(Key, 10) === componentKey } )
+          let pdp = typeof pdpKey !== 'undefined' ? JSON.parse(sessionStorage.getItem(pdpKey)): 'undefined';
+          component.pdp = pdp;
+      
+          let irfKey = availableSortedIRFKeys.find( (Key)=>{return  parseInt(Key, 10) === componentKey } )
+          let irf = typeof irfKey !== 'undefined' ? JSON.parse(sessionStorage.getItem(irfKey)): 'undefined';
+          component.irf = irf;
+      
+          let opKey = availableSortedOpKeys.find( (Key)=>{return  parseInt(Key, 10) === componentKey } )
+          let op = typeof opKey !== 'undefined' ? JSON.parse(sessionStorage.getItem(opKey)) : 'undefined';
+          component.op = op;
 
-        allComponents.push( component );
+          allComponents.push( component );
+
+          if( component.businessLogic.childIds.length !== 0 )
+          {
+            availableSortedBusinessLogicKeys.some( (element)=>{
+              let childComponent={};
+              childComponent.businessLogic=JSON.parse(sessionStorage.getItem(element));
+      
+              const childComponentKey=parseInt(element, 10);
+              if( component.businessLogic.childIds.includes( childComponent.businessLogic.id ) &&
+                  childComponent.businessLogic.parentIds.includes(component.businessLogic.id )  )
+              {
+                allComponents.push(childComponent);
+                childKeys.push( element );
+                if( component.businessLogic.childIds.length === childKeys.length)
+                {
+                  return;
+                }
+              }
+            } );
+          }
+        }
+       
       } )
 
       return allComponents;
