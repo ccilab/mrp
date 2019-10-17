@@ -974,6 +974,8 @@ export class CCiLabComponentList extends Component {
       {
         let anyKey = sessionStorage.key(i);
 
+        console.log("getAllComponents - anyKey: " + anyKey );
+
         if(  anyKey.includes('_businessLogic') &&
               availableBusinessLogicKeys.filter(key => (key === anyKey)).length === 0 )
         {
@@ -1013,60 +1015,88 @@ export class CCiLabComponentList extends Component {
       let availableSortedIRFKeys = availableIRFKeys.sort();
       let availableSortedOpKeys = availableOpKeys.sort();
 
+      const populateComponentObjects=( givenBusinessLogicKey )=>{
+        let givenComponent = {};
+        givenComponent.businessLogic=JSON.parse(sessionStorage.getItem(givenBusinessLogicKey));
+    
+        const componentKey=parseInt(givenBusinessLogicKey, 10);
+        
+        givenComponent.bom={};   
+        let coreBomKey = availableSortedSetupBomCoreKeys.find( (key)=>{return  parseInt(key, 10) === componentKey } )
+        let core = typeof coreBomKey !== 'undefined' ? JSON.parse(sessionStorage.getItem(coreBomKey)) : 'undefined';
+        givenComponent.bom.core = core;
+    
+        let pdpKey = availableSortedPDPKeys.find( (Key)=>{return  parseInt(Key, 10) === componentKey } )
+        let pdp = typeof pdpKey !== 'undefined' ? JSON.parse(sessionStorage.getItem(pdpKey)): 'undefined';
+        givenComponent.pdp = pdp;
+    
+        let irfKey = availableSortedIRFKeys.find( (Key)=>{return  parseInt(Key, 10) === componentKey } )
+        let irf = typeof irfKey !== 'undefined' ? JSON.parse(sessionStorage.getItem(irfKey)): 'undefined';
+        givenComponent.irf = irf;
+    
+        let opKey = availableSortedOpKeys.find( (Key)=>{return  parseInt(Key, 10) === componentKey } )
+        let op = typeof opKey !== 'undefined' ? JSON.parse(sessionStorage.getItem(opKey)) : 'undefined';
+        givenComponent.op = op;
+        return givenComponent;
+      }
+
       let allComponents = []; //in order parent-children
     
       // if no available display keys from sessionStorage
-      // build up the array in parent->children order
+      // build up the array in parent->children order,
+      // root element is guaranteed that at the top of the array
       let childKeys=[];
       availableSortedBusinessLogicKeys.forEach( (businessLogicKey)=>
       { 
-        if( childKeys.length === 0 || typeof ( childKeys.find( (childKey)=>{return childKey === businessLogicKey}) ) === 'undefined' )
-        {
+          let append=false;
           let component = {};
-          component.businessLogic=JSON.parse(sessionStorage.getItem(businessLogicKey));
-      
-          const componentKey=parseInt(businessLogicKey, 10);
           
-          component.bom={};   
-          let coreBomKey = availableSortedSetupBomCoreKeys.find( (key)=>{return  parseInt(key, 10) === componentKey } )
-          let core = typeof coreBomKey !== 'undefined' ? JSON.parse(sessionStorage.getItem(coreBomKey)) : 'undefined';
-          component.bom.core = core;
-      
-          let pdpKey = availableSortedPDPKeys.find( (Key)=>{return  parseInt(Key, 10) === componentKey } )
-          let pdp = typeof pdpKey !== 'undefined' ? JSON.parse(sessionStorage.getItem(pdpKey)): 'undefined';
-          component.pdp = pdp;
-      
-          let irfKey = availableSortedIRFKeys.find( (Key)=>{return  parseInt(Key, 10) === componentKey } )
-          let irf = typeof irfKey !== 'undefined' ? JSON.parse(sessionStorage.getItem(irfKey)): 'undefined';
-          component.irf = irf;
-      
-          let opKey = availableSortedOpKeys.find( (Key)=>{return  parseInt(Key, 10) === componentKey } )
-          let op = typeof opKey !== 'undefined' ? JSON.parse(sessionStorage.getItem(opKey)) : 'undefined';
-          component.op = op;
+          // no children or child key added to the list yet, so don't skip this component
+          if( childKeys.length === 0 || typeof ( childKeys.find( (childKey)=>{return childKey === businessLogicKey}) ) === 'undefined' )
+          {
+            component = populateComponentObjects( businessLogicKey );
 
-          allComponents.push( component );
-
+            allComponents.push( component );
+            append = true;
+          }
+          else{
+            component.businessLogic=JSON.parse(sessionStorage.getItem(businessLogicKey));
+          }
+          
           if( component.businessLogic.childIds.length !== 0 )
           {
-            availableSortedBusinessLogicKeys.some( (element)=>{
-              let childComponent={};
-              childComponent.businessLogic=JSON.parse(sessionStorage.getItem(element));
-      
-              const childComponentKey=parseInt(element, 10);
-              if( component.businessLogic.childIds.includes( childComponent.businessLogic.id ) &&
-                  childComponent.businessLogic.parentIds.includes(component.businessLogic.id )  )
-              {
-                allComponents.push(childComponent);
-                childKeys.push( element );
-                if( component.businessLogic.childIds.length === childKeys.length)
+              availableSortedBusinessLogicKeys.some( (childElementKey)=>{
+                let childComponent=populateComponentObjects(childElementKey);
+               
+                if( businessLogicKey !== childElementKey && 
+                    component.businessLogic.childIds.includes( childComponent.businessLogic.id ) &&
+                    childComponent.businessLogic.parentIds.includes(component.businessLogic.id )  )
                 {
-                  return;
+                  if( append )
+                  {
+                     allComponents.push(childComponent);
+                  }
+                  else{
+                    const index = allComponents.findIndex( (element)=>{return element.businessLogic.id === component.businessLogic.id} );
+                    if( index === -1 )
+                    {
+                      console.log('getAllComponents error: ' + 'allComponents' + ` doesn't have ` + component.businessLogic.name);
+                    }
+                    else
+                    {
+                      allComponents.splice( index+1, 0, childComponent);
+                    }
+                    
+                  }
+                  childKeys.push( childElementKey );
+                  if( component.businessLogic.childIds.length === childKeys.length)
+                  {
+                    return true;
+                  }
                 }
-              }
-            } );
+                return true;
+              } );
           }
-        }
-       
       } )
 
       return allComponents;

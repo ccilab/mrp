@@ -3,6 +3,7 @@ import styles from "./../../dist/css/ccilab-component-list.css"
 
 
 import { useTranslation } from 'react-i18next';
+import {getRandomInt } from "./CCiLabUtility";
 
 
 
@@ -146,8 +147,9 @@ const BOMHeaderRow=()=>{
 //  ]
 const ComponentRow=(props)=>{
     let count = 0;
-    return (typeof props.components !== 'undefined' && props.components !== null ) ? props.components.map( (component) => {
-        // const {key} = component.displayLogic;
+    let parents=[{}];
+    return ( typeof props.components !== 'undefined' && props.components !== null ) ? props.components.map( (component) => {
+        const key= getRandomInt(1000);
         const { name, parentIds } = component.businessLogic;
         const { partNumber, unitQty, unitOfMeasure } = (typeof component.bom !== 'undefined' && component.bom.core !== null) ? component.bom.core : {partNumber:'', unitQty:'', unitOfMeasure:''}; //destructuring
 
@@ -157,10 +159,21 @@ const ComponentRow=(props)=>{
         const lImgName = (component.businessLogic.imgFile.length !==0 ) ? '/images/'+ component.businessLogic.imgFile : '';
         const unitQtyTd = parentIds.length === 0 ? '1' : unitQty === null ? '0' : unitQty;
 
+        // const bomLevel = parents.findIndex((level)=>{return level.includes(component.businessLogic.id)} );
+
+        // if( bomLevel === -1 )
+        // {
+        //     const levelKey='level'+parents.length;
+        //     parents.push( {"levelKey" : component.businessLogic.parentIds[0]});
+        // }
+        
+
+        const namePadding=  parentIds.length === 0 ? 'pl-1' : 'pl-3'; 
+
         return (
-            <tr >
+            <tr key={key}>
                 {/* <td>{bomLevel}</td> */}
-                <td> 
+                <td className={`${namePadding}`}> 
                     <img className='cci-component__img align-self-center'
                             style={{'height': '2em', 'width': '2em'}}
                             alt={' '}   //has to be empty string for alt prop
@@ -183,7 +196,7 @@ const BOMTable=(props)=>{
 
     return (
         <div  className='d-flex flex-row table-responsive-sm' >
-            <table className='table table-bordered '>
+            <table className='table table-bordered  table-hover text-nowrap'>
                 <tbody>
                 <tr style={{backgroundColor: `${styles.cciBgColor}`}}>
                     <th className='text-center' colSpan='8' >{t('component:th-table-title')}</th>
