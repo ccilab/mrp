@@ -1061,10 +1061,12 @@ export class CCiLabComponentList extends Component {
           }
           else{
             component.businessLogic=JSON.parse(sessionStorage.getItem(businessLogicKey));
+            append = false;
           }
           
           if( component.businessLogic.childIds.length !== 0 )
           {
+              let childCnt = 0;
               availableSortedBusinessLogicKeys.some( (childElementKey)=>{
                 let childComponent=populateComponentObjects(childElementKey);
                
@@ -1089,12 +1091,11 @@ export class CCiLabComponentList extends Component {
                     
                   }
                   childKeys.push( childElementKey );
-                  if( component.businessLogic.childIds.length === childKeys.length)
+                  if( component.businessLogic.childIds.length === ++childCnt )
                   {
                     return true;
                   }
                 }
-                return true;
               } );
           }
       } )

@@ -147,7 +147,26 @@ const BOMHeaderRow=()=>{
 //  ]
 const ComponentRow=(props)=>{
     let count = 0;
-    let parents=[{}];
+    let bomLevel = 1;
+
+    const findBomLevel=(components, child)=>{
+        components.some( (component)=>{
+            
+            if( component.businessLogic.id === child.businessLogic.parentIds[0] ) 
+            {
+                bomLevel++;
+
+                if( component.businessLogic.parentIds.length === 0 )
+                {
+                    return true;
+                }
+                let nextChild = component;
+
+                findBomLevel( components, nextChild );
+            }
+         } );
+    }
+
     return ( typeof props.components !== 'undefined' && props.components !== null ) ? props.components.map( (component) => {
         const key= getRandomInt(1000);
         const { name, parentIds } = component.businessLogic;
@@ -158,6 +177,12 @@ const ComponentRow=(props)=>{
         // const bomLevel = parentIds.length === 0 ? 1 : parentIds[0]+1; 
         const lImgName = (component.businessLogic.imgFile.length !==0 ) ? '/images/'+ component.businessLogic.imgFile : '';
         const unitQtyTd = parentIds.length === 0 ? '1' : unitQty === null ? '0' : unitQty;
+        if( parentIds.length > 0 )
+        {
+            bomLevel = 1;   //reset bomLevel for each component
+            findBomLevel( props.components, component );
+        }
+         
 
         // const bomLevel = parents.findIndex((level)=>{return level.includes(component.businessLogic.id)} );
 
@@ -168,7 +193,7 @@ const ComponentRow=(props)=>{
         // }
         
 
-        const namePadding=  parentIds.length === 0 ? 'pl-1' : 'pl-3'; 
+        const namePadding=  'pl-'+bomLevel.toString(); 
 
         return (
             <tr key={key}>
