@@ -89,7 +89,7 @@ const BOMTableHeader=(props)=>{
         
             <tbody >
                 <tr >
-                    <th className='align-middle'>{t('component:th-product-name')}: </th>
+                    <th className='align-middle' >{t('component:th-product-name')}: </th>
                     <td className='align-middle' colSpan='2'> {(typeof rootElement !== 'undefined' && rootElement.businessLogic.name !== 'add-part') ? rootElement.businessLogic.name : `${t('component:part-name')}`}</td>
                     <th className='align-middle'>{t('component:th-designed-by')}:</th>
                     <td className='align-middle' colSpan='2'>first-name, last-name</td>
@@ -112,7 +112,7 @@ const BOMTableHeader=(props)=>{
                     <th className='align-middle'>{t('component:customer-order-number')}: </th>
                     <td className='align-middle' colSpan='2'> {customerOrderNumber}</td>
                     <th className='align-middle'>{t('component:th-component-count')}:</th>
-                     <td className='align-middle' colSpan='2'> {(typeof componentList !== 'undefined' && componentList !== null) ? componentList.length : 0 }</td>
+                    <td className='align-middle' colSpan='2'> {(typeof componentList !== 'undefined' && componentList !== null) ? componentList.length : 0 }</td>
                 </tr>
             </tbody>
     )
@@ -125,12 +125,14 @@ const BOMHeaderRow=()=>{
     return (
         <tbody>
         <tr style={{backgroundColor: `${styles.cciBgColor}`}}>
-            {/* <th>{t('component:th-bom-level')}</th> */}
-            <th>{t('component:th-part-name')}</th>
+            <th colSpan='2' className={`d-flex flex-row`}>
+                {t('component:th-part-name')}
+            </th>
+            <th>{t('component:th-bom-level')}</th>
+            <th>{t('component:th-component-count')}</th>
             <th>{t('component:part-number')}</th>
             <th>{t('component:unit-quantity')}</th>
             <th>{t('component:unit-of-measure')}</th> 
-            <th>{t('component:th-component-count')}</th>
             <th>{t('component:description')}</th>
             <th>{t('component:note')}</th>
         </tr>
@@ -202,17 +204,18 @@ const ComponentRow=(props)=>{
 
         return (
             <tr key={key}>
-                {/* <td>{bomLevel}</td> */}
+              
                 <td className={`${namePadding}`}> 
                     <img className='cci-component__img align-self-center'
                             style={{'height': '2em', 'width': '2em'}}
                             alt={' '}   //has to be empty string for alt prop
                             src={lImgName}/>-{name}
                 </td>
+                <td className='text-center'>{bomLevel}</td>
+                <td className='text-center'>{++count}</td>
                 <td>{partNumber}</td>
-                <td>{unitQtyTd}</td>
+                <td className='text-center'>{unitQtyTd}</td>
                 <td>{unitOfMeasure}</td>
-                <td>{++count}</td>
             </tr>
         )
      })
