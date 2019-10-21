@@ -151,7 +151,6 @@ const ComponentRow=(props)=>{
 
     const findBomLevel=(components, child)=>{
         components.some( (component)=>{
-            
             if( component.businessLogic.id === child.businessLogic.parentIds[0] ) 
             {
                 bomLevel++;
@@ -160,9 +159,15 @@ const ComponentRow=(props)=>{
                 {
                     return true;
                 }
-                let nextChild = component;
+                else
+                {
+                    let nextChild = component;
 
-                findBomLevel( components, nextChild );
+                    return findBomLevel( components, nextChild );
+                }
+            }
+            else{
+                return false;
             }
          } );
     }

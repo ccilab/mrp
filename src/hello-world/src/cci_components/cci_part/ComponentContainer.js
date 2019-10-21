@@ -87,7 +87,7 @@ class ComponentContainer extends Component {
         <div style={{width: this.state.width===0 ? 'auto' : `${this.state.width}px`}}>
             <CCiLabComponentList  updateTableHandler={this.updateTableType}
                                   updateTableSize={this.updateDimensions}
-                                  getComponents={this.getComponentList} />
+                                  setComponents={this.getComponentList} />
         </div>     
 
         {this.renderTables(this.state)}

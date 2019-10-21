@@ -459,11 +459,11 @@ const ComponentListTitle =(props)=>{
     if( tableType !== 'sysInfoTbl')
     {
       let allComponents = props.getAllComponents();
-      props.getComponents( allComponents );
+      props.setComponents( allComponents );
     }
    
 
-    // props.getComponents( this.state.greetings );
+    // props.setComponents( this.state.greetings );
     props.updateTableHandler(tableType);
   }
   // console.log("CCiLabComponentList - ComponentListTitle: i18n.language = " + i18n.language );
@@ -829,12 +829,6 @@ export class CCiLabComponentList extends Component {
       // eslint-disable-next-line
       this.state.greetings=currentSessionComponents;
 
-      // let allComponents = this.getAllComponents();
-      // this.props.getComponents( allComponents );
-      // this.props.updateTableHandler();
-      this.props.getComponents(  this.state.greetings );
-      this.props.updateTableHandler();
-
       // eslint-disable-next-line
       this.state.visible = false;
       // eslint-disable-next-line
@@ -842,7 +836,10 @@ export class CCiLabComponentList extends Component {
 
       // eslint-disable-next-line
       this.state.subTitle = this.state.setupBOM ? 'subTitle-BOM-data' : 'subTitle-Progress-status';
-
+      
+      let allComponents = this.getAllComponents();
+      this.props.setComponents(  allComponents );
+      this.props.updateTableHandler();
     }
 
     getMaxTitleWidth=()=>{
@@ -1082,20 +1079,23 @@ export class CCiLabComponentList extends Component {
                     const index = allComponents.findIndex( (element)=>{return element.businessLogic.id === component.businessLogic.id} );
                     if( index === -1 )
                     {
-                      console.log('getAllComponents error: ' + 'allComponents' + ` doesn't have ` + component.businessLogic.name);
+                      console.log("getAllComponents error: allComponents doesn't have " + component.businessLogic.name );
                     }
                     else
                     {
                       allComponents.splice( index+1, 0, childComponent);
                     }
-                    
                   }
                   childKeys.push( childElementKey );
                   if( component.businessLogic.childIds.length === ++childCnt )
                   {
                     return true;
                   }
+                  else{
+                    return false;
+                  }
                 }
+                return false;
               } );
           }
       } )
@@ -1235,10 +1235,9 @@ export class CCiLabComponentList extends Component {
       this.updateDimensions( updatedSessionComponents);
 
        // update component list in container class
-      // let allComponents = this.getAllComponents();
-      // this.props.getComponents( allComponents );  
-      // this.props.updateTableHandler();
-      this.props.getComponents( this.state.greetings );
+      let allComponents = this.getAllComponents();
+      this.props.setComponents( allComponents );  
+      this.props.updateTableHandler();
 
       return newComponent;
     };
@@ -1291,11 +1290,9 @@ export class CCiLabComponentList extends Component {
       this.setState({ greetings: filteredGreetings });
 
       // update component list in container class
-      // let allComponents = this.getAllComponents();
-      // this.props.getComponents( allComponents );
-      // this.props.updateTableHandler();
-
-      this.props.getComponents( this.state.greetings );
+      let allComponents = this.getAllComponents();
+      this.props.setComponents( allComponents );
+      this.props.updateTableHandler();
     };
 
 
@@ -1367,9 +1364,9 @@ export class CCiLabComponentList extends Component {
         // console.log("CCiLabComponentList - selectedComponentHandler");
         this.setState( { greetings: currentSessionComponents });
 
-        // let allComponents = this.getAllComponents();
-        // this.props.getComponents( allComponents );
-        // this.props.updateTableHandler();
+        let allComponents = this.getAllComponents();
+        this.props.setComponents( allComponents );
+        this.props.updateTableHandler();
       }
     }
 
@@ -1560,12 +1557,9 @@ export class CCiLabComponentList extends Component {
           this.setState( { greetings: updatedSessionComponents });
 
           // update component list in container class
-          // let allComponents = this.getAllComponents();
-          // this.props.getComponents( allComponents );
-          // this.props.updateTableHandler();
-
-          this.props.getComponents( this.state.greetings );
-           
+          let allComponents = this.getAllComponents();
+          this.props.setComponents( allComponents );
+          this.props.updateTableHandler();
         }
       }
     };
@@ -1705,7 +1699,7 @@ export class CCiLabComponentList extends Component {
                                       titleClassName = {listTitleClassName}
                                       setupBOM = {this.state.setupBOM}
                                       getAllComponents={this.getAllComponents}
-                                      getComponents={this.props.getComponents}
+                                      setComponents={this.props.setComponents}
                                       updateTableHandler={this.props.updateTableHandler}
                                       permissionStatus = {this.state.permissionEnabled}
                                       changeBOMHandler = {this.showSetupBOM}/> :
@@ -1716,7 +1710,7 @@ export class CCiLabComponentList extends Component {
                                       titleClassName = {listTitleClassName}
                                       setupBOM = {this.state.setupBOM}
                                       getAllComponents={this.getAllComponents}
-                                      getComponents={this.props.getComponents}
+                                      setComponents={this.props.setComponents}
                                       updateTableHandler={this.props.updateTableHandler}
                                       permissionStatus = {this.state.permissionEnabled}
                                       changeBOMHandler = {this.showSetupBOM}/>
