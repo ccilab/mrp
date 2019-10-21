@@ -14,15 +14,16 @@ class ComponentContainer extends Component {
   
 
   state = {  width: 0 ,
+            //  listKey: getRandomInt(10),
              show: tables.sysInfo}; //'system-info'
 
              
   currentTableType = this.state.show;
 
   componentList = null;
+  component = null;
 
-  // tableKey = getRandomInt(100);
-
+  tableKey =  getRandomInt(100);
    
  
   getComponentList=(componentListSrc)=>{
@@ -35,10 +36,14 @@ class ComponentContainer extends Component {
     console.log("ComponentContainer - updateDimensions width: " + this.state.width);
   }
 
+  //set selected component from bom table then update list
+  getComponent=(selectedFromTable)=>{
+    this.component = selectedFromTable;
+    // this.setState({listKey: getRandomInt(10)});
+  }
+
   updateTableType=(tableType)=>{
-    // console.log("ComponentContainer - previous show: " + this.currentTableType);
-    // console.log( "ComponentContainer - current show: " +  tableType)
-    // if( this.currentTableType !== tableType )
+     
       if( typeof tableType !== 'undefined')
       {
         this.currentTableType = tableType;
@@ -46,16 +51,15 @@ class ComponentContainer extends Component {
       }
       else
       {
+        this.tableKey = getRandomInt(100);
         this.setState( {show: this.currentTableType} );
       }
     
      
 
-      // this.tableKey = getRandomInt(100);
-
-      console.log("ComponentContainer - state:show : " + JSON.stringify(this.state.show) );
+      // console.log("ComponentContainer - state:show : " + JSON.stringify(this.state.show) );
       
-      console.log("ComponentContainer - updateTableType : " + this.currentTableType );
+      // console.log("ComponentContainer - updateTableType : " + this.currentTableType );
       // console.log("ComponentContainer -  tableKey: " +  this.tableKey.toString() );
   }
 
@@ -66,8 +70,8 @@ class ComponentContainer extends Component {
       {
         {
         'sysInfoTbl' : <SysInfo/>,
-        'mpsTable' :  <MPSTable components={this.componentList} />,
-        'bomTable' :  <BOMTable components={this.componentList} />,  //updateKey={this.tableKey}
+        'mpsTable' :  <MPSTable key = {this.tableKey} components={this.componentList} />,
+        'bomTable' :  <BOMTable key = {this.tableKey} components={this.componentList} setComponent={this.component}/>,  //updateKey={this.tableKey}
         'productionOrderTable' : null,
         'purchaseOrderTable' : null,
         'materialPlanTable' : null,
@@ -80,13 +84,15 @@ class ComponentContainer extends Component {
   }
     
 
-// key={this.state.key}
+// key={this.state.key} key={this.state.listKey}
   render () {
     return (
       <div  className={`d-flex flex-row`}> 
         <div style={{width: this.state.width===0 ? 'auto' : `${this.state.width}px`}}>
-            <CCiLabComponentList  updateTableHandler={this.updateTableType}
+            <CCiLabComponentList 
+                                  updateTableHandler={this.updateTableType}
                                   updateTableSize={this.updateDimensions}
+                                  showSelectedComponent={this.getComponent}
                                   setComponents={this.getComponentList} />
         </div>     
 

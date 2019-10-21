@@ -173,6 +173,10 @@ const ComponentRow=(props)=>{
             }
          } );
     }
+    // const mouseOverHandler=(component)=>(e)=>{
+    //     props.setComponent(component);
+    //     console.log("ComponentRow: mouse over component: " + component.businessLogic.name );
+    // } 
 
     return ( typeof props.components !== 'undefined' && props.components !== null ) ? props.components.map( (component) => {
         const key= getRandomInt(1000);
@@ -190,6 +194,12 @@ const ComponentRow=(props)=>{
             findBomLevel( props.components, component );
         }
          
+        let highLight='';
+        if( typeof props.setComponent !== 'undefined' && 
+            props.setComponent !== null && component.businessLogic.id === props.setComponent.businessLogic.id )
+        {
+            highLight='table-info'; 
+        }
 
         // const bomLevel = parents.findIndex((level)=>{return level.includes(component.businessLogic.id)} );
 
@@ -201,10 +211,10 @@ const ComponentRow=(props)=>{
         
 
         const namePadding=  'pl-'+bomLevel.toString(); 
-
+        
+        // onMouseOver={mouseOverHandler( component )} 
         return (
-            <tr key={key}>
-              
+            <tr key={key} className={`${highLight}`}>
                 <td className={`${namePadding}`}> 
                     <img className='cci-component__img align-self-center'
                             style={{'height': '2em', 'width': '2em'}}
@@ -241,7 +251,7 @@ const BOMTable=(props)=>{
                 {<BOMHeaderRow/>}
 
                 <tbody>
-                    {<ComponentRow components = {props.components}/>}
+                    {<ComponentRow components = {props.components} setComponent={props.setComponent}/>}
                 </tbody>
                                 
                

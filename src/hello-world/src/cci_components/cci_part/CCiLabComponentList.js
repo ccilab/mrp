@@ -1237,6 +1237,9 @@ export class CCiLabComponentList extends Component {
        // update component list in container class
       let allComponents = this.getAllComponents();
       this.props.setComponents( allComponents );  
+
+      this.props.showSelectedComponent( newComponent );
+
       this.props.updateTableHandler();
 
       return newComponent;
@@ -1356,16 +1359,21 @@ export class CCiLabComponentList extends Component {
 
     selectedComponentHandler = ( selectedComponent, highlight=true ) =>{
       let currentSessionComponents=this.state.greetings;
-      currentSessionComponents.forEach( (item)=>{setComponentSelected(item, selectedComponent.displayLogic.key);});
 
+      if( currentSessionComponents.length )
+      {
+        currentSessionComponents.forEach( (item)=>{setComponentSelected(item, selectedComponent.displayLogic.key);});
+      }
      
       if( highlight === true )
       { 
         // console.log("CCiLabComponentList - selectedComponentHandler");
         this.setState( { greetings: currentSessionComponents });
 
-        let allComponents = this.getAllComponents();
-        this.props.setComponents( allComponents );
+        // let allComponents = this.getAllComponents();
+        // this.props.setComponents( allComponents );
+        //this.props.updateTableHandler();
+        this.props.showSelectedComponent( selectedComponent );
         this.props.updateTableHandler();
       }
     }
