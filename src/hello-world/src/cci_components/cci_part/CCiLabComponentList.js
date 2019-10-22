@@ -465,7 +465,7 @@ const ComponentListTitle =(props)=>{
   const tableChangeHandler=(tableType)=>(e)=>{
     if( tableType !== 'sysInfoTbl')
     {
-      let allComponents = props.getAllComponentsForTable();
+      let allComponents = props.getAllComponents();
       props.setComponents( allComponents );
     }
    
@@ -787,6 +787,12 @@ export class CCiLabComponentList extends Component {
       //e.stopPropagation();
     };
 
+    updateTable=()=>{
+      let allComponents = this.getAllComponentsForTable();
+      this.props.setComponents(  allComponents );
+      this.props.updateTableHandler();
+    }
+
     // initialize first component's childKeyIds, reorder in following order: the first component, alarm status, warning status, no_issue status
     componentWillMount=()=>{
       this.init();
@@ -844,9 +850,7 @@ export class CCiLabComponentList extends Component {
       // eslint-disable-next-line
       this.state.subTitle = this.state.setupBOM ? 'subTitle-BOM-data' : 'subTitle-Progress-status';
       
-      let allComponents = this.getAllComponentsForTable();
-      this.props.setComponents(  allComponents );
-      this.props.updateTableHandler();
+      this.updateTable();
     }
 
     getMaxTitleWidth=()=>{
@@ -1586,9 +1590,9 @@ export class CCiLabComponentList extends Component {
           this.setState( { greetings: updatedSessionComponents });
 
           // update component list in container class
-          let allComponents = this.getAllComponentsForTable();
-          this.props.setComponents( allComponents );
-          this.props.updateTableHandler();
+          // let allComponents = this.getAllComponentsForTable();
+          // this.props.setComponents( allComponents );
+          this.updateTable();
         }
       }
     };
@@ -1646,7 +1650,7 @@ export class CCiLabComponentList extends Component {
                                           selectedComponentHandler={this.selectedComponentHandler}
                                           moveComponentHandler={this.moveComponentHandler}
                                           updateComponentHandler={this.updateComponent}
-                                          updateTableHandler={this.props.updateTableHandler}
+                                          updateTableHandler={this.updateTable}
                                           isSetupBOM={this.state.setupBOM}
                                           changeMRPTitle = {this.showSetupBOM}
                                           permissionStatus={this.state.permissionEnabled}/> ;
