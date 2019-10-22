@@ -14,6 +14,7 @@ class ComponentContainer extends Component {
   
 
   state = {  width: 0 ,
+             tableKey: getRandomInt(10),
             //  listKey: getRandomInt(10),
              show: tables.sysInfo}; //'system-info'
 
@@ -23,9 +24,6 @@ class ComponentContainer extends Component {
   componentList = null;
   component = null;
 
-  tableKey =  getRandomInt(100);
-   
- 
   getComponentList=(componentListSrc)=>{
     this.componentList=componentListSrc;
   }
@@ -51,8 +49,8 @@ class ComponentContainer extends Component {
       }
       else
       {
-        this.tableKey = getRandomInt(100);
-        this.setState( {show: this.currentTableType} );
+        this.setState({tableKey: getRandomInt(10)});
+        // this.setState( {show: this.currentTableType} );
       }
     
      
@@ -70,8 +68,8 @@ class ComponentContainer extends Component {
       {
         {
         'sysInfoTbl' : <SysInfo/>,
-        'mpsTable' :  <MPSTable key = {this.tableKey} components={this.componentList} />,
-        'bomTable' :  <BOMTable key = {this.tableKey} components={this.componentList} setComponent={this.component}/>,  //updateKey={this.tableKey}
+        'mpsTable' :  <MPSTable key = {this.state.tableKey} components={this.componentList} />,
+        'bomTable' :  <BOMTable key = {this.state.tableKey} components={this.componentList} setComponent={this.component}/>,  //updateKey={this.tableKey}
         'productionOrderTable' : null,
         'purchaseOrderTable' : null,
         'materialPlanTable' : null,

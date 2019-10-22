@@ -123,40 +123,47 @@ const getComponentsFromSessionStorage=( parentComponent )=>{
     }
   }
 
-  let availableSortedBusinessLogicKeys = availableBusinessLogicKeys.sort();
-  let availableSortedSetupBomCoreKeys = availableSetupBomCoreKeys.sort();
-  let availableSortedPDPKeys = availablePDPKeys.sort();
-  let availableSortedIRFKeys = availableIRFKeys.sort();
-  let availableSortedOpKeys = availableOpKeys.sort();
+  const findSmallerKey=( firstEl, secondEl )=>{
+    return parseInt(firstEl, 10) - parseInt( secondEl, 10 );
+  }
 
+  let availableSortedBusinessLogicKeys = availableBusinessLogicKeys.sort( findSmallerKey );
+  let availableSortedSetupBomCoreKeys = availableSetupBomCoreKeys.sort( findSmallerKey );
+  let availableSortedPDPKeys = availablePDPKeys.sort( findSmallerKey );
+  let availableSortedIRFKeys = availableIRFKeys.sort( findSmallerKey );
+  let availableSortedOpKeys = availableOpKeys.sort( findSmallerKey );
+
+  const populateComponentObjects=( givenBusinessLogicKey )=>{
+    let givenComponent = {};
+    givenComponent.businessLogic=JSON.parse(sessionStorage.getItem(givenBusinessLogicKey));
+
+    const componentKey=parseInt(givenBusinessLogicKey, 10);
+    
+    givenComponent.bom={};   
+    let coreBomKey = availableSortedSetupBomCoreKeys.find( (key)=>{return  parseInt(key, 10) === componentKey } )
+    let core = typeof coreBomKey !== 'undefined' ? JSON.parse(sessionStorage.getItem(coreBomKey)) : 'undefined';
+    givenComponent.bom.core = core;
+
+    let pdpKey = availableSortedPDPKeys.find( (Key)=>{return  parseInt(Key, 10) === componentKey } )
+    let pdp = typeof pdpKey !== 'undefined' ? JSON.parse(sessionStorage.getItem(pdpKey)): 'undefined';
+    givenComponent.pdp = pdp;
+
+    let irfKey = availableSortedIRFKeys.find( (Key)=>{return  parseInt(Key, 10) === componentKey } )
+    let irf = typeof irfKey !== 'undefined' ? JSON.parse(sessionStorage.getItem(irfKey)): 'undefined';
+    givenComponent.irf = irf;
+
+    let opKey = availableSortedOpKeys.find( (Key)=>{return  parseInt(Key, 10) === componentKey } )
+    let op = typeof opKey !== 'undefined' ? JSON.parse(sessionStorage.getItem(opKey)) : 'undefined';
+    givenComponent.op = op;
+    return givenComponent;
+  }
   // if no available display keys from sessionStorage
   // build up the array
   availableSortedBusinessLogicKeys.forEach( (businessLogicKey)=>
   {
     let component = {};
-    component.businessLogic=JSON.parse(sessionStorage.getItem(businessLogicKey));
-
-    const componentKey=parseInt(businessLogicKey, 10);
-
-    let coreBomKey = availableSortedSetupBomCoreKeys.find( (key)=>{return  parseInt(key, 10) === componentKey } )
-   
-    // let core = {};
-    // core = JSON.parse(sessionStorage.getItem(coreBomKey));
-    let core = typeof coreBomKey !== 'undefined' ? JSON.parse(sessionStorage.getItem(coreBomKey)) : 'undefined';
-    component.bom={};
-    component.bom.core = core;
- 
-    let pdpKey = availableSortedPDPKeys.find( (Key)=>{return  parseInt(Key, 10) === componentKey } )
-    let pdp = typeof pdpKey !== 'undefined' ? JSON.parse(sessionStorage.getItem(pdpKey)): 'undefined';
-    component.pdp = pdp;
-
-    let irfKey = availableSortedIRFKeys.find( (Key)=>{return  parseInt(Key, 10) === componentKey } )
-    let irf = typeof irfKey !== 'undefined' ? JSON.parse(sessionStorage.getItem(irfKey)): 'undefined';
-    component.irf = irf;
-
-    let opKey = availableSortedOpKeys.find( (Key)=>{return  parseInt(Key, 10) === componentKey } )
-    let op = typeof opKey !== 'undefined' ? JSON.parse(sessionStorage.getItem(opKey)) : 'undefined';
-    component.op = op;
+    
+    component = populateComponentObjects( businessLogicKey );
 
     if( typeof parentComponent === 'undefined' && component.businessLogic.parentIds.length === 0 )
     {
@@ -458,7 +465,7 @@ const ComponentListTitle =(props)=>{
   const tableChangeHandler=(tableType)=>(e)=>{
     if( tableType !== 'sysInfoTbl')
     {
-      let allComponents = props.getAllComponents();
+      let allComponents = props.getAllComponentsForTable();
       props.setComponents( allComponents );
     }
    
@@ -837,7 +844,7 @@ export class CCiLabComponentList extends Component {
       // eslint-disable-next-line
       this.state.subTitle = this.state.setupBOM ? 'subTitle-BOM-data' : 'subTitle-Progress-status';
       
-      let allComponents = this.getAllComponents();
+      let allComponents = this.getAllComponentsForTable();
       this.props.setComponents(  allComponents );
       this.props.updateTableHandler();
     }
@@ -959,7 +966,7 @@ export class CCiLabComponentList extends Component {
     // 
     // select from bom table should select component on the component tree too
     // 
-    getAllComponents=()=>{
+    getAllComponentsForTable=()=>{
      
       let availableBusinessLogicKeys=[];
       let availableSetupBomCoreKeys=[];
@@ -971,7 +978,7 @@ export class CCiLabComponentList extends Component {
       {
         let anyKey = sessionStorage.key(i);
 
-        console.log("getAllComponents - anyKey: " + anyKey );
+        // console.log("getAllComponentsForTable - anyKey: " + anyKey );
 
         if(  anyKey.includes('_businessLogic') &&
               availableBusinessLogicKeys.filter(key => (key === anyKey)).length === 0 )
@@ -1006,11 +1013,15 @@ export class CCiLabComponentList extends Component {
 
       }
 
-      let availableSortedBusinessLogicKeys = availableBusinessLogicKeys.sort();
-      let availableSortedSetupBomCoreKeys = availableSetupBomCoreKeys.sort();
-      let availableSortedPDPKeys = availablePDPKeys.sort();
-      let availableSortedIRFKeys = availableIRFKeys.sort();
-      let availableSortedOpKeys = availableOpKeys.sort();
+      const findSmallerKey=( firstEl, secondEl )=>{
+        return parseInt(firstEl, 10) - parseInt( secondEl, 10 );
+      }
+
+      let availableSortedBusinessLogicKeys = availableBusinessLogicKeys.sort( findSmallerKey );
+      let availableSortedSetupBomCoreKeys = availableSetupBomCoreKeys.sort( findSmallerKey );
+      let availableSortedPDPKeys = availablePDPKeys.sort( findSmallerKey );
+      let availableSortedIRFKeys = availableIRFKeys.sort( findSmallerKey );
+      let availableSortedOpKeys = availableOpKeys.sort( findSmallerKey );
 
       const populateComponentObjects=( givenBusinessLogicKey )=>{
         let givenComponent = {};
@@ -1079,7 +1090,7 @@ export class CCiLabComponentList extends Component {
                     const index = allComponents.findIndex( (element)=>{return element.businessLogic.id === component.businessLogic.id} );
                     if( index === -1 )
                     {
-                      console.log("getAllComponents error: allComponents doesn't have " + component.businessLogic.name );
+                      console.log("getAllComponentsForTable error: allComponents doesn't have " + component.businessLogic.name );
                     }
                     else
                     {
@@ -1235,7 +1246,7 @@ export class CCiLabComponentList extends Component {
       this.updateDimensions( updatedSessionComponents);
 
        // update component list in container class
-      let allComponents = this.getAllComponents();
+      let allComponents = this.getAllComponentsForTable();
       this.props.setComponents( allComponents );  
 
       this.props.showSelectedComponent( newComponent );
@@ -1256,6 +1267,8 @@ export class CCiLabComponentList extends Component {
       let parentComponents = currentSessionComponents.filter(  (component)=>{
         return component.displayLogic.childKeyIds.length && component.displayLogic.childKeyIds.find( (childKey)=>{return childKey === deletedComponentId } )
       } );
+
+      const parentComponent = parentComponents[0];
 
       parentComponents.map( (component)=>{return console.log('parent component name of deleted component: ', component.businessLogic.name) } );
 
@@ -1282,6 +1295,9 @@ export class CCiLabComponentList extends Component {
         return component.displayLogic.key !== deletedComponentId;
       });
 
+      // find component next to deleted component
+
+      // remove deleted component from session storage
       sessionStorage.removeItem(`${deletedComponent.displayLogic.key}_${deletedComponent.businessLogic.name}_businessLogic`);
       // sessionStorage.removeItem(`${deletedComponent.displayLogic.key}_${deletedComponent.businessLogic.name}_displayLogic`);
       sessionStorage.removeItem(`${deletedComponent.displayLogic.key}_${deletedComponent.businessLogic.name}_bom_core`);
@@ -1290,11 +1306,16 @@ export class CCiLabComponentList extends Component {
       sessionStorage.removeItem( `${deletedComponent.displayLogic.key}_${deletedComponent.businessLogic.name}_op`);
      
 
+      filteredGreetings.forEach( (item)=>{ setComponentSelected(item, parentComponent.displayLogic.key) });
       this.setState({ greetings: filteredGreetings });
 
       // update component list in container class
-      let allComponents = this.getAllComponents();
+      let allComponents = this.getAllComponentsForTable();
       this.props.setComponents( allComponents );
+
+      // after remove component, set its parent as selected, should set to next sibling 
+      this.props.showSelectedComponent( parentComponent );
+
       this.props.updateTableHandler();
     };
 
@@ -1360,9 +1381,9 @@ export class CCiLabComponentList extends Component {
     selectedComponentHandler = ( selectedComponent, highlight=true ) =>{
       let currentSessionComponents=this.state.greetings;
 
-      if( currentSessionComponents.length )
+      if( currentSessionComponents.length && typeof selectedComponent !== 'undefined' )
       {
-        currentSessionComponents.forEach( (item)=>{setComponentSelected(item, selectedComponent.displayLogic.key);});
+        currentSessionComponents.forEach( (item)=>{ setComponentSelected(item, selectedComponent.displayLogic.key) });
       }
      
       if( highlight === true )
@@ -1370,7 +1391,7 @@ export class CCiLabComponentList extends Component {
         // console.log("CCiLabComponentList - selectedComponentHandler");
         this.setState( { greetings: currentSessionComponents });
 
-        // let allComponents = this.getAllComponents();
+        // let allComponents = this.getAllComponentsForTable();
         // this.props.setComponents( allComponents );
         //this.props.updateTableHandler();
         this.props.showSelectedComponent( selectedComponent );
@@ -1565,7 +1586,7 @@ export class CCiLabComponentList extends Component {
           this.setState( { greetings: updatedSessionComponents });
 
           // update component list in container class
-          let allComponents = this.getAllComponents();
+          let allComponents = this.getAllComponentsForTable();
           this.props.setComponents( allComponents );
           this.props.updateTableHandler();
         }
@@ -1706,7 +1727,7 @@ export class CCiLabComponentList extends Component {
                                       titlePositionLeft= {this.componentTitleLeft}
                                       titleClassName = {listTitleClassName}
                                       setupBOM = {this.state.setupBOM}
-                                      getAllComponents={this.getAllComponents}
+                                      getAllComponents={this.getAllComponentsForTable}
                                       setComponents={this.props.setComponents}
                                       updateTableHandler={this.props.updateTableHandler}
                                       permissionStatus = {this.state.permissionEnabled}
@@ -1717,7 +1738,7 @@ export class CCiLabComponentList extends Component {
                                       titlePositionLeft= {this.componentTitleLeft}
                                       titleClassName = {listTitleClassName}
                                       setupBOM = {this.state.setupBOM}
-                                      getAllComponents={this.getAllComponents}
+                                      getAllComponents={this.getAllComponentsForTable}
                                       setComponents={this.props.setComponents}
                                       updateTableHandler={this.props.updateTableHandler}
                                       permissionStatus = {this.state.permissionEnabled}
