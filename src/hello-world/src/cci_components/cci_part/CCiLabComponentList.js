@@ -329,13 +329,16 @@ const initializeComponents = ( atComponent, existingComponentList, newComponentL
       {
           let idxInsertAt = targetComponentList.findIndex((component)=>{return component.displayLogic.key === atComponentKey});
           // component without childIs[] is always above components with childIds[] for display/expending purpose
-          if( element.businessLogic.childIds.length === 0 )
+          // if idxInsertAt is 0, its the root element, 
+          // still need to fix the display order on component tree isn't in sync with bom table component order
+          // this component doesn't have children 
+          if( idxInsertAt > 0 && element.businessLogic.childIds.length === 0 )
           {
              targetComponentList.splice( idxInsertAt+1,0,element);
           }
           else
           {
-             targetComponentList.push(element);
+            targetComponentList.push(element);
           }
       }
 
@@ -1582,6 +1585,13 @@ export class CCiLabComponentList extends Component {
             // store displayLogic to session storage for each item
             setComponentSelected( item, rmMovedComponent.displayLogic.key );
           });
+
+          //sorted the updatedSessionComponents in numerical ascending order
+          // const findSmallerDisplayKey=( firstEl, secondEl )=>{
+          //   return parseInt(firstEl.displayLogic.key, 10) - parseInt( secondEl.displayLogic.key, 10 );
+          // }
+
+          // updatedSessionComponents.sort( findSmallerDisplayKey );
 
           //check if moved component progress status need to change (#todo)
 
