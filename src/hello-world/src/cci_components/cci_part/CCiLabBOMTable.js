@@ -125,16 +125,16 @@ const BOMHeaderRow=()=>{
     return (
         <tbody>
         <tr style={{backgroundColor: `${styles.cciBgColor}`}}>
-            <th colSpan='2' className={`d-flex flex-row`}>
+            <th colSpan='2' className={`d-flex flex-row text-center`}>
                 {t('component:th-part-name')}
             </th>
-            <th>{t('component:th-bom-level')}</th>
-            <th>{t('component:th-component-count')}</th>
-            <th>{t('component:part-number')}</th>
-            <th>{t('component:unit-quantity')}</th>
-            <th>{t('component:unit-of-measure')}</th> 
-            <th>{t('component:description')}</th>
-            <th>{t('component:note')}</th>
+            <th className='text-center'>{t('component:th-bom-level')}</th>
+            <th className='text-center'>{t('component:th-component-count')}</th>
+            <th className='text-center'>{t('component:part-number')}</th>
+            <th className='text-center'>{t('component:unit-quantity')}</th>
+            <th className='text-center'>{t('component:unit-of-measure')}</th> 
+            <th className='text-center'>{t('component:description')}</th>
+            <th className='text-center'>{t('component:note')}</th>
         </tr>
         </tbody>
     )
@@ -201,17 +201,13 @@ const ComponentRow=(props)=>{
             highLight='table-info'; 
         }
 
-        // const bomLevel = parents.findIndex((level)=>{return level.includes(component.businessLogic.id)} );
-
-        // if( bomLevel === -1 )
-        // {
-        //     const levelKey='level'+parents.length;
-        //     parents.push( {"levelKey" : component.businessLogic.parentIds[0]});
-        // }
-        
-
+        // https://stackoverflow.com/questions/46119384/bootstrap-4-add-more-sizes-spacing
+        // .\mrp\src\hello-world\src\stylesheets\vendors\bootstrap-4.0.0-alpha.6\scss\_variables.scss
+        // more spaces is added
         const namePadding=  'pl-'+bomLevel.toString(); 
-        
+
+        const inputClassName = 'form-control text-primary m-0 p-0 border-0 cursor-pointer ';
+        const inputStyle={'backgroundColor': `${styles.cciBgColor}`};
         // onMouseOver={mouseOverHandler( component )} 
         return (
             <tr key={key} className={`${highLight}`}>
@@ -226,6 +222,16 @@ const ComponentRow=(props)=>{
                 <td>{partNumber}</td>
                 <td className='text-center'>{unitQtyTd}</td>
                 <td>{unitOfMeasure}</td>
+                <td className='m-0 p-0'>
+                    <textarea  className={`${inputClassName}`}
+                                rows='3'
+                            style={inputStyle}/>
+                </td>
+                <td className='m-0 p-0'>
+                    <textarea  className={`${inputClassName}`}
+                                rows='3'
+                            style={inputStyle}/>
+                </td>
             </tr>
         )
      })

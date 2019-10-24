@@ -275,8 +275,10 @@ export const SetupBOM=(props)=>{
               sessionStorage.removeItem(`${props.component.displayLogic.key}_${originComponent.businessLogic.name}_businessLogic`);
               sessionStorage.setItem( `${component.displayLogic.key}_${component.businessLogic.name}_businessLogic`, JSON.stringify( component.businessLogic ));
           }
-
-          sessionStorage.setItem( `${component.displayLogic.key}_${component.businessLogic.name}_bom_core`, JSON.stringify( component.bom.core ));
+          else{
+             sessionStorage.setItem( `${component.displayLogic.key}_${component.businessLogic.name}_bom_core`, JSON.stringify( component.bom.core ))
+          }
+         ;
       }
       props.updateTable();
   }
@@ -334,6 +336,8 @@ export const SetupBOM=(props)=>{
       component.bom = new initializeBOM( component );
 
     component.bom.core.unitOfMeasure=unitOfMeasure;
+
+    saveValidBOMEntry(component);
   }
 
 
@@ -439,7 +443,7 @@ export const SetupBOM=(props)=>{
 
               <SetupComponentBOM
                 title='unit-quantity'
-                    cellCnt={1}
+                cellCnt={1}
                 // value='' input will show placeholder text
                 value={ props.component.bom.core.unitQty}
                 component={props.component}
@@ -458,7 +462,7 @@ export const SetupBOM=(props)=>{
             <div className={'d-flex  justify-content-between'}>
             <SetupComponentBOM
                 title='unit-of-measure'
-                  cellCnt={1}
+                cellCnt={1}
                 value={props.component.bom.core.unitOfMeasure }
                 component={props.component}
                 handler={setUnitOfMeasure}/>

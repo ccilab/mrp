@@ -1071,15 +1071,21 @@ export class CCiLabComponentList extends Component {
           {
             component = populateComponentObjects( businessLogicKey );
 
-            allComponents.push( component );
-            append = true;
+            //add only parent component to the allComponents, the end child component is added in following if-condition
+            if( component.businessLogic.childIds.length )
+            {
+              allComponents.push( component );
+              append = true;
+            }
+
           }
           else{
             component.businessLogic=JSON.parse(sessionStorage.getItem(businessLogicKey));
             append = false;
           }
           
-          if( component.businessLogic.childIds.length !== 0 )
+          // added child component here to already loaded parent component
+          if( component.businessLogic.childIds.length )
           {
               let childCnt = 0;
               availableSortedBusinessLogicKeys.some( (childElementKey)=>{
@@ -1376,6 +1382,10 @@ export class CCiLabComponentList extends Component {
           {
             // console.log("CCiLabComponentList - showOrHideChildren");
             this.setState( { greetings: currentSessionComponents })
+
+            let selectedComponent = currentSessionComponents.find( (component)=>{return component.displayLogic.selected !== 0; })
+            this.props.showSelectedComponent( selectedComponent );
+            this.props.updateTableHandler();
           }
 
 
