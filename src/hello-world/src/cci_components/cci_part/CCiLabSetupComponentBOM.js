@@ -200,6 +200,8 @@ const initializeBOMCore=()=>{
    core.partNumber=null;
    core.unitQty=null;
    core.unitOfMeasure=''; // may doesn't have unit
+   core.description='';
+   core.note='';
   //  core.requiredQty= null; //required quantity of component/part
   //  core.startDate=null;
   //  core.completeDate=null;

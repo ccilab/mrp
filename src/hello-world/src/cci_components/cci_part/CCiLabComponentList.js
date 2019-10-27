@@ -1030,11 +1030,15 @@ export class CCiLabComponentList extends Component {
       let availableSortedIRFKeys = availableIRFKeys.sort( findSmallerKey );
       let availableSortedOpKeys = availableOpKeys.sort( findSmallerKey );
 
-      const populateComponentObjects=( givenBusinessLogicKey )=>{
+      const populateComponentObjectsForTable=( givenBusinessLogicKey )=>{
         let givenComponent = {};
         givenComponent.businessLogic=JSON.parse(sessionStorage.getItem(givenBusinessLogicKey));
     
         const componentKey=parseInt(givenBusinessLogicKey, 10);
+
+        givenComponent.displayLogic = {};
+
+        givenComponent.displayLogic.key = componentKey;
         
         givenComponent.bom={};   
         let coreBomKey = availableSortedSetupBomCoreKeys.find( (key)=>{return  parseInt(key, 10) === componentKey } )
@@ -1069,7 +1073,7 @@ export class CCiLabComponentList extends Component {
           // no children or child key added to the list yet, so don't skip this component
           if( childKeys.length === 0 || typeof ( childKeys.find( (childKey)=>{return childKey === businessLogicKey}) ) === 'undefined' )
           {
-            component = populateComponentObjects( businessLogicKey );
+            component = populateComponentObjectsForTable( businessLogicKey );
 
             //add only parent component to the allComponents, the end child component is added in following if-condition
             if( component.businessLogic.childIds.length )
@@ -1089,7 +1093,7 @@ export class CCiLabComponentList extends Component {
           {
               let childCnt = 0;
               availableSortedBusinessLogicKeys.some( (childElementKey)=>{
-                let childComponent=populateComponentObjects(childElementKey);
+                let childComponent=populateComponentObjectsForTable(childElementKey);
                
                 if( businessLogicKey !== childElementKey && 
                     component.businessLogic.childIds.includes( childComponent.businessLogic.id ) &&
@@ -1696,7 +1700,12 @@ export class CCiLabComponentList extends Component {
     }
 
     printPage=()=>{
+      // let printElement = document.getElementById('print-icon');
+      // printElement.style.visibility='hidden';
+
       window.print();
+
+      //printElement.style.Visibility='visible';
   }
 
     render() {
@@ -1811,7 +1820,7 @@ export class CCiLabComponentList extends Component {
                 onClick={this.showHideComponentList} />
              
              
-                <i className='badge-pill badge-info cursor-pointer nav-link m-1 py-2 px-2 fas fw fa-print'
+                <i id='print-icon' className='badge-pill badge-info cursor-pointer nav-link m-1 py-2 px-2 fas fw fa-print'
                   onClick={ this.printPage }/>
               </span>
 

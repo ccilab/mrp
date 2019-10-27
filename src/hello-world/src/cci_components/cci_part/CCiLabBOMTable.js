@@ -148,6 +148,7 @@ const BOMHeaderRow=()=>{
 //     { id: 4, name: 'Asad', age: 25, email: 'asad@email.com' }
 //  ]
 const ComponentRow=(props)=>{
+    const { t } = useTranslation('component', {useSuspense: false});
     let count = 0;
     let bomLevel = 1;
 
@@ -173,6 +174,68 @@ const ComponentRow=(props)=>{
             }
          } );
     }
+
+    const saveBomExtra=(component)=>{
+        sessionStorage.setItem( `${component.displayLogic.key}_${component.businessLogic.name}_bom_core`, JSON.stringify( component.bom.core ));
+
+    }
+
+    const onBlurHandler=(component, option )=>(e)=>{
+        if( typeof e.target.value !== 'undefined' && e.target.value !== '')
+        {
+            switch( option )
+            {
+                case 'description':
+                {
+                    component.bom.core.description=e.target.value;
+                    break;
+                }
+                case 'note':
+                {
+                    component.bom.core.note = e.target.value;
+                    break;
+                }
+                default:
+                {
+                    break;
+                }
+                    
+            }
+            if( option === 'description' || option === 'note')
+            {
+                saveBomExtra(component);
+            }
+        }
+    }
+
+    const enterKeyHandler=(component, option )=>(e)=>{
+        if( typeof e.key !== 'undefined' && e.key ==='Enter')
+        {
+            switch( option )
+            {
+                case 'description':
+                {
+                    component.bom.core.description=e.target.value;
+                    break;
+                }
+                case 'note':
+                {
+                    component.bom.core.note=e.target.value;
+                    break;
+                }
+                default:
+                {
+                    break;
+                }
+                    
+            }
+            if( option === 'description' || option === 'note')
+            {
+                saveBomExtra(component);
+            }
+        }
+    }
+
     // const mouseOverHandler=(component)=>(e)=>{
     //     props.setComponent(component);
     //     console.log("ComponentRow: mouse over component: " + component.businessLogic.name );
@@ -181,7 +244,7 @@ const ComponentRow=(props)=>{
     return ( typeof props.components !== 'undefined' && props.components !== null ) ? props.components.map( (component) => {
         const key= getRandomInt(1000);
         const { name, parentIds } = component.businessLogic;
-        const { partNumber, unitQty, unitOfMeasure } = (typeof component.bom !== 'undefined' && component.bom.core !== null) ? component.bom.core : {partNumber:'', unitQty:'', unitOfMeasure:''}; //destructuring
+        const { partNumber, unitQty, unitOfMeasure, description, note } = (typeof component.bom !== 'undefined' && component.bom.core !== null) ? component.bom.core : {partNumber:'', unitQty:'', unitOfMeasure:'', description:'', note:''}; //destructuring
 
         //based on component_design_guide.txt, any component only has a single parent, 
         // root component doesn't have a parent
@@ -206,8 +269,8 @@ const ComponentRow=(props)=>{
         // more spaces is added
         const namePadding=  'pl-'+bomLevel.toString(); 
 
-        const inputClassName = 'form-control text-primary m-0 p-0 border-0 cursor-pointer ';
-        const inputStyle={'backgroundColor': `${styles.cciBgColor}`};
+        const inputClassName = 'form-control text-primary m-0 p-1 border-1 cursor-pointer ';
+        // const inputStyle={'backgroundColor': `${styles.cciBgColor}`};
         // onMouseOver={mouseOverHandler( component )} 
         return (
             <tr key={key} className={`${highLight}`}>
@@ -225,12 +288,22 @@ const ComponentRow=(props)=>{
                 <td className='m-0 p-0'>
                     <textarea  className={`${inputClassName}`}
                                 rows='3'
-                            style={inputStyle}/>
+                                // style={inputStyle}
+                                placeholder={t('component:description')+'...'}
+                                onKeyPress={ enterKeyHandler(component, 'description') }
+                                onBlur={onBlurHandler(component, 'description')}>
+                    {description}
+                    </textarea>
                 </td>
                 <td className='m-0 p-0'>
                     <textarea  className={`${inputClassName}`}
                                 rows='3'
-                            style={inputStyle}/>
+                              // style={inputStyle}
+                             placeholder={t('component:note')+'...'}
+                             onKeyPress={ enterKeyHandler(component, 'note') }
+                             onBlur={onBlurHandler(component, 'note')}>
+                    {note}
+                    </textarea>
                 </td>
             </tr>
         )
