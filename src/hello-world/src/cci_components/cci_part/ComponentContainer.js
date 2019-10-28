@@ -61,6 +61,11 @@ class ComponentContainer extends Component {
       // console.log("ComponentContainer -  tableKey: " +  this.tableKey.toString() );
   }
 
+
+  showHideTable=( isHide )=>{
+    let tableElement = document.getElementById(this.currentTableType);
+    tableElement.setAttribute('showHideTableHandler', isHide );
+  }
     
   renderTables=(state)=>{
     return(
@@ -68,8 +73,8 @@ class ComponentContainer extends Component {
       {
         {
         'sysInfoTbl' : <SysInfo/>,
-        'mpsTable' :  <MPSTable key = {this.state.tableKey} components={this.componentList} />,
-        'bomTable' :  <BOMTable key = {this.state.tableKey} components={this.componentList} setComponent={this.component}/>,  //updateKey={this.tableKey}
+        'mpsTable' :  <MPSTable id={this.currentTableType} key = {this.state.tableKey} components={this.componentList} />,
+        'bomTable' :  <BOMTable id={this.currentTableType} key = {this.state.tableKey} components={this.componentList} setComponent={this.component} showHideTableHandler={this.showHideTable}/>,  //updateKey={this.tableKey}
         'productionOrderTable' : null,
         'purchaseOrderTable' : null,
         'materialPlanTable' : null,
@@ -91,6 +96,7 @@ class ComponentContainer extends Component {
                                   updateTableHandler={this.updateTableType}
                                   updateTableSize={this.updateDimensions}
                                   showSelectedComponent={this.getComponent}
+                                  getTableId = {this.currentTableType}
                                   setComponents={this.getComponentList} />
         </div>     
 

@@ -1699,13 +1699,31 @@ export class CCiLabComponentList extends Component {
       this.setState({isUpdateToItselfWarning: false});
     }
 
-    printPage=()=>{
-      // let printElement = document.getElementById('print-icon');
-      // printElement.style.visibility='hidden';
+    printPage=( )=>{
+      let printElement = document.getElementById('print-icon');
+      printElement.style.visibility='hidden';
+
+      let showHideElement = document.getElementById('show-hide-icon')
+      showHideElement.style.visibility = 'hidden'
+
+      let tableElement = document.getElementById(this.props.getTableId);
+
+      // show list tree, so hide the table
+      if( !this.state.visible )
+      {
+        tableElement.style.visibility = 'hidden'
+      }
+      
 
       window.print();
 
-      //printElement.style.Visibility='visible';
+      printElement.style.visibility='visible';
+      showHideElement.style.visibility = 'visible';
+
+      if( !this.state.visible )
+      {
+        tableElement.style.visibility = 'visible';
+      }
   }
 
     render() {
@@ -1816,7 +1834,7 @@ export class CCiLabComponentList extends Component {
                  style={{'transform': `${this.componentListTranslateStyle}`,
                  'WebkitTransform':`${this.componentListTranslateStyle}`}}>
              
-                <i className={`badge-pill badge-info cursor-pointer nav-link ml-0 mr-1 my-1 px-3 py-1 ${this.slidingComponentListIconClassName}`}
+                <i id='show-hide-icon' className={`badge-pill badge-info cursor-pointer nav-link ml-0 mr-1 my-1 px-3 py-1 ${this.slidingComponentListIconClassName}`}
                 onClick={this.showHideComponentList} />
              
              
