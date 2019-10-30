@@ -3,7 +3,7 @@ import styles from "./../../dist/css/ccilab-component-list.css"
 
 
 import { useTranslation } from 'react-i18next';
-import {getRandomInt } from "./CCiLabUtility";
+import {getRandomInt, tables } from "./CCiLabUtility";
 
 
 
@@ -312,12 +312,13 @@ const ComponentRow=(props)=>{
      null;
 }
 
+// props.showHideTableFlag
 
 const BOMTable=(props)=>{
     const { t } = useTranslation('component', {useSuspense: false});
 
     return (
-        <div  className='d-flex flex-row table-responsive-sm' >
+        <div  id={tables.bom} className='d-flex flex-row table-responsive-sm' style={{visibility: `${props.showHideTableFlag}`}}>
             <table className='table table-bordered  table-hover text-nowrap'>
                 <tbody>
                 <tr style={{backgroundColor: `${styles.cciBgColor}`}}>

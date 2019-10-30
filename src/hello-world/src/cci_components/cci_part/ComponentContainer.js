@@ -62,10 +62,6 @@ class ComponentContainer extends Component {
   }
 
 
-  showHideTable=( isHide )=>{
-    let tableElement = document.getElementById(this.currentTableType);
-    tableElement.setAttribute('showHideTableHandler', isHide );
-  }
     
   renderTables=(state)=>{
     return(
@@ -73,8 +69,8 @@ class ComponentContainer extends Component {
       {
         {
         'sysInfoTbl' : <SysInfo/>,
-        'mpsTable' :  <MPSTable id={this.currentTableType} key = {this.state.tableKey} components={this.componentList} />,
-        'bomTable' :  <BOMTable id={this.currentTableType} key = {this.state.tableKey} components={this.componentList} setComponent={this.component} showHideTableHandler={this.showHideTable}/>,  //updateKey={this.tableKey}
+        'mpsTable' :  <MPSTable  key = {this.state.tableKey} components={this.componentList} />,
+        'bomTable' :  <BOMTable  key = {this.state.tableKey} components={this.componentList} setComponent={this.component} />,  //updateKey={this.tableKey}
         'productionOrderTable' : null,
         'purchaseOrderTable' : null,
         'materialPlanTable' : null,
@@ -95,8 +91,8 @@ class ComponentContainer extends Component {
             <CCiLabComponentList 
                                   updateTableHandler={this.updateTableType}
                                   updateTableSize={this.updateDimensions}
+                                  currentTableId={this.currentTableType}
                                   showSelectedComponent={this.getComponent}
-                                  getTableId = {this.currentTableType}
                                   setComponents={this.getComponentList} />
         </div>     
 

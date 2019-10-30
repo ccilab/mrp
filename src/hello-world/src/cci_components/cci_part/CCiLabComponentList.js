@@ -1075,8 +1075,8 @@ export class CCiLabComponentList extends Component {
           {
             component = populateComponentObjectsForTable( businessLogicKey );
 
-            //add only parent component to the allComponents, the end child component is added in following if-condition
-            if( component.businessLogic.childIds.length )
+            //add root or only parent component to the allComponents, the end child component is added in following if-condition
+            if( allComponents.length === 0 || component.businessLogic.childIds.length )
             {
               allComponents.push( component );
               append = true;
@@ -1701,28 +1701,38 @@ export class CCiLabComponentList extends Component {
 
     printPage=( )=>{
       let printElement = document.getElementById('print-icon');
-      printElement.style.visibility='hidden';
+      printElement.hidden=true;
 
       let showHideElement = document.getElementById('show-hide-icon')
       showHideElement.style.visibility = 'hidden'
 
-      let tableElement = document.getElementById(this.props.getTableId);
+      // let tableElement = document.getElementById(this.props.getTableId);
 
       // show list tree, so hide the table
+      let tableElement = document.getElementById(this.props.currentTableId)
+      let componentListElement = document.getElementById('cciLabComponentListID')
       if( !this.state.visible )
       {
-        tableElement.style.visibility = 'hidden'
+        tableElement.style.visibility = 'hidden';
+        // tableElement.style.display = 'none';
+      }
+      else{
+       componentListElement.style.visibility ='hidden'
+        // componentListElement.style.display ='none'
       }
       
 
       window.print();
 
-      printElement.style.visibility='visible';
+      printElement.hidden=false;
       showHideElement.style.visibility = 'visible';
 
       if( !this.state.visible )
       {
         tableElement.style.visibility = 'visible';
+      }
+      else{
+        componentListElement.style.visibility ='visible'
       }
   }
 
