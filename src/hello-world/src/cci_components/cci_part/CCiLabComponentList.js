@@ -46,15 +46,182 @@ const firstComponents = components.firstComponents;
 
 let fontFamily ='Arial, Helvetica, sans-serif';
 
+
+// created the completed list for BOM Table
+// displayLogic.key is the key of session storage
+// return the completed component list (all the sorted components stored in session storage) 
+// 
+// select from bom table should select component on the component tree too
+// 
+const getAllComponentsFromSessionStorage=()=>{
+ 
+  let availableBusinessLogicKeys=[];
+  let availableSetupBomCoreKeys=[];
+  let availablePDPKeys=[];
+  let availableIRFKeys=[];
+  let availableOpKeys=[];
+
+  for (let i = 0; i < sessionStorage.length; i++)
+  {
+    let anyKey = sessionStorage.key(i);
+
+    // console.log("getAllComponentsFromSessionStorage - anyKey: " + anyKey );
+
+    if(  anyKey.includes('_businessLogic') &&
+          availableBusinessLogicKeys.filter(key => (key === anyKey)).length === 0 )
+    {
+        availableBusinessLogicKeys.push( anyKey );
+    }
+
+    // get direct children of parentComponent only
+    if( anyKey.includes('_bom_core') && 
+        availableSetupBomCoreKeys.filter(key => (key === anyKey)).length === 0 )
+    {
+      availableSetupBomCoreKeys.push( anyKey );
+    }
+
+    if( anyKey.includes('_pdp') && 
+      availablePDPKeys.filter(key => (key === anyKey)).length === 0 )
+    {
+      availablePDPKeys.push( anyKey );
+    }
+
+    if( anyKey.includes('_irf') && 
+      availableIRFKeys.filter(key => (key === anyKey)).length === 0 )
+    {
+      availableIRFKeys.push( anyKey );
+    }
+
+    if( anyKey.includes('_op') && 
+      availableOpKeys.filter(key => (key === anyKey)).length === 0 )
+    {
+      availableOpKeys.push( anyKey );
+    }
+
+  }
+
+  const findSmallerKey=( firstEl, secondEl )=>{
+    return parseInt(firstEl, 10) - parseInt( secondEl, 10 );
+  }
+
+  let availableSortedBusinessLogicKeys = availableBusinessLogicKeys.sort( findSmallerKey );
+  let availableSortedSetupBomCoreKeys = availableSetupBomCoreKeys.sort( findSmallerKey );
+  let availableSortedPDPKeys = availablePDPKeys.sort( findSmallerKey );
+  let availableSortedIRFKeys = availableIRFKeys.sort( findSmallerKey );
+  let availableSortedOpKeys = availableOpKeys.sort( findSmallerKey );
+
+  const populateComponentObjectsForTable=( givenBusinessLogicKey )=>{
+    let givenComponent = {};
+    givenComponent.businessLogic=JSON.parse(sessionStorage.getItem(givenBusinessLogicKey));
+
+    const componentKey=parseInt(givenBusinessLogicKey, 10);
+
+    givenComponent.displayLogic = {};
+
+    givenComponent.displayLogic.key = componentKey;
+    
+    givenComponent.bom={};   
+    let coreBomKey = availableSortedSetupBomCoreKeys.find( (key)=>{return  parseInt(key, 10) === componentKey } )
+    let core = typeof coreBomKey !== 'undefined' ? JSON.parse(sessionStorage.getItem(coreBomKey)) : 'undefined';
+    givenComponent.bom.core = core;
+
+    let pdpKey = availableSortedPDPKeys.find( (Key)=>{return  parseInt(Key, 10) === componentKey } )
+    let pdp = typeof pdpKey !== 'undefined' ? JSON.parse(sessionStorage.getItem(pdpKey)): 'undefined';
+    givenComponent.pdp = pdp;
+
+    let irfKey = availableSortedIRFKeys.find( (Key)=>{return  parseInt(Key, 10) === componentKey } )
+    let irf = typeof irfKey !== 'undefined' ? JSON.parse(sessionStorage.getItem(irfKey)): 'undefined';
+    givenComponent.irf = irf;
+
+    let opKey = availableSortedOpKeys.find( (Key)=>{return  parseInt(Key, 10) === componentKey } )
+    let op = typeof opKey !== 'undefined' ? JSON.parse(sessionStorage.getItem(opKey)) : 'undefined';
+    givenComponent.op = op;
+    return givenComponent;
+  }
+
+  let allComponents = []; //in order parent-children
+
+  // if no available display keys from sessionStorage
+  // build up the array in parent->children order,
+  // root element is guaranteed that at the top of the array
+  let childKeys=[];
+  availableSortedBusinessLogicKeys.forEach( (businessLogicKey)=>
+  { 
+      let append=false;
+      let component = {};
+      
+      // no children or child key added to the list yet, so don't skip this component
+      if( childKeys.length === 0 || typeof ( childKeys.find( (childKey)=>{return childKey === businessLogicKey}) ) === 'undefined' )
+      {
+        component = populateComponentObjectsForTable( businessLogicKey );
+
+        //add root or only parent component to the allComponents, the end child component is added in following if-condition
+        if( allComponents.length === 0 || component.businessLogic.childIds.length )
+        {
+          allComponents.push( component );
+          append = true;
+        }
+
+      }
+      else{
+        component.businessLogic=JSON.parse(sessionStorage.getItem(businessLogicKey));
+        append = false;
+      }
+      
+      // added child component here to already loaded parent component
+      if( component.businessLogic.childIds.length )
+      {
+          let childCnt = 0;
+          availableSortedBusinessLogicKeys.some( (childElementKey)=>{
+            let childComponent=populateComponentObjectsForTable(childElementKey);
+           
+            if( businessLogicKey !== childElementKey && 
+                component.businessLogic.childIds.includes( childComponent.businessLogic.id ) &&
+                childComponent.businessLogic.parentIds.includes(component.businessLogic.id )  )
+            {
+              if( append )
+              {
+                 allComponents.push(childComponent);
+              }
+              else{
+                const index = allComponents.findIndex( (element)=>{return element.businessLogic.id === component.businessLogic.id} );
+                if( index === -1 )
+                {
+                  console.log("getAllComponentsFromSessionStorage error: allComponents doesn't have " + component.businessLogic.name );
+                }
+                else
+                {
+                  allComponents.splice( index+1, 0, childComponent);
+                }
+              }
+              childKeys.push( childElementKey );
+              if( component.businessLogic.childIds.length === ++childCnt )
+              {
+                return true;
+              }
+              else{
+                return false;
+              }
+            }
+            return false;
+          } );
+      }
+  } )
+
+  return allComponents;
+}
+
+
 // need to get all the components in sorted order from server
 // save all the components to session
 const getComponentsFromServer=( parentComponent )=>{
   return []; //firstComponents; //
 }
 
-// parentComponent is undefined when its parent function 
+// parentComponent is undefined when loads all components from session storage
 // getChildComponentsFromDataSource is called from componentWillMount()
-const getComponentsFromSessionStorage=( parentComponent )=>{
+// Note: displayLogic will not be initialized in this function 
+const getChildren=( parentComponent )=>{
   let availableComponents = [];
   let availableBusinessLogicKeys=[];
   let availableSetupBomCoreKeys=[];
@@ -201,7 +368,7 @@ const getChildComponentsFromDataSource = (parentComponent)=>{
   // get root component first from server or session storage
   // get from server first
   // then try to get it from session storage
-  components = getComponentsFromSessionStorage( parentComponent );
+  components = getChildren( parentComponent );
   
   return components;
   
@@ -791,7 +958,7 @@ export class CCiLabComponentList extends Component {
     };
 
     updateTable=()=>{
-      let allComponents = this.getAllComponentsForTable();
+      let allComponents = getAllComponentsFromSessionStorage();
       this.props.setComponents(  allComponents );
       this.props.updateTableHandler();
     }
@@ -968,168 +1135,7 @@ export class CCiLabComponentList extends Component {
 
     }
 
-    // created the completed list for BOM Table
-    // return the completed component list (all the sorted components stored in session storage) 
-    // 
-    // select from bom table should select component on the component tree too
-    // 
-    getAllComponentsForTable=()=>{
-     
-      let availableBusinessLogicKeys=[];
-      let availableSetupBomCoreKeys=[];
-      let availablePDPKeys=[];
-      let availableIRFKeys=[];
-      let availableOpKeys=[];
 
-      for (let i = 0; i < sessionStorage.length; i++)
-      {
-        let anyKey = sessionStorage.key(i);
-
-        // console.log("getAllComponentsForTable - anyKey: " + anyKey );
-
-        if(  anyKey.includes('_businessLogic') &&
-              availableBusinessLogicKeys.filter(key => (key === anyKey)).length === 0 )
-        {
-            availableBusinessLogicKeys.push( anyKey );
-        }
-
-        // get direct children of parentComponent only
-        if( anyKey.includes('_bom_core') && 
-            availableSetupBomCoreKeys.filter(key => (key === anyKey)).length === 0 )
-        {
-          availableSetupBomCoreKeys.push( anyKey );
-        }
-
-        if( anyKey.includes('_pdp') && 
-          availablePDPKeys.filter(key => (key === anyKey)).length === 0 )
-        {
-          availablePDPKeys.push( anyKey );
-        }
-
-        if( anyKey.includes('_irf') && 
-          availableIRFKeys.filter(key => (key === anyKey)).length === 0 )
-        {
-          availableIRFKeys.push( anyKey );
-        }
-
-        if( anyKey.includes('_op') && 
-          availableOpKeys.filter(key => (key === anyKey)).length === 0 )
-        {
-          availableOpKeys.push( anyKey );
-        }
-
-      }
-
-      const findSmallerKey=( firstEl, secondEl )=>{
-        return parseInt(firstEl, 10) - parseInt( secondEl, 10 );
-      }
-
-      let availableSortedBusinessLogicKeys = availableBusinessLogicKeys.sort( findSmallerKey );
-      let availableSortedSetupBomCoreKeys = availableSetupBomCoreKeys.sort( findSmallerKey );
-      let availableSortedPDPKeys = availablePDPKeys.sort( findSmallerKey );
-      let availableSortedIRFKeys = availableIRFKeys.sort( findSmallerKey );
-      let availableSortedOpKeys = availableOpKeys.sort( findSmallerKey );
-
-      const populateComponentObjectsForTable=( givenBusinessLogicKey )=>{
-        let givenComponent = {};
-        givenComponent.businessLogic=JSON.parse(sessionStorage.getItem(givenBusinessLogicKey));
-    
-        const componentKey=parseInt(givenBusinessLogicKey, 10);
-
-        givenComponent.displayLogic = {};
-
-        givenComponent.displayLogic.key = componentKey;
-        
-        givenComponent.bom={};   
-        let coreBomKey = availableSortedSetupBomCoreKeys.find( (key)=>{return  parseInt(key, 10) === componentKey } )
-        let core = typeof coreBomKey !== 'undefined' ? JSON.parse(sessionStorage.getItem(coreBomKey)) : 'undefined';
-        givenComponent.bom.core = core;
-    
-        let pdpKey = availableSortedPDPKeys.find( (Key)=>{return  parseInt(Key, 10) === componentKey } )
-        let pdp = typeof pdpKey !== 'undefined' ? JSON.parse(sessionStorage.getItem(pdpKey)): 'undefined';
-        givenComponent.pdp = pdp;
-    
-        let irfKey = availableSortedIRFKeys.find( (Key)=>{return  parseInt(Key, 10) === componentKey } )
-        let irf = typeof irfKey !== 'undefined' ? JSON.parse(sessionStorage.getItem(irfKey)): 'undefined';
-        givenComponent.irf = irf;
-    
-        let opKey = availableSortedOpKeys.find( (Key)=>{return  parseInt(Key, 10) === componentKey } )
-        let op = typeof opKey !== 'undefined' ? JSON.parse(sessionStorage.getItem(opKey)) : 'undefined';
-        givenComponent.op = op;
-        return givenComponent;
-      }
-
-      let allComponents = []; //in order parent-children
-    
-      // if no available display keys from sessionStorage
-      // build up the array in parent->children order,
-      // root element is guaranteed that at the top of the array
-      let childKeys=[];
-      availableSortedBusinessLogicKeys.forEach( (businessLogicKey)=>
-      { 
-          let append=false;
-          let component = {};
-          
-          // no children or child key added to the list yet, so don't skip this component
-          if( childKeys.length === 0 || typeof ( childKeys.find( (childKey)=>{return childKey === businessLogicKey}) ) === 'undefined' )
-          {
-            component = populateComponentObjectsForTable( businessLogicKey );
-
-            //add root or only parent component to the allComponents, the end child component is added in following if-condition
-            if( allComponents.length === 0 || component.businessLogic.childIds.length )
-            {
-              allComponents.push( component );
-              append = true;
-            }
-
-          }
-          else{
-            component.businessLogic=JSON.parse(sessionStorage.getItem(businessLogicKey));
-            append = false;
-          }
-          
-          // added child component here to already loaded parent component
-          if( component.businessLogic.childIds.length )
-          {
-              let childCnt = 0;
-              availableSortedBusinessLogicKeys.some( (childElementKey)=>{
-                let childComponent=populateComponentObjectsForTable(childElementKey);
-               
-                if( businessLogicKey !== childElementKey && 
-                    component.businessLogic.childIds.includes( childComponent.businessLogic.id ) &&
-                    childComponent.businessLogic.parentIds.includes(component.businessLogic.id )  )
-                {
-                  if( append )
-                  {
-                     allComponents.push(childComponent);
-                  }
-                  else{
-                    const index = allComponents.findIndex( (element)=>{return element.businessLogic.id === component.businessLogic.id} );
-                    if( index === -1 )
-                    {
-                      console.log("getAllComponentsForTable error: allComponents doesn't have " + component.businessLogic.name );
-                    }
-                    else
-                    {
-                      allComponents.splice( index+1, 0, childComponent);
-                    }
-                  }
-                  childKeys.push( childElementKey );
-                  if( component.businessLogic.childIds.length === ++childCnt )
-                  {
-                    return true;
-                  }
-                  else{
-                    return false;
-                  }
-                }
-                return false;
-              } );
-          }
-      } )
-
-      return allComponents;
-    }
 
 
     // need to check following:
@@ -1263,7 +1269,7 @@ export class CCiLabComponentList extends Component {
       this.updateDimensions( updatedSessionComponents);
 
        // update component list in container class
-      let allComponents = this.getAllComponentsForTable();
+      let allComponents = getAllComponentsFromSessionStorage();
       this.props.setComponents( allComponents );  
 
       this.props.showSelectedComponent( newComponent );
@@ -1327,7 +1333,7 @@ export class CCiLabComponentList extends Component {
       this.setState({ greetings: filteredGreetings });
 
       // update component list in container class
-      let allComponents = this.getAllComponentsForTable();
+      let allComponents = getAllComponentsFromSessionStorage();
       this.props.setComponents( allComponents );
 
       // after remove component, set its parent as selected, should set to next sibling 
@@ -1412,7 +1418,7 @@ export class CCiLabComponentList extends Component {
         // console.log("CCiLabComponentList - selectedComponentHandler");
         this.setState( { greetings: currentSessionComponents });
 
-        // let allComponents = this.getAllComponentsForTable();
+        // let allComponents = getAllComponentsFromSessionStorage();
         // this.props.setComponents( allComponents );
         //this.props.updateTableHandler();
         this.props.showSelectedComponent( selectedComponent );
@@ -1614,7 +1620,7 @@ export class CCiLabComponentList extends Component {
           this.setState( { greetings: updatedSessionComponents });
 
           // update component list in container class
-          // let allComponents = this.getAllComponentsForTable();
+          // let allComponents = getAllComponentsFromSessionStorage();
           // this.props.setComponents( allComponents );
           this.updateTable();
         }
@@ -1788,7 +1794,7 @@ export class CCiLabComponentList extends Component {
                                       titlePositionLeft= {this.componentTitleLeft}
                                       titleClassName = {listTitleClassName}
                                       setupBOM = {this.state.setupBOM}
-                                      getAllComponents={this.getAllComponentsForTable}
+                                      getAllComponents={getAllComponentsFromSessionStorage}
                                       setComponents={this.props.setComponents}
                                       updateTableHandler={this.props.updateTableHandler}
                                       permissionStatus = {this.state.permissionEnabled}
@@ -1799,7 +1805,7 @@ export class CCiLabComponentList extends Component {
                                       titlePositionLeft= {this.componentTitleLeft}
                                       titleClassName = {listTitleClassName}
                                       setupBOM = {this.state.setupBOM}
-                                      getAllComponents={this.getAllComponentsForTable}
+                                      getAllComponents={getAllComponentsFromSessionStorage}
                                       setComponents={this.props.setComponents}
                                       updateTableHandler={this.props.updateTableHandler}
                                       permissionStatus = {this.state.permissionEnabled}
