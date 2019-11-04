@@ -537,7 +537,7 @@ const initializeComponents = ( atComponent, existingComponentList, newComponentL
 
   if( newComponentList === null || typeof newComponentList === 'undefined' )
   {
-    console.log('Error: initializeComponents newComponentList is null or undefined');
+    // console.log('Error: initializeComponents newComponentList is null or undefined');
     return;
   }
   newComponentList.forEach((element)=>{
@@ -1055,8 +1055,7 @@ export class CCiLabComponentList extends Component {
       else
       {
           rootComponent = components.filter(component=>(component.businessLogic.parentIds.length === 0))[0];
-          //initializeComponents(rootComponent, this.state.greetings, components, currentSessionComponents);
-          currentSessionComponents=components;
+          initializeComponents(rootComponent, components, null, currentSessionComponents);
 
           //always show very top component
           rootComponent.displayLogic.showMyself = true;
@@ -1424,8 +1423,7 @@ export class CCiLabComponentList extends Component {
 
               let components = getChildComponentsFromDataSource(selectedComponent);
 
-              //initializeComponents(selectedComponent, this.state.greetings, components, currentSessionComponents);
-              currentSessionComponents=components;
+              initializeComponents(selectedComponent, this.state.greetings, null, currentSessionComponents);
           }
           else
           {
@@ -1441,7 +1439,7 @@ export class CCiLabComponentList extends Component {
             setComponentSelected(item, selectedComponent.displayLogic.key);
 
             // skip the first component
-            if( item.displayLogic.key !== rootComponent.displayLogic.key )
+            if( typeof rootComponent !== 'undefined' && item.displayLogic.key !== rootComponent.displayLogic.key )
             {
                // find the component that has the child components, and show or hide the show status of this component's childKeyIds
               if( selectedComponent.displayLogic.childKeyIds.includes(item.displayLogic.key) )
