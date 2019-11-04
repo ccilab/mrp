@@ -47,6 +47,19 @@ const firstComponents = components.firstComponents;
 let fontFamily ='Arial, Helvetica, sans-serif';
 
 
+// initialize displayLogic object
+const initializeDisplayLogic = (key, canExpend, rectLeft, enableMenu ) =>{
+  let displayLogic = {};
+  displayLogic.key = key;
+  displayLogic.childKeyIds = [];
+  displayLogic.showMyself = false;
+  displayLogic.canExpend = canExpend;
+  displayLogic.rectLeft = (typeof rectLeft === "undefined" ) ? 0:rectLeft;
+  displayLogic.selected = 0;  // 0, -1, +1
+  displayLogic.inlineMenuEnabled = (typeof enableMenu === "undefined" ) ? false : enableMenu;
+  return displayLogic;
+};
+
 // created the completed list for BOM Table
 // displayLogic.key is the key of session storage
 // return the completed component list (all the sorted components stored in session storage) 
@@ -116,10 +129,8 @@ const getAllComponentsFromSessionStorage=()=>{
 
     const componentKey=parseInt(givenBusinessLogicKey, 10);
 
-    givenComponent.displayLogic = {};
+    givenComponent.displayLogic = new initializeDisplayLogic( componentKey, givenComponent.businessLogic.childIds.length !== 0 ? true : false );
 
-    givenComponent.displayLogic.key = componentKey;
-    
     givenComponent.bom={};   
     let coreBomKey = availableSortedSetupBomCoreKeys.find( (key)=>{return  parseInt(key, 10) === componentKey } )
     let core = typeof coreBomKey !== 'undefined' ? JSON.parse(sessionStorage.getItem(coreBomKey)) : 'undefined';
@@ -150,7 +161,7 @@ const getAllComponentsFromSessionStorage=()=>{
       let append=false;
       let component = {};
       
-      // no children or child key added to the list yet, so don't skip this component
+      // no children or child key isn't added to the list yet, so don't skip this component
       if( childKeys.length === 0 || typeof ( childKeys.find( (childKey)=>{return childKey === businessLogicKey}) ) === 'undefined' )
       {
         component = populateComponentObjectsForTable( businessLogicKey );
@@ -165,6 +176,9 @@ const getAllComponentsFromSessionStorage=()=>{
       }
       else{
         component.businessLogic=JSON.parse(sessionStorage.getItem(businessLogicKey));
+        const componentKey=parseInt(businessLogicKey, 10);
+
+        component.displayLogic = new initializeDisplayLogic( componentKey, component.businessLogic.childIds.length !== 0 ? true : false );
         append = false;
       }
       
@@ -213,7 +227,7 @@ const getAllComponentsFromSessionStorage=()=>{
 
 
 // need to get all the components in sorted order from server
-// save all the components to session
+// save all the components to session storage after merge between server and previous session storage
 const getComponentsFromServer=( parentComponent )=>{
   return []; //firstComponents; //
 }
@@ -222,22 +236,15 @@ const getComponentsFromServer=( parentComponent )=>{
 // getChildComponentsFromDataSource is called from componentWillMount()
 // Note: displayLogic will not be initialized in this function 
 const getChildren=( parentComponent )=>{
-  let availableComponents = [];
+  // get all components from server and merge with session storage
+  getComponentsFromServer( parentComponent );
+
   let availableBusinessLogicKeys=[];
   let availableSetupBomCoreKeys=[];
   let availablePDPKeys=[];
   let availableIRFKeys=[];
   let availableOpKeys=[];
 
-  // get all components from server
-  // all the components 
-  availableComponents = getComponentsFromServer( parentComponent );
-
-  
-  if( availableComponents.length > 0 )
-  {
-    return availableComponents;
-  }
 
   let childBusinessLogicKeys=['_businessLogic'];  //parentComponent === 'undefined'
 
@@ -254,7 +261,8 @@ const getChildren=( parentComponent )=>{
     // How to determine if Javascript array contains an object with an attribute that equals a given value?
     // https://stackoverflow.com/questions/8217419/how-to-determine-if-javascript-array-contains-an-object-with-an-attribute-that-e
     // get direct children of parentComponent only
-    if(  anyKey.includes('_businessLogic') && childBusinessLogicKeys.find( key=>(anyKey.includes(key) ) ) &&
+    if(  anyKey.includes('_businessLogic') && 
+        ( ( childBusinessLogicKeys[0] === '_businessLogic' || childBusinessLogicKeys.find( key=>(anyKey.includes(key) ) ) ) ) &&
         availableBusinessLogicKeys.filter(key => (key === anyKey)).length === 0 )
     {
         availableBusinessLogicKeys.push( anyKey );
@@ -305,6 +313,8 @@ const getChildren=( parentComponent )=>{
     givenComponent.businessLogic=JSON.parse(sessionStorage.getItem(givenBusinessLogicKey));
 
     const componentKey=parseInt(givenBusinessLogicKey, 10);
+
+    givenComponent.displayLogic = new initializeDisplayLogic( componentKey, givenComponent.businessLogic.childIds.length !== 0 ? true : false );
     
     givenComponent.bom={};   
     let coreBomKey = availableSortedSetupBomCoreKeys.find( (key)=>{return  parseInt(key, 10) === componentKey } )
@@ -326,31 +336,101 @@ const getChildren=( parentComponent )=>{
   }
   // if no available display keys from sessionStorage
   // build up the array
-  availableSortedBusinessLogicKeys.forEach( (businessLogicKey)=>
-  {
-    let component = {};
+  // availableSortedBusinessLogicKeys.forEach( (businessLogicKey)=>
+  // {
+  //   let component = {};
     
-    component = populateComponentObjects( businessLogicKey );
+  //   component = populateComponentObjects( businessLogicKey );
 
-    if( typeof parentComponent === 'undefined' && component.businessLogic.parentIds.length === 0 )
-    {
-      parentComponent = component; // this is root component
-      availableComponents.push( component );
-    }
+  //   if( typeof parentComponent === 'undefined' && component.businessLogic.parentIds.length === 0 )
+  //   {
+  //     parentComponent = component; // this is root component
+  //     availableComponents.push( component );
+  //   }
 
-    if( typeof parentComponent !== 'undefined' ) 
-    {
-      // check if component has same parent component already in available component list
-      // eslint-disable-next-line
-      let findParent = typeof parentComponent.businessLogic.childIds.find((childKey)=>{return childKey === component.businessLogic.id}) !== 'undefined' ? true : false ;
+  //   if( typeof parentComponent !== 'undefined' ) 
+  //   {
+  //     // check if component has same parent component already in available component list
+  //     // eslint-disable-next-line
+  //     let findParent = typeof parentComponent.businessLogic.childIds.find((childKey)=>{return childKey === component.businessLogic.id}) !== 'undefined' ? true : false ;
 
-      if( findParent )
-      {
-        availableComponents.push( component );
-      }
-    }
-  } );
+  //     if( findParent )
+  //     {
+  //       availableComponents.push( component );
+  //     }
+  //   }
+  // } );
   // setup the component structure 
+  let availableComponents = [];
+  let childKeys=[];
+  availableSortedBusinessLogicKeys.forEach( (businessLogicKey)=>
+  { 
+      let append=false;
+      let component = {};
+      
+      // no children or child key isn't added to the list yet, so don't skip this component
+      if( childKeys.length === 0 || typeof ( childKeys.find( (childKey)=>{return childKey === businessLogicKey}) ) === 'undefined' )
+      {
+        component = populateComponentObjects( businessLogicKey );
+
+        //add root or only parent component to the allComponents, the end child component is added in following if-condition
+        if( availableComponents.length === 0 || component.businessLogic.childIds.length )
+        {
+          availableComponents.push( component );
+          append = true;
+        }
+
+      }
+      else{
+        component.businessLogic=JSON.parse(sessionStorage.getItem(businessLogicKey));
+
+        const componentKey=parseInt(businessLogicKey, 10);
+
+        component.displayLogic = new initializeDisplayLogic( componentKey, component.businessLogic.childIds.length !== 0 ? true : false );
+
+        append = false;
+      }
+      
+      // added child component here to already loaded parent component
+      if( component.businessLogic.childIds.length )
+      {
+          let childCnt = 0;
+          availableSortedBusinessLogicKeys.some( (childElementKey)=>{
+            let childComponent=populateComponentObjects(childElementKey);
+           
+            if( businessLogicKey !== childElementKey && 
+                component.businessLogic.childIds.includes( childComponent.businessLogic.id ) &&
+                childComponent.businessLogic.parentIds.includes(component.businessLogic.id )  )
+            {
+              if( append )
+              {
+                availableComponents.push(childComponent);
+              }
+              else{
+                const index = availableComponents.findIndex( (element)=>{return element.businessLogic.id === component.businessLogic.id} );
+                if( index === -1 )
+                {
+                  console.log("getAllComponentsFromSessionStorage error: allComponents doesn't have " + component.businessLogic.name );
+                }
+                else
+                {
+                  availableComponents.splice( index+1, 0, childComponent);
+                }
+              }
+              component.displayLogic.childKeyIds.push(childComponent.displayLogic.key);
+              childKeys.push( childElementKey );
+              if( component.businessLogic.childIds.length === ++childCnt )
+              {
+                return true;
+              }
+              else{
+                return false;
+              }
+            }
+            return false;
+          } );
+      }
+  } )
 
   return availableComponents.length ? availableComponents : null ;
 }
@@ -422,18 +502,6 @@ const findMaxBusinessId = ( componentList )=>{
   return newBusinessId;
 };
 
-// initialize displayLogic object
-const initializeDisplayLogic = (key, canExpend, rectLeft, enableMenu ) =>{
-  let displayLogic = {};
-  displayLogic.key = key;
-  displayLogic.childKeyIds = [];
-  displayLogic.showMyself = false;
-  displayLogic.canExpend = canExpend;
-  displayLogic.rectLeft = (typeof rectLeft === "undefined" ) ? 0:rectLeft;
-  displayLogic.selected = 0;  // 0, -1, +1
-  displayLogic.inlineMenuEnabled = (typeof enableMenu === "undefined" ) ? false : enableMenu;
-  return displayLogic;
-};
 
 // find maximum displayLogic.key
 // eslint-disable-next-line
@@ -987,7 +1055,8 @@ export class CCiLabComponentList extends Component {
       else
       {
           rootComponent = components.filter(component=>(component.businessLogic.parentIds.length === 0))[0];
-          initializeComponents(rootComponent, this.state.greetings, components, currentSessionComponents);
+          //initializeComponents(rootComponent, this.state.greetings, components, currentSessionComponents);
+          currentSessionComponents=components;
 
           //always show very top component
           rootComponent.displayLogic.showMyself = true;
@@ -1355,7 +1424,8 @@ export class CCiLabComponentList extends Component {
 
               let components = getChildComponentsFromDataSource(selectedComponent);
 
-              initializeComponents(selectedComponent, this.state.greetings, components, currentSessionComponents);
+              //initializeComponents(selectedComponent, this.state.greetings, components, currentSessionComponents);
+              currentSessionComponents=components;
           }
           else
           {
