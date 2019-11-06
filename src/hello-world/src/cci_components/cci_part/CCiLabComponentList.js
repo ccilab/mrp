@@ -341,26 +341,41 @@ const getChildren=( parentComponent )=>{
   availableSortedBusinessLogicKeys.forEach( (businessLogicKey)=>
   { 
       let append=false;
-      let component = {};
+      let component={};
+      let parentComponentIdx = -1;
       
       // no children or child key isn't added to the list yet, so don't skip this component
       if( childKeys.length === 0 || typeof ( childKeys.find( (childKey)=>{return childKey === businessLogicKey}) ) === 'undefined' )
       {
         component = populateComponentObjects( businessLogicKey );
+        parentComponentIdx = availableComponents.findIndex( element=>(component.businessLogic.parentIds.includes(element.businessLogic.id)));
+      
+        //add root or only the component that it is at the end of allComponents,
+        //  the end child component is added in following if-condition
+        // // || 
+        //     
+        if( availableComponents.length === 0 || 
+            ( ( parentComponentIdx === availableComponents.length - 1 ) && 
+              (typeof component.businessLogic !== 'undefined' && 
+              component.businessLogic.childIds.length ) ) )
+        {
+          availableComponents.push( component );
+          append = true;
+        }
       }
-      //add root or only parent component to the allComponents, the end child component is added in following if-condition
-      if( availableComponents.length === 0 || 
-          (typeof component.businessLogic !== 'undefined' && component.businessLogic.childIds.length ) )
+
+      if( append === false )
       {
-        availableComponents.push( component );
-        append = true;
-      }
-      else{
         const displayLogicKey=parseInt(businessLogicKey, 10);
 
         component = availableComponents.find( element=>(element.displayLogic.key === displayLogicKey));
 
-        append = false;
+        if(typeof component === 'undefined')
+        {
+          component = populateComponentObjects( businessLogicKey );
+          availableComponents.splice( parentComponentIdx+1, 0, component);
+        }
+
       }
       
       // added child component here to already loaded parent component
