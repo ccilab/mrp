@@ -302,6 +302,7 @@ const getChildren=( parentComponent )=>{
     return parseInt(firstEl, 10) - parseInt( secondEl, 10 );
   }
 
+
   let availableSortedBusinessLogicKeys = availableBusinessLogicKeys.sort( findSmallerKey );
   let availableSortedSetupBomCoreKeys = availableSetupBomCoreKeys.sort( findSmallerKey );
   let availableSortedPDPKeys = availablePDPKeys.sort( findSmallerKey );
@@ -337,85 +338,47 @@ const getChildren=( parentComponent )=>{
  
   // setup the component structure 
   let availableComponents = [];
-  let childKeys=[];
+  // let childKeys=[];
   availableSortedBusinessLogicKeys.forEach( (businessLogicKey)=>
   { 
-      let append=false;
+      // let append=false;
       let component={};
       let parentComponentIdx = -1;
       
-      // no children or child key isn't added to the list yet, so don't skip this component
-      if( childKeys.length === 0 || typeof ( childKeys.find( (childKey)=>{return childKey === businessLogicKey}) ) === 'undefined' )
+      const displayLogicKey=parseInt(businessLogicKey, 10);
+
+      component = availableComponents.find( element=>(element.displayLogic.key === displayLogicKey));
+
+      if( typeof component === 'undefined' )
       {
         component = populateComponentObjects( businessLogicKey );
+
+        //load 7_p6, but its parent 10_p9 hasn't been loaded yet ?????
         parentComponentIdx = availableComponents.findIndex( element=>(component.businessLogic.parentIds.includes(element.businessLogic.id)));
-      
-        //add root or only the component that it is at the end of allComponents,
-        //  the end child component is added in following if-condition
-        // // || 
-        //     
-        if( availableComponents.length === 0 || 
-            ( ( parentComponentIdx === availableComponents.length - 1 ) && 
-              (typeof component.businessLogic !== 'undefined' && 
-              component.businessLogic.childIds.length ) ) )
+        availableComponents.splice( parentComponentIdx+1, 0, component);
+         // added child component here to just loaded parent component
+        if( component.businessLogic.childIds.length )
         {
-          availableComponents.push( component );
-          append = true;
-        }
-      }
+            component.businessLogic.childIds.forEach( (childBusinessLogicId)=>{
+              let childBusinessLogicKey = availableSortedBusinessLogicKeys.find( 
+                (elementKey)=>{ return JSON.parse(sessionStorage.getItem(elementKey)).id === childBusinessLogicId } );
 
-      if( append === false )
-      {
-        const displayLogicKey=parseInt(businessLogicKey, 10);
+              let childComponent= populateComponentObjects( childBusinessLogicKey ); 
 
-        component = availableComponents.find( element=>(element.displayLogic.key === displayLogicKey));
+              let parentComponentIdx = availableComponents.findIndex( (element)=>( element.businessLogic.id === component.businessLogic.id ) );
 
-        if(typeof component === 'undefined')
-        {
-          component = populateComponentObjects( businessLogicKey );
-          availableComponents.splice( parentComponentIdx+1, 0, component);
-        }
-
-      }
-      
-      // added child component here to already loaded parent component
-      if( component.businessLogic.childIds.length )
-      {
-          let childCnt = 0;
-          availableSortedBusinessLogicKeys.some( (childElementKey)=>{
-            let childComponent=populateComponentObjects(childElementKey);
-           
-            if( businessLogicKey !== childElementKey && 
-                component.businessLogic.childIds.includes( childComponent.businessLogic.id ) &&
-                childComponent.businessLogic.parentIds.includes(component.businessLogic.id )  )
-            {
-              if( append )
+              if( parentComponentIdx === -1 )
               {
-                availableComponents.push(childComponent);
+                console.log("getAllComponentsFromSessionStorage error: allComponents doesn't have " + component.businessLogic.name );
               }
-              else{
-                const index = availableComponents.findIndex( (element)=>{return element.businessLogic.id === component.businessLogic.id} );
-                if( index === -1 )
-                {
-                  console.log("getAllComponentsFromSessionStorage error: allComponents doesn't have " + component.businessLogic.name );
-                }
-                else
-                {
-                  availableComponents.splice( index+1, 0, childComponent);
-                }
-              }
-              component.displayLogic.childKeyIds.push(childComponent.displayLogic.key);
-              childKeys.push( childElementKey );
-              if( component.businessLogic.childIds.length === ++childCnt )
+              else
               {
-                return true;
+                availableComponents.splice( parentComponentIdx+1, 0, childComponent);
+                component.displayLogic.childKeyIds.push(childComponent.displayLogic.key);
               }
-              else{
-                return false;
-              }
-            }
-            return false;
-          } );
+              
+            } );
+        }
       }
   } )
 
