@@ -356,7 +356,7 @@ const getChildren=( parentComponent )=>{
         parentComponentIdx = availableComponents.findIndex( element=>(component.businessLogic.parentIds.includes(element.businessLogic.id)));
 
         // if parent component hasn't been loaded then skip this component
-        // if it's root component, then loaded this component
+        // if it's root component or its parent component has loaded, then loaded this component
         if( parentComponentIdx > -1 || ( parentComponentIdx === -1 && component.businessLogic.parentIds.length === 0  ) )
         {
           availableComponents.splice( parentComponentIdx+1, 0, component);
@@ -365,12 +365,27 @@ const getChildren=( parentComponent )=>{
           if( component.businessLogic.childIds.length )
           {
               component.businessLogic.childIds.forEach( (childBusinessLogicId)=>{
-                let childBusinessLogicKey = availableSortedBusinessLogicKeys.find( 
-                  (elementKey)=>{ return JSON.parse(sessionStorage.getItem(elementKey)).id === childBusinessLogicId } );
+                let childBusinessLogicKey = availableSortedBusinessLogicKeys.find( (elementKey)=>(JSON.parse(sessionStorage.getItem(elementKey)).id === childBusinessLogicId ) );
 
                 let childComponent= populateComponentObjects( childBusinessLogicKey ); 
 
-                let parentComponentIdx = availableComponents.findIndex( (element)=>( element.businessLogic.id === component.businessLogic.id ) );
+                let parentComponentIdx = -1;
+                // let previousIdx = parentComponentIdx;
+                // availableComponents.some( (component_)=>{ 
+                //   parentComponentIdx = childComponent.businessLogic.parentIds.findIndex( (id)=>(id === component_.businessLogic.id));
+                //   if( parentComponentIdx === -1 && previousIdx > -1 )
+                //   {
+                //     parentComponentIdx = previousIdx;
+                //     return true;
+                //   }
+                //   else 
+                //   {
+                //     previousIdx = parentComponentIdx;
+                //     return false;
+                //   }
+                // });
+
+                parentComponentIdx = availableComponents.findIndex( (element)=>( element.businessLogic.id === component.businessLogic.id ) );
 
                 if( parentComponentIdx === -1 )
                 {
