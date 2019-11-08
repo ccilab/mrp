@@ -353,31 +353,37 @@ const getChildren=( parentComponent )=>{
       {
         component = populateComponentObjects( businessLogicKey );
 
-        //load 7_p6, but its parent 10_p9 hasn't been loaded yet ?????
         parentComponentIdx = availableComponents.findIndex( element=>(component.businessLogic.parentIds.includes(element.businessLogic.id)));
-        availableComponents.splice( parentComponentIdx+1, 0, component);
-         // added child component here to just loaded parent component
-        if( component.businessLogic.childIds.length )
+
+        // if parent component hasn't been loaded then skip this component
+        // if it's root component, then loaded this component
+        if( parentComponentIdx > -1 || ( parentComponentIdx === -1 && component.businessLogic.parentIds.length === 0  ) )
         {
-            component.businessLogic.childIds.forEach( (childBusinessLogicId)=>{
-              let childBusinessLogicKey = availableSortedBusinessLogicKeys.find( 
-                (elementKey)=>{ return JSON.parse(sessionStorage.getItem(elementKey)).id === childBusinessLogicId } );
+          availableComponents.splice( parentComponentIdx+1, 0, component);
+        
+           // added child component here to just loaded parent component
+          if( component.businessLogic.childIds.length )
+          {
+              component.businessLogic.childIds.forEach( (childBusinessLogicId)=>{
+                let childBusinessLogicKey = availableSortedBusinessLogicKeys.find( 
+                  (elementKey)=>{ return JSON.parse(sessionStorage.getItem(elementKey)).id === childBusinessLogicId } );
 
-              let childComponent= populateComponentObjects( childBusinessLogicKey ); 
+                let childComponent= populateComponentObjects( childBusinessLogicKey ); 
 
-              let parentComponentIdx = availableComponents.findIndex( (element)=>( element.businessLogic.id === component.businessLogic.id ) );
+                let parentComponentIdx = availableComponents.findIndex( (element)=>( element.businessLogic.id === component.businessLogic.id ) );
 
-              if( parentComponentIdx === -1 )
-              {
-                console.log("getAllComponentsFromSessionStorage error: allComponents doesn't have " + component.businessLogic.name );
-              }
-              else
-              {
-                availableComponents.splice( parentComponentIdx+1, 0, childComponent);
-                component.displayLogic.childKeyIds.push(childComponent.displayLogic.key);
-              }
-              
-            } );
+                if( parentComponentIdx === -1 )
+                {
+                  console.log("getAllComponentsFromSessionStorage error: allComponents doesn't have " + component.businessLogic.name );
+                }
+                else
+                {
+                  availableComponents.splice( parentComponentIdx+1, 0, childComponent);
+                  component.displayLogic.childKeyIds.push(childComponent.displayLogic.key);
+                }
+                
+              } );
+          }
         }
       }
   } )
