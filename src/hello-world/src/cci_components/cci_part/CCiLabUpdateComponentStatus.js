@@ -4,6 +4,7 @@ import { useTranslation } from 'react-i18next';
 
 import styles from "./../../dist/css/ccilab-component-list.css"
 
+import { dividerCCS } from "./CCiLabUtility";
 
 export const UpdateComponentStatus=(props)=>{
   // deep copy object that doesn't have function inside object
@@ -13,7 +14,7 @@ export const UpdateComponentStatus=(props)=>{
   let inputValue = props.value;
   let inputClassName = 'text-primary m-0 p-0 cursor-pointer border-0';
   let inputPlaceholder=t(`component:${props.title}`);
-  let inputStyle={'backgroundColor': `${styles.cciBgColor}`};
+  let inputStyle={'backgroundColor': `${styles.cciBgColor}`, 'width': '8em'};
   let inputType='text';
   let isRequired=false;
   let tooltipOnMode= ['click','hover'];
@@ -180,7 +181,7 @@ export const UpdateComponentStatus=(props)=>{
         { (createUserInput) ?
           <Popup
             trigger={
-              <div className='d-flex flex-column m-0 py-1 border-0'>
+              <div className='d-flex justify-content-between m-0 py-1 border-0'>
                   <input className={`${inputClassName}`}
                          id={name1InputId}
                          type={`${inputType}`}
@@ -191,6 +192,8 @@ export const UpdateComponentStatus=(props)=>{
                          onChange={updateValue(props)}
                          onClose={updateValue(props)}
                          onInput={ (e) =>{ setInput(e.target.value) }}/>
+
+                
 
                   <input  className={`${inputClassName}`}
                           id={name2InputId}
@@ -418,7 +421,15 @@ export const UpdateStatus=(props)=>{
           arrowStyle={{backgroundColor: `${styles.cciBgColor}`}}>
           {close => (
             <div className={'bg-info d-flex flex-column'} >
-              <div className={'bg-info d-flex'}>
+              <div className={'bg-info d-flex justify-content-between'}>
+                <UpdateComponentStatus
+                  title='shift'
+                  value={props.component.production.shift}
+                  component={props.component}
+                  handler={setShiftName}
+                  updateComponent={props.updateComponent}/>
+
+                <hr className={dividerCCS.hDividerClassName }  style={dividerCCS.vDividerStyle}/>    
                 <UpdateComponentStatus
                   title='team-name'
                   value={props.component.production.teamName}
@@ -431,15 +442,6 @@ export const UpdateStatus=(props)=>{
                     style={{backgroundColor: `${styles.cciBgColor}`}}
                     onClick={ close }> </a>
               </div>
-              <hr className='my-0 bg-info'
-                  style={{borderStyle:'insert', borderWidth: '0.08em', borderColor:`${styles.cciInfoBlue}`}}/>
-
-              <UpdateComponentStatus
-                  title='shift'
-                  value={props.component.production.shift}
-                  component={props.component}
-                  handler={setShiftName}
-                  updateComponent={props.updateComponent}/>
 
               <hr className='my-0 bg-info'
                   style={{borderStyle:'insert', borderWidth: '0.08em', borderColor:`${styles.cciInfoBlue}`}}/>

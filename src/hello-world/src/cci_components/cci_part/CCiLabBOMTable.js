@@ -371,7 +371,7 @@ const BOMTable=(props)=>{
 
     return (
         <div  id={tables.bom} className='d-flex flex-row table-responsive-sm' style={{visibility: `${props.showHideTableFlag}`}}>
-            <table className='table table-bordered  table-hover text-nowrap'>
+            <table className='table table-bordered table-striped table-hover text-nowrap'>
                 <tbody>
                 <tr style={{backgroundColor: `${styles.cciBgColor}`}}>
                     <th className='text-center' colSpan='8' >{t('component:th-table-title')}</th>
