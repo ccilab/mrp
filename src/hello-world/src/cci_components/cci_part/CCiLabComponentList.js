@@ -203,7 +203,7 @@ const getChildren=( parentComponent )=>{
             availableComponents.splice( parentComponentIdx+1, 0, component);
 
             let idx = unloadedComponents.findIndex( (unloadedComponent)=>( unloadedComponent.businessLogic.id === component.businessLogic.id));
-            if( idx > 0 )
+            if( idx >= 0 )
             {
               unloadedComponents.splice( idx, 1 );
             }
@@ -230,7 +230,7 @@ const getChildren=( parentComponent )=>{
                     component.displayLogic.childKeyIds.push(childComponent.displayLogic.key);
 
                     let idx = unloadedComponents.findIndex( (unloadedComponent)=>( unloadedComponent.businessLogic.id === childComponent.businessLogic.id));
-                    if( idx > 0 )
+                    if( idx >= 0 )
                     {
                       unloadedComponents.splice( idx, 1 );
                     }
