@@ -60,170 +60,6 @@ const initializeDisplayLogic = (key, canExpend, rectLeft, enableMenu ) =>{
   return displayLogic;
 };
 
-// created the completed list for BOM Table
-// displayLogic.key is the key of session storage
-// return the completed component list (all the sorted components stored in session storage) 
-// 
-// select from bom table should select component on the component tree too
-// 
-// const getAllComponentsFromSessionStorage=()=>{
- 
-//   let availableBusinessLogicKeys=[];
-//   let availableSetupBomCoreKeys=[];
-//   let availablePDPKeys=[];
-//   let availableIRFKeys=[];
-//   let availableOpKeys=[];
-
-//   for (let i = 0; i < sessionStorage.length; i++)
-//   {
-//     let anyKey = sessionStorage.key(i);
-
-//     // console.log("getAllComponentsFromSessionStorage - anyKey: " + anyKey );
-
-//     if(  anyKey.includes('_businessLogic') &&
-//           availableBusinessLogicKeys.filter(key => (key === anyKey)).length === 0 )
-//     {
-//         availableBusinessLogicKeys.push( anyKey );
-//     }
-
-//     // get direct children of parentComponent only
-//     if( anyKey.includes('_bom_core') && 
-//         availableSetupBomCoreKeys.filter(key => (key === anyKey)).length === 0 )
-//     {
-//       availableSetupBomCoreKeys.push( anyKey );
-//     }
-
-//     if( anyKey.includes('_pdp') && 
-//       availablePDPKeys.filter(key => (key === anyKey)).length === 0 )
-//     {
-//       availablePDPKeys.push( anyKey );
-//     }
-
-//     if( anyKey.includes('_irf') && 
-//       availableIRFKeys.filter(key => (key === anyKey)).length === 0 )
-//     {
-//       availableIRFKeys.push( anyKey );
-//     }
-
-//     if( anyKey.includes('_op') && 
-//       availableOpKeys.filter(key => (key === anyKey)).length === 0 )
-//     {
-//       availableOpKeys.push( anyKey );
-//     }
-
-//   }
-
-//   const findSmallerKey=( firstEl, secondEl )=>{
-//     return parseInt(firstEl, 10) - parseInt( secondEl, 10 );
-//   }
-
-//   let availableSortedBusinessLogicKeys = availableBusinessLogicKeys.sort( findSmallerKey );
-//   let availableSortedSetupBomCoreKeys = availableSetupBomCoreKeys.sort( findSmallerKey );
-//   let availableSortedPDPKeys = availablePDPKeys.sort( findSmallerKey );
-//   let availableSortedIRFKeys = availableIRFKeys.sort( findSmallerKey );
-//   let availableSortedOpKeys = availableOpKeys.sort( findSmallerKey );
-
-//   const populateComponentObjectsForTable=( givenBusinessLogicKey )=>{
-//     let givenComponent = {};
-//     givenComponent.businessLogic=JSON.parse(sessionStorage.getItem(givenBusinessLogicKey));
-
-//     const componentKey=parseInt(givenBusinessLogicKey, 10);
-
-//     givenComponent.displayLogic = new initializeDisplayLogic( componentKey, givenComponent.businessLogic.childIds.length !== 0 ? true : false );
-
-//     givenComponent.bom={};   
-//     let coreBomKey = availableSortedSetupBomCoreKeys.find( (key)=>{return  parseInt(key, 10) === componentKey } )
-//     let core = typeof coreBomKey !== 'undefined' ? JSON.parse(sessionStorage.getItem(coreBomKey)) : 'undefined';
-//     givenComponent.bom.core = core;
-
-//     let pdpKey = availableSortedPDPKeys.find( (Key)=>{return  parseInt(Key, 10) === componentKey } )
-//     let pdp = typeof pdpKey !== 'undefined' ? JSON.parse(sessionStorage.getItem(pdpKey)): 'undefined';
-//     givenComponent.pdp = pdp;
-
-//     let irfKey = availableSortedIRFKeys.find( (Key)=>{return  parseInt(Key, 10) === componentKey } )
-//     let irf = typeof irfKey !== 'undefined' ? JSON.parse(sessionStorage.getItem(irfKey)): 'undefined';
-//     givenComponent.irf = irf;
-
-//     let opKey = availableSortedOpKeys.find( (Key)=>{return  parseInt(Key, 10) === componentKey } )
-//     let op = typeof opKey !== 'undefined' ? JSON.parse(sessionStorage.getItem(opKey)) : 'undefined';
-//     givenComponent.op = op;
-//     return givenComponent;
-//   }
-
-//   let allComponents = []; //in order parent-children
-
-//   // if no available display keys from sessionStorage
-//   // build up the array in parent->children order,
-//   // root element is guaranteed that at the top of the array
-//   let childKeys=[];
-//   availableSortedBusinessLogicKeys.forEach( (businessLogicKey)=>
-//   { 
-//       let append=false;
-//       let component = {};
-      
-//       // no children or child key isn't added to the list yet, so don't skip this component
-//       if( childKeys.length === 0 || typeof ( childKeys.find( (childKey)=>{return childKey === businessLogicKey}) ) === 'undefined' )
-//       {
-//         component = populateComponentObjectsForTable( businessLogicKey );
-
-//         //add root or only parent component to the allComponents, the end child component is added in following if-condition
-//         if( allComponents.length === 0 || component.businessLogic.childIds.length )
-//         {
-//           allComponents.push( component );
-//           append = true;
-//         }
-
-//       }
-//       else{
-//         component.businessLogic=JSON.parse(sessionStorage.getItem(businessLogicKey));
-//         const componentKey=parseInt(businessLogicKey, 10);
-
-//         component.displayLogic = new initializeDisplayLogic( componentKey, component.businessLogic.childIds.length !== 0 ? true : false );
-//         append = false;
-//       }
-      
-//       // added child component here to already loaded parent component
-//       if( component.businessLogic.childIds.length )
-//       {
-//           let childCnt = 0;
-//           availableSortedBusinessLogicKeys.some( (childElementKey)=>{
-//             let childComponent=populateComponentObjectsForTable(childElementKey);
-           
-//             if( businessLogicKey !== childElementKey && 
-//                 component.businessLogic.childIds.includes( childComponent.businessLogic.id ) &&
-//                 childComponent.businessLogic.parentIds.includes(component.businessLogic.id )  )
-//             {
-//               if( append )
-//               {
-//                  allComponents.push(childComponent);
-//               }
-//               else{
-//                 const index = allComponents.findIndex( (element)=>{return element.businessLogic.id === component.businessLogic.id} );
-//                 if( index === -1 )
-//                 {
-//                   console.log("getAllComponentsFromSessionStorage error: allComponents doesn't have " + component.businessLogic.name );
-//                 }
-//                 else
-//                 {
-//                   allComponents.splice( index+1, 0, childComponent);
-//                 }
-//               }
-//               childKeys.push( childElementKey );
-//               if( component.businessLogic.childIds.length === ++childCnt )
-//               {
-//                 return true;
-//               }
-//               else{
-//                 return false;
-//               }
-//             }
-//             return false;
-//           } );
-//       }
-//   } )
-
-//   return allComponents;
-// }
 
 
 // need to get all the components in sorted order from server
@@ -338,55 +174,81 @@ const getChildren=( parentComponent )=>{
  
   // setup the component structure 
   let availableComponents = [];
-  // let childKeys=[];
-  availableSortedBusinessLogicKeys.forEach( (businessLogicKey)=>
-  { 
-      // let append=false;
-      let component={};
-      let parentComponentIdx = -1;
-      
-      const displayLogicKey=parseInt(businessLogicKey, 10);
+  let unloadedComponents = [];
+  let reload = true;
 
-      component = availableComponents.find( element=>(element.displayLogic.key === displayLogicKey));
-
-      if( typeof component === 'undefined' )
-      {
-        component = populateComponentObjects( businessLogicKey );
-
-        parentComponentIdx = availableComponents.findIndex( element=>(component.businessLogic.parentIds.includes(element.businessLogic.id)));
-
-        // if parent component hasn't been loaded then skip this component
-        // if it's root component, then loaded this component
-        if( parentComponentIdx > -1 || ( parentComponentIdx === -1 && component.businessLogic.parentIds.length === 0  ) )
-        {
-          availableComponents.splice( parentComponentIdx+1, 0, component);
+  while( reload === true )
+  {
+    availableSortedBusinessLogicKeys.forEach( (businessLogicKey)=>
+    { 
+        // let append=false;
+        let component={};
+        let parentComponentIdx = -1;
         
-           // added child component here to just loaded parent component
-          if( component.businessLogic.childIds.length )
+        const displayLogicKey=parseInt(businessLogicKey, 10);
+
+        //p5 isn't loaded due to p6 isn't loaded, p6 isn't loaded due to p9 isn't loaded
+        component = availableComponents.find( element=>(element.displayLogic.key === displayLogicKey));
+
+        if( typeof component === 'undefined' )
+        {
+          component = populateComponentObjects( businessLogicKey );
+
+          parentComponentIdx = availableComponents.findIndex( element=>(component.businessLogic.parentIds.includes(element.businessLogic.id)));
+
+          // if parent component hasn't been loaded then skip this component
+          // if it's root component, then loaded this component
+          if( parentComponentIdx > -1 || ( parentComponentIdx === -1 && component.businessLogic.parentIds.length === 0  ) )
           {
-              component.businessLogic.childIds.forEach( (childBusinessLogicId)=>{
-                let childBusinessLogicKey = availableSortedBusinessLogicKeys.find( 
-                  (elementKey)=>{ return JSON.parse(sessionStorage.getItem(elementKey)).id === childBusinessLogicId } );
+            availableComponents.splice( parentComponentIdx+1, 0, component);
 
-                let childComponent= populateComponentObjects( childBusinessLogicKey ); 
+            let idx = unloadedComponents.findIndex( (unloadedComponent)=>( unloadedComponent.businessLogic.id === component.businessLogic.id));
+            if( idx > 0 )
+            {
+              unloadedComponents.splice( idx, 1 );
+            }
+          
+            // added child component here to just loaded parent component
+            if( component.businessLogic.childIds.length )
+            {   // reverse childIds so the splice would create child in ascent order
+                let reversedChildIds = component.businessLogic.childIds.reverse();
+                reversedChildIds.forEach( (childBusinessLogicId)=>{
+                  let childBusinessLogicKey = availableSortedBusinessLogicKeys.find( 
+                    (elementKey)=>{ return JSON.parse(sessionStorage.getItem(elementKey)).id === childBusinessLogicId } );
 
-                let parentComponentIdx = availableComponents.findIndex( (element)=>( element.businessLogic.id === component.businessLogic.id ) );
+                  let childComponent= populateComponentObjects( childBusinessLogicKey ); 
 
-                if( parentComponentIdx === -1 )
-                {
-                  console.log("getAllComponentsFromSessionStorage error: allComponents doesn't have " + component.businessLogic.name );
-                }
-                else
-                {
-                  availableComponents.splice( parentComponentIdx+1, 0, childComponent);
-                  component.displayLogic.childKeyIds.push(childComponent.displayLogic.key);
-                }
-                
-              } );
+                  let parentComponentIdx = availableComponents.findIndex( (element)=>( element.businessLogic.id === component.businessLogic.id ) );
+
+                  if( parentComponentIdx === -1 )
+                  {
+                    console.log("getAllComponentsFromSessionStorage error: allComponents doesn't have " + component.businessLogic.name );
+                  }
+                  else
+                  {
+                    availableComponents.splice( parentComponentIdx+1, 0, childComponent);
+                    component.displayLogic.childKeyIds.push(childComponent.displayLogic.key);
+
+                    let idx = unloadedComponents.findIndex( (unloadedComponent)=>( unloadedComponent.businessLogic.id === childComponent.businessLogic.id));
+                    if( idx > 0 )
+                    {
+                      unloadedComponents.splice( idx, 1 );
+                    }
+                  }
+                  
+                } );
+            }
           }
+          else{
+            unloadedComponents.push( component );
+          }
+            
+         
         }
-      }
-  } )
+    } )
+    reload = unloadedComponents.length === 0 ? false : true;
+  }
+ 
 
   return availableComponents.length ? availableComponents : null ;
 }
