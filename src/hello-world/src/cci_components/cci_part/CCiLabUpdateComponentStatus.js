@@ -5,7 +5,7 @@ import { useTranslation } from 'react-i18next';
 import styles from "./../../dist/css/ccilab-component-list.css"
 
 
-const UpdateComponentStatus=(props)=>{
+export const UpdateComponentStatus=(props)=>{
   // deep copy object that doesn't have function inside object
   const originComponent = JSON.parse(JSON.stringify(props.component));
 

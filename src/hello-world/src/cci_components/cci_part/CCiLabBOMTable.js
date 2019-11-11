@@ -5,6 +5,8 @@ import styles from "./../../dist/css/ccilab-component-list.css"
 import { useTranslation } from 'react-i18next';
 import {getRandomInt, tables } from "./CCiLabUtility";
 
+import {UpdateComponentStatus} from "./CCiLabUpdateComponentStatus"
+
 
 
 const BOMTableHeader=(props)=>{
@@ -18,6 +20,30 @@ const BOMTableHeader=(props)=>{
 
     let customerOrderNumber='';
 
+    let bomSignedBy={givenName: null, familyName: null}; //first name, last name
+
+    const initializeBomExtra=()=>{
+        let extra={};
+        extra.singedBy={};  //first name, family name
+        extra.recordDateTime=null;
+    
+        return extra;
+    }
+
+    const setUpdatedBy=(value, component, item)=>{
+    if( typeof component.production === 'undefined' )
+      component.bom.extra = new initializeBomExtra();
+      switch( item )
+      { case 'given-user-name':
+          component.bom.extra.singedBy.givenName=value;
+          break;
+        case 'family-user-name':
+          component.bom.extra.singedBy.familyName=value;
+          break;
+        default:
+          return;
+      }
+    }
 
     const setRootImagePath=( components )=>{
         let lImgName='';
@@ -72,12 +98,31 @@ const BOMTableHeader=(props)=>{
 
     }
 
+    const getBOMSignedPerson=( components )=>{
+        let lName={};
+        if( typeof components !== 'undefined' && components !== null)
+        {
+            rootElement = components.find( (element)=> { return element.businessLogic.parentIds.length === 0 ; } )
+        
+            if( typeof rootElement !== 'undefined')
+            {
+                if( typeof rootElement.bom.extra !== 'undefined')
+                {
+                    lName = (rootElement.bom.extra !==null ) ? rootElement.bom.extra.signedBy : 'undefined';
+                }
+            }
+        }
+      
+        return lName;
+    }
+
     if( typeof rootElement === 'undefined'  )
     {
         componentList = props.components;
         imgName = setRootImagePath(componentList);
         customerOrderName = getCustomerName(componentList);
         customerOrderNumber= getOrderNumber(componentList);
+        bomSignedBy = getBOMSignedPerson(componentList);
     }
     else
     {
@@ -92,7 +137,14 @@ const BOMTableHeader=(props)=>{
                     <th className='align-middle' >{t('component:th-product-name')}: </th>
                     <td className='align-middle' colSpan='2'> {(typeof rootElement !== 'undefined' && rootElement.businessLogic.name !== 'add-part') ? rootElement.businessLogic.name : `${t('component:part-name')}`}</td>
                     <th className='align-middle'>{t('component:th-designed-by')}:</th>
-                    <td className='align-middle' colSpan='2'>first-name, last-name</td>
+                    <td className='align-middle' colSpan='2'>
+                        <UpdateComponentStatus 
+                        title='updated-by-user'
+                        value={bomSignedBy}
+                        component={rootElement}
+                        handler={setUpdatedBy}
+                        updateComponent={props.updateComponent}/>
+                    </td>
                     <th className='align-middle text-center' colSpan='2'>{t('component:th-product-image')}</th>
                 </tr>
            
