@@ -202,10 +202,10 @@ const getChildren=( parentComponent )=>{
           {
             availableComponents.splice( parentComponentIdx+1, 0, component);
 
-            let idx = unloadedComponents.findIndex( (unloadedComponent)=>( unloadedComponent.businessLogic.id === component.businessLogic.id));
-            if( idx >= 0 )
+            let idx1 = unloadedComponents.findIndex( (unloadedComponent)=>( unloadedComponent.businessLogic.id === component.businessLogic.id));
+            if( idx1 >= 0 )
             {
-              unloadedComponents.splice( idx, 1 );
+              unloadedComponents.splice( idx1, 1 );
             }
           
             // added child component here to just loaded parent component
@@ -229,10 +229,10 @@ const getChildren=( parentComponent )=>{
                     availableComponents.splice( parentComponentIdx+1, 0, childComponent);
                     component.displayLogic.childKeyIds.push(childComponent.displayLogic.key);
 
-                    let idx = unloadedComponents.findIndex( (unloadedComponent)=>( unloadedComponent.businessLogic.id === childComponent.businessLogic.id));
-                    if( idx >= 0 )
+                    let idx2 = unloadedComponents.findIndex( (unloadedComponent)=>( unloadedComponent.businessLogic.id === childComponent.businessLogic.id));
+                    if( idx2 >= 0 )
                     {
-                      unloadedComponents.splice( idx, 1 );
+                      unloadedComponents.splice( idx2, 1 );
                     }
                   }
                   
@@ -1591,8 +1591,12 @@ export class CCiLabComponentList extends Component {
       let componentListElement = document.getElementById('cciLabComponentListID')
       if( !this.state.visible )
       {
-        tableElement.style.visibility = 'hidden';
-        // tableElement.style.display = 'none';
+        if( tableElement !== null && typeof tableElement.style !== 'undefined')
+        {
+          tableElement.style.visibility = 'hidden';
+          // tableElement.style.display = 'none';
+        }
+        
       }
       else{
        componentListElement.style.visibility ='hidden'
@@ -1607,7 +1611,10 @@ export class CCiLabComponentList extends Component {
 
       if( !this.state.visible )
       {
-        tableElement.style.visibility = 'visible';
+        if( tableElement !== null && typeof tableElement.style !== 'undefined')
+        {
+          tableElement.style.visibility = 'visible';
+        }
       }
       else{
         componentListElement.style.visibility ='visible'

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import styles from "./../../dist/css/ccilab-component-list.css"
 
 
@@ -20,29 +20,32 @@ const BOMTableHeader=(props)=>{
 
     let customerOrderNumber='';
 
-    let bomSignedBy={givenName: null, familyName: null}; //first name, last name
+    let bomApprovedBy={givenName:'', familyName:''}; //first name, last name
+    const [approvedName, setApprovedName] = useState( bomApprovedBy )
 
     const initializeBomExtra=()=>{
         let extra={};
-        extra.singedBy={};  //first name, family name
+        extra.approvedBy=bomApprovedBy;  //first name, family name
         extra.recordDateTime=null;
     
         return extra;
     }
 
     const setUpdatedBy=(value, component, item)=>{
-    if( typeof component.production === 'undefined' )
-      component.bom.extra = new initializeBomExtra();
-      switch( item )
-      { case 'given-user-name':
-          component.bom.extra.singedBy.givenName=value;
-          break;
+        let extra = JSON.parse(sessionStorage.getItem(`${component.displayLogic.key}_${component.businessLogic.name}_bom_extra`)) || initializeBomExtra();
+        switch( item )
+        { case 'given-user-name':
+           extra.approvedBy.givenName=value;
+            break;
         case 'family-user-name':
-          component.bom.extra.singedBy.familyName=value;
-          break;
+            extra.approvedBy.familyName=value;
+            break;
         default:
-          return;
-      }
+            return;
+        }
+
+        setApprovedName(extra.approvedBy);
+        sessionStorage.setItem( `${component.displayLogic.key}_${component.businessLogic.name}_bom_extra`, JSON.stringify( extra ));
     }
 
     const setRootImagePath=( components )=>{
@@ -98,7 +101,7 @@ const BOMTableHeader=(props)=>{
 
     }
 
-    const getBOMSignedPerson=( components )=>{
+    const getBOMApprovedAuthor=( components )=>{
         let lName={};
         if( typeof components !== 'undefined' && components !== null)
         {
@@ -106,9 +109,10 @@ const BOMTableHeader=(props)=>{
         
             if( typeof rootElement !== 'undefined')
             {
-                if( typeof rootElement.bom.extra !== 'undefined')
+                let extra = JSON.parse(sessionStorage.getItem(`${rootElement.displayLogic.key}_${rootElement.businessLogic.name}_bom_extra`)) || initializeBomExtra();
+                if( typeof extra !== 'undefined')
                 {
-                    lName = (rootElement.bom.extra !==null ) ? rootElement.bom.extra.signedBy : 'undefined';
+                    lName = (typeof extra.approvedBy !== 'undefined' && extra.approvedBy !==null ) ? extra.approvedBy : approvedName;
                 }
             }
         }
@@ -122,7 +126,7 @@ const BOMTableHeader=(props)=>{
         imgName = setRootImagePath(componentList);
         customerOrderName = getCustomerName(componentList);
         customerOrderNumber= getOrderNumber(componentList);
-        bomSignedBy = getBOMSignedPerson(componentList);
+        bomApprovedBy = getBOMApprovedAuthor(componentList);
     }
     else
     {
@@ -140,7 +144,7 @@ const BOMTableHeader=(props)=>{
                     <td className='align-middle' colSpan='2'>
                         <UpdateComponentStatus 
                         title='updated-by-user'
-                        value={bomSignedBy}
+                        value={bomApprovedBy}
                         component={rootElement}
                         handler={setUpdatedBy}
                         updateComponent={props.updateComponent}/>
