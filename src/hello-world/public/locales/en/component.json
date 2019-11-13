@@ -18,7 +18,7 @@
     "material": "Raw Material",
     "description": "Description",
     "note": "Note",
-    "updated-by-user": "logged by this user:",
+    "updated-by-user": "Input user name:",
     "given-user-name": "Given Name",
     "family-user-name": "Family Name",
     "actual-quantity-per-shift": "Enter the actual quantity produced/consumed by the shift",

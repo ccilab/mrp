@@ -5,7 +5,7 @@ import styles from "./../../dist/css/ccilab-component-list.css"
 import { useTranslation } from 'react-i18next';
 import {getRandomInt, tables } from "./CCiLabUtility";
 
-import {UpdateComponentStatus} from "./CCiLabUpdateComponentStatus"
+import {UserNameInput} from "./CCiLabUserNameInput"
 
 
 
@@ -142,7 +142,7 @@ const BOMTableHeader=(props)=>{
                     <td className='align-middle' colSpan='2'> {(typeof rootElement !== 'undefined' && rootElement.businessLogic.name !== 'add-part') ? rootElement.businessLogic.name : `${t('component:part-name')}`}</td>
                     <th className='align-middle'>{t('component:th-designed-by')}:</th>
                     <td className='align-middle' colSpan='2'>
-                        <UpdateComponentStatus 
+                        <UserNameInput 
                         title='updated-by-user'
                         value={bomApprovedBy}
                         component={rootElement}

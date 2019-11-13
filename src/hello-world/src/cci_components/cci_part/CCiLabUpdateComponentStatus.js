@@ -5,6 +5,7 @@ import { useTranslation } from 'react-i18next';
 import styles from "./../../dist/css/ccilab-component-list.css"
 
 import { dividerCCS } from "./CCiLabUtility";
+import {UserNameInput} from "./CCiLabUserNameInput"
 
 export const UpdateComponentStatus=(props)=>{
   // deep copy object that doesn't have function inside object
@@ -19,40 +20,15 @@ export const UpdateComponentStatus=(props)=>{
   let isRequired=false;
   let tooltipOnMode= ['click','hover'];
   let tooltipPosition='top left';
-  let tooltip=t(`component:${props.title}`)
+  let tooltip=t(`component:${props.title}`);
 
   let inputName=props.title;
 
   let inputCheckbox= props.title.includes('-completed') ? true:false;
 
-  let createUserInput = (props.title === 'updated-by-user') ? true:false;
-
   let quantityInputElement = React.createRef();
   let shiftQuantityInput=false;
   let requiredQty;
-
-  let name1Name='given-user-name';
-  let name1InputId='#' + name1Name;
-  let name1Value=inputValue.givenName;
-  let name1Placeholder=t(`component:${name1Name}`);
-
-  let name2Name='family-user-name';
-  let name2InputId='#' + name2Name;
-  let name2Value=inputValue.familyName;
-  let name2Placeholder=t(`component:${name2Name}`);
-
-  if( i18n.language.includes('zh'))
-  {
-     name1Name='family-user-name';
-     name1InputId='#' + name1Name;
-     name1Value=inputValue.givenName;
-     name1Placeholder=t(`component:${name1Name}`);
-
-     name2Name='given-user-name';
-     name2InputId='#' + name2Name;
-     name2Value=inputValue.familyName;
-     name2Placeholder=t(`component:${name2Name}`);
-  }
 
   if( props.title.includes('team-name') )
   {
@@ -133,16 +109,8 @@ export const UpdateComponentStatus=(props)=>{
           props.handler(e.target.checked, props.component);
         }
         else {
-          if( e.target.name.includes('-user-name') )
-          {
-            console.log("UpdateComponentStatus - updateValue: " + e.target.name + ': ' + e.target.value);
-            props.handler(e.target.value, props.component, e.target.name );
-          }
-          else {
             console.log("UpdateComponentStatus - updateValue: " + e.target.value);
             props.handler(e.target.value, props.component);
-          }
-
         }
 
         updateComponent(props);
@@ -178,49 +146,7 @@ export const UpdateComponentStatus=(props)=>{
   return (
     <div className='d-flex justify-content-between cursor-pointer'
          style={{backgroundColor: `${styles.cciBgColor}`}}>
-        { (createUserInput) ?
-          <Popup
-            trigger={
-              <div className='d-flex justify-content-between m-0 py-1 border-0'>
-                  <input className={`${inputClassName}`}
-                         id={name1InputId}
-                         type={`${inputType}`}
-                         name={name1Name}
-                         style={inputStyle}
-                         value={name1Value}
-                         placeholder={name1Placeholder}
-                         onChange={updateValue(props)}
-                         onClose={updateValue(props)}
-                         onInput={ (e) =>{ setInput(e.target.value) }}/>
-
-                
-
-                  <input  className={`${inputClassName}`}
-                          id={name2InputId}
-                          type={`${inputType}`}
-                          name={name2Name}
-                          style={inputStyle}
-                          value={name2Value}
-                          placeholder={name2Placeholder}
-                          onChange={updateValue(props)}
-                          onClose={updateValue(props)}
-                          onInput={ (e) =>{ setInput(e.target.value) }}/>
-              </div>
-            }
-            id={`${props.component.displayLogic.key}-tooltip`}
-              position={tooltipPosition}
-              closeOnDocumentClick
-              on={tooltipOnMode}
-              arrow={true}
-              arrowStyle={{backgroundColor: 'white'}}
-              mouseLeaveDelay={0}
-              mouseEnterDelay={0}
-              contentStyle={{  padding: '0' }}>
-              <div className='font-weight-normal text-nowrap m-0 p-1'>
-                {t(`component:${props.title}`)}
-              </div>
-          </Popup>
-          :
+        { 
           <Popup
                 trigger={
                     <div className='d-inline-flex m-0 py-1 border-0'>
@@ -446,7 +372,7 @@ export const UpdateStatus=(props)=>{
               <hr className='my-0 bg-info'
                   style={{borderStyle:'insert', borderWidth: '0.08em', borderColor:`${styles.cciInfoBlue}`}}/>
 
-              <UpdateComponentStatus
+              <UserNameInput
                 title='updated-by-user'
                 value={props.component.production.updatedBy}
                 component={props.component}
