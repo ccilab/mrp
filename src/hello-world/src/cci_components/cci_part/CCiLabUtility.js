@@ -18,13 +18,6 @@ export const dividerCCS = {
 }
 
 
-export const dividerCCS = {
-    hDividerClassName : 'm-0 bg-info',
-    hDividerStyle : {width: '100%', height: '1px'},
-    vDividerStyle : {width:'2px', height:'auto'}
-}
-
-
 const isElementInViewportHeight = (rect) => {
     return (
         rect.top >= 0 &&
