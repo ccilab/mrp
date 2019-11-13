@@ -4,10 +4,11 @@ import { useTranslation } from 'react-i18next';
 
 import {UpdateStatus} from './CCiLabUpdateComponentStatus.js';
 import {creatHiddenImgInputTag} from "../file_save/CCiLabLocalFileAccess";
+// import { tables } from "./CCiLabUtility";
 
 
 import styles from './../../dist/css/ccilab-component.css';
-import './../../dist/css/popup-menu.css';
+// import './../../dist/css/popup-menu.css';
 import {SetupBOM} from './CCiLabSetupComponentBOM';
 import {SetupPDP } from './CCiLabSetupPDP';
 import {SetupIRF} from './CCiLabSetupIR';
@@ -299,12 +300,14 @@ class CCiLabComponent extends Component {
         this.props.deleteComponent(this.currentComponent);
         CCiLabComponent.inlineMenu.itemId='undefined';
         CCiLabComponent.inlineMenu.cmd = 'select';
+        // this.props.updateTableHandler();
     };
 
     addComponent = () =>{
       this.props.addComponent(this.currentComponent);
       CCiLabComponent.inlineMenu.itemId='undefined';
       CCiLabComponent.inlineMenu.cmd = 'select';
+      // this.props.updateTableHandler();
     }
     showOrHideChildren = (isShow) =>{
       this.props.showOrHideChildren(this.currentComponent, isShow)
@@ -328,6 +331,7 @@ class CCiLabComponent extends Component {
           this.props.moveComponentHandler(CCiLabComponent.inlineMenu.itemId, this.currentComponent);
           CCiLabComponent.inlineMenu.itemId='undefined';
           CCiLabComponent.inlineMenu.cmd = 'select';
+          // this.props.updateTableHandler();
         }
       }
      }
@@ -390,6 +394,7 @@ class CCiLabComponent extends Component {
     updateImage=()=>{
       sessionStorage.setItem( `${this.currentComponent.displayLogic.key}_${this.currentComponent.businessLogic.name}_businessLogic`, JSON.stringify( this.currentComponent.businessLogic ));
       this.setState({updateImg:true});
+      this.props.updateTableHandler();
     };
 
     render=()=>{
@@ -454,7 +459,7 @@ class CCiLabComponent extends Component {
 
         let expendableIconStyle =  {'display':'inline','left': `${this.expendableIconLeft}rem`, 'visibility': ( `${this.children.length}` !== '0'  ) ? 'visible' : 'hidden'}
 
-        let inlineMenuIconVisibility =  ( this.currentComponent.displayLogic.selected !== 0 ) ? 'visible' : 'hidden';
+        // let inlineMenuIconVisibility =  ( this.currentComponent.displayLogic.selected !== 0 ) ? 'visible' : 'hidden';
 
         // this.componentName = this.props.component.businessLogic.name;
         console.log("CCiLabComponent: - render() - component name: "+this.componentName);
@@ -481,17 +486,6 @@ class CCiLabComponent extends Component {
               <div id={`${this.currentComponent.displayLogic.key}`} className={`${componentBase}`} style={{'left':`${this.leftOffset}rem`}}>
                 {/* a badge to show menu to move/copy/delete/edit component, only sole children component has move and copy option */}
                 {/* https://github.com/yjose/reactjs-popup/blob/master/docs/src/examples/Demo.js */}
-                { this.props.isSetupBOM ?
-                    <MenuAddComponent
-                      component={this.currentComponent}
-                      style={ {'visibility': `${inlineMenuIconVisibility}`}}
-                      isDraggable={draggableSetting}
-                      addComponentHandler={this.addComponent}
-                      selectedComponentHandler={this.componentSelected}
-                    />
-                    :
-                    null
-                }
 
                 {/* show collapse icon 'v' for all expendable components,
                   show expendable icon '>' for those components have children except the top component
@@ -558,24 +552,37 @@ class CCiLabComponent extends Component {
                     <SetupBOM
                       component={this.currentComponent}
                       updateSubTitle={this.props.changeMRPTitle}
+                      updateTable={this.props.updateTableHandler}
                       updateComponent={this.props.updateComponentHandler}/>
+                    
+                      <SetupPDP component={this.currentComponent} updateSubTitle={this.props.changeMRPTitle}  updateTable={this.props.updateTableHandler}/>
+                      <SetupIRF component={this.currentComponent} updateSubTitle={this.props.changeMRPTitle}  updateTable={this.props.updateTableHandler}/>
+                      <SetupOP component={this.currentComponent} updateSubTitle={this.props.changeMRPTitle}  updateTable={this.props.updateTableHandler}/>
+                      
+                      { this.props.isSetupBOM ?
+                          <MenuAddComponent
+                            component={this.currentComponent}
+                            // style={ {'visibility': `${inlineMenuIconVisibility}`}}
+                            isDraggable={draggableSetting}
+                            addComponentHandler={this.addComponent}
+                            selectedComponentHandler={this.componentSelected}
+                          />
+                          :
+                          null
+                      }
                       {  ( draggableSetting === 'true') ?
                         <span>
-                           <MenuMoveComponent
-                            component={this.currentComponent}
-                            moveStartHandler={ this.moveStart }/>
                           <MenuDeleteComponent
                             component={this.currentComponent}
                             deleteComponentHandler={this.deleteComponent}/>
+                            <MenuMoveComponent
+                              component={this.currentComponent}
+                              moveStartHandler={ this.moveStart }/>
                         </span>
 
                           :
                           null
                       }
-                      <SetupPDP component={this.currentComponent} updateSubTitle={this.props.changeMRPTitle}/>
-                      <SetupIRF component={this.currentComponent} updateSubTitle={this.props.changeMRPTitle}/>
-                      <SetupOP component={this.currentComponent} updateSubTitle={this.props.changeMRPTitle}/>
-
                   </span>
                 }
                 </div>

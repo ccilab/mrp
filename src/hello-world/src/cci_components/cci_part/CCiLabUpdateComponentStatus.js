@@ -4,8 +4,9 @@ import { useTranslation } from 'react-i18next';
 
 import styles from "./../../dist/css/ccilab-component-list.css"
 
+import { dividerCCS } from "./CCiLabUtility";
 
-const UpdateComponentStatus=(props)=>{
+export const UpdateComponentStatus=(props)=>{
   // deep copy object that doesn't have function inside object
   const originComponent = JSON.parse(JSON.stringify(props.component));
 
@@ -13,7 +14,7 @@ const UpdateComponentStatus=(props)=>{
   let inputValue = props.value;
   let inputClassName = 'text-primary m-0 p-0 cursor-pointer border-0';
   let inputPlaceholder=t(`component:${props.title}`);
-  let inputStyle={'backgroundColor': `${styles.cciBgColor}`};
+  let inputStyle={'backgroundColor': `${styles.cciBgColor}`, 'width': '8em'};
   let inputType='text';
   let isRequired=false;
   let tooltipOnMode= ['click','hover'];
@@ -180,7 +181,7 @@ const UpdateComponentStatus=(props)=>{
         { (createUserInput) ?
           <Popup
             trigger={
-              <div className='d-flex flex-column m-0 py-1 border-0'>
+              <div className='d-flex justify-content-between m-0 py-1 border-0'>
                   <input className={`${inputClassName}`}
                          id={name1InputId}
                          type={`${inputType}`}
@@ -191,6 +192,8 @@ const UpdateComponentStatus=(props)=>{
                          onChange={updateValue(props)}
                          onClose={updateValue(props)}
                          onInput={ (e) =>{ setInput(e.target.value) }}/>
+
+                
 
                   <input  className={`${inputClassName}`}
                           id={name2InputId}
@@ -276,39 +279,42 @@ export const UpdateStatus=(props)=>{
   let quantityValue;
   let producedValue=0;
 
-  if( typeof props.component.production !== 'undefined' &&
-      props.component.production.shiftQty > 0 )
-  {
-    producedValue = props.component.production.shiftQty;
+  // if( typeof props.component.production !== 'undefined' &&
+  //     props.component.production.shiftQty > 0 )
+  // {
+  //   producedValue = props.component.production.shiftQty;
 
-    if( props.component.businessLogic.parentIds.length === 0 )
-    {
-      quantityValue = props.component.bom.core.requiredQty !== null ? props.component.bom.core.requiredQty : 'undefined';
-    }
-    else
-    {
-       quantityValue = props.component.bom.core.requiredQtyPerShift !== null ? props.component.bom.core.requiredQtyPerShift : 'undefined';
-    }
-  }
-  else{
-    if (typeof props.component.bom !== 'undefined' )
-    {
-      // root component
-      if( props.component.businessLogic.parentIds.length === 0 )
-          quantityValue = props.component.bom.core.requiredQty !== null ? props.component.bom.core.requiredQty : 'undefined';
-      else
-      {
-         if( props.component.bom.core !== null && parseInt(props.component.bom.core.requiredQtyPerShift, 10 ) )
-         {
-            quantityValue = props.component.bom.core.requiredQtyPerShift !== null ?  props.component.bom.core.requiredQtyPerShift : 'undefined';
-         }
-         else
-         {
-            quantityValue = 'undefined';
-         }
-      }
-    }
-  };
+  //   if( props.component.businessLogic.parentIds.length === 0 )
+  //   {
+  //     quantityValue = props.component.bom.core.requiredQty !== null ? props.component.bom.core.requiredQty : 'undefined';
+  //   }
+  //   else
+  //   {
+  //      quantityValue = props.component.bom.core.requiredQtyPerShift !== null ? props.component.bom.core.requiredQtyPerShift : 'undefined';
+  //   }
+  // }
+  // else{
+  //   if (typeof props.component.bom !== 'undefined' )
+  //   {
+  //     // root component
+  //     if( props.component.businessLogic.parentIds.length === 0 )
+  //     {
+  //        quantityValue = ( typeof props.component.bom.core !== 'undefined' && props.component.bom.core.unitQty !== null ) ? props.component.bom.core.unitQty : 'undefined';
+  //     }
+         
+  //     else
+  //     {
+  //        if( props.component.bom.core !== null && parseInt(props.component.bom.core.requiredQtyPerShift, 10 ) )
+  //        {
+  //           quantityValue = props.component.bom.core.requiredQtyPerShift !== null ?  props.component.bom.core.requiredQtyPerShift : 'undefined';
+  //        }
+  //        else
+  //        {
+  //           quantityValue = 'undefined';
+  //        }
+  //     }
+  //   }
+  // }
 
   const initializeProduction=()=>{
     let production={};
@@ -415,7 +421,15 @@ export const UpdateStatus=(props)=>{
           arrowStyle={{backgroundColor: `${styles.cciBgColor}`}}>
           {close => (
             <div className={'bg-info d-flex flex-column'} >
-              <div className={'bg-info d-flex'}>
+              <div className={'bg-info d-flex justify-content-between'}>
+                <UpdateComponentStatus
+                  title='shift'
+                  value={props.component.production.shift}
+                  component={props.component}
+                  handler={setShiftName}
+                  updateComponent={props.updateComponent}/>
+
+                <hr className={dividerCCS.hDividerClassName }  style={dividerCCS.vDividerStyle}/>    
                 <UpdateComponentStatus
                   title='team-name'
                   value={props.component.production.teamName}
@@ -428,15 +442,6 @@ export const UpdateStatus=(props)=>{
                     style={{backgroundColor: `${styles.cciBgColor}`}}
                     onClick={ close }> </a>
               </div>
-              <hr className='my-0 bg-info'
-                  style={{borderStyle:'insert', borderWidth: '0.08em', borderColor:`${styles.cciInfoBlue}`}}/>
-
-              <UpdateComponentStatus
-                  title='shift'
-                  value={props.component.production.shift}
-                  component={props.component}
-                  handler={setShiftName}
-                  updateComponent={props.updateComponent}/>
 
               <hr className='my-0 bg-info'
                   style={{borderStyle:'insert', borderWidth: '0.08em', borderColor:`${styles.cciInfoBlue}`}}/>

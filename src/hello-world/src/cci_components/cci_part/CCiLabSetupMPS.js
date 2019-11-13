@@ -4,7 +4,7 @@ import { useTranslation } from 'react-i18next';
 
 import styles from "./../../dist/css/ccilab-component-list.css"
 
-import { isValidString, isValidValue } from "./CCiLabUtility";
+import { isValidString, isValidValue, getRandomInt } from "./CCiLabUtility";
 
 
 const SetupComponentMPS=(props)=>{
@@ -350,7 +350,7 @@ export const SetupMPS=(props)=>{
     return (
       demandDateArray.map( ( item )=>{
         let id = demandDateArray.indexOf(item);
-        return renderDemandDateInput( Math.random(), id, item[0], item[1], id ===  demandDateArray.length - 1 ? true : false )
+        return renderDemandDateInput( getRandomInt(100), id, item[0], item[1], id ===  demandDateArray.length - 1 ? true : false )
       } )
     )
   }

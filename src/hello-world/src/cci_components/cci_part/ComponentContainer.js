@@ -2,66 +2,101 @@ import 'raf/polyfill'
 // import 'core-js/es6/set'
 // import 'core-js/es6/map'
 import React, { Component } from "react";
-import CCiLabComponentList from "./CCiLabComponentList";
-import {detectOSVersion} from "./CCiLabUtility";
+import {CCiLabComponentList} from "./CCiLabComponentList";
+// eslint-disable-next-line
+import {SysInfo, tables, getRandomInt} from "./CCiLabUtility";
+import BOMTable from "./CCiLabBOMTable"
+import MPSTable from "./CCiLabMPSTable"
 
 
 
 class ComponentContainer extends Component {
-  state = {  width: 0 };
+  
 
-  osVersion = detectOSVersion();
+  state = {  width: 0 ,
+             tableKey: getRandomInt(10),
+            //  listKey: getRandomInt(10),
+             show: tables.sysInfo}; //'system-info'
 
-  updateDimensions=()=>{
-    this.setState({width:`${window.innerWidth}`});
+             
+  currentTableType = this.state.show;
+
+  componentList = null;
+  component = null;
+
+  getComponentList=(componentListSrc)=>{
+    this.componentList=componentListSrc;
+  }
+
+
+  updateDimensions=( listWidth )=>{
+    this.setState({width: listWidth});  
     console.log("ComponentContainer - updateDimensions width: " + this.state.width);
   }
 
-  componentDidMount =()=> {
-  
+  //set selected component from bom table then update list
+  getComponent=(selectedFromTable)=>{
+    this.component = selectedFromTable;
+    // this.setState({listKey: getRandomInt(10)});
+  }
+
+  updateTableType=(tableType)=>{
+     
+      if( typeof tableType !== 'undefined')
+      {
+        this.currentTableType = tableType;
+        this.setState( {show: tableType} );
+      }
+      else
+      {
+        this.setState({tableKey: getRandomInt(10)});
+        // this.setState( {show: this.currentTableType} );
+      }
+    
+     
+
+      // console.log("ComponentContainer - state:show : " + JSON.stringify(this.state.show) );
+      
+      // console.log("ComponentContainer - updateTableType : " + this.currentTableType );
+      // console.log("ComponentContainer -  tableKey: " +  this.tableKey.toString() );
   }
 
 
-  componentWillMount=()=>{
-
+    
+  renderTables=(state)=>{
+    return(
+      <div className={'m-2'}>
+      {
+        {
+        'sysInfoTbl' : <SysInfo/>,
+        'mpsTable' :  <MPSTable  key = {this.state.tableKey} components={this.componentList} />,
+        'bomTable' :  <BOMTable  key = {this.state.tableKey} components={this.componentList} setComponent={this.component} />,  //updateKey={this.tableKey}
+        'productionOrderTable' : null,
+        'purchaseOrderTable' : null,
+        'materialPlanTable' : null,
+        'assetUsageTable' : null,
+        default: null
+        }[state.show]
+      }
+      </div>
+    )
   }
+    
 
-
-
+// key={this.state.key} key={this.state.listKey}
   render () {
     return (
-      <div className={`d-flex flex-row`}> 
-        <div>
-            <CCiLabComponentList />
+      <div  className={`d-flex flex-row`}> 
+        <div style={{width: this.state.width===0 ? 'auto' : `${this.state.width}px`}}>
+            <CCiLabComponentList 
+                                  updateTableHandler={this.updateTableType}
+                                  updateTableSize={this.updateDimensions}
+                                  currentTableId={this.currentTableType}
+                                  showSelectedComponent={this.getComponent}
+                                  setComponents={this.getComponentList} />
         </div>     
 
-
-        <ul>
-          <div>  window.screen.width width is :   {window.screen.width} </div>
-
-          <div > window.innerWidth is: {window.innerWidth }; </div>
-
-          <div> documentElement.clientWidth is: {document.documentElement.clientWidth}</div> 
-
-          <div > window.innerHeight is: {window.innerHeight}</div>
-
-          <div> documentElement.clientHeight is: {document.documentElement.clientHeight}</div>
-
-          <div> Browser is: {this.osVersion.browser}</div>
-
-          <div> Browser version: {this.osVersion.browserMajorVersion}</div>
-
-          <div> OS version: {this.osVersion.os} {this.osVersion.osVersion} major: {this.osVersion.osMajorVersion}</div>
-
-          <div> Browser font size: {this.state.fontSize}</div>
-
-          <div> Language: {window.navigator.language} </div>
-
-          <div> Languages: {window.navigator.languages[0]}, 
-                            {window.navigator.languages[1]}, 
-                            {window.navigator.languages[2]},
-                            {window.navigator.languages[3]} </div>
-        </ul>
+        {this.renderTables(this.state)}
 
       </div>
     );

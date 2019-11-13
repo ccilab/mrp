@@ -7,5 +7,9 @@
     "subTitle-Progress-status" : "Status - Remaining Time",
     "remaining-time-unit": "day",
     "show-setup-MRP" : "Setup MRP",
-    "show-progress" : "Show production progress"
+    "show-progress" : "Show production progress",
+    "bom-table" : "BOM Report",
+    "mps-table" : "MPS Report",
+    "sys-table" : "System Info"
+
 }

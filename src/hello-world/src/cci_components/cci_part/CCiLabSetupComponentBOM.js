@@ -200,6 +200,8 @@ const initializeBOMCore=()=>{
    core.partNumber=null;
    core.unitQty=null;
    core.unitOfMeasure=''; // may doesn't have unit
+   core.description='';
+   core.note='';
   //  core.requiredQty= null; //required quantity of component/part
   //  core.startDate=null;
   //  core.completeDate=null;
@@ -245,10 +247,13 @@ export const SetupBOM=(props)=>{
 
    // component.displayLogic.inlineMenuEnabled needs set to true
   const saveValidBOMEntry=( component )=>{
+      console.log("SetupBOM - saveValidBOMEntry:  ");
+  
       CanEnableInlineMenu( component );
       if( component.displayLogic.inlineMenuEnabled )
       {
         props.updateComponent(originComponent, component);
+       
       }
 
       // update component name
@@ -261,13 +266,22 @@ export const SetupBOM=(props)=>{
               sessionStorage.setItem( `${component.displayLogic.key}_${component.businessLogic.name}_pdp`, JSON.stringify( component.pdp ));
               sessionStorage.removeItem( `${component.displayLogic.key}_${originComponent.businessLogic.name}_irf`);
               sessionStorage.setItem( `${component.displayLogic.key}_${component.businessLogic.name}_irf`, JSON.stringify( component.irf ));
+
+              sessionStorage.removeItem( `${component.displayLogic.key}_${originComponent.businessLogic.name}_op`);
+              sessionStorage.setItem( `${component.displayLogic.key}_${component.businessLogic.name}_op`, JSON.stringify( component.operation ));
+
               sessionStorage.removeItem( `${component.displayLogic.key}_${originComponent.businessLogic.name}_bom_core`);
+              sessionStorage.setItem( `${component.displayLogic.key}_${component.businessLogic.name}_bom_core`, JSON.stringify( component.bom.core ));
+
               sessionStorage.removeItem(`${props.component.displayLogic.key}_${originComponent.businessLogic.name}_businessLogic`);
               sessionStorage.setItem( `${component.displayLogic.key}_${component.businessLogic.name}_businessLogic`, JSON.stringify( component.businessLogic ));
           }
-
-          sessionStorage.setItem( `${component.displayLogic.key}_${component.businessLogic.name}_bom_core`, JSON.stringify( component.bom.core ));
+          else{
+             sessionStorage.setItem( `${component.displayLogic.key}_${component.businessLogic.name}_bom_core`, JSON.stringify( component.bom.core ))
       }
+         ;
+      }
+      props.updateTable();
   }
 
 
@@ -323,6 +337,8 @@ export const SetupBOM=(props)=>{
       component.bom = new initializeBOM( component );
 
     component.bom.core.unitOfMeasure=unitOfMeasure;
+
+    saveValidBOMEntry(component);
   }
 
 

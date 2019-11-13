@@ -1,4 +1,22 @@
+import React from 'react';
+
 // http://exploringjs.com/es6/ch_modules.html#sec_importing-exporting-details
+export const tables = {
+    sysInfo: 'sysInfoTbl',
+    mps: 'mpsTable',
+    bom: 'bomTable',
+    productionOrder: 'productionOrderTable',
+    purchaseOrder: 'purchaseOrderTable',
+    materialOrder:  'materialPlanTable',
+    assetUsage:  'assetUsageTable'
+  }
+  
+export const dividerCCS = {
+    hDividerClassName : 'm-0 bg-info',
+    hDividerStyle : {width: '100%', height: '1px'},
+    vDividerStyle : {width:'2px', height:'auto'}
+}
+
 
 export const dividerCCS = {
     hDividerClassName : 'm-0 bg-info',
@@ -99,6 +117,10 @@ export  const isValidValue=(valueToCheck)=>{
     return rt;
   };
 
+
+  export const getRandomInt=(max)=>{
+    return Math.floor(Math.random() * Math.floor(max));
+  }
 
   //http://jsfiddle.net/ChristianL/AVyND/
   //  const detectBrowserMajorVersion = () =>{
@@ -277,6 +299,74 @@ export  const detectOSVersion = () =>{
       };
       return jscd;
   }
+
+  export const SysInfo=()=>{
+    let osVersion = detectOSVersion();
+    return (
+        <div  className='table-responsive-sm' >
+            <table className='table table-bordered table-striped'>
+                <tbody>
+                <tr>
+                    <th className='align-middle'>  window.screen.width width is: </th>
+                    <th  className='align-middle'>{window.screen.width} </th>
+                </tr>
+                
+                <tr>
+                    <th className='align-middle'>  window.innerWidth is view port width:  </th>
+                    <th  className='align-middle'>{window.innerWidth } </th>
+                </tr>
+
+                <tr>
+                    <th className='align-middle'>  documentElement.clientWidth is:  </th>
+                    <th  className='align-middle'>{document.documentElement.clientWidth} </th>
+                </tr>
+
+                <tr>
+                    <th className='align-middle'>  window.innerHeight is view port height:  </th>
+                    <th  className='align-middle'>{window.innerHeight} </th>
+                </tr>
+
+                <tr>
+                    <th className='align-middle'>  documentElement.clientHeight is:  </th>
+                    <th  className='align-middle'>{document.documentElement.clientHeight} </th>
+                </tr>
+
+                <tr>
+                    <th className='align-middle'>  Browser is:  </th>
+                    <th  className='align-middle'>{osVersion.browser}</th>
+                </tr>
+
+                <tr>
+                    <th className='align-middle'>   Browser version:   </th>
+                    <th  className='align-middle'>{osVersion.browserMajorVersion}</th>
+                </tr>
+
+                <tr>
+                    <th className='align-middle'>  OS version (major):   </th>
+                    <th  className='align-middle'>{osVersion.os} {osVersion.osVersion} ({osVersion.osMajorVersion})</th>
+                </tr>
+
+                <tr>
+                    <th className='align-middle'> Current browser language:   </th>
+                    <th  className='align-middle'>{window.navigator.language}</th>
+                </tr>
+
+                <tr>
+                    <th className='align-middle'> Added browser languages:    </th>
+                    <th className='align-middle text-wrap'>{window.navigator.languages.map((item) => (item=`${item}, `))}</th>
+                </tr>
+                </tbody>
+            </table>
+       
+       </div>
+    )
+  }
+
+
+
+
+
+
 
 // getTextWidth("hello there!", "bold 12pt arial")
 // return unit CSS px - 96css is 1 inch

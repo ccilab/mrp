@@ -7,11 +7,11 @@ import React, { Component } from "react";
 
 import styles from "./../../dist/css/ccilab-component-list.css"
 
-import './../../dist/css/popup-menu.css'
+//import './../../dist/css/popup-menu.css'
 
 import CCiLabComponent from "./CCiLabComponent";
 import DropComponentWarningModal from "./CCiLabDropComponentCheckFailedModal";
-import { setListHeight, setListWidth, getTextRect} from "./CCiLabUtility";
+import { setListHeight, setListWidth, getTextRect, tables} from "./CCiLabUtility";
 import {CanEnableInlineMenu, initializeBOM } from './CCiLabSetupComponentBOM';
 import { initializePDP } from './CCiLabSetupPDP';
 
@@ -45,16 +45,41 @@ const firstComponents = components.firstComponents;
 
 let fontFamily ='Arial, Helvetica, sans-serif';
 
+
+// initialize displayLogic object
+const initializeDisplayLogic = (key, canExpend, rectLeft, enableMenu ) =>{
+  let displayLogic = {};
+  displayLogic.key = key;
+  displayLogic.childKeyIds = [];
+  displayLogic.showMyself = false;
+  displayLogic.canExpend = canExpend;
+  displayLogic.rectLeft = (typeof rectLeft === "undefined" ) ? 0:rectLeft;
+  displayLogic.selected = 0;  // 0, -1, +1
+  displayLogic.inlineMenuEnabled = (typeof enableMenu === "undefined" ) ? false : enableMenu;
+  return displayLogic;
+};
+
+
+
+// need to get all the components in sorted order from server
+// save all the components to session storage after merge between server and previous session storage
 const getComponentsFromServer=( parentComponent )=>{
-  return null; //firstComponents; //
+  return []; //firstComponents; //
 }
 
-// parentComponent is undefined when its parent function 
+// parentComponent is undefined when loads all components from session storage
 // getChildComponentsFromDataSource is called from componentWillMount()
-const getComponentsFromSessionStorage=( parentComponent )=>{
-  let availableComponents = [];
+// Note: displayLogic will not be initialized in this function 
+const getChildren=( parentComponent )=>{
+  // get all components from server and merge with session storage
+  getComponentsFromServer( parentComponent );
+
   let availableBusinessLogicKeys=[];
   let availableSetupBomCoreKeys=[];
+  let availablePDPKeys=[];
+  let availableIRFKeys=[];
+  let availableOpKeys=[];
+
 
   let childBusinessLogicKeys=['_businessLogic'];  //parentComponent === 'undefined'
 
@@ -71,7 +96,8 @@ const getComponentsFromSessionStorage=( parentComponent )=>{
     // How to determine if Javascript array contains an object with an attribute that equals a given value?
     // https://stackoverflow.com/questions/8217419/how-to-determine-if-javascript-array-contains-an-object-with-an-attribute-that-e
     // get direct children of parentComponent only
-    if(  anyKey.includes('_businessLogic') && childBusinessLogicKeys.find( key=>(anyKey.includes(key) ) ) &&
+    if(  anyKey.includes('_businessLogic') && 
+        ( ( childBusinessLogicKeys[0] === '_businessLogic' || childBusinessLogicKeys.find( key=>(anyKey.includes(key) ) ) ) ) &&
         availableBusinessLogicKeys.filter(key => (key === anyKey)).length === 0 )
     {
         availableBusinessLogicKeys.push( anyKey );
@@ -84,45 +110,144 @@ const getComponentsFromSessionStorage=( parentComponent )=>{
     {
       availableSetupBomCoreKeys.push( anyKey );
     }
+
+    if( anyKey.includes('_pdp') && 
+      ( childBusinessLogicKeys[0] === '_businessLogic' || childBusinessLogicKeys.find( key=>(anyKey.includes(key) ) ) )&&
+      availablePDPKeys.filter(key => (key === anyKey)).length === 0 )
+    {
+      availablePDPKeys.push( anyKey );
+    }
+
+    if( anyKey.includes('_irf') && 
+      ( childBusinessLogicKeys[0] === '_businessLogic' || childBusinessLogicKeys.find( key=>(anyKey.includes(key) ) ) )&&
+      availableIRFKeys.filter(key => (key === anyKey)).length === 0 )
+    {
+      availableIRFKeys.push( anyKey );
+    }
+
+    if( anyKey.includes('_op') && 
+      ( childBusinessLogicKeys[0] === '_businessLogic' || childBusinessLogicKeys.find( key=>(anyKey.includes(key) ) ) )&&
+      availableOpKeys.filter(key => (key === anyKey)).length === 0 )
+    {
+      availableOpKeys.push( anyKey );
+    }
   }
 
-  let availableSortedBusinessLogicKeys = availableBusinessLogicKeys.sort();
-  let availableSortedSetupBomCoreKeys = availableSetupBomCoreKeys.sort();
+  const findSmallerKey=( firstEl, secondEl )=>{
+    return parseInt(firstEl, 10) - parseInt( secondEl, 10 );
+  }
 
-  // if no available display keys from sessionStorage
-  // build up the array
+
+  let availableSortedBusinessLogicKeys = availableBusinessLogicKeys.sort( findSmallerKey );
+  let availableSortedSetupBomCoreKeys = availableSetupBomCoreKeys.sort( findSmallerKey );
+  let availableSortedPDPKeys = availablePDPKeys.sort( findSmallerKey );
+  let availableSortedIRFKeys = availableIRFKeys.sort( findSmallerKey );
+  let availableSortedOpKeys = availableOpKeys.sort( findSmallerKey );
+
+  const populateComponentObjects=( givenBusinessLogicKey )=>{
+    let givenComponent = {};
+    givenComponent.businessLogic=JSON.parse(sessionStorage.getItem(givenBusinessLogicKey));
+
+    const componentKey=parseInt(givenBusinessLogicKey, 10);
+
+    givenComponent.displayLogic = new initializeDisplayLogic( componentKey, givenComponent.businessLogic.childIds.length !== 0 ? true : false );
+    
+    givenComponent.bom={};   
+    let coreBomKey = availableSortedSetupBomCoreKeys.find( (key)=>{return  parseInt(key, 10) === componentKey } )
+    let core = typeof coreBomKey !== 'undefined' ? JSON.parse(sessionStorage.getItem(coreBomKey)) : 'undefined';
+    givenComponent.bom.core = core;
+
+    let pdpKey = availableSortedPDPKeys.find( (Key)=>{return  parseInt(Key, 10) === componentKey } )
+    let pdp = typeof pdpKey !== 'undefined' ? JSON.parse(sessionStorage.getItem(pdpKey)): 'undefined';
+    givenComponent.pdp = pdp;
+
+    let irfKey = availableSortedIRFKeys.find( (Key)=>{return  parseInt(Key, 10) === componentKey } )
+    let irf = typeof irfKey !== 'undefined' ? JSON.parse(sessionStorage.getItem(irfKey)): 'undefined';
+    givenComponent.irf = irf;
+
+    let opKey = availableSortedOpKeys.find( (Key)=>{return  parseInt(Key, 10) === componentKey } )
+    let op = typeof opKey !== 'undefined' ? JSON.parse(sessionStorage.getItem(opKey)) : 'undefined';
+    givenComponent.op = op;
+    return givenComponent;
+  }
+
+  // setup the component structure 
+  let availableComponents = [];
+  let unloadedComponents = [];
+  let reload = true;
+
+  while( reload === true )
+  {
   availableSortedBusinessLogicKeys.forEach( (businessLogicKey)=>
   {
+        // let append=false;
     let component = {};
-    component.businessLogic=JSON.parse(sessionStorage.getItem(businessLogicKey));
+        let parentComponentIdx = -1;
+        
+        const displayLogicKey=parseInt(businessLogicKey, 10);
 
-    let coreBomKey = availableSortedSetupBomCoreKeys.find( (coreBomKey)=>{return  parseInt(coreBomKey, 10) === parseInt(businessLogicKey, 10)} )
-    component.bom={};
-    // let core = {};
-    // core = JSON.parse(sessionStorage.getItem(coreBomKey));
-    let core = JSON.parse(sessionStorage.getItem(coreBomKey));;
-    component.bom.core = core;
+        //p5 isn't loaded due to p6 isn't loaded, p6 isn't loaded due to p9 isn't loaded
+        component = availableComponents.find( element=>(element.displayLogic.key === displayLogicKey));
  
+        if( typeof component === 'undefined' )
+        {
+          component = populateComponentObjects( businessLogicKey );
 
-    if( typeof parentComponent === 'undefined' && component.businessLogic.parentIds.length === 0 )
+          parentComponentIdx = availableComponents.findIndex( element=>(component.businessLogic.parentIds.includes(element.businessLogic.id)));
+
+          // if parent component hasn't been loaded then skip this component
+          // if it's root component, then loaded this component
+          if( parentComponentIdx > -1 || ( parentComponentIdx === -1 && component.businessLogic.parentIds.length === 0  ) )
+          {
+            availableComponents.splice( parentComponentIdx+1, 0, component);
+
+            let idx1 = unloadedComponents.findIndex( (unloadedComponent)=>( unloadedComponent.businessLogic.id === component.businessLogic.id));
+            if( idx1 >= 0 )
     {
-      parentComponent = component; // this is root component
-      availableComponents.push( component );
+              unloadedComponents.splice( idx1, 1 );
     }
 
-    if( typeof parentComponent !== 'undefined' ) 
-    {
-      // check if component has same parent component already in available component list
-      // eslint-disable-next-line
-      let findParent = typeof parentComponent.businessLogic.childIds.find((childKey)=>{return childKey === component.businessLogic.id}) !== 'undefined' ? true : false ;
+            // added child component here to just loaded parent component
+            if( component.businessLogic.childIds.length )
+            {   // reverse childIds so the splice would create child in ascent order
+                let reversedChildIds = component.businessLogic.childIds.reverse();
+                reversedChildIds.forEach( (childBusinessLogicId)=>{
+                  let childBusinessLogicKey = availableSortedBusinessLogicKeys.find( 
+                    (elementKey)=>{ return JSON.parse(sessionStorage.getItem(elementKey)).id === childBusinessLogicId } );
 
-      if( findParent )
+                  let childComponent= populateComponentObjects( childBusinessLogicKey ); 
+
+                  let parentComponentIdx = availableComponents.findIndex( (element)=>( element.businessLogic.id === component.businessLogic.id ) );
+
+                  if( parentComponentIdx === -1 )
+    {
+                    console.log("getAllComponentsFromSessionStorage error: allComponents doesn't have " + component.businessLogic.name );
+                  }
+                  else
+                  {
+                    availableComponents.splice( parentComponentIdx+1, 0, childComponent);
+                    component.displayLogic.childKeyIds.push(childComponent.displayLogic.key);
+
+                    let idx2 = unloadedComponents.findIndex( (unloadedComponent)=>( unloadedComponent.businessLogic.id === childComponent.businessLogic.id));
+                    if( idx2 >= 0 )
       {
-        availableComponents.push( component );
+                      unloadedComponents.splice( idx2, 1 );
       }
     }
+                  
   } );
-  // setup the component structure 
+            }
+          }
+          else{
+            unloadedComponents.push( component );
+          }
+            
+         
+        }
+    } )
+    reload = unloadedComponents.length === 0 ? false : true;
+  }
+ 
 
   return availableComponents.length ? availableComponents : null ;
 }
@@ -130,16 +255,17 @@ const getComponentsFromSessionStorage=( parentComponent )=>{
 // 1) get date source in businessLogic object array from server
 // 2) or try to find date source from session Storage
 // 3) parentComponent is undefined when this function is called from componentWillMount()
+// 4) returns all children of the given parent component
 const getChildComponentsFromDataSource = (parentComponent)=>{
   //#todo: need to query server to get a new components
   console.log("query server to get child components")
 
-  let components = null;
+  let components = [];
 
   // get root component first from server or session storage
   // get from server first
   // then try to get it from session storage
-  components = getComponentsFromServer( parentComponent ) || getComponentsFromSessionStorage( parentComponent );
+  components = getChildren( parentComponent );
   
   return components;
   
@@ -193,18 +319,6 @@ const findMaxBusinessId = ( componentList )=>{
   return newBusinessId;
 };
 
-// initialize displayLogic object
-const initializeDisplayLogic = (key, canExpend, rectLeft, enableMenu ) =>{
-  let displayLogic = {};
-  displayLogic.key = key;
-  displayLogic.childKeyIds = [];
-  displayLogic.showMyself = false;
-  displayLogic.canExpend = canExpend;
-  displayLogic.rectLeft = (typeof rectLeft === "undefined" ) ? 0:rectLeft;
-  displayLogic.selected = 0;  // 0, -1, +1
-  displayLogic.inlineMenuEnabled = (typeof enableMenu === "undefined" ) ? false : enableMenu;
-  return displayLogic;
-};
 
 // find maximum displayLogic.key
 // eslint-disable-next-line
@@ -227,9 +341,11 @@ const findMaxDisplayKey = ( componentList )=>{
 // store businessLogic to session storage for each component in newComponentList
 const initializeComponents = ( atComponent, existingComponentList, newComponentList, targetComponentList)=>{
   if( typeof existingComponentList !== "undefined" && existingComponentList !== null )
+  {
     existingComponentList.forEach( (existingComponent)=>{ 
                                   CanEnableInlineMenu(existingComponent);
                                   targetComponentList.push( existingComponent ) } );
+  }
 
   // initialize displayLogic items, create unique key value for latest components from data layer
   // this guarantees that displayLogic.key is unique, (newly added component won't show itself until
@@ -238,7 +354,7 @@ const initializeComponents = ( atComponent, existingComponentList, newComponentL
 
   if( newComponentList === null || typeof newComponentList === 'undefined')
   {
-    console.log('Error: initializeComponents newComponentList is null or undefined');
+    // console.log('Error: initializeComponents newComponentList is null or undefined');
     return;
   }
   newComponentList.forEach((element)=>{
@@ -265,10 +381,17 @@ const initializeComponents = ( atComponent, existingComponentList, newComponentL
       {
           let idxInsertAt = targetComponentList.findIndex((component)=>{return component.displayLogic.key === atComponentKey});
           // component without childIs[] is always above components with childIds[] for display/expending purpose
-          if( element.businessLogic.childIds.length === 0 )
+          // if idxInsertAt is 0, its the root element, 
+          // still need to fix the display order on component tree isn't in sync with bom table component order
+          // this component doesn't have children 
+          if( idxInsertAt > 0 && element.businessLogic.childIds.length === 0 )
+          {
             targetComponentList.splice( idxInsertAt+1,0,element);
+          }
           else
+          {
             targetComponentList.push(element);
+      }
       }
 
       // read component from session storage first time,  
@@ -345,16 +468,16 @@ const populateComponentDisplayLogicChildIds = (selectedComponent, cachedComponen
 
 // turn off childKeyIds[] recursively but we don't want to turn off childKeyIds[] unless
 // its direct parent's canExpended = false (the parent is expended already
-const hideChildren = (aComponent, aComponents, aShowStatus)=>{
+const setVisibility = (aComponent, aComponents, aShow)=>{
   if( !aComponent.displayLogic.canExpend && aComponent.displayLogic.childKeyIds.length )
   {
     aComponents.forEach( (component)=>{
       if( aComponent.displayLogic.childKeyIds.includes(component.displayLogic.key) )
       {
-        component.displayLogic.showMyself = aShowStatus;
+        component.displayLogic.showMyself = aShow;
         // sessionStorage.setItem( `${component.displayLogic.key}_${component.businessLogic.name}_displayLogic`, JSON.stringify( component.displayLogic ));
 
-        hideChildren(component, aComponents, aShowStatus)
+        setVisibility(component, aComponents, aShow)
       }
     });
   }
@@ -394,6 +517,17 @@ const ComponentListTitle =(props)=>{
     i18n.changeLanguage(language);
   }
 
+  const tableChangeHandler=(tableType)=>(e)=>{
+    if( tableType !== 'sysInfoTbl')
+    {
+      let allComponents = props.getAllComponents();
+      props.setComponents( allComponents );
+    }
+   
+
+    // props.setComponents( this.state.greetings );
+    props.updateTableHandler(tableType);
+  }
   // console.log("CCiLabComponentList - ComponentListTitle: i18n.language = " + i18n.language );
 
   // set setupBOM or progress icon at right side of the title bar
@@ -402,9 +536,12 @@ const ComponentListTitle =(props)=>{
 
   return (
     <div className='d-flex align-items-center bg-info fa'
-         style={{ 'height': `${props.titleHeight}rem`, 'width': `${props.titleWidth}`, fontFamily: `${fontFamily}`, fontWeight: 'normal'}}>
+         style={{ height: `${props.titleHeight}rem`, 
+                  width: `${props.titleWidth}`, 
+                  fontFamily: `${fontFamily}`, 
+                  fontWeight: 'normal'}}>
 
-    <span  id='title-name' className={props.titleClassName} style={{'position':'relative', 'left':`${props.titlePositionLeft}rem`, fontSize: '1rem'}}>{t(`${props.title}`)}
+    <span  id='title-name' className={props.titleClassName} style={{'position':'relative', 'left':`${props.titlePositionLeft}rem`, fontSize: '1rem'}}>{t(`componentList:${props.title}`)}
 
     { props.setupBOM ?
        <i key='submit-bom' className='text-primary cursor-pointer p-1 fa fa-cloud-upload-alt'/>
@@ -412,6 +549,46 @@ const ComponentListTitle =(props)=>{
       null
      }
     </span>
+   
+   <Popup 
+      trigger = {
+         <i key='show-tables' 
+          className='text-primary p-1 fa fa-bars cursor-pointer' 
+          style={{position: 'absolute', right :'3.0rem'}}/>
+      }
+      closeOnDocumentClick
+      on={'hover'} //['click', 'focus','hover']
+      position={ 'bottom right' }
+      mouseLeaveDelay={200}
+      mouseEnterDelay={0}
+      contentStyle={{padding: '0', zIndex : `${styles.bootstrapPopover}`,  border: 'none', backgroundColor: `${styles.cciBgColor}`}}
+      arrow={true}
+      arrowStyle={{backgroundColor: `${styles.cciBgColor}`}}>
+      <div >
+        <table className='table-sm table-hover m-0'>
+          <tbody>
+            <tr>
+              <td>
+                <span key='sysInfo-table'  className={'cursor-pointer  p-1 m-0 text-info'} style={{fontSize: '0.7rem'}} onClick={tableChangeHandler(tables.sysInfo)}>{t('componentList:sys-table')}</span>
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <span key='bom-table'  className={'cursor-pointer p-1 m-0 text-info'} style={{fontSize: '0.7rem'}} onClick={tableChangeHandler(tables.bom)}>{t('componentList:bom-table')} </span>
+              </td>
+            </tr>
+            <tr>
+              <td>
+              <span key='mps-table'  className={'cursor-pointer p-1 m-0 text-info'} style={{fontSize: '0.7rem'}} onClick={tableChangeHandler(tables.mps)}>{t('componentList:mps-table')}</span>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+   </Popup>
+
+
     {/* https://www.robinwieruch.de/conditional-rendering-react/ */}
     {{
        'setup-bom':
@@ -428,11 +605,11 @@ const ComponentListTitle =(props)=>{
               position={ 'bottom right' }
               mouseLeaveDelay={0}
               mouseEnterDelay={0}
-              contentStyle={{  border: 'none', backgroundColor: `${styles.cciBgColor}`, fontSize: '0.8rem'}}
+              contentStyle={{ zIndex : `${styles.bootstrapPopover}`,  border: 'none', backgroundColor: `${styles.cciBgColor}`, fontSize: '0.8rem'}}
               arrow={true}
               arrowStyle={{backgroundColor: `${styles.cciBgColor}`}}>
               <span className={'text-info text-nowrap p-1'}>
-                {t('show-setup-MRP')}
+                {t('componentList:show-setup-MRP')}
               </span>
           </Popup>
           :
@@ -448,11 +625,11 @@ const ComponentListTitle =(props)=>{
             position={ 'bottom right' }
             mouseLeaveDelay={0}
             mouseEnterDelay={0}
-            contentStyle={{ border: 'none', backgroundColor: `${styles.cciBgColor}`, fontSize: '0.8rem'}}
+            contentStyle={{zIndex : `${styles.bootstrapPopover}`, border: 'none', backgroundColor: `${styles.cciBgColor}`, fontSize: '0.8rem'}}
             arrow={true}
             arrowStyle={{backgroundColor: `${styles.cciBgColor}`}}>
             <span className={'text-info text-nowrap p-1'}>
-              {t('show-progress')}
+              {t('componentList:show-progress')}
             </span>
         </Popup>
          ),
@@ -472,16 +649,28 @@ const ComponentListTitle =(props)=>{
       }
       closeOnDocumentClick
       on={'hover'} //['click', 'focus','hover']
-      position={ 'right top' }
+      position={ 'bottom left' }
       mouseLeaveDelay={200}
       mouseEnterDelay={0}
-      contentStyle={{ border: 'none', backgroundColor: `${styles.cciBgColor}`}}
+      contentStyle={{ padding: '0', zIndex : `${styles.bootstrapPopover}`, border: 'none', backgroundColor: `${styles.cciBgColor}`}}
       arrow={true}
       arrowStyle={{backgroundColor: `${styles.cciBgColor}`}}>
-      <div >
-        <a key='en' href='#English' className={'nav-link p-1 m-0 text-info'} style={{fontSize: '0.7rem'}} onClick={languageChangeHandler('en')}>English</a>
-        <a key='zh-CN' href='#中文' className={'nav-link p-1 m-0 text-info'} style={{fontSize: '0.7rem'}} onClick={languageChangeHandler('zh-CN')}>中文</a>
-      </div>
+      {/* <div > */}
+      <table className='table-sm table-hover m-0'>
+        <tbody >
+          <tr >
+            <td>
+              <span key='en'  className={'cursor-pointer p-0 m-0 text-info'} style={{fontSize: '0.7rem'}} onClick={languageChangeHandler('en')}>English</span>
+            </td>
+          </tr>
+          <tr>
+            <td>
+              <span key='zh-CN' className={'cursor-pointer p-1 m-0 text-info'} style={{fontSize: '0.7rem'}} onClick={languageChangeHandler('zh-CN')}>中文</span>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+      {/* </div> */}
      </Popup>
   </div>
   );
@@ -492,7 +681,7 @@ const ComponentListSubTitle = (props)=>{
   return (
     <div className='d-flex align-items-center fa'
         style={{ 'height': `${props.height}rem`, 'width': `${props.width}`, backgroundColor: `${styles.cciBgColor}`, fontFamily: `${fontFamily}`, fontWeight: 'normal' }}>
-        <span id='subTitle-name' className={props.className} style={{'position':'relative',  'left':`${props.positionLeft}rem`, fontSize: '0.95rem'}}>{t(`${props.name}`)}</span>
+        <span id='subTitle-name' className={props.className} style={{'position':'relative',  'left':`${props.positionLeft}rem`, fontSize: '0.95rem'}}>{t(`componentList:${props.name}`)}</span>
         <span id='subTitle-type' className={props.className} style={{'position':'relative', 'left':`${props.ratePositionLeft}rem`, fontSize: '0.95rem'}}>{t([`componentList:${props.rateType}`, `commands:${props.rateType}`])}
         </span>
         {/* #todo - make title editable by user */}
@@ -502,7 +691,7 @@ const ComponentListSubTitle = (props)=>{
 }
 
 
-class CCiLabComponentList extends Component {
+export class CCiLabComponentList extends Component {
     state = { greetings: undefined,
               visible: true,
               selected: 0,
@@ -535,6 +724,10 @@ class CCiLabComponentList extends Component {
     componentListMinHeight;
     componentListHeight;  //minimum height
 
+    updateTableSize=( listWidth )=>{
+      this.props.updateTableSize( listWidth );
+    }
+
     setDefaultListDimension=()=>{
       this.componentListWidth= setListWidth(1.0); //in px or vw,
       this.hideListWidth = setListWidth(0.99); //in px or vw
@@ -542,8 +735,8 @@ class CCiLabComponentList extends Component {
       this.componentListHeight= this.componentListMinHeight;  //minimum height
     }
 
-    init=(props)=>{
-      this.slidingComponentListIconClassName = this.state.visible? 'fa fa-angle-double-left' : 'fa fa-angle-double-right';
+    init=()=>{
+      this.slidingComponentListIconClassName = this.state.visible? 'fas fw fa-angle-double-left' : 'fas fw fa-angle-double-right';
 
       this.componentListTranslateStyle=this.state.visible ? `translate3d(0, 0, 0)`: `translate3d(-${this.hideListWidth}, 0, 0)`;
       this.lastScrollYPosition = 0;
@@ -624,10 +817,21 @@ class CCiLabComponentList extends Component {
     toggleHideShowComponentList = () =>{
       // console.log('container: clicked before: - ', this.state.visible ? 'true' : 'false' );
       // console.log("CCiLabComponentList - toggleHideShowComponentList");
+
+      if( !this.state.visible )
+      {
+        this.updateTableSize( parseInt(this.componentListWidth)*0.05 );  //hideListWidth=this.componentListWidth*0.99
+      }
+      else
+      {
+        this.updateTableSize( 0 );
+      }
+      // this.updateTableSize();
       this.setState( { visible: this.state.visible ? false : true } );
 
       this.componentListTranslateStyle = this.state.visible ? `translate3d(0, 0, 0)`: `translate3d(-${this.hideListWidth}, 0, 0)`;
-      this.slidingComponentListIconClassName = this.state.visible? 'fa fa-angle-double-left' : 'fa fa-angle-double-right';
+      this.slidingComponentListIconClassName = this.state.visible? 'fas fw fa-angle-double-left' : 'fas fw fa-angle-double-right';
+
       // console.log('container: clicked after: - ', this.state.visible ? 'true' : 'false' );
     }
 
@@ -638,9 +842,15 @@ class CCiLabComponentList extends Component {
       //e.stopPropagation();
     };
 
+    updateTable=()=>{
+      let allComponents = getChildren(); // getAllComponentsFromSessionStorage();
+      this.props.setComponents(  allComponents );
+      this.props.updateTableHandler();
+    }
+
     // initialize first component's childKeyIds, reorder in following order: the first component, alarm status, warning status, no_issue status
     componentWillMount=()=>{
-      this.init(this.props);
+      this.init();
 
       TextResizeDetector.TARGET_ELEMENT_ID = 'temp-item';
       TextResizeDetector.USER_INIT_FUNC = this.initTextResizeDetector;
@@ -653,7 +863,7 @@ class CCiLabComponentList extends Component {
       //if there is no date source (remote or sessionStorage) available, create root component first
       let components = getChildComponentsFromDataSource(); //=firstComponents
       let rootComponent = null;
-      if( components === null || typeof components === 'undefined')
+      if( components === null || typeof components === 'undefined' || components.length === 0 )
       {
           components = [this.addComponent()];
           rootComponent = components[0];
@@ -662,7 +872,7 @@ class CCiLabComponentList extends Component {
       else
       {
           rootComponent = components.filter(component=>(component.businessLogic.parentIds.length === 0))[0];
-          initializeComponents(rootComponent, this.state.greetings, components, currentSessionComponents);
+          initializeComponents(rootComponent, components, null, currentSessionComponents);
 
           //always show very top component
           rootComponent.displayLogic.showMyself = true;
@@ -694,6 +904,7 @@ class CCiLabComponentList extends Component {
       // eslint-disable-next-line
       this.state.subTitle = this.state.setupBOM ? 'subTitle-BOM-data' : 'subTitle-Progress-status';
 
+      this.updateTable();
     }
 
     getMaxTitleWidth=()=>{
@@ -765,6 +976,51 @@ class CCiLabComponentList extends Component {
       window.addEventListener("resize", this.onResizeHandler);
       this.initialized = true;
     }
+
+
+
+    //Insert Children at selected component
+    InsertChildrenAt=( allShownComponents, selectedComponent, idxOfSelComponent )=>{
+      //local copy (not a reference ) of shown components
+      let newShownComponents = (typeof allShownComponents === 'undefined') ? JSON.parse(JSON.stringify(this.state.greetings)) : JSON.parse(JSON.stringify(allShownComponents)) ;
+
+      let chosenComponent = ( typeof selectedComponent === 'undefined' ) ? allShownComponents.find(component=>component.businessLogic.parentIds.length === 0) : selectedComponent;
+
+      // need to check if we need to get children from data source for selectedComponent
+      // 1) has children, 2) children is not loaded already
+      // insert children under selected component
+      //if businessLogic.childIds.length !== 0, the child component's business logic initialized already, 
+      // just the displayLogic is set to hide itself, still need use displayLogic key to retrieve the component
+      if( chosenComponent.businessLogic.childIds.length !== 0 )
+      {
+        let children = [];
+        let childCount = 0;
+        newShownComponents.forEach((element)=>{
+          if( chosenComponent.businessLogic.childIds.includes( element.businessLogic.id ) &&
+              element.businessLogic.parentIds.includes(chosenComponent.businessLogic.id )  )
+          {
+            childCount++;
+          }
+        } );
+    
+        // children of chosen component is not loaded already fully
+        if( childCount <= chosenComponent.businessLogic.childIds.length )
+        {
+          //get direct children  from server or local session date, and populate businessLogic, bom.core, pdp, irf, op
+          children = getChildComponentsFromDataSource(chosenComponent);
+
+          //insert children to newShownComponents
+          newShownComponents.splice( idxOfSelComponent+1, 0, ...children );
+        }
+        
+      }
+       
+      return newShownComponents;
+
+    }
+
+
+
 
     // need to check following:
     //  1 - if component is the root component, then needs to re-cal all component's requiredQty (#todo)
@@ -880,6 +1136,8 @@ class CCiLabComponentList extends Component {
         setComponentSelected( item, newComponent.displayLogic.key );
       });
 
+   
+
       // sessionStorage.setItem( `${newComponent.displayLogic.key}_${newComponent.businessLogic.name}_displayLogic`, JSON.stringify( newComponent.displayLogic ));
       newComponent.bom = new initializeBOM( newComponent );
       newComponent.pdp = new initializePDP( newComponent );
@@ -891,7 +1149,17 @@ class CCiLabComponentList extends Component {
       sessionStorage.setItem( `${newComponent.displayLogic.key}_${newComponent.businessLogic.name}_op`, JSON.stringify( newComponent.operation ));
       // need to check vertical scroll bar doesn't show
       // create vertical scroll bar based on the height of component list dynamically
+      //update state.greetings inside this function
       this.updateDimensions( updatedSessionComponents);
+
+       // update component list in container class
+      let allComponents = getChildren(); // getAllComponentsFromSessionStorage();
+      this.props.setComponents( allComponents );  
+
+      this.props.showSelectedComponent( newComponent );
+
+      this.props.updateTableHandler();
+
       return newComponent;
     };
 
@@ -906,6 +1174,8 @@ class CCiLabComponentList extends Component {
       let parentComponents = currentSessionComponents.filter(  (component)=>{
         return component.displayLogic.childKeyIds.length && component.displayLogic.childKeyIds.find( (childKey)=>{return childKey === deletedComponentId } )
       } );
+
+      const parentComponent = parentComponents[0];
 
       parentComponents.map( (component)=>{return console.log('parent component name of deleted component: ', component.businessLogic.name) } );
 
@@ -932,12 +1202,28 @@ class CCiLabComponentList extends Component {
         return component.displayLogic.key !== deletedComponentId;
       });
 
+      // find component next to deleted component
+
+      // remove deleted component from session storage
       sessionStorage.removeItem(`${deletedComponent.displayLogic.key}_${deletedComponent.businessLogic.name}_businessLogic`);
       // sessionStorage.removeItem(`${deletedComponent.displayLogic.key}_${deletedComponent.businessLogic.name}_displayLogic`);
       sessionStorage.removeItem(`${deletedComponent.displayLogic.key}_${deletedComponent.businessLogic.name}_bom_core`);
-      sessionStorage.removeItem(`${deletedComponent.displayLogic.key}_${deletedComponent.businessLogic.name}_bom_extra`);
+      sessionStorage.removeItem( `${deletedComponent.displayLogic.key}_${deletedComponent.businessLogic.name}_pdp`);
+      sessionStorage.removeItem( `${deletedComponent.displayLogic.key}_${deletedComponent.businessLogic.name}_irf`);
+      sessionStorage.removeItem( `${deletedComponent.displayLogic.key}_${deletedComponent.businessLogic.name}_op`);
+     
 
+      filteredGreetings.forEach( (item)=>{ setComponentSelected(item, parentComponent.displayLogic.key) });
       this.setState({ greetings: filteredGreetings });
+
+      // update component list in container class
+      let allComponents = getChildren(); //getAllComponentsFromSessionStorage();
+      this.props.setComponents( allComponents );
+
+      // after remove component, set its parent as selected, should set to next sibling 
+      this.props.showSelectedComponent( parentComponent );
+
+      this.props.updateTableHandler();
     };
 
 
@@ -951,9 +1237,7 @@ class CCiLabComponentList extends Component {
               //#todo: need to query server to get a new components
               console.log("query server to get child components")
 
-              let components = getChildComponentsFromDataSource(selectedComponent);
-
-              initializeComponents(selectedComponent, this.state.greetings, components, currentSessionComponents);
+              initializeComponents(selectedComponent, this.state.greetings, null, currentSessionComponents);
           }
           else
           {
@@ -969,7 +1253,7 @@ class CCiLabComponentList extends Component {
             setComponentSelected(item, selectedComponent.displayLogic.key);
 
             // skip the first component
-            if( item.displayLogic.key !== rootComponent.displayLogic.key )
+            if( typeof rootComponent !== 'undefined' && item.displayLogic.key !== rootComponent.displayLogic.key )
             {
                // find the component that has the child components, and show or hide the show status of this component's childKeyIds
               if( selectedComponent.displayLogic.childKeyIds.includes(item.displayLogic.key) )
@@ -979,7 +1263,7 @@ class CCiLabComponentList extends Component {
                 // recursively hide childKeyIds[] of child component included in childKeyIds[] of current component,
                 // but we don't want to hide child component's childKeyIds[] unless its direct parent's canExpend = false;
                 // stored displayLogic to session storage
-                hideChildren(item, currentSessionComponents, showStatus);
+                setVisibility(item, currentSessionComponents, showStatus);
               }
             }
 
@@ -990,6 +1274,10 @@ class CCiLabComponentList extends Component {
           {
             // console.log("CCiLabComponentList - showOrHideChildren");
             this.setState( { greetings: currentSessionComponents })
+
+            let selectedComponent = currentSessionComponents.find( (component)=>{return component.displayLogic.selected !== 0; })
+            this.props.showSelectedComponent( selectedComponent );
+            this.props.updateTableHandler();
           }
 
 
@@ -1001,12 +1289,19 @@ class CCiLabComponentList extends Component {
 
     selectedComponentHandler = ( selectedComponent, highlight=true ) =>{
       let currentSessionComponents=this.state.greetings;
-      currentSessionComponents.forEach( (item)=>{setComponentSelected(item, selectedComponent.displayLogic.key);});
+
+      if( currentSessionComponents.length && typeof selectedComponent !== 'undefined' )
+      {
+        currentSessionComponents.forEach( (item)=>{ setComponentSelected(item, selectedComponent.displayLogic.key) });
+      }
 
       if( highlight === true )
       {
         // console.log("CCiLabComponentList - selectedComponentHandler");
         this.setState( { greetings: currentSessionComponents });
+
+        this.props.showSelectedComponent( selectedComponent );
+        this.props.updateTableHandler();
       }
     }
 
@@ -1195,6 +1490,9 @@ class CCiLabComponentList extends Component {
           // update greetings list
           // console.log("CCiLabComponentList - moveComponentHandler 4 ")
           this.setState( { greetings: updatedSessionComponents });
+
+
+          this.updateTable();
         }
       }
     };
@@ -1252,6 +1550,7 @@ class CCiLabComponentList extends Component {
                                           selectedComponentHandler={this.selectedComponentHandler}
                                           moveComponentHandler={this.moveComponentHandler}
                                           updateComponentHandler={this.updateComponent}
+                                          updateTableHandler={this.updateTable}
                                           isSetupBOM={this.state.setupBOM}
                                           changeMRPTitle = {this.showSetupBOM}
                                           permissionStatus={this.state.permissionEnabled}/> ;
@@ -1275,6 +1574,50 @@ class CCiLabComponentList extends Component {
     hideUpdateToItselfWarning=()=>{
       this.setState({isUpdateToItselfWarning: false});
     }
+
+    printPage=( )=>{
+      let printElement = document.getElementById('print-icon');
+      printElement.hidden=true;
+
+      let showHideElement = document.getElementById('show-hide-icon')
+      showHideElement.style.visibility = 'hidden'
+
+      // let tableElement = document.getElementById(this.props.getTableId);
+
+      // show list tree, so hide the table
+      let tableElement = document.getElementById(this.props.currentTableId)
+      let componentListElement = document.getElementById('cciLabComponentListID')
+      if( !this.state.visible )
+      {
+        if( tableElement !== null && typeof tableElement.style !== 'undefined')
+        {
+          tableElement.style.visibility = 'hidden';
+          // tableElement.style.display = 'none';
+        }
+        
+      }
+      else{
+       componentListElement.style.visibility ='hidden'
+        // componentListElement.style.display ='none'
+      }
+      
+
+      window.print();
+
+      printElement.hidden=false;
+      showHideElement.style.visibility = 'visible';
+
+      if( !this.state.visible )
+      {
+        if( tableElement !== null && typeof tableElement.style !== 'undefined')
+        {
+          tableElement.style.visibility = 'visible';
+        }
+      }
+      else{
+        componentListElement.style.visibility ='visible'
+      }
+  }
 
     render() {
       if( this.initialized === false )
@@ -1328,6 +1671,9 @@ class CCiLabComponentList extends Component {
                                       titlePositionLeft= {this.componentTitleLeft}
                                       titleClassName = {listTitleClassName}
                                       setupBOM = {this.state.setupBOM}
+                                      getAllComponents={getChildren}
+                                      setComponents={this.props.setComponents}
+                                      updateTableHandler={this.props.updateTableHandler}
                                       permissionStatus = {this.state.permissionEnabled}
                                       changeBOMHandler = {this.showSetupBOM}/> :
                                 <ComponentListTitle title='title-Progress'
@@ -1336,6 +1682,9 @@ class CCiLabComponentList extends Component {
                                       titlePositionLeft= {this.componentTitleLeft}
                                       titleClassName = {listTitleClassName}
                                       setupBOM = {this.state.setupBOM}
+                                      getAllComponents={getChildren}
+                                      setComponents={this.props.setComponents}
+                                      updateTableHandler={this.props.updateTableHandler}
                                       permissionStatus = {this.state.permissionEnabled}
                                       changeBOMHandler = {this.showSetupBOM}/>
                   }
@@ -1374,13 +1723,18 @@ class CCiLabComponentList extends Component {
                     {this.renderGreetings()}
                   </div>
               </div>
-              <a href="#show-hide-component-list"
-                className='nav-link pl-0 py-4 pr-4 cci-component-list_transition'
+              <span  className='cci-component-list_transition'
                 style={{'transform': `${this.componentListTranslateStyle}`,
-                        'WebkitTransform':`${this.componentListTranslateStyle}`}}
-                onClick={this.showHideComponentList} >
-                <span className={`badge-pill badge-info ${this.slidingComponentListIconClassName}`}></span>
-              </a>
+                 'WebkitTransform':`${this.componentListTranslateStyle}`}}>
+             
+                <i id='show-hide-icon' className={`badge-pill badge-info cursor-pointer nav-link ml-0 mr-1 my-1 px-3 py-1 ${this.slidingComponentListIconClassName}`}
+                onClick={this.showHideComponentList} />
+             
+             
+                <i id='print-icon' className='badge-pill badge-info cursor-pointer nav-link m-1 py-2 px-2 fas fw fa-print'
+                  onClick={ this.printPage }/>
+              </span>
+
             {DropToSameParentWarningModal }
             {DropToItselfWarningModal }
             {UpdateToItselfWarningModal}
@@ -1389,4 +1743,4 @@ class CCiLabComponentList extends Component {
     };
 }
 
-export default CCiLabComponentList;
+// export default CCiLabComponentList;
