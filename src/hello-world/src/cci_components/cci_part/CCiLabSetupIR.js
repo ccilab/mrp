@@ -5,7 +5,7 @@ import { useTranslation } from 'react-i18next';
 import styles from "./../../dist/css/ccilab-component-list.css"
 
 import { dividerCCS, isValidString, isValidValue, getRandomInt } from "./CCiLabUtility";
-
+import {DateInput} from "./CCiLabDateInput"
 
 const SetupComponentIR=(props)=>{
   const { t } = useTranslation(['inventoryRecords','commands'], {useSuspense: false});
@@ -28,11 +28,6 @@ const SetupComponentIR=(props)=>{
   if( props.title.includes('inventory-on-hand'))
   {
     tooltipPosition='bottom left';
-  }
-
-  if( props.title.includes('-date') )
-  {
-    inputType='date';
   }
 
   if( props.title.includes('procurement-type'))
@@ -507,7 +502,7 @@ export const SetupIRF=(props)=>{
   return(
     <div>
       <div key={uniqueKey} className={'d-flex  justify-content-between'}>  
-        <SetupComponentIR
+        <DateInput
          title='scheduled-receipts-date'   //array of completed date for each required quantity
          id={index}
          cellCnt={2}

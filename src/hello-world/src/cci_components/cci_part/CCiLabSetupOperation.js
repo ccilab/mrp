@@ -5,7 +5,7 @@ import { useTranslation } from 'react-i18next';
 import styles from "./../../dist/css/ccilab-component-list.css"
 
 import { dividerCCS, isValidString, isValidValue, getRandomInt } from "./CCiLabUtility";
-
+import {DateInput} from "./CCiLabDateInput"
 
 const SetupComponentOp=(props)=>{
   const { t } = useTranslation(['operations','commands'], {useSuspense: false});
@@ -26,11 +26,6 @@ const SetupComponentOp=(props)=>{
   if( props.title.includes('employee-count') || props.title.includes('component-per-employee') )
   {
     tooltipPosition='bottom left';
-  }
-
-  if( props.title.includes('-date') )
-  {
-    inputType='date';
   }
 
 
@@ -787,7 +782,7 @@ export const SetupOP=(props)=>{
             <hr className={dividerCCS.hDividerClassName} style={dividerCCS.hDividerStyle}/>
 
             <div className={'d-flex  justify-content-between'}>
-              <SetupComponentOp
+              <DateInput
                 title='start-product-date'
                   id={-1}
                   cellCnt={2}

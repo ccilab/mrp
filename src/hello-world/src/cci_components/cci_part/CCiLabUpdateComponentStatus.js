@@ -11,7 +11,7 @@ export const UpdateComponentStatus=(props)=>{
   // deep copy object that doesn't have function inside object
   const originComponent = JSON.parse(JSON.stringify(props.component));
 
-  const { t, i18n } = useTranslation(['component','commands'], {useSuspense: false});
+  const { t } = useTranslation(['component','commands'], {useSuspense: false});
   let inputValue = props.value;
   let inputClassName = 'text-primary m-0 p-0 cursor-pointer border-0';
   let inputPlaceholder=t(`component:${props.title}`);

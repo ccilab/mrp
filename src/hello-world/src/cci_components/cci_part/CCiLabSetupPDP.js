@@ -5,6 +5,7 @@ import { useTranslation } from 'react-i18next';
 import styles from "./../../dist/css/ccilab-component-list.css"
 
 import { dividerCCS, isValidString, isValidValue, getRandomInt } from "./CCiLabUtility";
+import {DateInput} from "./CCiLabDateInput"
 
 // popup menu class doesn't support bootstrap e.g. d-flex, flex-fill class or native flex
 // const trigger = this.TriggerEl.getBoundingClientRect(); calculates static size of trigger element
@@ -26,10 +27,6 @@ const SetupComponentPDP=(props)=>{
     tooltipPosition='bottom left';
   }
 
-  if( props.title.includes('-date') )
-  {
-    inputType='date';
-  }
 
   if( props.title.includes('-quantity') )
   {
@@ -262,7 +259,7 @@ export const SetupPDP=(props)=>{
   return(
     <div key={uniqueKey} >
     <div className={'d-flex justify-content-between'} >  
-      <SetupComponentPDP
+      <DateInput
          title='product-complete-date'   //array of completed date for each required quantity
          id={index}
          cellCnt={2}
