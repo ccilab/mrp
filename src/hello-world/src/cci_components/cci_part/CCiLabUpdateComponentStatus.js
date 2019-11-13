@@ -30,9 +30,9 @@ export const UpdateComponentStatus=(props)=>{
   let shiftQuantityInput=false;
   let requiredQty;
 
-  if( props.title.includes('team-name') )
+  if( props.title.includes('team-name') ||  props.title.includes('shift'))
   {
-    tooltipPosition='bottom left';
+    tooltipPosition='bottom center';
     isRequired = true;
   }
 

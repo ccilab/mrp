@@ -15,7 +15,7 @@ export const UserNameInput=(props)=>{
     let inputStyle={'backgroundColor': `${styles.cciBgColor}`, 'width': '8em'};
     let inputType='text';
     let tooltipOnMode= ['click','hover'];
-    let tooltipPosition='top left';
+    let tooltipPosition='top center';
 
     let name1Name='given-user-name';
     let name1InputId='#' + name1Name;
