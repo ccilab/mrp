@@ -145,6 +145,7 @@ const BOMTableHeader=(props)=>{
                     <td className='align-middle' colSpan='2'>
                         <UserNameInput 
                         title='updated-by-user'
+                        mrpInputType='component'
                         value={bomApprovedBy}
                         component={rootElement}
                         handler={setUpdatedBy}
@@ -162,6 +163,7 @@ const BOMTableHeader=(props)=>{
                          title='bom-approved-date'
                         id={0}
                         cellCnt={1}
+                        mrpInputType='component'
                         value={ new Date() }  //need get a default date
                         component={rootElement}
                         handler={props.updateComponent}/>

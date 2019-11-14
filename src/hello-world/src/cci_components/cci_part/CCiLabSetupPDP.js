@@ -6,6 +6,7 @@ import styles from "./../../dist/css/ccilab-component-list.css"
 
 import { dividerCCS, isValidString, isValidValue, getRandomInt } from "./CCiLabUtility";
 import {DateInput} from "./CCiLabDateInput"
+import {NumberInput} from "./CCiLabNumberInput"
 
 // popup menu class doesn't support bootstrap e.g. d-flex, flex-fill class or native flex
 // const trigger = this.TriggerEl.getBoundingClientRect(); calculates static size of trigger element
@@ -26,13 +27,6 @@ const SetupComponentPDP=(props)=>{
   {
     tooltipPosition='bottom left';
   }
-
-
-  if( props.title.includes('-quantity') )
-  {
-     inputType='number';
-  }
-
 
 
   const [input, setInput] = useState(`${inputValue}`); // '' is the initial state value
@@ -263,16 +257,18 @@ export const SetupPDP=(props)=>{
          title='product-complete-date'   //array of completed date for each required quantity
          id={index}
          cellCnt={2}
+         mrpInputType='component'
          value={ endDate }
          component={props.component}
          handler={setCompleteDate}/>
 
      <hr className={dividerCCS.hDividerClassName }  style={dividerCCS.vDividerStyle}/>    
      
-     <SetupComponentPDP
+     <NumberInput
          title='required-quantity'
          id={index}
          cellCnt={2}
+         mrpInputType='component'
          value={( demand !== null && demand > 0 ) ? demand : ''} //array of demands for each period 
          component={props.component}
          handler={setTotalRequiredQty}/>

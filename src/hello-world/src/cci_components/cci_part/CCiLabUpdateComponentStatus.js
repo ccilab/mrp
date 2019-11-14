@@ -374,6 +374,7 @@ export const UpdateStatus=(props)=>{
 
               <UserNameInput
                 title='updated-by-user'
+                mrpInputType='component'
                 value={props.component.production.updatedBy}
                 component={props.component}
                 handler={setUpdatedBy}

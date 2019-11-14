@@ -6,6 +6,7 @@ import styles from "./../../dist/css/ccilab-component-list.css"
 
 import { dividerCCS, isValidString, isValidValue, getRandomInt } from "./CCiLabUtility";
 import {DateInput} from "./CCiLabDateInput"
+import {NumberInput} from "./CCiLabNumberInput"
 
 const SetupComponentIR=(props)=>{
   const { t } = useTranslation(['inventoryRecords','commands'], {useSuspense: false});
@@ -37,10 +38,6 @@ const SetupComponentIR=(props)=>{
     inputType='radio';
   }
 
-  if( props.title.includes('-quantity') )
-  {
-     inputType='number';
-  }
 
   if( appendPercentage )
   {
@@ -113,10 +110,6 @@ const SetupComponentIR=(props)=>{
     }
   };
 
-  const updateChange=(props)=>(e)=>{
-    console.log("SetupComponentIR - updateChange: " + e.target.value);
-  }
-
 
 
   // https://medium.freecodecamp.org/reactjs-pass-parameters-to-event-handlers-ca1f5c422b9
@@ -182,19 +175,19 @@ const SetupComponentIR=(props)=>{
               trigger={
                 <input key={props.id}
                       className={`${inputClassName}`}
-                      ref={ appendPercentage? rateInputElement : null }
+                      ref={ rateInputElement  }
                       id={inputName}
                       type={`${inputType}`}
                       style={inputStyle}
                       placeholder={t(`inventoryRecords:${props.title}`)}
                       name={inputName}
                       value={ input }
-                      min = { inputType.includes('number') ? 0: null}
-                      onChange={appendPercentage ? updateValue(props) : updateChange(props)}
+                      min = {null}
+                      onChange={ updateValue(props) }
                       onClose={updateValue(props)}
                       onInput={(e)=>{filterInputValue(e)}}
                       onKeyPress={ (e)=>enterKeyHandler(e) }
-                      onBlur={ appendPercentage ? (e)=>{onBlurHandler(e)} :updateValue(props)}/>
+                      onBlur={  (e)=>{onBlurHandler(e)} }/>
               }
               id={`${props.component.displayLogic.key}-tooltip`}
               position={tooltipPosition}
@@ -506,15 +499,17 @@ export const SetupIRF=(props)=>{
          title='scheduled-receipts-date'   //array of completed date for each required quantity
          id={index}
          cellCnt={2}
+         mrpInputType='inventoryRecords'
          value={ srDate }
          component={props.component}
          handler={setSRDate}/>
         <hr className={dividerCCS.hDividerClassName }  style={dividerCCS.vDividerStyle}/>
      
-        <SetupComponentIR
+        <NumberInput
          title='scheduled-receipts-quantity'
          id={index}
          cellCnt={2}
+         mrpInputType='inventoryRecords'
          value={( demand !== null && demand >= 0 ) ? demand : ''} //array of demands for each period 
          component={props.component}
          handler={setSRQty}/>
@@ -593,20 +588,22 @@ export const SetupIRF=(props)=>{
           {close => (
             <div className={'d-flex flex-column'} style={{backgroundColor:`${styles.cciBgColor}`}}>
               <div className={'d-flex justify-content-between'}>
-                  <SetupComponentIR
+                  <NumberInput
                     title='inventory-on-hand-quantity'
                     id={-1}
-                    cellCnt={2}
+                    cellCnt={3}
+                    mrpInputType='inventoryRecords'
                     value={props.component.irf.inventoryOnHand}
                     component={props.component}
                     handler={setIOH}/>
 
                 <hr className={dividerCCS.hDividerClassName }  style={dividerCCS.vDividerStyle}/>
 
-                  <SetupComponentIR
+                  <NumberInput
                     title='lead-time-quantity'
                     id={-1}
-                    cellCnt={2}
+                    cellCnt={3}
+                    mrpInputType='inventoryRecords'
                     value={props.component.irf.leadTime }
                     component={props.component}
                     handler={setLeadTime}/>
@@ -674,21 +671,23 @@ export const SetupIRF=(props)=>{
             }
 
                 <div className={'d-flex  justify-content-between'}> 
-                  <SetupComponentIR
+                  <NumberInput
                       title={ procurementType === null || procurementType === 'InHouse' ? 'other-production-cost-per-unit-quantity' : 'other-purchase-cost-per-unit-quantity'}
                       id={-1}
                       cellCnt={2}
+                      mrpInputType='inventoryRecords'
                       value={props.component.irf.otherProductionCostPerUnit }
-                component={props.component}
+                      component={props.component}
                       handler={setOtherCostPerUnit}/>
 
                   <hr className='m-0 bg-info'  style={dividerCCS.vDividerStyle}/>
-                  <SetupComponentIR
+                  <NumberInput
                       title='holding-cost-per-unit-quantity'
                       id={-1}
                       cellCnt={2}
+                      mrpInputType='inventoryRecords'
                       value={props.component.irf.holdingCostPerUnit }
-              component={props.component}
+                      component={props.component}
                       handler={setHoldingCostPerUnit}/>
                     <i id={`${props.component.displayLogic.key}-SetupIRF`}
                       className='text-danger m-0 py-1 px-1 fas fw fa-times-circle cursor-pointer'
@@ -699,22 +698,24 @@ export const SetupIRF=(props)=>{
                 <hr className={dividerCCS.hDividerClassName } style={dividerCCS.hDividerStyle}/>
 
                 <div className={'d-flex  justify-content-between'}> 
-                  <SetupComponentIR
+                  <NumberInput
                       title='mim-allowed-ending-inventory-quantity'
                       id={-1}
                       cellCnt={2}
+                      mrpInputType='inventoryRecords'
                       value={props.component.irf.minAllowedEndingInventory }
-                component={props.component}
+                      component={props.component}
                       handler={setSS}/>
 
                   <hr className={dividerCCS.hDividerClassName }  style={dividerCCS.vDividerStyle}/>
 
-                  <SetupComponentIR
+                  <NumberInput
                       title='max-allowed-ending-inventory-quantity'
                       id={-1}
                       cellCnt={2}
+                      mrpInputType='inventoryRecords'
                       value={ ( props.component.irf.maxAllowedEndingInventory !== null ) && ( props.component.irf.minAllowedEndingInventory > props.component.irf.maxAllowedEndingInventory )  ?  props.component.irf.minAllowedEndingInventory : props.component.irf.maxAllowedEndingInventory}
-                component={props.component}
+                      component={props.component}
                       handler={setMaxStock}/>
                   <i id={`${props.component.displayLogic.key}-SetupIRF`}
                       className='text-danger m-0 py-1 px-1 fas fw fa-times-circle cursor-pointer'
@@ -730,7 +731,7 @@ export const SetupIRF=(props)=>{
                       id={-1}
                       cellCnt={1}
                       value={props.component.irf.interest }
-                component={props.component}
+                      component={props.component}
                       handler={setInterest}/>
                   <i id={`${props.component.displayLogic.key}-SetupIRF`}
                         className='text-danger m-0 py-1 px-1 fas fw fa-times-circle cursor-pointer'

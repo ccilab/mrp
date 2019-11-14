@@ -5,16 +5,16 @@ import { useTranslation } from 'react-i18next';
 import styles from "./../../dist/css/ccilab-component-list.css"
 
 export const DateInput=(props)=>{
-    const { t } = useTranslation(['component','commands'], {useSuspense: false});
+    const { t } = useTranslation([`${props.mrpInputType}`,'commands'], {useSuspense: false});
 
     let inputValue = (props.value === null)? '': props.value;
 
     let inputClassName = 'text-primary m-0 p-0 border-0 cursor-pointer';
-    let cellWidth = (typeof props.cellCnt !== 'undefined' && props.cellCnt === 1) ?  '20rem' : '10rem'; 
+    let cellWidth = ( (typeof props.cellCnt === 'undefined' ) || ( typeof props.cellCnt !== 'undefined' && props.cellCnt === 1) ) ?  '20rem' : '10rem'; 
     let inputStyle={'backgroundColor': `${styles.cciBgColor}`, width: `${cellWidth}`};
     let inputType='date';
     let tooltipOnMode=['click','hover'];
-    let tooltipPosition='top center';
+    let tooltipPosition= ( (typeof props.cellCnt === 'undefined' ) || ( typeof props.cellCnt !== 'undefined' && props.cellCnt === 1) ) ? 'top center': props.cellCnt === 3 ? 'bottom center':'top left';
     let inputName=props.title;
 
     const [input, setInput] = useState(`${inputValue}`);
@@ -63,7 +63,7 @@ export const DateInput=(props)=>{
                       id={inputName}
                       type={`${inputType}`}
                       style={inputStyle}
-                      placeholder={t(`component:${props.title}`)}
+                      placeholder={t(`${props.mrpInputType}:${props.title}`)}
                       name={inputName}
                       value={ input }
                       onChange={updateChange(props)}
@@ -83,7 +83,7 @@ export const DateInput=(props)=>{
               contentStyle={{ padding: '0px'}}
               >
               <div className='text-nowrap m-0 px-1'>
-                {t(`component:${props.title}`)}
+                {t(`${props.mrpInputType}:${props.title}`)}
               </div>
           </Popup>
       </div>

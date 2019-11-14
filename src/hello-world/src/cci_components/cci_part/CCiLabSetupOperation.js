@@ -6,6 +6,7 @@ import styles from "./../../dist/css/ccilab-component-list.css"
 
 import { dividerCCS, isValidString, isValidValue, getRandomInt } from "./CCiLabUtility";
 import {DateInput} from "./CCiLabDateInput"
+import {NumberInput} from "./CCiLabNumberInput"
 
 const SetupComponentOp=(props)=>{
   const { t } = useTranslation(['operations','commands'], {useSuspense: false});
@@ -26,12 +27,6 @@ const SetupComponentOp=(props)=>{
   if( props.title.includes('employee-count') || props.title.includes('component-per-employee') )
   {
     tooltipPosition='bottom left';
-  }
-
-
-  if( props.title.includes('-quantity') )
-  {
-     inputType='number';
   }
 
   if( appendPercentage )
@@ -605,18 +600,20 @@ export const SetupOP=(props)=>{
           {close => (
             <div className={'d-flex flex-column'} style={{backgroundColor:`${styles.cciBgColor}`}} >
             <div className={'d-flex justify-content-between'}>
-              <SetupComponentOp
+              <NumberInput
                 title='employee-count-quantity'
                 id={-1}
-                cellCnt={2}
+                cellCnt={3}
+                mrpInputType='operations'
                 value={props.component.operation.employeeCount}
                 component={props.component}
                 handler={setEmployeeCount}/>
               <hr className={dividerCCS.hDividerClassName }  style={dividerCCS.vDividerStyle}/>    
-               <SetupComponentOp
-                title='employee-count-quantity'
+               <NumberInput
+                title='time-pre-component-per-employee-quantity'
                 id={-1}
-                cellCnt={2}
+                cellCnt={3}
+                mrpInputType='operations'
                 value={props.component.operation.averageTimePerComponentPerEmployee}
                 component={props.component}
                 handler={setTimePerComponentPerEmployee} /> 
@@ -630,18 +627,20 @@ export const SetupOP=(props)=>{
             <hr className={dividerCCS.hDividerClassName} style={dividerCCS.hDividerStyle}/>
 
             <div className={'d-flex  justify-content-between'}>
-                <SetupComponentOp
+                <NumberInput
                     title='daily-time-capacity-per-person-quantity'
                     id={-1}
                     cellCnt={2}
+                    mrpInputType='operations'
                     value={props.component.operation.dailyTimeCapacityPerEmployee}
                     component={props.component}
                     handler={setDailyTimeCapacity}/>
                 <hr className={dividerCCS.hDividerClassName }  style={dividerCCS.vDividerStyle}/>    
-                 <SetupComponentOp
-                    title='daily-time-capacity-per-person-quantity'
+                 <NumberInput
+                    title='average-hourly-cost-quantity'
                     id={-1}
                     cellCnt={2}
+                    mrpInputType='operations'
                     value={props.component.operation.averageHourlyCost}
                     component={props.component}
                     handler={setHourlyCost}/>
@@ -654,18 +653,20 @@ export const SetupOP=(props)=>{
             <hr className={dividerCCS.hDividerClassName} style={dividerCCS.hDividerStyle}/>
 
             <div className={'d-flex  justify-content-between'}>
-                  <SetupComponentOp
+                  <NumberInput
                       title='daily-overtime-capacity-quantity'
                       cellCnt={2}
                       id={-1}
+                      mrpInputType='operations'
                       value={props.component.operation.dailyOvertimeCapacityPerEmployee}
                       component={props.component}
                       handler={setDailyOvertimeCapacity}/>
                   <hr className={dividerCCS.hDividerClassName }  style={dividerCCS.vDividerStyle}/>    
-                  <SetupComponentOp
+                  <NumberInput
                       title='average-overtime-hourly-cost-quantity'
                       id={-1}
                       cellCnt={2}
+                      mrpInputType='operations'
                       value={props.component.operation.averageHourlyOvertimeCost}
                 component={props.component}
                       handler={setHourlyOvertimeCost}/>
@@ -678,20 +679,22 @@ export const SetupOP=(props)=>{
             <hr className={dividerCCS.hDividerClassName} style={dividerCCS.hDividerStyle}/>
 
             <div className={'d-flex  justify-content-between'}>
-                <SetupComponentOp
+                <NumberInput
                     title='min-allowed-employee-per-shift-quantity'
                     id={-1}
                     cellCnt={2}
+                    mrpInputType='operations'
                     value={props.component.operation.minAllowedEmployeePerShift}
-                component={props.component}
+                    component={props.component}
                     handler={setMinAllowedEmployee}/>
 
                 <hr className={dividerCCS.hDividerClassName }  style={dividerCCS.vDividerStyle}/>    
 
-                <SetupComponentOp
+                <NumberInput
                     title='max-allowed-employee-per-shift-quantity'
                     id={-1}
                     cellCnt={2}
+                    mrpInputType='operations'
                     value={props.component.operation.minAllowedEmployeePerShift}
                     component={props.component}
                     handler={setMaxAllowedEmployee}/>
@@ -704,22 +707,24 @@ export const SetupOP=(props)=>{
             <hr className={dividerCCS.hDividerClassName} style={dividerCCS.hDividerStyle}/>
 
             <div className={'d-flex  justify-content-between'}>
-                <SetupComponentOp
+                <NumberInput
                     title='hiring-cost-quantity'
                     id={-1}
                     cellCnt={2}
+                    mrpInputType='operations'
                     value={props.component.operation.averageHiringCostPerEmployee}
-                component={props.component}
+                    component={props.component}
                     handler={setAverageHiringCost}/>
 
                 <hr className={dividerCCS.hDividerClassName }  style={dividerCCS.vDividerStyle}/>    
 
-                <SetupComponentOp
+                <NumberInput
                     title='dismissal-cost-quantity'
                     id={-1}
                     cellCnt={2}
+                    mrpInputType='operations'
                     value={props.component.operation.averageDismissalCostPerEmployee}
-                component={props.component}
+                    component={props.component}
                     handler={setDismissalCost}/>
 
                 <i id={`${props.component.displayLogic.key}-SetupOP`}
@@ -731,21 +736,22 @@ export const SetupOP=(props)=>{
             <hr className={dividerCCS.hDividerClassName }  style={dividerCCS.hDividerStyle}/>    
 
             <div className={'d-flex  justify-content-between'}>
-                <SetupComponentOp
+                <NumberInput
                     title='setup-cost-quantity'
                     id={-1}
                     cellCnt={2}
+                    mrpInputType='operations'
                     value={props.component.operation.setupCost }
                     component={props.component}
                     handler={setSetupCost}/>
                 <hr className={dividerCCS.hDividerClassName }  style={dividerCCS.vDividerStyle}/>    
                 <SetupComponentOp
-              title='scrap-rate'
+                  title='scrap-rate'
                   id={-1}
                   cellCnt={2}
                   value={props.component.operation.scrapRate }
-              component={props.component}
-              handler={setScrapRate}/>
+                  component={props.component}
+                  handler={setScrapRate}/>
                 <i id={`${props.component.displayLogic.key}-SetupOP`}
                   className='text-danger m-0 py-1 px-1 fas fw fa-times-circle cursor-pointer'
                   style={{backgroundColor: `${styles.cciBgColor}`}}
@@ -786,9 +792,10 @@ export const SetupOP=(props)=>{
                 title='start-product-date'
                   id={-1}
                   cellCnt={2}
+                  mrpInputType='operations'
                   value={props.component.operation.startDate }
-                component={props.component}
-                handler={setStartDate}/>
+                  component={props.component}
+                  handler={setStartDate}/>
 
               <hr className={dividerCCS.hDividerClassName }  style={dividerCCS.vDividerStyle}/>    
 
