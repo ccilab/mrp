@@ -8,6 +8,7 @@ import { dividerCCS, isValidString, isValidValue, getRandomInt } from "./CCiLabU
 import {DateInput} from "./CCiLabDateInput"
 import {NumberInput} from "./CCiLabNumberInput"
 import {TextInput} from "./CCiLabTextInput"
+import {PercentageInput} from "./CCiLabPercentageInput"
 
 const SetupComponentIR=(props)=>{
   const { t } = useTranslation(['inventoryRecords','commands'], {useSuspense: false});
@@ -714,10 +715,11 @@ export const SetupIRF=(props)=>{
                 <hr className={dividerCCS.hDividerClassName } style={dividerCCS.hDividerStyle}/>
 
                 <div className={'d-flex  justify-content-between'}>
-                  <SetupComponentIR
+                  <PercentageInput
                       title='interest-rate'
                       id={-1}
                       cellCnt={1}
+                      mrpInputType='inventoryRecords'
                       value={props.component.irf.interest }
                       component={props.component}
                       handler={setInterest}/>
