@@ -849,7 +849,7 @@ export class CCiLabComponentList extends Component {
     }
 
     // initialize first component's childKeyIds, reorder in following order: the first component, alarm status, warning status, no_issue status
-    componentWillMount=()=>{
+    UNSAFE_componentWillMount=()=>{
       this.init();
 
       TextResizeDetector.TARGET_ELEMENT_ID = 'temp-item';
