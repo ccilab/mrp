@@ -77,7 +77,7 @@ class Popup extends React.PureComponent {
     }
   }
 
-  componentWillReceiveProps=(nextProps)=>{
+  UNSAFE_componentWillReceiveProps=(nextProps)=>{
     if (this.props.open === nextProps.open) return;
     if (nextProps.open) this.openPopup();
     else this.closePopup();
