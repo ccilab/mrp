@@ -7,101 +7,9 @@ import styles from "./../../dist/css/ccilab-component-list.css"
 import { dividerCCS, isValidString, isValidValue, getRandomInt } from "./CCiLabUtility";
 import {DateInput} from "./CCiLabDateInput"
 import {NumberInput} from "./CCiLabNumberInput"
-
-// popup menu class doesn't support bootstrap e.g. d-flex, flex-fill class or native flex
-// const trigger = this.TriggerEl.getBoundingClientRect(); calculates static size of trigger element
-const SetupComponentPDP=(props)=>{
-  const { t } = useTranslation(['component','commands'], {useSuspense: false});
-
-  let inputValue = (props.value === null)? '': props.value;
-
-  let inputClassName = 'text-primary m-0 p-0 border-0 cursor-pointer';
-  let cellWidth = (typeof props.cellCnt !== 'undefined' && props.cellCnt === 1) ?  '20rem' : '10rem'; 
-  let inputStyle={'backgroundColor': `${styles.cciBgColor}`, width: `${cellWidth}`};
-  let inputType='text';
-  let tooltipOnMode=['click','hover'];
-  let tooltipPosition='top left';
-  let inputName=props.title;
-
-  if( props.title.includes('customer-name'))
-  {
-    tooltipPosition='bottom left';
-  }
+import {TextInput} from "./CCiLabTextInput"
 
 
-  const [input, setInput] = useState(`${inputValue}`); // '' is the initial state value
-
-  const filterInputValue=( e )=>{
-      // https://stackoverflow.com/questions/10023845/regex-in-javascript-for-validating-decimal-numbers
-      // https://regexr.com/ test expression
-      setInput(e.target.value);
-  };
-
-  // https://blog.bitsrc.io/understanding-currying-in-javascript-ceb2188c339
-  const updateValue=(props)=>(e)=>{
-    onUpdateValueEnterKey( props, e.target);
-  }
-
-  const onUpdateValueEnterKey=(props, target )=>{
-    if( typeof props.handler !== 'undefined')
-    {
-      console.log("SetupComponentPDP - updateValue: " + target.value);
-
-      props.handler(props.id, target.value, props.component);
-
-    }
-  }
-
-  const enterKeyHandler=(e)=>{
-    if( typeof e.key !== 'undefined' && e.key ==='Enter')
-    {
-        onUpdateValueEnterKey(props, e.target);
-    }
-  };
-
-  const updateChange=(props)=>(e)=>{
-    console.log("SetupComponentPDP - updateChange: " + e.target.value);
-  }
-
-
-
-  // https://medium.freecodecamp.org/reactjs-pass-parameters-to-event-handlers-ca1f5c422b9
-  return (
-    <div style={{backgroundColor: `${styles.cciBgColor}`}}>
-        <Popup
-            trigger={
-              // inputClassName = 'text-primary m-0 p-0 border-0 cursor-pointer'
-              <input className={`${inputClassName}`}
-                    id={inputName}
-                    type={`${inputType}`}
-                    style={inputStyle}
-                    placeholder={t(`component:${props.title}`)}
-                    name={inputName}
-                    value={ input }
-                    min = { inputType.includes('number') ? 1 : null}
-                    onChange={updateChange(props)}
-                    onClose={updateValue(props)}
-                    onInput={(e)=>{filterInputValue(e)}}
-                    onKeyPress={ (e)=>enterKeyHandler(e) }
-                    onBlur={ updateValue(props)}/>
-            }
-            id={`${props.component.displayLogic.key}-tooltip`}
-            position={tooltipPosition}
-            closeOnDocumentClick
-            on={tooltipOnMode}
-            arrow={true}
-            arrowStyle={{backgroundColor: 'white'}}
-            mouseLeaveDelay={0}
-            mouseEnterDelay={0}
-            contentStyle={{ padding: '0px'}}
-            >
-            <div className='text-nowrap m-0 px-1'>
-              {t(`component:${props.title}`)}
-            </div>
-        </Popup>
-    </div>
-  );
-}
 
 export const initializePDP=( component )=>{
   let pdp= JSON.parse(sessionStorage.getItem(`${component.displayLogic.key}_${component.businessLogic.name}_pdp`)) || _initializeMPS();
@@ -351,10 +259,11 @@ export const SetupPDP=(props)=>{
           {close => (      
               <div className={'d-flex flex-column'} style={{backgroundColor:`${styles.cciBgColor}`}}>
                 <div className={'d-flex justify-content-between'} >
-                  <SetupComponentPDP
+                  <TextInput
                     title='customer-name'
                     id={-1}
-                    cellCnt={1}
+                    cellCnt={3}
+                    mrpInputType='component'
                     value={props.component.pdp.customer} //array of demands for each period 
                     component={props.component}
                     handler={setCustomerName}/>
@@ -367,10 +276,11 @@ export const SetupPDP=(props)=>{
                 <hr className={dividerCCS.hDividerClassName} style={dividerCCS.hDividerStyle}/>
 
                 <div className={'d-flex justify-content-between'} >
-                  <SetupComponentPDP
+                  <TextInput
                     title='customer-order-number'
                     id={-1}
                     cellCnt={1}
+                    mrpInputType='component'
                     value={props.component.pdp.orderNumber} //array of demands for each period 
                     component={props.component}
                     handler={setCustomerOrder}/>

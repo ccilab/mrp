@@ -7,6 +7,7 @@ import styles from "./../../dist/css/ccilab-component-list.css"
 import { dividerCCS, isValidString, isValidValue, getRandomInt } from "./CCiLabUtility";
 import {DateInput} from "./CCiLabDateInput"
 import {NumberInput} from "./CCiLabNumberInput"
+import {TextInput} from "./CCiLabTextInput"
 
 const SetupComponentIR=(props)=>{
   const { t } = useTranslation(['inventoryRecords','commands'], {useSuspense: false});
@@ -24,12 +25,6 @@ const SetupComponentIR=(props)=>{
   let appendPercentage = props.title.includes('-rate')  ? true : false;
 
   let rateInputElement = React.createRef();
-
-
-  if( props.title.includes('inventory-on-hand'))
-  {
-    tooltipPosition='bottom left';
-  }
 
   if( props.title.includes('procurement-type'))
   {
@@ -80,15 +75,6 @@ const SetupComponentIR=(props)=>{
     if( typeof props.handler !== 'undefined')
     {
       let value = target.value;
-      if( props.title.includes('max-allowed-ending-inventory-quantity') )
-      {
-        let _value=parseFloat(value);
-        if( isNaN(_value) || _value < props.component.irf.minAllowedEndingInventory )
-        {
-          value=props.component.irf.minAllowedEndingInventory;
-          setInput(value);
-        }
-      }
       console.log("SetupComponentIR - updateValue: " + target.value);
 
       props.handler(props.id, value, props.component);
@@ -103,10 +89,10 @@ const SetupComponentIR=(props)=>{
       {
         rateAppendPercentage(rateInputElement.current.value);
       }
-      else
-      {
-        onUpdateValueEnterKey(props, e.target);
-      }
+      // else
+      // {
+      //   onUpdateValueEnterKey(props, e.target);
+      // }
     }
   };
 
@@ -635,23 +621,25 @@ export const SetupIRF=(props)=>{
 
               { ( procurementType === 'Purchase' ? 
                   <div className={'d-flex  justify-content-between'}>
-                    <SetupComponentIR
-                    title='supplier-name'
-                    id={-1}
-                    cellCnt={2}
-                    value={props.component.irf.supplier }
-                component={props.component}
-                    handler={setSupplier}/>
+                    <TextInput
+                      title='supplier-name'
+                      id={-1}
+                      cellCnt={2}
+                      mrpInputType='inventoryRecords'
+                      value={props.component.irf.supplier }
+                      component={props.component}
+                      handler={setSupplier}/>
 
                     <hr className={dividerCCS.hDividerClassName }  style={dividerCCS.vDividerStyle}/>
 
-                    <SetupComponentIR
-                    title='supplied-part-number'
-                    id={-1}
-                    cellCnt={2}
-                    value={props.component.irf.supplierPartNumber }
-                component={props.component}
-                    handler={setSupplierPartNumber}/>
+                    <TextInput
+                      title='supplied-part-number'
+                      id={-1}
+                      cellCnt={2}
+                      mrpInputType='inventoryRecords'
+                      value={props.component.irf.supplierPartNumber }
+                      component={props.component}
+                      handler={setSupplierPartNumber}/>
 
                     <i id={`${props.component.displayLogic.key}-SetupIRF`}
                       className='text-danger m-0 py-1 px-1 fas fw fa-times-circle cursor-pointer'

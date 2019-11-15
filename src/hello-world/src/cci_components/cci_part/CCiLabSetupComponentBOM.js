@@ -5,168 +5,9 @@ import { useTranslation } from 'react-i18next';
 import styles from "./../../dist/css/ccilab-component-list.css"
 
 import { dividerCCS, isValidString, isValidValue } from "./CCiLabUtility";
+import {NumberInput} from "./CCiLabNumberInput"
+import {TextInput} from "./CCiLabTextInput"
 
-
-const SetupComponentBOM=(props)=>{
-  const { t } = useTranslation(['component','commands'], {useSuspense: false});
-
-  let inputValue = (props.value === null)? '': props.value;
-
-  let inputClassName = 'text-primary m-0 p-0 border-0 cursor-pointer';
-  let cellWidth = (typeof props.cellCnt !== 'undefined' && props.cellCnt === 1) ?  '20rem' : '10rem';
-  let inputStyle={'backgroundColor': `${styles.cciBgColor}`, width: `${cellWidth}`};
-  let inputType='text';
-  let tooltipOnMode=['click','hover'];
-  let tooltipPosition='top left';
-  let inputName=props.title;
-  let appendPercentage = props.title.includes('-rate')  ? true : false;
-
-  let rateInputElement = React.createRef();
-
-  if( props.value === 'add-part')
-  {
-    inputValue = '';
-  }
-
-  if( props.title.includes('part-name'))
-  {
-    tooltipPosition='bottom left';
-  }
-
-  if( props.title.includes('-date') )
-  {
-    inputType='date';
-  }
-
-  if( props.title.includes('procurement-type'))
-  {
-    inputClassName = 'm-0 p-0 border-0 cursor-pointer';
-    inputStyle={'backgroundColor': `${styles.cciBgColor}`, 'height':'1em','width':'1em'};
-    inputType='radio';
-  }
-
-  if( props.title.includes('-quantity') )
-  {
-     inputType='number';
-  }
-
-  if( appendPercentage )
-  {
-    let value =  parseFloat(inputValue);
-    if( isNaN( value ) )
-      inputValue='';
-    else
-      inputValue = value + '(%)';
-  }
-
-
-  const [input, setInput] = useState(`${inputValue}`); // '' is the initial state value
-
-  const filterInputValue=( e )=>{
-      // https://stackoverflow.com/questions/10023845/regex-in-javascript-for-validating-decimal-numbers
-      // https://regexr.com/ test expression
-      setInput(e.target.value);
-  };
-
-  const rateAppendPercentage=(_value)=>{
-    let value=parseFloat(_value);
-    if( isNaN(value) )
-      value='';
-    else
-      value += value ? ' (%)' : '';
-
-    setInput(value);
-  };
-
-  const onBlurHandler=(e)=>{
-    rateAppendPercentage(e.target.value);
-  };
-
-  // https://blog.bitsrc.io/understanding-currying-in-javascript-ceb2188c339
-  const updateValue=(props)=>(e)=>{
-    //   if( typeof props.handler !== 'undefined')
-    //   {
-    //     if( typeof e.target !== 'undefined' && e.target.value === '' && props.title ==='part-name')
-    //       e.target.value = 'add-part';
-
-    //     console.log("SetupComponentBOM - updateValue: " + e.target.value);
-
-    //     props.handler(e.target.value, props.component);
-    //   }
-    onUpdateValueEnterKey( props, e.target);
-  }
-
-  const onUpdateValueEnterKey=(props, target )=>{
-    if( typeof props.handler !== 'undefined')
-    {
-      if( typeof target !== 'undefined' && target.value === '' && props.title ==='part-name')
-        target.value = 'add-part';
-
-      console.log("SetupComponentBOM - updateValue: " + target.value);
-
-      props.handler(target.value, props.component);
-
-    }
-  }
-
-  const enterKeyHandler=(e)=>{
-    if( typeof e.key !== 'undefined' && e.key ==='Enter')
-    {
-      if( appendPercentage )
-      {
-        rateAppendPercentage(rateInputElement.current.value);
-      }
-      else
-      {
-        onUpdateValueEnterKey(props, e.target);
-      }
-    }
-  };
-
-  const updateChange=(props)=>(e)=>{
-    console.log("SetupComponentBOM - updateChange: " + e.target.value);
-  }
-
-
-
-  // https://medium.freecodecamp.org/reactjs-pass-parameters-to-event-handlers-ca1f5c422b9
-  return (
-    <div className='d-flex justify-content-between'
-         style={{backgroundColor: `${styles.cciBgColor}`}}>
-          <Popup
-              trigger={
-                <input className={`${inputClassName}`}
-                      ref={ appendPercentage? rateInputElement : null }
-                      id={inputName}
-                      type={`${inputType}`}
-                      style={inputStyle}
-                      placeholder={t(`component:${props.title}`)}
-                      name={inputName}
-                      value={ input }
-                      min = { inputType.includes('number') ? 1 : null}
-                      onChange={appendPercentage ? updateValue(props) : updateChange(props)}
-                      onClose={updateValue(props)}
-                      onInput={(e)=>{filterInputValue(e)}}
-                      onKeyPress={ (e)=>enterKeyHandler(e) }
-                      onBlur={ appendPercentage ? (e)=>{onBlurHandler(e)} :updateValue(props)}/>
-              }
-              id={`${props.component.displayLogic.key}-tooltip`}
-              position={tooltipPosition}
-              closeOnDocumentClick
-              on={tooltipOnMode}
-              arrow={true}
-              arrowStyle={{backgroundColor: 'white'}}
-              mouseLeaveDelay={0}
-              mouseEnterDelay={0}
-              contentStyle={{ padding: '0px'}}
-              >
-              <div className='text-nowrap m-0 px-1'>
-                {t(`component:${props.title}`)}
-              </div>
-          </Popup>
-    </div>
-  );
-}
 
 export const CanEnableInlineMenu = ( component )=>{
   if( isValidString( component.businessLogic.name) &&
@@ -409,9 +250,10 @@ export const SetupBOM=(props)=>{
           {close => (
             <div className={'d-flex flex-column'} style={{backgroundColor:`${styles.cciBgColor}`}}>
             <div className={'d-flex  justify-content-between'}>
-              <SetupComponentBOM
+              <TextInput
                 title='part-name'
-                cellCnt={1}
+                cellCnt={3}
+                mrpInputType='component'
                 value={props.component.businessLogic.name}
                 component={props.component}
                 handler={setPartName}/>
@@ -424,8 +266,10 @@ export const SetupBOM=(props)=>{
             <hr  className={dividerCCS.hDividerClassName} style={dividerCCS.hDividerStyle}/>
             
             <div className={'d-flex  justify-content-between'}>
-            <SetupComponentBOM
+            <TextInput
                 title='part-number'
+                cellCnt={1}
+                mrpInputType='component'
                 value={props.component.bom.core.partNumber}
                 component={props.component}
                 handler={setPartNumber}/>
@@ -442,11 +286,11 @@ export const SetupBOM=(props)=>{
                 <div className={'d-flex  justify-content-between'}>
                   
 
-              <SetupComponentBOM
+              <NumberInput
                 title='unit-quantity'
-                    cellCnt={1}
-                // value='' input will show placeholder text
-                value={ props.component.bom.core.unitQty}
+                cellCnt={1}
+                mrpInputType='component'
+                value={ props.component.bom.core.unitQty} // value='' input field shows placeholder text
                 component={props.component}
                 handler={setUnitQty}/>
 
@@ -461,9 +305,10 @@ export const SetupBOM=(props)=>{
             <hr  className={dividerCCS.hDividerClassName} style={dividerCCS.hDividerStyle}/>
 
             <div className={'d-flex  justify-content-between'}>
-            <SetupComponentBOM
+            <TextInput
                 title='unit-of-measure'
-                  cellCnt={1}
+                cellCnt={1}
+                mrpInputType='component'
                 value={props.component.bom.core.unitOfMeasure }
                 component={props.component}
                 handler={setUnitOfMeasure}/>

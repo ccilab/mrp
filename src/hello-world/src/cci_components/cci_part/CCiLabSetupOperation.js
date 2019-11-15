@@ -7,6 +7,7 @@ import styles from "./../../dist/css/ccilab-component-list.css"
 import { dividerCCS, isValidString, isValidValue, getRandomInt } from "./CCiLabUtility";
 import {DateInput} from "./CCiLabDateInput"
 import {NumberInput} from "./CCiLabNumberInput"
+import {TextInput} from "./CCiLabTextInput"
 
 const SetupComponentOp=(props)=>{
   const { t } = useTranslation(['operations','commands'], {useSuspense: false});
@@ -23,11 +24,6 @@ const SetupComponentOp=(props)=>{
   let appendPercentage = props.title.includes('-rate')  ? true : false;
 
   let rateInputElement = React.createRef();
-
-  if( props.title.includes('employee-count') || props.title.includes('component-per-employee') )
-  {
-    tooltipPosition='bottom left';
-  }
 
   if( appendPercentage )
   {
@@ -102,10 +98,6 @@ const SetupComponentOp=(props)=>{
     }
   };
 
-  const updateChange=(props)=>(e)=>{
-    console.log("SetupComponentOp - updateChange: " + e.target.value);
-  }
-
 
 
   // https://medium.freecodecamp.org/reactjs-pass-parameters-to-event-handlers-ca1f5c422b9
@@ -123,11 +115,11 @@ const SetupComponentOp=(props)=>{
                       name={inputName}
                       value={ input }
                       min = { inputType.includes('number') ? 1 : null}
-                      onChange={appendPercentage ? updateValue(props) : updateChange(props)}
+                      onChange={ updateValue(props) }
                       onClose={updateValue(props)}
                       onInput={(e)=>{filterInputValue(e)}}
                       onKeyPress={ (e)=>enterKeyHandler(e) }
-                      onBlur={ appendPercentage ? (e)=>{onBlurHandler(e)} :updateValue(props)}/>
+                      onBlur={ (e)=>{onBlurHandler(e)} }/>
               }
               id={`${props.component.displayLogic.key}-tooltip`}
               position={tooltipPosition}
@@ -505,20 +497,22 @@ export const SetupOP=(props)=>{
   return(
     <div>
     <div key={uniqueKey} className={'d-flex justify-content-between'} >  
-      <SetupComponentOp
+      <TextInput
          title='shift'   //array of completed date for each required quantity
          id={index}
          cellCnt={2}
+         mrpInputType='operations'
          value={ shiftName }
          component={props.component}
          handler={setShiftName}/>
 
      <hr className={dividerCCS.hDividerClassName }  style={dividerCCS.vDividerStyle}/>    
      
-     <SetupComponentOp
+     <TextInput
          title='team-name'
          id={index}
          cellCnt={2}
+         mrpInputType='operations'
          value={( teamName !== null ) ? teamName : ''} //array of demands for each period 
          component={props.component}
          handler={setShiftTeamName}/>
@@ -761,20 +755,22 @@ export const SetupOP=(props)=>{
             <hr className={dividerCCS.hDividerClassName} style={dividerCCS.hDividerStyle}/>
 
             <div className={'d-flex  justify-content-between'}>
-                <SetupComponentOp
+                <TextInput
                     title='input-warehouse-name'
                     id={-1}
                     cellCnt={2}
+                    mrpInputType='operations'
                     value={props.component.operation.inputWarehouse }
                 component={props.component}
                     handler={setInputWarehouse}/>
 
                 <hr className={dividerCCS.hDividerClassName }  style={dividerCCS.vDividerStyle}/>    
 
-                <SetupComponentOp
+                <TextInput
                   title='output-warehouse-name'
                   id={-1}
                   cellCnt={2}
+                  mrpInputType='operations'
                   value={props.component.operation.outputWarehouse }
                   component={props.component}
                   handler={setOutputWarehouse}/>
@@ -799,12 +795,13 @@ export const SetupOP=(props)=>{
 
               <hr className={dividerCCS.hDividerClassName }  style={dividerCCS.vDividerStyle}/>    
 
-              <SetupComponentOp
+              <TextInput
                   title='workshop'
                   id={-1}
                   cellCnt={2}
+                  mrpInputType='operations'
                   value={props.component.operation.workshop }
-                component={props.component}
+                  component={props.component}
                   handler={setWorkshop}/>
 
               <i id={`${props.component.displayLogic.key}-SetupOP`}

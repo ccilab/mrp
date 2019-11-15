@@ -5,7 +5,7 @@ import { useTranslation } from 'react-i18next';
 import styles from "./../../dist/css/ccilab-component-list.css"
 
 export const NumberInput=(props)=>{
-    const { t } = useTranslation([`${props.mrpInputType}`,'commands'], {useSuspense: false});
+  const { t } = useTranslation([`${props.mrpInputType}`,'commands'], {useSuspense: false});
 
   let inputValue = (props.value === null)? '': props.value;
 
@@ -46,7 +46,7 @@ export const NumberInput=(props)=>{
           setInput(value);
         }
       }
-      console.log("SetupComponentIR - updateValue: " + target.value);
+      console.log("NumberInput - updateValue: " + target.value);
 
       props.handler(props.id, value, props.component);
 
@@ -61,7 +61,7 @@ export const NumberInput=(props)=>{
   };
 
   const updateChange=(props)=>(e)=>{
-    console.log("SetupComponentIR - updateChange: " + e.target.value);
+    console.log("NumberInput - updateChange: " + e.target.value);
   }
 
 
