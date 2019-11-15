@@ -365,7 +365,7 @@ export const SetupOP=(props)=>{
 
  const renderShiftInfoInput=(uniqueKey, index, shiftName, teamName, isLastElement )=>{
   return(
-    <div>
+    <div key={uniqueKey+1}>
     <div key={uniqueKey} className={'d-flex justify-content-between'} >  
       <TextInput
          title='shift'   //array of completed date for each required quantity

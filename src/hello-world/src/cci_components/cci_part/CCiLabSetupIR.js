@@ -22,10 +22,6 @@ const SetupComponentIR=(props)=>{
   let tooltipOnMode=['click','hover'];
   let tooltipPosition='top left';
   let inputName=props.title;
-  let inputProcurementType = props.title.includes('procurement-type') ? true : false;
-  let appendPercentage = props.title.includes('-rate')  ? true : false;
-
-  let rateInputElement = React.createRef();
 
   if( props.title.includes('procurement-type'))
   {
@@ -33,39 +29,6 @@ const SetupComponentIR=(props)=>{
     inputStyle={'backgroundColor': `${styles.cciBgColor}`, 'height':'20px','width':'20px'};
     inputType='radio';
   }
-
-
-  if( appendPercentage )
-  {
-    let value =  parseFloat(inputValue);
-    if( isNaN( value ) )
-      inputValue='';
-    else
-      inputValue = value + '(%)';
-  }
-
-
-  const [input, setInput] = useState(`${inputValue}`); // '' is the initial state value
-
-  const filterInputValue=( e )=>{
-      // https://stackoverflow.com/questions/10023845/regex-in-javascript-for-validating-decimal-numbers
-      // https://regexr.com/ test expression
-      setInput(e.target.value);
-  };
-
-  const rateAppendPercentage=(_value)=>{
-    let value=parseFloat(_value);
-    if( isNaN(value) )
-      value='';
-    else
-      value += value ? ' (%)' : '';
-
-    setInput(value);
-  };
-
-  const onBlurHandler=(e)=>{
-    rateAppendPercentage(e.target.value);
-  };
 
   // https://blog.bitsrc.io/understanding-currying-in-javascript-ceb2188c339
   const updateValue=(props)=>(e)=>{
@@ -83,19 +46,6 @@ const SetupComponentIR=(props)=>{
     }
   }
 
-  const enterKeyHandler=(e)=>{
-    if( typeof e.key !== 'undefined' && e.key ==='Enter')
-    {
-      if( appendPercentage )
-      {
-        rateAppendPercentage(rateInputElement.current.value);
-      }
-      // else
-      // {
-      //   onUpdateValueEnterKey(props, e.target);
-      // }
-    }
-  };
 
 
 
@@ -104,7 +54,6 @@ const SetupComponentIR=(props)=>{
   // return (className='d-flex justify-content-between'
   return (
     <div style={{backgroundColor: `${styles.cciBgColor}`}}>
-       { inputProcurementType ?
           <Popup
             trigger={
               // <div className='d-flex  justify-content-between'>
@@ -157,40 +106,6 @@ const SetupComponentIR=(props)=>{
               {t(`inventoryRecords:${props.title}`)}
             </div>
         </Popup>
-          :
-          <Popup
-              trigger={
-                <input key={props.id}
-                      className={`${inputClassName}`}
-                      ref={ rateInputElement  }
-                      id={inputName}
-                      type={`${inputType}`}
-                      style={inputStyle}
-                      placeholder={t(`inventoryRecords:${props.title}`)}
-                      name={inputName}
-                      value={ input }
-                      min = {null}
-                      onChange={ updateValue(props) }
-                      onClose={updateValue(props)}
-                      onInput={(e)=>{filterInputValue(e)}}
-                      onKeyPress={ (e)=>enterKeyHandler(e) }
-                      onBlur={  (e)=>{onBlurHandler(e)} }/>
-              }
-              id={`${props.component.displayLogic.key}-tooltip`}
-              position={tooltipPosition}
-              closeOnDocumentClick
-              on={tooltipOnMode}
-              arrow={true}
-              arrowStyle={{backgroundColor: 'white'}}
-              mouseLeaveDelay={0}
-              mouseEnterDelay={0}
-              contentStyle={{ padding: '0px'}}
-              >
-              <div className='text-nowrap m-0 px-1'>
-                {t(`inventoryRecords:${props.title}`)}
-              </div>
-          </Popup>
-       }
 
     </div>
   );
@@ -480,7 +395,7 @@ export const SetupIRF=(props)=>{
 
  const renderSRInput=(uniqueKey, index, srDate, demand, isLastElement )=>{
   return(
-    <div>
+    <div key={uniqueKey+1}>
       <div key={uniqueKey} className={'d-flex  justify-content-between'}>  
         <DateInput
          title='scheduled-receipts-date'   //array of completed date for each required quantity
