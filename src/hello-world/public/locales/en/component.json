@@ -18,9 +18,9 @@
     "material": "Raw Material",
     "description": "Description",
     "note": "Note",
-    "updated-by-user": "logged by this user:",
-    "given-user-name": "Given Name",
-    "family-user-name": "Family Name",
+    "updated-by-user": "Input user name:",
+    "given-user-name": "* Given Name",
+    "family-user-name": "* Family Name",
     "actual-quantity-per-shift": "Enter the actual quantity produced/consumed by the shift",
     "required-quantity-per-shift":"Needs: ",
     "shift-product-record-date-time": "recorded date and time",
@@ -39,5 +39,7 @@
     "th-no-image-name": " ... [ Image is not available ]",
     "th-component-count":"Component Count",
     "th-bom-level":"BOM Level",
-    "th-part-name": "Part Name"
+    "th-part-name": "Part Name",
+    "team-name": "team name",
+    "shift": "* shift name"
 }

@@ -5,79 +5,25 @@ import { useTranslation } from 'react-i18next';
 import styles from "./../../dist/css/ccilab-component-list.css"
 
 import { dividerCCS, isValidString, isValidValue, getRandomInt } from "./CCiLabUtility";
+import {DateInput} from "./CCiLabDateInput"
+import {NumberInput} from "./CCiLabNumberInput"
+import {TextInput} from "./CCiLabTextInput"
+import {PercentageInput} from "./CCiLabPercentageInput"
 
-
-const SetupComponentIR=(props)=>{
+const ProcurementTypeInput=(props)=>{
   const { t } = useTranslation(['inventoryRecords','commands'], {useSuspense: false});
 
   let inputValue = (props.value === null)? '': props.value;
 
-  let inputClassName = 'text-primary m-0 p-0 border-0 cursor-pointer';
-  let cellWidth = (typeof props.cellCnt !== 'undefined' && props.cellCnt === 1) ?  '20rem' : '10rem';
-  let inputStyle={'backgroundColor': `${styles.cciBgColor}`, width: `${cellWidth}`};
-  let inputType='text';
+  let inputClassName = 'my-1 p-0 border-0 cursor-pointer';
+  let inputStyle={'backgroundColor': `${styles.cciBgColor}`, 'height':'1em','width':'1em'};
+  let inputType='radio';
   let tooltipOnMode=['click','hover'];
   let tooltipPosition='top left';
   let inputName=props.title;
-  let inputProcurementType = props.title.includes('procurement-type') ? true : false;
-  let appendPercentage = props.title.includes('-rate')  ? true : false;
 
-  let rateInputElement = React.createRef();
-
-
-  if( props.title.includes('inventory-on-hand'))
-  {
-    tooltipPosition='bottom left';
-  }
-
-  if( props.title.includes('-date') )
-  {
-    inputType='date';
-  }
-
-  if( props.title.includes('procurement-type'))
-  {
-    inputClassName = 'm-0 p-0 border-0 cursor-pointer';
-    inputStyle={'backgroundColor': `${styles.cciBgColor}`, 'height':'20px','width':'20px'};
-    inputType='radio';
-  }
-
-  if( props.title.includes('-quantity') )
-  {
-     inputType='number';
-  }
-
-  if( appendPercentage )
-  {
-    let value =  parseFloat(inputValue);
-    if( isNaN( value ) )
-      inputValue='';
-    else
-      inputValue = value + '(%)';
-  }
-
-
-  const [input, setInput] = useState(`${inputValue}`); // '' is the initial state value
-
-  const filterInputValue=( e )=>{
-      // https://stackoverflow.com/questions/10023845/regex-in-javascript-for-validating-decimal-numbers
-      // https://regexr.com/ test expression
-      setInput(e.target.value);
-  };
-
-  const rateAppendPercentage=(_value)=>{
-    let value=parseFloat(_value);
-    if( isNaN(value) )
-      value='';
-    else
-      value += value ? ' (%)' : '';
-
-    setInput(value);
-  };
-
-  const onBlurHandler=(e)=>{
-    rateAppendPercentage(e.target.value);
-  };
+  
+  
 
   // https://blog.bitsrc.io/understanding-currying-in-javascript-ceb2188c339
   const updateValue=(props)=>(e)=>{
@@ -88,15 +34,6 @@ const SetupComponentIR=(props)=>{
     if( typeof props.handler !== 'undefined')
     {
       let value = target.value;
-      if( props.title.includes('max-allowed-ending-inventory-quantity') )
-      {
-        let _value=parseFloat(value);
-        if( isNaN(_value) || _value < props.component.irf.minAllowedEndingInventory )
-        {
-          value=props.component.irf.minAllowedEndingInventory;
-          setInput(value);
-        }
-      }
       console.log("SetupComponentIR - updateValue: " + target.value);
 
       props.handler(props.id, value, props.component);
@@ -104,23 +41,6 @@ const SetupComponentIR=(props)=>{
     }
   }
 
-  const enterKeyHandler=(e)=>{
-    if( typeof e.key !== 'undefined' && e.key ==='Enter')
-    {
-      if( appendPercentage )
-      {
-        rateAppendPercentage(rateInputElement.current.value);
-      }
-      else
-      {
-        onUpdateValueEnterKey(props, e.target);
-      }
-    }
-  };
-
-  const updateChange=(props)=>(e)=>{
-    console.log("SetupComponentIR - updateChange: " + e.target.value);
-  }
 
 
 
@@ -129,12 +49,11 @@ const SetupComponentIR=(props)=>{
   // return (className='d-flex justify-content-between'
   return (
     <div style={{backgroundColor: `${styles.cciBgColor}`}}>
-       { inputProcurementType ?
           <Popup
             trigger={
               // <div className='d-flex  justify-content-between'>
               <div className='d-flex' >
-                <span className='align-items-center m-0 y-0 border-0' >
+                <span className='d-flex align-items-center m-0 y-0 border-0' >
                   <input className={`${inputClassName}`}
                         id={`${inputName}-1`}
                         type={inputType}
@@ -151,7 +70,7 @@ const SetupComponentIR=(props)=>{
                     </label>
                 </span>
                 {/* <hr className={dividerCCS.hDividerClassName }  style={dividerCCS.vDividerStyle}/> */}
-                <span className='align-items-center m-0 y-0 border-0'>
+                <span className='d-flex align-items-center m-0 y-0 border-0'>
                   <input  className={`${inputClassName}`}
                           id={`${inputName}-2`}
                           type={inputType}
@@ -182,40 +101,6 @@ const SetupComponentIR=(props)=>{
               {t(`inventoryRecords:${props.title}`)}
             </div>
         </Popup>
-          :
-          <Popup
-              trigger={
-                <input key={props.id}
-                      className={`${inputClassName}`}
-                      ref={ appendPercentage? rateInputElement : null }
-                      id={inputName}
-                      type={`${inputType}`}
-                      style={inputStyle}
-                      placeholder={t(`inventoryRecords:${props.title}`)}
-                      name={inputName}
-                      value={ input }
-                      min = { inputType.includes('number') ? 0: null}
-                      onChange={appendPercentage ? updateValue(props) : updateChange(props)}
-                      onClose={updateValue(props)}
-                      onInput={(e)=>{filterInputValue(e)}}
-                      onKeyPress={ (e)=>enterKeyHandler(e) }
-                      onBlur={ appendPercentage ? (e)=>{onBlurHandler(e)} :updateValue(props)}/>
-              }
-              id={`${props.component.displayLogic.key}-tooltip`}
-              position={tooltipPosition}
-              closeOnDocumentClick
-              on={tooltipOnMode}
-              arrow={true}
-              arrowStyle={{backgroundColor: 'white'}}
-              mouseLeaveDelay={0}
-              mouseEnterDelay={0}
-              contentStyle={{ padding: '0px'}}
-              >
-              <div className='text-nowrap m-0 px-1'>
-                {t(`inventoryRecords:${props.title}`)}
-              </div>
-          </Popup>
-       }
 
     </div>
   );
@@ -505,21 +390,23 @@ export const SetupIRF=(props)=>{
 
  const renderSRInput=(uniqueKey, index, srDate, demand, isLastElement )=>{
   return(
-    <div>
+    <div key={uniqueKey+1}>
       <div key={uniqueKey} className={'d-flex  justify-content-between'}>  
-        <SetupComponentIR
+        <DateInput
          title='scheduled-receipts-date'   //array of completed date for each required quantity
          id={index}
          cellCnt={2}
+         mrpInputType='inventoryRecords'
          value={ srDate }
          component={props.component}
          handler={setSRDate}/>
         <hr className={dividerCCS.hDividerClassName }  style={dividerCCS.vDividerStyle}/>
      
-        <SetupComponentIR
+        <NumberInput
          title='scheduled-receipts-quantity'
          id={index}
          cellCnt={2}
+         mrpInputType='inventoryRecords'
          value={( demand !== null && demand >= 0 ) ? demand : ''} //array of demands for each period 
          component={props.component}
          handler={setSRQty}/>
@@ -598,20 +485,22 @@ export const SetupIRF=(props)=>{
           {close => (
             <div className={'d-flex flex-column'} style={{backgroundColor:`${styles.cciBgColor}`}}>
               <div className={'d-flex justify-content-between'}>
-                  <SetupComponentIR
+                  <NumberInput
                     title='inventory-on-hand-quantity'
                     id={-1}
-                    cellCnt={2}
+                    cellCnt={3}
+                    mrpInputType='inventoryRecords'
                     value={props.component.irf.inventoryOnHand}
                     component={props.component}
                     handler={setIOH}/>
 
                 <hr className={dividerCCS.hDividerClassName }  style={dividerCCS.vDividerStyle}/>
 
-                  <SetupComponentIR
+                  <NumberInput
                     title='lead-time-quantity'
                     id={-1}
-                    cellCnt={2}
+                    cellCnt={3}
+                    mrpInputType='inventoryRecords'
                     value={props.component.irf.leadTime }
                     component={props.component}
                     handler={setLeadTime}/>
@@ -626,10 +515,9 @@ export const SetupIRF=(props)=>{
               {renderSRInputs()}
               
               <div className={'d-flex  justify-content-between'}>
-                <SetupComponentIR
+                <ProcurementTypeInput
                     title='procurement-type'
                     id={-1}
-                    cellCnt={1}
                     value={props.component.irf.procurementType }
                     component={props.component}
                     handler={setProcurementType}/>
@@ -638,28 +526,30 @@ export const SetupIRF=(props)=>{
                 className='text-danger m-0 py-1 px-1 fas fw fa-times-circle cursor-pointer'
                 style={{backgroundColor: `${styles.cciBgColor}`}}
                       onClick={ close }/> 
-            </div>
+              </div>
               <hr className={dividerCCS.hDividerClassName } style={dividerCCS.hDividerStyle}/>
 
               { ( procurementType === 'Purchase' ? 
                   <div className={'d-flex  justify-content-between'}>
-                    <SetupComponentIR
-                    title='supplier-name'
-                    id={-1}
-                    cellCnt={2}
-                    value={props.component.irf.supplier }
-                component={props.component}
-                    handler={setSupplier}/>
+                    <TextInput
+                      title='supplier-name'
+                      id={-1}
+                      cellCnt={2}
+                      mrpInputType='inventoryRecords'
+                      value={props.component.irf.supplier }
+                      component={props.component}
+                      handler={setSupplier}/>
 
                     <hr className={dividerCCS.hDividerClassName }  style={dividerCCS.vDividerStyle}/>
 
-                    <SetupComponentIR
-                    title='supplied-part-number'
-                    id={-1}
-                    cellCnt={2}
-                    value={props.component.irf.supplierPartNumber }
-                component={props.component}
-                    handler={setSupplierPartNumber}/>
+                    <TextInput
+                      title='supplied-part-number'
+                      id={-1}
+                      cellCnt={2}
+                      mrpInputType='inventoryRecords'
+                      value={props.component.irf.supplierPartNumber }
+                      component={props.component}
+                      handler={setSupplierPartNumber}/>
 
                     <i id={`${props.component.displayLogic.key}-SetupIRF`}
                       className='text-danger m-0 py-1 px-1 fas fw fa-times-circle cursor-pointer'
@@ -679,21 +569,23 @@ export const SetupIRF=(props)=>{
             }
 
                 <div className={'d-flex  justify-content-between'}> 
-                  <SetupComponentIR
+                  <NumberInput
                       title={ procurementType === null || procurementType === 'InHouse' ? 'other-production-cost-per-unit-quantity' : 'other-purchase-cost-per-unit-quantity'}
                       id={-1}
                       cellCnt={2}
+                      mrpInputType='inventoryRecords'
                       value={props.component.irf.otherProductionCostPerUnit }
-                component={props.component}
+                      component={props.component}
                       handler={setOtherCostPerUnit}/>
 
                   <hr className='m-0 bg-info'  style={dividerCCS.vDividerStyle}/>
-                  <SetupComponentIR
+                  <NumberInput
                       title='holding-cost-per-unit-quantity'
                       id={-1}
                       cellCnt={2}
+                      mrpInputType='inventoryRecords'
                       value={props.component.irf.holdingCostPerUnit }
-              component={props.component}
+                      component={props.component}
                       handler={setHoldingCostPerUnit}/>
                     <i id={`${props.component.displayLogic.key}-SetupIRF`}
                       className='text-danger m-0 py-1 px-1 fas fw fa-times-circle cursor-pointer'
@@ -704,22 +596,24 @@ export const SetupIRF=(props)=>{
                 <hr className={dividerCCS.hDividerClassName } style={dividerCCS.hDividerStyle}/>
 
                 <div className={'d-flex  justify-content-between'}> 
-                  <SetupComponentIR
+                  <NumberInput
                       title='mim-allowed-ending-inventory-quantity'
                       id={-1}
                       cellCnt={2}
+                      mrpInputType='inventoryRecords'
                       value={props.component.irf.minAllowedEndingInventory }
-                component={props.component}
+                      component={props.component}
                       handler={setSS}/>
 
                   <hr className={dividerCCS.hDividerClassName }  style={dividerCCS.vDividerStyle}/>
 
-                  <SetupComponentIR
+                  <NumberInput
                       title='max-allowed-ending-inventory-quantity'
                       id={-1}
                       cellCnt={2}
+                      mrpInputType='inventoryRecords'
                       value={ ( props.component.irf.maxAllowedEndingInventory !== null ) && ( props.component.irf.minAllowedEndingInventory > props.component.irf.maxAllowedEndingInventory )  ?  props.component.irf.minAllowedEndingInventory : props.component.irf.maxAllowedEndingInventory}
-                component={props.component}
+                      component={props.component}
                       handler={setMaxStock}/>
                   <i id={`${props.component.displayLogic.key}-SetupIRF`}
                       className='text-danger m-0 py-1 px-1 fas fw fa-times-circle cursor-pointer'
@@ -730,12 +624,13 @@ export const SetupIRF=(props)=>{
                 <hr className={dividerCCS.hDividerClassName } style={dividerCCS.hDividerStyle}/>
 
                 <div className={'d-flex  justify-content-between'}>
-                  <SetupComponentIR
+                  <PercentageInput
                       title='interest-rate'
                       id={-1}
                       cellCnt={1}
+                      mrpInputType='inventoryRecords'
                       value={props.component.irf.interest }
-                component={props.component}
+                      component={props.component}
                       handler={setInterest}/>
                   <i id={`${props.component.displayLogic.key}-SetupIRF`}
                         className='text-danger m-0 py-1 px-1 fas fw fa-times-circle cursor-pointer'
