@@ -5,7 +5,8 @@ import styles from "./../../dist/css/ccilab-component-list.css"
 import { useTranslation } from 'react-i18next';
 import {getRandomInt, tables } from "./CCiLabUtility";
 
-import {UpdateComponentStatus} from "./CCiLabUpdateComponentStatus"
+import {UserNameInput} from "./CCiLabUserNameInput"
+import {DateInput} from "./CCiLabDateInput"
 
 
 
@@ -142,8 +143,9 @@ const BOMTableHeader=(props)=>{
                     <td className='align-middle' colSpan='2'> {(typeof rootElement !== 'undefined' && rootElement.businessLogic.name !== 'add-part') ? rootElement.businessLogic.name : `${t('component:part-name')}`}</td>
                     <th className='align-middle'>{t('component:th-designed-by')}:</th>
                     <td className='align-middle' colSpan='2'>
-                        <UpdateComponentStatus 
+                        <UserNameInput 
                         title='updated-by-user'
+                        mrpInputType='component'
                         value={bomApprovedBy}
                         component={rootElement}
                         handler={setUpdatedBy}
@@ -156,7 +158,17 @@ const BOMTableHeader=(props)=>{
                     <th className='align-middle'>{t('component:customer-name')}: </th>
                     <td className='align-middle' colSpan='2'>{customerOrderName}</td>
                     <th className='align-middle'>{t('component:th-designed-date')}:</th>
-                    <td className='align-middle' colSpan='2'> 22/Sept/2019</td>
+                    <td className='align-middle' colSpan='2'> 
+                        <DateInput
+                         title='bom-approved-date'
+                        id={0}
+                        cellCnt={1}
+                        mrpInputType='component'
+                        value={ new Date() }  //need get a default date
+                        component={rootElement}
+                        handler={props.updateComponent}/>
+                        
+                    </td>
                     {/* http://www.htmlhelp.com/feature/art3.htm */}
                     <td className='align-middle' rowSpan='2' colSpan='2'> <img className='cci-component__img align-self-center'
                             style={{'height': '10rem', 'width': '10rem'}}

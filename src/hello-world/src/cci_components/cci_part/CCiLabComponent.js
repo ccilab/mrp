@@ -257,7 +257,8 @@ class CCiLabComponent extends Component {
     }
 
     // life cycle function only calls once when class is created
-    componentWillMount=()=>{
+    //https://reactjs.org/blog/2018/03/27/update-on-async-rendering.html
+    UNSAFE_componentWillMount=()=>{
       this.setState({expended: this.props.component.displayLogic.canExpend});
     }
 
