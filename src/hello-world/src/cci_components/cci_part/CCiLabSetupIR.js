@@ -10,25 +10,20 @@ import {NumberInput} from "./CCiLabNumberInput"
 import {TextInput} from "./CCiLabTextInput"
 import {PercentageInput} from "./CCiLabPercentageInput"
 
-const SetupComponentIR=(props)=>{
+const ProcurementTypeInput=(props)=>{
   const { t } = useTranslation(['inventoryRecords','commands'], {useSuspense: false});
 
   let inputValue = (props.value === null)? '': props.value;
 
-  let inputClassName = 'text-primary m-0 p-0 border-0 cursor-pointer';
-  let cellWidth = (typeof props.cellCnt !== 'undefined' && props.cellCnt === 1) ?  '20rem' : '10rem';
-  let inputStyle={'backgroundColor': `${styles.cciBgColor}`, width: `${cellWidth}`};
-  let inputType='text';
+  let inputClassName = 'my-1 p-0 border-0 cursor-pointer';
+  let inputStyle={'backgroundColor': `${styles.cciBgColor}`, 'height':'1em','width':'1em'};
+  let inputType='radio';
   let tooltipOnMode=['click','hover'];
   let tooltipPosition='top left';
   let inputName=props.title;
 
-  if( props.title.includes('procurement-type'))
-  {
-    inputClassName = 'm-0 p-0 border-0 cursor-pointer';
-    inputStyle={'backgroundColor': `${styles.cciBgColor}`, 'height':'20px','width':'20px'};
-    inputType='radio';
-  }
+  
+  
 
   // https://blog.bitsrc.io/understanding-currying-in-javascript-ceb2188c339
   const updateValue=(props)=>(e)=>{
@@ -58,7 +53,7 @@ const SetupComponentIR=(props)=>{
             trigger={
               // <div className='d-flex  justify-content-between'>
               <div className='d-flex' >
-                <span className='align-items-center m-0 y-0 border-0' >
+                <span className='d-flex align-items-center m-0 y-0 border-0' >
                   <input className={`${inputClassName}`}
                         id={`${inputName}-1`}
                         type={inputType}
@@ -75,7 +70,7 @@ const SetupComponentIR=(props)=>{
                     </label>
                 </span>
                 {/* <hr className={dividerCCS.hDividerClassName }  style={dividerCCS.vDividerStyle}/> */}
-                <span className='align-items-center m-0 y-0 border-0'>
+                <span className='d-flex align-items-center m-0 y-0 border-0'>
                   <input  className={`${inputClassName}`}
                           id={`${inputName}-2`}
                           type={inputType}
@@ -520,10 +515,9 @@ export const SetupIRF=(props)=>{
               {renderSRInputs()}
               
               <div className={'d-flex  justify-content-between'}>
-                <SetupComponentIR
+                <ProcurementTypeInput
                     title='procurement-type'
                     id={-1}
-                    cellCnt={1}
                     value={props.component.irf.procurementType }
                     component={props.component}
                     handler={setProcurementType}/>
@@ -532,7 +526,7 @@ export const SetupIRF=(props)=>{
                 className='text-danger m-0 py-1 px-1 fas fw fa-times-circle cursor-pointer'
                 style={{backgroundColor: `${styles.cciBgColor}`}}
                       onClick={ close }/> 
-            </div>
+              </div>
               <hr className={dividerCCS.hDividerClassName } style={dividerCCS.hDividerStyle}/>
 
               { ( procurementType === 'Purchase' ? 
