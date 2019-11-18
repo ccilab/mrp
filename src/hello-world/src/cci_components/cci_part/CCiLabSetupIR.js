@@ -19,7 +19,7 @@ const ProcurementTypeInput=(props)=>{
   let inputStyle={'backgroundColor': `${styles.cciBgColor}`, 'height':'1em','width':'1em'};
   let inputType='radio';
   let tooltipOnMode=['click','hover'];
-  let tooltipPosition='top left';
+  let tooltipPosition='top center';
   let inputName=props.title;
 
   
