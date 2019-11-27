@@ -25,14 +25,14 @@ const MPSTableHeader=(props)=>{
 
     const initializeMPSExtra=()=>{
         let extra={};
-        extra.approvedBy=bomApprovedBy;  //first name, family name
+        extra.approvedBy=mpsApprovedBy;  //first name, family name
         extra.recordDateTime=null;
     
         return extra;
     }
 
     const setUpdatedBy=(value, component, item)=>{
-        let extra = JSON.parse(sessionStorage.getItem(`${component.displayLogic.key}_${component.businessLogic.name}_bom_extra`)) || initializeBomExtra();
+        let extra = JSON.parse(sessionStorage.getItem(`${component.displayLogic.key}_${component.businessLogic.name}_bom_extra`)) || initializeMPSExtra();
         switch( item )
         { case 'given-user-name':
            extra.approvedBy.givenName=value;
