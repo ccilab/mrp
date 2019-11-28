@@ -9,6 +9,7 @@ import {DateInput} from "./CCiLabDateInput"
 import {NumberInput} from "./CCiLabNumberInput"
 import {TextInput} from "./CCiLabTextInput"
 import {PercentageInput} from "./CCiLabPercentageInput"
+import {TimePeriod} from "./CCiLabTimePeriod"
 
 const ProcurementTypeInput=(props)=>{
   const { t } = useTranslation(['inventoryRecords','commands'], {useSuspense: false});
@@ -465,15 +466,15 @@ export const SetupIRF=(props)=>{
       </Popup>
       :
       <Popup
-        trigger={
-          <i
-            key={`component-${props.component.displayLogic.key}`}
-            id={`#component-${props.component.displayLogic.key}`}
-            type="icon"
-            // 'cursor-pointer text-primary border-0 py-0 px-2 fa fw fa-edit' + (props.component.displayLogic.selected ? ' bg-info' : ' ');
-            className={`${_className}`}
-            style={{backgroundColor: `${styles.cciBgColor}`}}/>
-        }
+          trigger={
+            <i
+              key={`component-${props.component.displayLogic.key}`}
+              id={`#component-${props.component.displayLogic.key}`}
+              type="icon"
+              // 'cursor-pointer text-primary border-0 py-0 px-2 fa fw fa-edit' + (props.component.displayLogic.selected ? ' bg-info' : ' ');
+              className={`${_className}`}
+              style={{backgroundColor: `${styles.cciBgColor}`}}/>
+          }
           closeOnDocumentClick={false}
           on={event}
           onClose={setEventState}
@@ -496,7 +497,7 @@ export const SetupIRF=(props)=>{
 
                 <hr className={dividerCCS.hDividerClassName }  style={dividerCCS.vDividerStyle}/>
 
-                  <NumberInput
+                  <TimePeriod
                     title='lead-time-quantity'
                     id={-1}
                     cellCnt={3}
@@ -566,7 +567,7 @@ export const SetupIRF=(props)=>{
                       :
                       null
                   )
-            }
+                }
 
                 <div className={'d-flex  justify-content-between'}> 
                   <NumberInput

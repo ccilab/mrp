@@ -10,5 +10,8 @@
     "bom-setup-uncompleted" : "Warning: BOM setup is not completed!",
     "show-setup-PDP" : "Setup Product Demand",
     "show-setup-IRF" : "Setup Inventory Records",
-    "show-setup-OP" : "Setup Operation"
+    "show-setup-OP" : "Setup Operation",
+    "day" : "day(s)",
+    "week" : "week(s)",
+    "month" : "month(s)"
 }

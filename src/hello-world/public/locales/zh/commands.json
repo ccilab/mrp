@@ -9,5 +9,8 @@
     "show-setup-BOM" : "设置产品零部件间的结构关系(BOM)",
     "bom-setup-uncompleted" : "提示: BOM设置没完成!",
     "show-setup-PDP" : "设置产品需求",
-    "show-setup-IRF" : "设置库存记录" 
+    "show-setup-IRF" : "设置库存记录",
+    "day" : "天",
+    "week" : "周",
+    "month" : "月" 
 }
