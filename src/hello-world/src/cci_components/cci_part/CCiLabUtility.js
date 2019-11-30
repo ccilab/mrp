@@ -10,6 +10,12 @@ export const tables = {
     materialOrder:  'materialPlanTable',
     assetUsage:  'assetUsageTable'
   }
+
+export const timePeriod = {
+    day: 'day',
+    week: 'week',
+    month: 'month'
+}
   
 export const dividerCCS = {
     hDividerClassName : 'm-0 bg-info',

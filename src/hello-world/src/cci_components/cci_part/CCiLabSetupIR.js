@@ -120,7 +120,7 @@ const _initializeIRF=()=>{
    irf.maxAllowedEndingInventory=null; // Maximum Stock
    irf.minAllowedEndingInventory= null; //Safe Stock (SS)
    irf.procurementType=null;  //'InHouse'(to produce production order), 'Purchase'(to produce purchase order)
-   irf.leadTime=null;
+   irf.leadTime={value: null, timeUnit: ''};
    irf.otherProductionCostPerUnit=null; //other than employee costs
    irf.holdingCostPerUnit=null;  //Inventory holding cost per unit
    irf.interest=null;
@@ -271,17 +271,21 @@ export const SetupIRF=(props)=>{
   }
 
   // followed with unit (days, weeks, months)
-  const setLeadTime=(index, qty, component)=>{
+  const setLeadTime=(index, qty, timePeriodUnit, component)=>{
     if( typeof component.irf === 'undefined' )
       component.irf = new initializeIRF( component );
 
     let {isValid, value} = isValidValue(qty);
 
     if( !isValid )
-      component.irf.leadTime=null;
+    {
+      component.irf.leadTime={value: null, timeUnit: t('commands:day')};
+    }
     else
-      component.irf.leadTime=value;
-
+    {
+       component.irf.leadTime={value: qty, timeUnit: timePeriodUnit };;
+    }
+  
     saveValidIRFEntry(component); 
   }
 
@@ -502,7 +506,7 @@ export const SetupIRF=(props)=>{
                     id={-1}
                     cellCnt={3}
                     mrpInputType='inventoryRecords'
-                    value={props.component.irf.leadTime }
+                    leadTime={  props.component.irf.leadTime }
                     component={props.component}
                     handler={setLeadTime}/>
                   <i id={`${props.component.displayLogic.key}-SetupIRF`}
