@@ -262,7 +262,7 @@ export const SetupPDP=(props)=>{
                   <TextInput
                     title='customer-name'
                     id={-1}
-                    cellCnt={3}
+                    cellCnt={'toolTipPosition'}
                     mrpInputType='component'
                     value={props.component.pdp.customer} //array of demands for each period 
                     component={props.component}

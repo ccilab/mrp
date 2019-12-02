@@ -11,12 +11,14 @@ export const TimePeriod=(props)=>{
 
   let inputValue = ( typeof props.leadTime === 'undefined' || (props.leadTime.value === null) )? '': props.leadTime.value;
 
-  let inputClassName = 'text-primary m-0 p-0 border-0 cursor-pointer';
-  let cellWidth = ( (typeof props.cellCnt === 'undefined' ) || ( typeof props.cellCnt !== 'undefined' && props.cellCnt === 1) ) ?  '20rem' : '8.5rem';
+  let inputClassName = 'text-primary m-0 pl-2 pr-0 border-0 cursor-pointer';
+  let cellWidth = ( (typeof props.cellCnt === 'undefined' ) || ( typeof props.cellCnt !== 'undefined' && props.cellCnt === 1) ) ?  
+                    '20rem' : '5.5rem';
   let inputStyle={'backgroundColor': `${styles.cciBgColor}`, width: `${cellWidth}`};
   let inputType='number';
   let tooltipOnMode=['click','hover'];
-  let tooltipPosition= ( (typeof props.cellCnt === 'undefined' ) || ( typeof props.cellCnt !== 'undefined' && props.cellCnt === 1) ) ? 'top center': props.cellCnt === 3 ? 'bottom center':'top left';
+  let tooltipPosition= ( (typeof props.cellCnt === 'undefined' ) || ( typeof props.cellCnt !== 'undefined' && props.cellCnt === 1) ) ? 
+                            'top center': props.cellCnt === 'toolTipPosition' ? 'bottom center':'top left';
   let inputName=props.title;
   let timePeriodUnit = ( typeof props.leadTime === 'undefined' ) ? t('commands:day') : props.leadTime.timeUnit;
   let timePeriodEnu = timePeriod.day; 
@@ -119,15 +121,12 @@ export const TimePeriod=(props)=>{
             contentStyle={{ padding: '0px'}}
             >
             <div className='text-nowrap m-0 px-1' >
-            {t(`${props.mrpInputType}:${props.title}`)  + ` ${timePeriodUnit}` }
+            {t(`${props.mrpInputType}:${props.title}`)  + ` ${timeUnit}` }
             </div>
         </Popup>
         <Popup 
             trigger = {
-                // <i key='show-tables' 
-                // className='text-primary p-1 fa fa-history cursor-pointer' 
-                // type='icon'/>
-                <span className='text-primary p-1 cursor-pointer'>
+                <span className='text-primary p-1 cursor-pointer' style={{width: '4.5rem'}}>
                      {`${timeUnit}`}
                 </span>
             }

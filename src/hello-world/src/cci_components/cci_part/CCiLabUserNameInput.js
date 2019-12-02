@@ -16,7 +16,7 @@ export const UserNameInput=(props)=>{
     let cellWidth = ( (typeof props.cellCnt === 'undefined' ) || ( typeof props.cellCnt !== 'undefined' && props.cellCnt === 1) )?  '8rem' : '7rem'; 
     let inputStyle={'backgroundColor': `${styles.cciBgColor}`, width: `${cellWidth}`};
     let tooltipOnMode= ['click','hover'];
-    let tooltipPosition= ((typeof props.cellCnt === 'undefined') || (typeof props.cellCnt !== 'undefined' && props.cellCnt === 1)) ? 'top center': props.cellCnt === 3 ? 'bottom center':'top left';
+    let tooltipPosition= ((typeof props.cellCnt === 'undefined') || (typeof props.cellCnt !== 'undefined' && props.cellCnt === 1)) ? 'top center': props.cellCnt === 'toolTipPosition' ? 'bottom center':'top left';
 
     let name1Name='given-user-name';
     let name1InputId='#' + name1Name;

@@ -467,7 +467,7 @@ export const SetupOP=(props)=>{
               <NumberInput
                 title='employee-count-quantity'
                 id={-1}
-                cellCnt={3}
+                cellCnt={'toolTipPosition'}
                 mrpInputType='operations'
                 value={props.component.operation.employeeCount}
                 component={props.component}
@@ -476,7 +476,7 @@ export const SetupOP=(props)=>{
                <NumberInput
                 title='time-pre-component-per-employee-quantity'
                 id={-1}
-                cellCnt={3}
+                cellCnt={'toolTipPosition'}
                 mrpInputType='operations'
                 value={props.component.operation.averageTimePerComponentPerEmployee}
                 component={props.component}

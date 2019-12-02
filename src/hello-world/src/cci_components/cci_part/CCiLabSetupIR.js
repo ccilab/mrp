@@ -396,7 +396,7 @@ export const SetupIRF=(props)=>{
  const renderSRInput=(uniqueKey, index, srDate, demand, isLastElement )=>{
   return(
     <div key={uniqueKey+1}>
-      <div key={uniqueKey} className={'d-flex  justify-content-between'}>  
+      <div key={uniqueKey} className={'d-flex'}>  
         <DateInput
          title='scheduled-receipts-date'   //array of completed date for each required quantity
          id={index}
@@ -410,7 +410,7 @@ export const SetupIRF=(props)=>{
         <NumberInput
          title='scheduled-receipts-quantity'
          id={index}
-         cellCnt={2}
+         cellCnt={3}
          mrpInputType='inventoryRecords'
          value={( demand !== null && demand >= 0 ) ? demand : ''} //array of demands for each period 
          component={props.component}
@@ -419,12 +419,12 @@ export const SetupIRF=(props)=>{
       { isLastElement === true ?
         <i id={`${index}`}
          className='text-info m-0 py-1 px-1 fas fw fa-plus-circle cursor-pointer'
-         style={{backgroundColor: `${styles.cciBgColor}`}}
+         style={{backgroundColor: `${styles.cciBgColor}`, width: '1.5em'}}
          onClick={AddNextSREntry(index)}/>
          :
          <i id={`${index}`}
          className='text-danger m-0 py-1 px-1 fas fw fa-minus-circle cursor-pointer'
-         style={{backgroundColor: `${styles.cciBgColor}`}}
+         style={{backgroundColor: `${styles.cciBgColor}` , width: '1.5em'}}
          onClick={removeSREntry(index)}/>
       } 
        <hr className={dividerCCS.hDividerClassName }  style={dividerCCS.vDividerStyle}/>
@@ -491,11 +491,11 @@ export const SetupIRF=(props)=>{
           {close => (
             <div className='d-flex'>
             <div className={'d-flex flex-column'} style={{backgroundColor:`${styles.cciBgColor}`}}>
-                  <div className={'d-flex justify-content-between'}>
+                  <div className={'d-flex '}>
                       <NumberInput
                         title='inventory-on-hand-quantity'
                         id={-1}
-                        cellCnt={3}
+                        cellCnt={'toolTipPosition'}
                         mrpInputType='inventoryRecords'
                         value={props.component.irf.inventoryOnHand}
                         component={props.component}
@@ -506,7 +506,7 @@ export const SetupIRF=(props)=>{
                       <TimePeriod
                         title='lead-time-quantity'
                         id={-1}
-                        cellCnt={3}
+                        cellCnt={'toolTipPosition'}
                         mrpInputType='inventoryRecords'
                         leadTime={  props.component.irf.leadTime }
                         component={props.component}

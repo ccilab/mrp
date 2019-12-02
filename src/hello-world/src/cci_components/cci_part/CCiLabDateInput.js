@@ -9,12 +9,12 @@ export const DateInput=(props)=>{
 
     let inputValue = (props.value === null)? '': props.value;
 
-    let inputClassName = 'text-primary m-0 p-0 border-0 cursor-pointer';
+    let inputClassName = 'text-primary m-0 pl-2 pr-0 border-0 cursor-pointer';
     let cellWidth = ( (typeof props.cellCnt === 'undefined' ) || ( typeof props.cellCnt !== 'undefined' && props.cellCnt === 1) ) ?  '20rem' : '10rem'; 
     let inputStyle={'backgroundColor': `${styles.cciBgColor}`, width: `${cellWidth}`};
     let inputType='date';
     let tooltipOnMode=['click','hover'];
-    let tooltipPosition= ( (typeof props.cellCnt === 'undefined' ) || ( typeof props.cellCnt !== 'undefined' && props.cellCnt === 1) ) ? 'top center': props.cellCnt === 3 ? 'bottom center':'top left';
+    let tooltipPosition= ( (typeof props.cellCnt === 'undefined' ) || ( typeof props.cellCnt !== 'undefined' && props.cellCnt === 1) ) ? 'top center': props.cellCnt === 'toolTipPosition' ? 'bottom center':'top left';
     let inputName=props.title;
 
     const [input, setInput] = useState(`${inputValue}`);
