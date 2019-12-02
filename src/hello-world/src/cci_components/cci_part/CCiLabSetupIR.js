@@ -427,6 +427,7 @@ export const SetupIRF=(props)=>{
          style={{backgroundColor: `${styles.cciBgColor}`}}
          onClick={removeSREntry(index)}/>
       } 
+       <hr className={dividerCCS.hDividerClassName }  style={dividerCCS.vDividerStyle}/>
       </div>
       <hr  className={dividerCCS.hDividerClassName } style={dividerCCS.hDividerStyle}/>
     </div>
@@ -463,7 +464,7 @@ export const SetupIRF=(props)=>{
           defaultOpen={false}
           contentStyle={{ padding: '0px', border: 'none', backgroundColor: `${styles.cciBgColor}`}} 
           mouseLeaveDelay={0}
-          mouseEnterDelay={400}
+          mouseEnterDelay={100}
           arrow={true}
           arrowStyle={{backgroundColor: `${styles.cciBgColor}`}}>
           <span className={'text-primary'} >{t('commands:show-setup-IRF')}</span>
@@ -488,33 +489,34 @@ export const SetupIRF=(props)=>{
           arrow={true}
           arrowStyle={{backgroundColor: `${styles.cciBgColor}`}}>
           {close => (
+            <div className='d-flex'>
             <div className={'d-flex flex-column'} style={{backgroundColor:`${styles.cciBgColor}`}}>
-              <div className={'d-flex justify-content-between'}>
-                  <NumberInput
-                    title='inventory-on-hand-quantity'
-                    id={-1}
-                    cellCnt={3}
-                    mrpInputType='inventoryRecords'
-                    value={props.component.irf.inventoryOnHand}
-                    component={props.component}
-                    handler={setIOH}/>
+                  <div className={'d-flex justify-content-between'}>
+                      <NumberInput
+                        title='inventory-on-hand-quantity'
+                        id={-1}
+                        cellCnt={3}
+                        mrpInputType='inventoryRecords'
+                        value={props.component.irf.inventoryOnHand}
+                        component={props.component}
+                        handler={setIOH}/>
 
-                <hr className={dividerCCS.hDividerClassName }  style={dividerCCS.vDividerStyle}/>
+                    <hr className={dividerCCS.hDividerClassName }  style={dividerCCS.vDividerStyle}/>
 
-                  <TimePeriod
-                    title='lead-time-quantity'
-                    id={-1}
-                    cellCnt={3}
-                    mrpInputType='inventoryRecords'
-                    leadTime={  props.component.irf.leadTime }
-                    component={props.component}
-                    handler={setLeadTime}/>
-                  <i id={`${props.component.displayLogic.key}-SetupIRF`}
-                    className='text-danger m-0 py-1 px-1 fas fw fa-times-circle cursor-pointer'
-                    style={{backgroundColor: `${styles.cciBgColor}`}}
-                    onClick={ close }/> 
-                
-              </div>
+                      <TimePeriod
+                        title='lead-time-quantity'
+                        id={-1}
+                        cellCnt={3}
+                        mrpInputType='inventoryRecords'
+                        leadTime={  props.component.irf.leadTime }
+                        component={props.component}
+                        handler={setLeadTime}/>
+                      {/* <i id={`${props.component.displayLogic.key}-SetupIRF`}
+                        className='text-danger m-0 py-1 px-1 fas fw fa-times-circle cursor-pointer'
+                        style={{backgroundColor: `${styles.cciBgColor}`}}
+                        onClick={ close }/>  */}
+                     <hr className={dividerCCS.hDividerClassName }  style={dividerCCS.vDividerStyle}/>
+                  </div>                
               <hr className={dividerCCS.hDividerClassName } style={dividerCCS.hDividerStyle}/>
 
               {renderSRInputs()}
@@ -526,11 +528,12 @@ export const SetupIRF=(props)=>{
                     value={props.component.irf.procurementType }
                     component={props.component}
                     handler={setProcurementType}/>
+                 <hr className={dividerCCS.hDividerClassName }  style={dividerCCS.vDividerStyle}/>
 
-                <i id={`${props.component.displayLogic.key}-SetupIRF`}
+                {/* <i id={`${props.component.displayLogic.key}-SetupIRF`}
                 className='text-danger m-0 py-1 px-1 fas fw fa-times-circle cursor-pointer'
                 style={{backgroundColor: `${styles.cciBgColor}`}}
-                      onClick={ close }/> 
+                      onClick={ close }/>  */}
               </div>
               <hr className={dividerCCS.hDividerClassName } style={dividerCCS.hDividerStyle}/>
 
@@ -556,10 +559,7 @@ export const SetupIRF=(props)=>{
                       component={props.component}
                       handler={setSupplierPartNumber}/>
 
-                    <i id={`${props.component.displayLogic.key}-SetupIRF`}
-                      className='text-danger m-0 py-1 px-1 fas fw fa-times-circle cursor-pointer'
-                      style={{backgroundColor: `${styles.cciBgColor}`}}
-                      onClick={ close }/> 
+                    <hr className={dividerCCS.hDividerClassName }  style={dividerCCS.vDividerStyle}/>
                   </div>
                 
               :
@@ -592,10 +592,7 @@ export const SetupIRF=(props)=>{
                       value={props.component.irf.holdingCostPerUnit }
                       component={props.component}
                       handler={setHoldingCostPerUnit}/>
-                    <i id={`${props.component.displayLogic.key}-SetupIRF`}
-                      className='text-danger m-0 py-1 px-1 fas fw fa-times-circle cursor-pointer'
-                      style={{backgroundColor: `${styles.cciBgColor}`}}
-                      onClick={ close }/> 
+                     <hr className={dividerCCS.hDividerClassName }  style={dividerCCS.vDividerStyle}/>
                 </div>
 
                 <hr className={dividerCCS.hDividerClassName } style={dividerCCS.hDividerStyle}/>
@@ -620,10 +617,7 @@ export const SetupIRF=(props)=>{
                       value={ ( props.component.irf.maxAllowedEndingInventory !== null ) && ( props.component.irf.minAllowedEndingInventory > props.component.irf.maxAllowedEndingInventory )  ?  props.component.irf.minAllowedEndingInventory : props.component.irf.maxAllowedEndingInventory}
                       component={props.component}
                       handler={setMaxStock}/>
-                  <i id={`${props.component.displayLogic.key}-SetupIRF`}
-                      className='text-danger m-0 py-1 px-1 fas fw fa-times-circle cursor-pointer'
-                      style={{backgroundColor: `${styles.cciBgColor}`}}
-                      onClick={ close }/> 
+                   <hr className={dividerCCS.hDividerClassName }  style={dividerCCS.vDividerStyle}/>
                 </div>
 
                 <hr className={dividerCCS.hDividerClassName } style={dividerCCS.hDividerStyle}/>
@@ -637,11 +631,15 @@ export const SetupIRF=(props)=>{
                       value={props.component.irf.interest }
                       component={props.component}
                       handler={setInterest}/>
-                  <i id={`${props.component.displayLogic.key}-SetupIRF`}
-                        className='text-danger m-0 py-1 px-1 fas fw fa-times-circle cursor-pointer'
-                        style={{backgroundColor: `${styles.cciBgColor}`}}
-                        onClick={ close }/> 
+                  <hr className={dividerCCS.hDividerClassName }  style={dividerCCS.vDividerStyle}/>
                 </div>
+            </div>
+            <div className='align-self-start'>
+              <i id={`${props.component.displayLogic.key}-SetupIRF`}
+                className='text-danger m-0 py-1 px-1 fas fw fa-times-circle cursor-pointer'
+                // style={{backgroundColor: `${styles.cciBgColor}`}}
+                onClick={ close }/> 
+            </div>
             </div>
             )
           }

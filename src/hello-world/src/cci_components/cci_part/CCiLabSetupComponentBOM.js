@@ -223,7 +223,7 @@ export const SetupBOM=(props)=>{
           defaultOpen={false}
           contentStyle={{ padding: '0px', border: 'none', backgroundColor: `${styles.cciBgColor}`}} 
           mouseLeaveDelay={0}
-          mouseEnterDelay={400}
+          mouseEnterDelay={100}
           arrow={true}
           arrowStyle={{backgroundColor: `${styles.cciBgColor}`}}>
           <span className={'text-primary'} >{t('commands:show-setup-BOM')}</span>
@@ -248,78 +248,72 @@ export const SetupBOM=(props)=>{
           arrow={true}
           arrowStyle={{backgroundColor: `${styles.cciBgColor}`}}>
           {close => (
-            <div className={'d-flex flex-column'} style={{backgroundColor:`${styles.cciBgColor}`}}>
-            <div className={'d-flex  justify-content-between'}>
-              <TextInput
-                title='part-name'
-                cellCnt={3}
-                mrpInputType='component'
-                value={props.component.businessLogic.name}
-                component={props.component}
-                handler={setPartName}/>
-              <i id={`${props.component.displayLogic.key}-setupBOM`}
-                className='text-danger m-0 py-1 px-1 fas fw fa-times-circle cursor-pointer'
-                style={{backgroundColor: `${styles.cciBgColor}`}}
-                onClick={ close }/> 
-            </div>
-
-            <hr  className={dividerCCS.hDividerClassName} style={dividerCCS.hDividerStyle}/>
-            
-            <div className={'d-flex  justify-content-between'}>
-            <TextInput
-                title='part-number'
-                cellCnt={1}
-                mrpInputType='component'
-                value={props.component.bom.core.partNumber}
-                component={props.component}
-                handler={setPartNumber}/>
-              <i id={`${props.component.displayLogic.key}-setupBOM`}
-                  className='text-danger m-0 py-1 px-1 fas fw fa-times-circle cursor-pointer'
-                  style={{backgroundColor: `${styles.cciBgColor}`}}
-                  onClick={ close }/> 
-            </div>
-            { props.component.businessLogic.parentIds.length === 0 ?
-              null
-              :
-              <div>
-              <hr  className={dividerCCS.hDividerClassName} style={dividerCCS.hDividerStyle}/>
+            <div className='d-flex'>
+              <div className={'d-flex flex-column'} style={{backgroundColor:`${styles.cciBgColor}`}}>
                 <div className={'d-flex  justify-content-between'}>
-                  
-
-              <NumberInput
-                title='unit-quantity'
-                cellCnt={1}
-                mrpInputType='component'
-                value={ props.component.bom.core.unitQty} // value='' input field shows placeholder text
-                component={props.component}
-                handler={setUnitQty}/>
-
-                  <i id={`${props.component.displayLogic.key}-setupBOM`}
-                    className='text-danger m-0 py-1 px-1 fas fw fa-times-circle cursor-pointer'
-                    style={{backgroundColor: `${styles.cciBgColor}`}}
-                    onClick={ close }/> 
+                  <TextInput
+                    title='part-name'
+                    cellCnt={3}
+                    mrpInputType='component'
+                    value={props.component.businessLogic.name}
+                    component={props.component}
+                    handler={setPartName}/>
+                  <hr className={dividerCCS.hDividerClassName }  style={dividerCCS.vDividerStyle}/>
                 </div>
+
+                <hr  className={dividerCCS.hDividerClassName} style={dividerCCS.hDividerStyle}/>
+                
+                <div className={'d-flex  justify-content-between'}>
+                  <TextInput
+                      title='part-number'
+                      cellCnt={1}
+                      mrpInputType='component'
+                      value={props.component.bom.core.partNumber}
+                      component={props.component}
+                      handler={setPartNumber}/>
+                    <hr className={dividerCCS.hDividerClassName }  style={dividerCCS.vDividerStyle}/>
                 </div>
-            }
+                { props.component.businessLogic.parentIds.length === 0 ?
+                  null
+                  :
+                  <div>
+                    <hr  className={dividerCCS.hDividerClassName} style={dividerCCS.hDividerStyle}/>
+                      <div className={'d-flex  justify-content-between'}>
+                        <NumberInput
+                          title='unit-quantity'
+                          cellCnt={1}
+                          mrpInputType='component'
+                          value={ props.component.bom.core.unitQty} // value='' input field shows placeholder text
+                          component={props.component}
+                          handler={setUnitQty}/>
 
-            <hr  className={dividerCCS.hDividerClassName} style={dividerCCS.hDividerStyle}/>
+                        <hr className={dividerCCS.hDividerClassName }  style={dividerCCS.vDividerStyle}/> 
+                      </div>
+                  </div>
+                }
 
-            <div className={'d-flex  justify-content-between'}>
-            <TextInput
-                title='unit-of-measure'
-                cellCnt={1}
-                mrpInputType='component'
-                value={props.component.bom.core.unitOfMeasure }
-                component={props.component}
-                handler={setUnitOfMeasure}/>
-              <i id={`${props.component.displayLogic.key}-setupBOM`}
+                <hr  className={dividerCCS.hDividerClassName} style={dividerCCS.hDividerStyle}/>
+
+                <div className={'d-flex  justify-content-between'}>
+                  <TextInput
+                      title='unit-of-measure'
+                      cellCnt={1}
+                      mrpInputType='component'
+                      value={props.component.bom.core.unitOfMeasure }
+                      component={props.component}
+                      handler={setUnitOfMeasure}/>
+                   <hr className={dividerCCS.hDividerClassName }  style={dividerCCS.vDividerStyle}/>
+                </div>
+               
+                <hr  className={dividerCCS.hDividerClassName} style={dividerCCS.hDividerStyle}/>
+              </div> 
+            <div className='align-self-start'>
+                <i id={`${props.component.displayLogic.key}-setupBOM`}
                   className='text-danger m-0 py-1 px-1 fas fw fa-times-circle cursor-pointer'
-                  style={{backgroundColor: `${styles.cciBgColor}`}}
-                  onClick={ close }/> 
+                  // style={{backgroundColor: `${styles.cciBgColor}`}}
+                  onClick={ close }/>        
             </div>
-
-            <hr  className={dividerCCS.hDividerClassName} style={dividerCCS.hDividerStyle}/>
-            </div> 
+            </div>
             )
           }
       </Popup>

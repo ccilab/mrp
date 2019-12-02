@@ -118,7 +118,7 @@ export const TimePeriod=(props)=>{
             mouseEnterDelay={0}
             contentStyle={{ padding: '0px'}}
             >
-            <div className='text-nowrap m-0 px-1'>
+            <div className='text-nowrap m-0 px-1' >
             {t(`${props.mrpInputType}:${props.title}`)  + ` ${timePeriodUnit}` }
             </div>
         </Popup>
@@ -127,7 +127,7 @@ export const TimePeriod=(props)=>{
                 // <i key='show-tables' 
                 // className='text-primary p-1 fa fa-history cursor-pointer' 
                 // type='icon'/>
-                <span className='text-primary p-1' >
+                <span className='text-primary p-1 cursor-pointer'>
                      {`${timeUnit}`}
                 </span>
             }
