@@ -192,6 +192,7 @@ export const SetupPDP=(props)=>{
          style={{backgroundColor: `${styles.cciBgColor}`}}
          onClick={removeDemandEntry(index)}/>
      } 
+     <hr className={dividerCCS.hDividerClassName }  style={dividerCCS.vDividerStyle}/>
      </div>
     { isLastElement !== true ?
       <hr  className={dividerCCS.hDividerClassName} style={dividerCCS.hDividerStyle}/>
@@ -256,21 +257,20 @@ export const SetupPDP=(props)=>{
           contentStyle={{ padding: '0px', border: 'none', backgroundColor: `${styles.cciBgColor}`}} 
           arrow={true}
           arrowStyle={{backgroundColor: `${styles.cciBgColor}`}} >
-          {close => (      
+          {close => (  
+            <div className='d-flex'>   
               <div className={'d-flex flex-column'} style={{backgroundColor:`${styles.cciBgColor}`}}>
                 <div className={'d-flex justify-content-between'} >
                   <TextInput
                     title='customer-name'
                     id={-1}
-                    cellCnt={'toolTipPosition'}
+                    cellCnt={1}
+                    toolTipPosition='bottom center'
                     mrpInputType='component'
                     value={props.component.pdp.customer} //array of demands for each period 
                     component={props.component}
                     handler={setCustomerName}/>
-                  <i id={`${props.component.displayLogic.key}-SetupPDP`}
-                    className='text-danger m-0 py-1 px-1 fas fw fa-times-circle cursor-pointer'
-                    style={{backgroundColor: `${styles.cciBgColor}`}}
-                    onClick={ close }/>
+                  <hr className={dividerCCS.hDividerClassName }  style={dividerCCS.vDividerStyle}/>
                 </div>
 
                 <hr className={dividerCCS.hDividerClassName} style={dividerCCS.hDividerStyle}/>
@@ -284,16 +284,22 @@ export const SetupPDP=(props)=>{
                     value={props.component.pdp.orderNumber} //array of demands for each period 
                     component={props.component}
                     handler={setCustomerOrder}/>
-                  <i id={`${props.component.displayLogic.key}-SetupPDP`}
-                    className='text-danger m-0 py-1 px-1 fas fw fa-times-circle cursor-pointer'
-                    style={{backgroundColor: `${styles.cciBgColor}`}}
-                    onClick={ close }/>
+                 <hr className={dividerCCS.hDividerClassName }  style={dividerCCS.vDividerStyle}/>
                 </div>
                 
                 <hr className={dividerCCS.hDividerClassName} style={dividerCCS.hDividerStyle}/>
 
                 {renderDemandDateInputs()}
+                <hr className={dividerCCS.hDividerClassName} style={dividerCCS.hDividerStyle}/>
+               
               </div>
+                <div className='align-self-start'>
+                  <i id={`${props.component.displayLogic.key}-setupBOM`}
+                    className='text-danger m-0 py-1 px-1 fas fw fa-times-circle cursor-pointer'
+                    // style={{backgroundColor: `${styles.cciBgColor}`}}
+                    onClick={ close }/>        
+                </div>
+              </div> 
               )
           }
       </Popup>

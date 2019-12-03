@@ -17,8 +17,7 @@ export const TimePeriod=(props)=>{
   let inputStyle={'backgroundColor': `${styles.cciBgColor}`, width: `${cellWidth}`};
   let inputType='number';
   let tooltipOnMode=['click','hover'];
-  let tooltipPosition= ( (typeof props.cellCnt === 'undefined' ) || ( typeof props.cellCnt !== 'undefined' && props.cellCnt === 1) ) ? 
-                            'top center': props.cellCnt === 'toolTipPosition' ? 'bottom center':'top left';
+  let tooltipPosition= ( typeof props.toolTipPosition === 'undefined' ) ? 'top center': props.toolTipPosition;
   let inputName=props.title;
   let timePeriodUnit = ( typeof props.leadTime === 'undefined' ) ? t('commands:day') : props.leadTime.timeUnit;
   let timePeriodEnu = timePeriod.day; 

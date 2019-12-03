@@ -16,7 +16,7 @@ export const TextInput=(props)=>{
     let inputStyle={'backgroundColor': `${styles.cciBgColor}`, width: `${cellWidth}`};
     let inputType='text';
     let tooltipOnMode=['click','hover'];
-    let tooltipPosition= ( (typeof props.cellCnt === 'undefined' ) || ( typeof props.cellCnt !== 'undefined' && props.cellCnt === 1) ) ? 'top center': props.cellCnt === 'toolTipPosition' ? 'bottom center':'top left';
+    let tooltipPosition= ( typeof props.toolTipPosition === 'undefined' ) ? 'top center': props.toolTipPosition;
     let inputName=props.title;
 
     const [input, setInput] = useState(`${inputValue}`); // '' is the initial state value

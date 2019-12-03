@@ -495,7 +495,8 @@ export const SetupIRF=(props)=>{
                       <NumberInput
                         title='inventory-on-hand-quantity'
                         id={-1}
-                        cellCnt={'toolTipPosition'}
+                        cellCnt={2}
+                        toolTipPosition='bottom center'
                         mrpInputType='inventoryRecords'
                         value={props.component.irf.inventoryOnHand}
                         component={props.component}
@@ -507,6 +508,7 @@ export const SetupIRF=(props)=>{
                         title='lead-time-quantity'
                         id={-1}
                         cellCnt={'toolTipPosition'}
+                        toolTipPosition='bottom center'
                         mrpInputType='inventoryRecords'
                         leadTime={  props.component.irf.leadTime }
                         component={props.component}
@@ -633,6 +635,8 @@ export const SetupIRF=(props)=>{
                       handler={setInterest}/>
                   <hr className={dividerCCS.hDividerClassName }  style={dividerCCS.vDividerStyle}/>
                 </div>
+
+                <hr className={dividerCCS.hDividerClassName} style={dividerCCS.hDividerStyle}/>
             </div>
             <div className='align-self-start'>
               <i id={`${props.component.displayLogic.key}-SetupIRF`}

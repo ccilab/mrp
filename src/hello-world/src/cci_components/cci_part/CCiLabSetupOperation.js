@@ -381,7 +381,7 @@ export const SetupOP=(props)=>{
      <TextInput
          title='team-name'
          id={index}
-         cellCnt={2}
+         cellCnt={3}
          mrpInputType='operations'
          value={( teamName !== null ) ? teamName : ''} //array of demands for each period 
          component={props.component}
@@ -398,6 +398,7 @@ export const SetupOP=(props)=>{
          style={{backgroundColor: `${styles.cciBgColor}`}}
          onClick={removeShiftEntry(index)}/>
      } 
+     <hr className={dividerCCS.hDividerClassName }  style={dividerCCS.vDividerStyle}/>
      </div>
     { isLastElement !== true ?
       <hr  className={dividerCCS.hDividerClassName} style={dividerCCS.hDividerStyle}/>
@@ -462,229 +463,215 @@ export const SetupOP=(props)=>{
           arrow={true}
           arrowStyle={{backgroundColor: `${styles.cciBgColor}`}}>
           {close => (
-            <div className={'d-flex flex-column'} style={{backgroundColor:`${styles.cciBgColor}`}} >
-            <div className={'d-flex justify-content-between'}>
-              <NumberInput
-                title='employee-count-quantity'
-                id={-1}
-                cellCnt={'toolTipPosition'}
-                mrpInputType='operations'
-                value={props.component.operation.employeeCount}
-                component={props.component}
-                handler={setEmployeeCount}/>
-              <hr className={dividerCCS.hDividerClassName }  style={dividerCCS.vDividerStyle}/>    
-               <NumberInput
-                title='time-pre-component-per-employee-quantity'
-                id={-1}
-                cellCnt={'toolTipPosition'}
-                mrpInputType='operations'
-                value={props.component.operation.averageTimePerComponentPerEmployee}
-                component={props.component}
-                handler={setTimePerComponentPerEmployee} /> 
-               <i id={`${props.component.displayLogic.key}-SetupOP`}
-                className='text-danger m-0 py-1 px-1 fas fw fa-times-circle cursor-pointer'
-                style={{backgroundColor: `${styles.cciBgColor}`}}
-                onClick={ close }/> 
-               
-            </div>
-           
-            <hr className={dividerCCS.hDividerClassName} style={dividerCCS.hDividerStyle}/>
-
-            <div className={'d-flex  justify-content-between'}>
-                <NumberInput
-                    title='daily-time-capacity-per-person-quantity'
-                    id={-1}
-                    cellCnt={2}
-                    mrpInputType='operations'
-                    value={props.component.operation.dailyTimeCapacityPerEmployee}
-                    component={props.component}
-                    handler={setDailyTimeCapacity}/>
-                <hr className={dividerCCS.hDividerClassName }  style={dividerCCS.vDividerStyle}/>    
-                 <NumberInput
-                    title='average-hourly-cost-quantity'
-                    id={-1}
-                    cellCnt={2}
-                    mrpInputType='operations'
-                    value={props.component.operation.averageHourlyCost}
-                    component={props.component}
-                    handler={setHourlyCost}/>
-                <i id={`${props.component.displayLogic.key}-SetupOP`}
-                className='text-danger m-0 py-1 px-1 fas fw fa-times-circle cursor-pointer'
-                style={{backgroundColor: `${styles.cciBgColor}`}}
-                    onClick={ close }/> 
-            </div>
-
-            <hr className={dividerCCS.hDividerClassName} style={dividerCCS.hDividerStyle}/>
-
-            <div className={'d-flex  justify-content-between'}>
+            <div className='d-flex'>
+              <div className={'d-flex flex-column'} style={{backgroundColor:`${styles.cciBgColor}`}} >
+                <div className={'d-flex justify-content-between'}>
                   <NumberInput
-                      title='daily-overtime-capacity-quantity'
-                      cellCnt={2}
-                      id={-1}
-                      mrpInputType='operations'
-                      value={props.component.operation.dailyOvertimeCapacityPerEmployee}
-                      component={props.component}
-                      handler={setDailyOvertimeCapacity}/>
+                    title='employee-count-quantity'
+                    id={-1}
+                    cellCnt={2}
+                    toolTipPosition='bottom center'
+                    mrpInputType='operations'
+                    value={props.component.operation.employeeCount}
+                    component={props.component}
+                    handler={setEmployeeCount}/>
                   <hr className={dividerCCS.hDividerClassName }  style={dividerCCS.vDividerStyle}/>    
                   <NumberInput
-                      title='average-overtime-hourly-cost-quantity'
+                    title='time-pre-component-per-employee-quantity'
+                    id={-1}
+                    cellCnt={2}
+                    toolTipPosition='bottom center'
+                    mrpInputType='operations'
+                    value={props.component.operation.averageTimePerComponentPerEmployee}
+                    component={props.component}
+                    handler={setTimePerComponentPerEmployee} /> 
+                  <hr className={dividerCCS.hDividerClassName }  style={dividerCCS.vDividerStyle}/>
+                </div>
+           
+                <hr className={dividerCCS.hDividerClassName} style={dividerCCS.hDividerStyle}/>
+
+                <div className={'d-flex  justify-content-between'}>
+                    <NumberInput
+                        title='daily-time-capacity-per-person-quantity'
+                        id={-1}
+                        cellCnt={2}
+                        mrpInputType='operations'
+                        value={props.component.operation.dailyTimeCapacityPerEmployee}
+                        component={props.component}
+                        handler={setDailyTimeCapacity}/>
+                    <hr className={dividerCCS.hDividerClassName }  style={dividerCCS.vDividerStyle}/>    
+                    <NumberInput
+                        title='average-hourly-cost-quantity'
+                        id={-1}
+                        cellCnt={2}
+                        mrpInputType='operations'
+                        value={props.component.operation.averageHourlyCost}
+                        component={props.component}
+                        handler={setHourlyCost}/>
+                    <hr className={dividerCCS.hDividerClassName }  style={dividerCCS.vDividerStyle}/>
+                </div>
+
+                <hr className={dividerCCS.hDividerClassName} style={dividerCCS.hDividerStyle}/>
+
+                <div className={'d-flex  justify-content-between'}>
+                      <NumberInput
+                          title='daily-overtime-capacity-quantity'
+                          cellCnt={2}
+                          id={-1}
+                          mrpInputType='operations'
+                          value={props.component.operation.dailyOvertimeCapacityPerEmployee}
+                          component={props.component}
+                          handler={setDailyOvertimeCapacity}/>
+                      <hr className={dividerCCS.hDividerClassName }  style={dividerCCS.vDividerStyle}/>    
+                      <NumberInput
+                          title='average-overtime-hourly-cost-quantity'
+                          id={-1}
+                          cellCnt={2}
+                          mrpInputType='operations'
+                          value={props.component.operation.averageHourlyOvertimeCost}
+                          component={props.component}
+                          handler={setHourlyOvertimeCost}/>
+                      <hr className={dividerCCS.hDividerClassName }  style={dividerCCS.vDividerStyle}/> 
+                </div>
+
+                <hr className={dividerCCS.hDividerClassName} style={dividerCCS.hDividerStyle}/>
+
+                <div className={'d-flex  justify-content-between'}>
+                    <NumberInput
+                        title='min-allowed-employee-per-shift-quantity'
+                        id={-1}
+                        cellCnt={2}
+                        mrpInputType='operations'
+                        value={props.component.operation.minAllowedEmployeePerShift}
+                        component={props.component}
+                        handler={setMinAllowedEmployee}/>
+
+                    <hr className={dividerCCS.hDividerClassName }  style={dividerCCS.vDividerStyle}/>    
+
+                    <NumberInput
+                        title='max-allowed-employee-per-shift-quantity'
+                        id={-1}
+                        cellCnt={2}
+                        mrpInputType='operations'
+                        value={props.component.operation.minAllowedEmployeePerShift}
+                        component={props.component}
+                        handler={setMaxAllowedEmployee}/>
+                    <hr className={dividerCCS.hDividerClassName }  style={dividerCCS.vDividerStyle}/>
+                </div>
+
+                <hr className={dividerCCS.hDividerClassName} style={dividerCCS.hDividerStyle}/>
+
+                <div className={'d-flex  justify-content-between'}>
+                    <NumberInput
+                        title='hiring-cost-quantity'
+                        id={-1}
+                        cellCnt={2}
+                        mrpInputType='operations'
+                        value={props.component.operation.averageHiringCostPerEmployee}
+                        component={props.component}
+                        handler={setAverageHiringCost}/>
+
+                    <hr className={dividerCCS.hDividerClassName }  style={dividerCCS.vDividerStyle}/>    
+
+                    <NumberInput
+                        title='dismissal-cost-quantity'
+                        id={-1}
+                        cellCnt={2}
+                        mrpInputType='operations'
+                        value={props.component.operation.averageDismissalCostPerEmployee}
+                        component={props.component}
+                        handler={setDismissalCost}/>
+
+                    <hr className={dividerCCS.hDividerClassName }  style={dividerCCS.vDividerStyle}/> 
+                </div>
+
+                <hr className={dividerCCS.hDividerClassName }  style={dividerCCS.hDividerStyle}/>    
+
+                <div className={'d-flex  justify-content-between'}>
+                    <NumberInput
+                        title='setup-cost-quantity'
+                        id={-1}
+                        cellCnt={2}
+                        mrpInputType='operations'
+                        value={props.component.operation.setupCost }
+                        component={props.component}
+                        handler={setSetupCost}/>
+                    <hr className={dividerCCS.hDividerClassName }  style={dividerCCS.vDividerStyle}/>    
+                    <PercentageInput
+                      title='scrap-rate'
                       id={-1}
                       cellCnt={2}
                       mrpInputType='operations'
-                      value={props.component.operation.averageHourlyOvertimeCost}
-                component={props.component}
-                      handler={setHourlyOvertimeCost}/>
-                  <i id={`${props.component.displayLogic.key}-SetupOP`}
-                      className='text-danger m-0 py-1 px-1 fas fw fa-times-circle cursor-pointer'
-                      style={{backgroundColor: `${styles.cciBgColor}`}}
-                      onClick={ close }/> 
-            </div>
+                      value={props.component.operation.scrapRate }
+                      component={props.component}
+                      handler={setScrapRate}/>
+                    <hr className={dividerCCS.hDividerClassName }  style={dividerCCS.vDividerStyle}/> 
+                </div>
 
-            <hr className={dividerCCS.hDividerClassName} style={dividerCCS.hDividerStyle}/>
+                <hr className={dividerCCS.hDividerClassName} style={dividerCCS.hDividerStyle}/>
 
-            <div className={'d-flex  justify-content-between'}>
-                <NumberInput
-                    title='min-allowed-employee-per-shift-quantity'
-                    id={-1}
-                    cellCnt={2}
-                    mrpInputType='operations'
-                    value={props.component.operation.minAllowedEmployeePerShift}
+                <div className={'d-flex  justify-content-between'}>
+                    <TextInput
+                        title='input-warehouse-name'
+                        id={-1}
+                        cellCnt={2}
+                        mrpInputType='operations'
+                        value={props.component.operation.inputWarehouse }
                     component={props.component}
-                    handler={setMinAllowedEmployee}/>
+                        handler={setInputWarehouse}/>
 
-                <hr className={dividerCCS.hDividerClassName }  style={dividerCCS.vDividerStyle}/>    
+                    <hr className={dividerCCS.hDividerClassName }  style={dividerCCS.vDividerStyle}/>    
 
-                <NumberInput
-                    title='max-allowed-employee-per-shift-quantity'
-                    id={-1}
-                    cellCnt={2}
-                    mrpInputType='operations'
-                    value={props.component.operation.minAllowedEmployeePerShift}
-                    component={props.component}
-                    handler={setMaxAllowedEmployee}/>
-                <i id={`${props.component.displayLogic.key}-SetupOP`}
-                    className='text-danger m-0 py-1 px-1 fas fw fa-times-circle cursor-pointer'
-                    style={{backgroundColor: `${styles.cciBgColor}`}}
-                    onClick={ close }/> 
-            </div>
+                    <TextInput
+                      title='output-warehouse-name'
+                      id={-1}
+                      cellCnt={2}
+                      mrpInputType='operations'
+                      value={props.component.operation.outputWarehouse }
+                      component={props.component}
+                      handler={setOutputWarehouse}/>
 
-            <hr className={dividerCCS.hDividerClassName} style={dividerCCS.hDividerStyle}/>
-
-            <div className={'d-flex  justify-content-between'}>
-                <NumberInput
-                    title='hiring-cost-quantity'
-                    id={-1}
-                    cellCnt={2}
-                    mrpInputType='operations'
-                    value={props.component.operation.averageHiringCostPerEmployee}
-                    component={props.component}
-                    handler={setAverageHiringCost}/>
-
-                <hr className={dividerCCS.hDividerClassName }  style={dividerCCS.vDividerStyle}/>    
-
-                <NumberInput
-                    title='dismissal-cost-quantity'
-                    id={-1}
-                    cellCnt={2}
-                    mrpInputType='operations'
-                    value={props.component.operation.averageDismissalCostPerEmployee}
-                    component={props.component}
-                    handler={setDismissalCost}/>
-
-                <i id={`${props.component.displayLogic.key}-SetupOP`}
-                    className='text-danger m-0 py-1 px-1 fas fw fa-times-circle cursor-pointer'
-                    style={{backgroundColor: `${styles.cciBgColor}`}}
-                    onClick={ close }/> 
-            </div>
-
-            <hr className={dividerCCS.hDividerClassName }  style={dividerCCS.hDividerStyle}/>    
-
-            <div className={'d-flex  justify-content-between'}>
-                <NumberInput
-                    title='setup-cost-quantity'
-                    id={-1}
-                    cellCnt={2}
-                    mrpInputType='operations'
-                    value={props.component.operation.setupCost }
-                    component={props.component}
-                    handler={setSetupCost}/>
-                <hr className={dividerCCS.hDividerClassName }  style={dividerCCS.vDividerStyle}/>    
-                <PercentageInput
-                  title='scrap-rate'
-                  id={-1}
-                  cellCnt={2}
-                  mrpInputType='operations'
-                  value={props.component.operation.scrapRate }
-                  component={props.component}
-                  handler={setScrapRate}/>
-                <i id={`${props.component.displayLogic.key}-SetupOP`}
-                  className='text-danger m-0 py-1 px-1 fas fw fa-times-circle cursor-pointer'
-                  style={{backgroundColor: `${styles.cciBgColor}`}}
-                  onClick={ close }/> 
-             </div>
-
-            <hr className={dividerCCS.hDividerClassName} style={dividerCCS.hDividerStyle}/>
-
-            <div className={'d-flex  justify-content-between'}>
-                <TextInput
-                    title='input-warehouse-name'
-                    id={-1}
-                    cellCnt={2}
-                    mrpInputType='operations'
-                    value={props.component.operation.inputWarehouse }
-                component={props.component}
-                    handler={setInputWarehouse}/>
-
-                <hr className={dividerCCS.hDividerClassName }  style={dividerCCS.vDividerStyle}/>    
-
-                <TextInput
-                  title='output-warehouse-name'
-                  id={-1}
-                  cellCnt={2}
-                  mrpInputType='operations'
-                  value={props.component.operation.outputWarehouse }
-                  component={props.component}
-                  handler={setOutputWarehouse}/>
-
-                <i id={`${props.component.displayLogic.key}-SetupOP`}
-                  className='text-danger m-0 py-1 px-1 fas fw fa-times-circle cursor-pointer'
-                  style={{backgroundColor: `${styles.cciBgColor}`}}
-                  onClick={ close }/> 
-            </div>
+                    <hr className={dividerCCS.hDividerClassName }  style={dividerCCS.vDividerStyle}/>
+                </div>
             
-            <hr className={dividerCCS.hDividerClassName} style={dividerCCS.hDividerStyle}/>
+                <hr className={dividerCCS.hDividerClassName} style={dividerCCS.hDividerStyle}/>
 
-            <div className={'d-flex  justify-content-between'}>
-              <DateInput
-                title='start-product-date'
-                  id={-1}
-                  cellCnt={2}
-                  mrpInputType='operations'
-                  value={props.component.operation.startDate }
-                  component={props.component}
-                  handler={setStartDate}/>
+                <div className={'d-flex  justify-content-between'}>
+                  <DateInput
+                    title='start-product-date'
+                      id={-1}
+                      cellCnt={2}
+                      mrpInputType='operations'
+                      value={props.component.operation.startDate }
+                      component={props.component}
+                      handler={setStartDate}/>
 
-              <hr className={dividerCCS.hDividerClassName }  style={dividerCCS.vDividerStyle}/>    
+                  <hr className={dividerCCS.hDividerClassName }  style={dividerCCS.vDividerStyle}/>    
 
-              <TextInput
-                  title='workshop'
-                  id={-1}
-                  cellCnt={2}
-                  mrpInputType='operations'
-                  value={props.component.operation.workshop }
-                  component={props.component}
-                  handler={setWorkshop}/>
+                  <TextInput
+                      title='workshop'
+                      id={-1}
+                      cellCnt={2}
+                      mrpInputType='operations'
+                      value={props.component.operation.workshop }
+                      component={props.component}
+                      handler={setWorkshop}/>
 
-              <i id={`${props.component.displayLogic.key}-SetupOP`}
-                className='text-danger m-0 py-1 px-1 fas fw fa-times-circle cursor-pointer'
-                style={{backgroundColor: `${styles.cciBgColor}`}}
-                onClick={ close }/> 
-            </div>
+                  <hr className={dividerCCS.hDividerClassName }  style={dividerCCS.vDividerStyle}/>
+                </div>
 
-            <hr className={dividerCCS.hDividerClassName} style={dividerCCS.hDividerStyle}/>
+              <hr className={dividerCCS.hDividerClassName} style={dividerCCS.hDividerStyle}/>
 
-            {renderShiftInfoInputs()}
-            </div>
+              {renderShiftInfoInputs()}
+              <hr className={dividerCCS.hDividerClassName} style={dividerCCS.hDividerStyle}/>
+              </div>
+                <div>
+                <i id={`${props.component.displayLogic.key}-SetupOP`}
+                    className='text-danger m-0 py-1 px-1 fas fw fa-times-circle cursor-pointer'
+                    style={{backgroundColor: `${styles.cciBgColor}`}}
+                    onClick={ close }/> 
+                </div>
+              </div>
             )
           }
       </Popup>

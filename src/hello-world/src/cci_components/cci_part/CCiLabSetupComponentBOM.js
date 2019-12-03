@@ -253,7 +253,8 @@ export const SetupBOM=(props)=>{
                 <div className={'d-flex  justify-content-between'}>
                   <TextInput
                     title='part-name'
-                    cellCnt={'toolTipPosition'}
+                    cellCnt={1}
+                    toolTipPosition='bottom center'
                     mrpInputType='component'
                     value={props.component.businessLogic.name}
                     component={props.component}

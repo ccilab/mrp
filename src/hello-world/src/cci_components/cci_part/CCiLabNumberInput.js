@@ -11,12 +11,11 @@ export const NumberInput=(props)=>{
 
   let inputClassName = 'text-primary m-0 pl-2 pr-0 border-0 cursor-pointer';
   let cellWidth = ( (typeof props.cellCnt === 'undefined' ) || ( typeof props.cellCnt !== 'undefined' && props.cellCnt === 1) ) ?  
-                  '20rem' : (props.cellCnt === 2 || props.cellCnt === 'toolTipPosition' )? '10rem' : '8.5rem';
+                  '20rem' : (props.cellCnt === 2  )? '10rem' : '8.5rem';
   let inputStyle={'backgroundColor': `${styles.cciBgColor}`, width: `${cellWidth}`};
   let inputType='number';
   let tooltipOnMode=['click','hover'];
-  let tooltipPosition= ( (typeof props.cellCnt === 'undefined' ) || ( typeof props.cellCnt !== 'undefined' && props.cellCnt === 1) ) ? 
-      'top center': props.cellCnt === 'toolTipPosition' ? 'bottom center':'top left';
+  let tooltipPosition= ( typeof props.toolTipPosition === 'undefined' ) ? 'top center': props.toolTipPosition;
   let inputName=props.title;
 
 
