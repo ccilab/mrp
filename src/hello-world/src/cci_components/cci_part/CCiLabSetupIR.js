@@ -116,7 +116,7 @@ export const initializeIRF=( component )=>{
 const _initializeIRF=()=>{
    let irf={};
    irf.inventoryOnHand=null;  //Initial Inventory, Beginning Inventory  
-   irf.scheduledReceipts=[[null,null]];  //SR - date-quantity pair
+   irf.scheduledReceipts=[{date: null, quantity: null}];  //SR - date-quantity pair
    irf.maxAllowedEndingInventory=null; // Maximum Stock
    irf.minAllowedEndingInventory= null; //Safe Stock (SS)
    irf.procurementType=null;  //'InHouse'(to produce production order), 'Purchase'(to produce purchase order)
@@ -155,7 +155,7 @@ export const SetupIRF=(props)=>{
   const saveValidIRFEntry=( component )=>{
     component.irf.scheduledReceipts = SRArray;
     sessionStorage.setItem( `${component.displayLogic.key}_${component.businessLogic.name}_irf`, JSON.stringify( component.irf ));
-          }
+  }
 
   const setIOH=(index, ioh, component)=>{
     if( typeof component.irf === 'undefined' )
@@ -179,13 +179,13 @@ export const SetupIRF=(props)=>{
       let {isValid, value} = isValidValue(qty);
 
       if( isValid )
-          {
+      {
           for( let item of SRArray )
           {
             const id = SRArray.indexOf( item );
             if( id === index )
             {
-              item[1] = value;
+              item.quantity = value;
               break;
             }
           }
@@ -206,7 +206,7 @@ export const SetupIRF=(props)=>{
           const id = SRArray.indexOf( item );
           if( id === index )
           {
-            item[0] = completeDate;
+            item.date = completeDate;
             break;
           }
         }
@@ -370,7 +370,7 @@ export const SetupIRF=(props)=>{
   }
 
   const AddNextSREntry=(index)=>(e)=>{
-    SRArray.push([null,null]);
+    SRArray.push({date:null,quantity: null});
     saveValidIRFEntry(props.component);
     setSRArray( SRArray );
     window.dispatchEvent(new Event('resize'));  //resize popup menu
@@ -438,7 +438,7 @@ export const SetupIRF=(props)=>{
     return (
       SRArray.map( ( item )=>{
         let id = SRArray.indexOf(item);
-        return renderSRInput(getRandomInt(100), id, item[0], item[1], id ===  SRArray.length - 1 ? true : false )
+        return renderSRInput(getRandomInt(100), id, item.date, item.quantity, id ===  SRArray.length - 1 ? true : false )
       } )
     )
   }

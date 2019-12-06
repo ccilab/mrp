@@ -300,25 +300,52 @@ export const SetupOP=(props)=>{
     saveValidOpEntry(component);
   }
 
-  const setShiftTeamName=(index, name, component)=>{
+  const setShiftHourlyCost = ( index, cost, component)=>{
     if( typeof component.operation === 'undefined' )
       component.operation = new initializeOp( component );
 
-    if( isValidString( name ))
+    let {isValid, value} = isValidValue(cost);
+
+    for( let item of shiftInfoArray )
     {
-      for( let item of shiftInfoArray )
+      const id = shiftInfoArray.indexOf( item );
+      if( id === index )
       {
-        const id = shiftInfoArray.indexOf( item );
-        if( id === index )
+        if( isValid )
         {
-          item[1] = name;
-          break;
+          item[1] = value;
         }
+        else
+        {
+          item[1] = null;
+        }
+        
+        break;
       }
     }
 
     saveValidOpEntry(component);
   }
+
+  // const setShiftTeamName=(index, name, component)=>{
+  //   if( typeof component.operation === 'undefined' )
+  //     component.operation = new initializeOp( component );
+
+  //   if( isValidString( name ))
+  //   {
+  //     for( let item of shiftInfoArray )
+  //     {
+  //       const id = shiftInfoArray.indexOf( item );
+  //       if( id === index )
+  //       {
+  //         item[1] = name;
+  //         break;
+  //       }
+  //     }
+  //   }
+
+  //   saveValidOpEntry(component);
+  // }
 
 
   //hover to popup tooltip, click/focus to popup setup BOM inputs
@@ -378,14 +405,14 @@ export const SetupOP=(props)=>{
 
      <hr className={dividerCCS.hDividerClassName }  style={dividerCCS.vDividerStyle}/>    
      
-     <TextInput
-         title='team-name'
+     <NumberInput
+         title='shift-cost'
          id={index}
          cellCnt={3}
          mrpInputType='operations'
          value={( teamName !== null ) ? teamName : ''} //array of demands for each period 
          component={props.component}
-         handler={setShiftTeamName}/>
+         handler={setShiftHourlyCost}/>
          
      { isLastElement === true ?
        <i id={`${index}`}
@@ -395,7 +422,7 @@ export const SetupOP=(props)=>{
          :
          <i id={`${index}`}
          className='text-danger m-0 py-1 px-1 fas fw fa-minus-circle cursor-pointer'
-         style={{backgroundColor: `${styles.cciBgColor}`}}
+         style={{backgroundColor: `${styles.cciBgColor}`, width: '1.5em'}}
          onClick={removeShiftEntry(index)}/>
      } 
      <hr className={dividerCCS.hDividerClassName }  style={dividerCCS.vDividerStyle}/>
