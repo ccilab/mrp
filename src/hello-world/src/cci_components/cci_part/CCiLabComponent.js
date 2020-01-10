@@ -170,8 +170,8 @@ const ComponentName=(props)=>{
   const { t } = useTranslation('commands', {useSuspense: false});
   let componentName = props.componentName;
 
-  if( props.componentName === 'add-part')
-    componentName = t('add-part');
+  if( props.componentName === 'part-name')
+    componentName = t('part-name');
 
 
   return (

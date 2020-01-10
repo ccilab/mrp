@@ -140,7 +140,7 @@ const BOMTableHeader=(props)=>{
             <tbody >
                 <tr >
                     <th className='align-middle' >{t('component:th-product-name')}: </th>
-                    <td className='align-middle' colSpan='2'> {(typeof rootElement !== 'undefined' && rootElement.businessLogic.name !== 'add-part') ? rootElement.businessLogic.name : `${t('component:part-name')}`}</td>
+                    <td className='align-middle' colSpan='2'> {(typeof rootElement !== 'undefined' && rootElement.businessLogic.name !== 'part-name') ? rootElement.businessLogic.name : `${t('component:part-name')}`}</td>
                     <th className='align-middle'>{t('component:th-designed-by')}:</th>
                     <td className='align-middle' colSpan='2'>
                         <UserNameInput 

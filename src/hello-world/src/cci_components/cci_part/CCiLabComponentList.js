@@ -295,7 +295,7 @@ const getChildComponentsFromDataSource = (parentComponent)=>{
 // initialize businessLogic object
 const initializeBusinessLogic = (parentComponent)=>{
   let businessLogic={id: 0,
-                     name: 'add-part',
+                     name: '',
                      parentIds: typeof parentComponent === 'undefined'? []:[parentComponent.businessLogic.id],
                      childIds :[],
                      imgFile: '',

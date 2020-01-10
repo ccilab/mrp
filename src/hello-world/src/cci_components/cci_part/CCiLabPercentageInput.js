@@ -56,24 +56,12 @@ export const PercentageInput=(props)=>{
 
   // https://blog.bitsrc.io/understanding-currying-in-javascript-ceb2188c339
   const updateValue=(props)=>(e)=>{
-    //   if( typeof props.handler !== 'undefined')
-    //   {
-    //     if( typeof e.target !== 'undefined' && e.target.value === '' && props.title ==='part-name')
-    //       e.target.value = 'add-part';
-
-    //     console.log("SetupComponentOp - updateValue: " + e.target.value);
-
-    //     props.handler(e.target.value, props.component);
-    //   }
     onUpdateValueEnterKey( props, e.target);
   }
 
   const onUpdateValueEnterKey=(props, target )=>{
     if( typeof props.handler !== 'undefined')
     {
-      if( typeof target !== 'undefined' && target.value === '' && props.title ==='part-name')
-        target.value = 'add-part';
-
       console.log("PercentageInput - updateValue: " + target.value);
 
       props.handler(props.id, target.value, props.component);

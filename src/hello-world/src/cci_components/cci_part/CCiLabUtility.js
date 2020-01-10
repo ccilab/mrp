@@ -102,7 +102,7 @@ export const isValidString=( name )=>{
     if ( name === null )
         return false;
     return (  typeof name === 'string' &&
-        name.length > 0 ) ? true : false
+        name.length >= 0 ) ? true : false
   };
 
 export  const isValidValue=(valueToCheck)=>{

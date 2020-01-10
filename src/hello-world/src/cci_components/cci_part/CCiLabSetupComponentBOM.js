@@ -134,7 +134,7 @@ export const SetupBOM=(props)=>{
 
 
 
-  const setPartName=(partName, component)=>{
+  const setPartName=(index, partName, component)=>{
     if( isValidString( partName ))
         component.businessLogic.name=partName;
     else
@@ -144,7 +144,7 @@ export const SetupBOM=(props)=>{
     console.log("SetupBOM - setPartName: " + component.businessLogic.name);
   };
 
-  const setPartNumber=(partNumber, component)=>{
+  const setPartNumber=(index, partNumber, component)=>{
     if( typeof component.bom === 'undefined' )
       component.bom = new initializeBOM( component );
 
@@ -173,7 +173,7 @@ export const SetupBOM=(props)=>{
     saveValidBOMEntry(component);
   }
 
-  const setUnitOfMeasure=(unitOfMeasure, component)=>{
+  const setUnitOfMeasure=(index, unitOfMeasure, component)=>{
     if( typeof component.bom === 'undefined' )
       component.bom = new initializeBOM( component );
 
@@ -253,6 +253,7 @@ export const SetupBOM=(props)=>{
                 <div className={'d-flex  justify-content-between'}>
                   <TextInput
                     title='part-name'
+                    id={-1}
                     cellCnt={1}
                     toolTipPosition='bottom center'
                     mrpInputType='component'
@@ -267,6 +268,7 @@ export const SetupBOM=(props)=>{
                 <div className={'d-flex  justify-content-between'}>
                   <TextInput
                       title='part-number'
+                      id={-1}
                       cellCnt={1}
                       mrpInputType='component'
                       value={props.component.bom.core.partNumber}
@@ -298,6 +300,7 @@ export const SetupBOM=(props)=>{
                 <div className={'d-flex  justify-content-between'}>
                   <TextInput
                       title='unit-of-measure'
+                      id={-1}
                       cellCnt={1}
                       mrpInputType='component'
                       value={props.component.bom.core.unitOfMeasure }
