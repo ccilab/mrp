@@ -9,6 +9,7 @@ import {DateInput} from "./CCiLabDateInput"
 import {NumberInput} from "./CCiLabNumberInput"
 import {TextInput} from "./CCiLabTextInput"
 import {PercentageInput} from "./CCiLabPercentageInput"
+import { NormalAndOvertime } from './CCiLabNormalAndOvertimeInputs';
 
 export const initializeOp=( component )=>{
   let operation= JSON.parse(sessionStorage.getItem(`${component.displayLogic.key}_${component.businessLogic.name}_op`)) || _initializeOp();
@@ -19,14 +20,6 @@ export const initializeOp=( component )=>{
 // #todo - need to re-design how to handle it
 const _initializeOp=()=>{
    let operation={};
-   operation.employeeCount=null;  //number of employees to produce the demand of a component
-   operation.dailyTimeCapacityPerEmployee=null;  //in hour
-   operation.averageHourlyCost=null; 
-   operation.dailyOvertimeCapacityPerEmployee=null;  //in hour
-   operation.averageHourlyOvertimeCost= null; //required quantity of component/part
-   operation.averageTimePerComponentPerEmployee=null; //in hour, time needed to produce one component per employee
-   operation.minAllowedEmployeePerShift=null;
-   operation.maxAllowedEmployeePerShift=null;
    operation.averageHiringCostPerEmployee = null;
    operation.averageDismissalCostPerEmployee = null; //local currency
    operation.startDate=null;
@@ -492,99 +485,8 @@ export const SetupOP=(props)=>{
           {close => (
             <div className='d-flex'>
               <div className={'d-flex flex-column'} style={{backgroundColor:`${styles.cciBgColor}`}} >
-                <div className={'d-flex justify-content-between'}>
-                  <NumberInput
-                    title='employee-count-quantity'
-                    id={-1}
-                    cellCnt={2}
-                    toolTipPosition='bottom center'
-                    mrpInputType='operations'
-                    value={props.component.operation.employeeCount}
-                    component={props.component}
-                    handler={setEmployeeCount}/>
-                  <hr className={dividerCCS.hDividerClassName }  style={dividerCCS.vDividerStyle}/>    
-                  <NumberInput
-                    title='time-pre-component-per-employee-quantity'
-                    id={-1}
-                    cellCnt={2}
-                    toolTipPosition='bottom center'
-                    mrpInputType='operations'
-                    value={props.component.operation.averageTimePerComponentPerEmployee}
-                    component={props.component}
-                    handler={setTimePerComponentPerEmployee} /> 
-                  <hr className={dividerCCS.hDividerClassName }  style={dividerCCS.vDividerStyle}/>
-                </div>
-           
-                <hr className={dividerCCS.hDividerClassName} style={dividerCCS.hDividerStyle}/>
 
-                <div className={'d-flex  justify-content-between'}>
-                    <NumberInput
-                        title='daily-time-capacity-per-person-quantity'
-                        id={-1}
-                        cellCnt={2}
-                        mrpInputType='operations'
-                        value={props.component.operation.dailyTimeCapacityPerEmployee}
-                        component={props.component}
-                        handler={setDailyTimeCapacity}/>
-                    <hr className={dividerCCS.hDividerClassName }  style={dividerCCS.vDividerStyle}/>    
-                    <NumberInput
-                        title='average-hourly-cost-quantity'
-                        id={-1}
-                        cellCnt={2}
-                        mrpInputType='operations'
-                        value={props.component.operation.averageHourlyCost}
-                        component={props.component}
-                        handler={setHourlyCost}/>
-                    <hr className={dividerCCS.hDividerClassName }  style={dividerCCS.vDividerStyle}/>
-                </div>
-
-                <hr className={dividerCCS.hDividerClassName} style={dividerCCS.hDividerStyle}/>
-
-                <div className={'d-flex  justify-content-between'}>
-                      <NumberInput
-                          title='daily-overtime-capacity-quantity'
-                          cellCnt={2}
-                          id={-1}
-                          mrpInputType='operations'
-                          value={props.component.operation.dailyOvertimeCapacityPerEmployee}
-                          component={props.component}
-                          handler={setDailyOvertimeCapacity}/>
-                      <hr className={dividerCCS.hDividerClassName }  style={dividerCCS.vDividerStyle}/>    
-                      <NumberInput
-                          title='average-overtime-hourly-cost-quantity'
-                          id={-1}
-                          cellCnt={2}
-                          mrpInputType='operations'
-                          value={props.component.operation.averageHourlyOvertimeCost}
-                          component={props.component}
-                          handler={setHourlyOvertimeCost}/>
-                      <hr className={dividerCCS.hDividerClassName }  style={dividerCCS.vDividerStyle}/> 
-                </div>
-
-                <hr className={dividerCCS.hDividerClassName} style={dividerCCS.hDividerStyle}/>
-
-                <div className={'d-flex  justify-content-between'}>
-                    <NumberInput
-                        title='min-allowed-employee-per-shift-quantity'
-                        id={-1}
-                        cellCnt={2}
-                        mrpInputType='operations'
-                        value={props.component.operation.minAllowedEmployeePerShift}
-                        component={props.component}
-                        handler={setMinAllowedEmployee}/>
-
-                    <hr className={dividerCCS.hDividerClassName }  style={dividerCCS.vDividerStyle}/>    
-
-                    <NumberInput
-                        title='max-allowed-employee-per-shift-quantity'
-                        id={-1}
-                        cellCnt={2}
-                        mrpInputType='operations'
-                        value={props.component.operation.minAllowedEmployeePerShift}
-                        component={props.component}
-                        handler={setMaxAllowedEmployee}/>
-                    <hr className={dividerCCS.hDividerClassName }  style={dividerCCS.vDividerStyle}/>
-                </div>
+               <NormalAndOvertime/>
 
                 <hr className={dividerCCS.hDividerClassName} style={dividerCCS.hDividerStyle}/>
 
