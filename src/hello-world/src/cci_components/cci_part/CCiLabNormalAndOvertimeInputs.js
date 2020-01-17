@@ -5,7 +5,6 @@ import { useTranslation } from 'react-i18next';
 import styles from "./../../dist/css/ccilab-component-list.css"
 
 import { dividerCCS, isValidString, isValidValue, getRandomInt } from "./CCiLabUtility";
-import {DateInput} from "./CCiLabDateInput"
 import {NumberInput} from "./CCiLabNumberInput"
 import {TextInput} from "./CCiLabTextInput"
 import {initializeOp, saveValidOpEntry} from './CCiLabOperationsUtility'
@@ -26,9 +25,9 @@ export const NormalAndOvertime=(props)=>{
     let {isValid, value} = isValidValue(count);
 
      if( !isValid )
-      component.operation.employeeCount=null;
+      component.operation.team.employeeCount=null;
     else
-      component.operation.employeeCount=value;
+      component.operation.team.employeeCount=value;
 
     saveValidOpEntry(component);
   };
@@ -40,9 +39,9 @@ export const NormalAndOvertime=(props)=>{
       let {isValid, value} = isValidValue(capacity);
 
       if( !isValid )
-       component.operation.dailyTimeCapacityPerEmployee=null;
+       component.operation.team.timeCost.hoursPerEmployee=null;
      else
-       component.operation.dailyTimeCapacityPerEmployee=value;
+       component.operation.team.timeCost.hoursPerEmployee=value;
 
     saveValidOpEntry(component);
   };
@@ -54,9 +53,9 @@ export const NormalAndOvertime=(props)=>{
     let {isValid, value} = isValidValue(hourlyCost);
 
     if( !isValid )
-      component.operation.averageHourlyCost=null;
+      component.operation.team.timeCost.averageHourlyCost=null;
     else
-      component.operation.averageHourlyCost=value;
+      component.operation.team.timeCost.averageHourlyCost=value;
 
     saveValidOpEntry(component);
     }
@@ -68,9 +67,9 @@ export const NormalAndOvertime=(props)=>{
     let {isValid, value} = isValidValue(overtimeCapacity);
 
     if( !isValid )
-      component.operation.dailyOvertimeCapacityPerEmployee=null;
+      component.operation.team.overtimeCost.overtimeHoursPerEmployee=null;
     else
-      component.operation.dailyOvertimeCapacityPerEmployee=value;
+      component.operation.team.overtimeCost.overtimeHoursPerEmployee=value;
 
     saveValidOpEntry(component);
   }
@@ -82,9 +81,9 @@ export const NormalAndOvertime=(props)=>{
       let {isValid, value} = isValidValue(overtimeCost);
 
       if( !isValid )
-        component.operation.dailyOvertimeCapacityPerEmployee=null;
+        component.operation.team.overtimeCost.averageHourlyOvertimeCost=null;
     else
-        component.operation.dailyOvertimeCapacityPerEmployee=value;
+        component.operation.team.overtimeCost.averageHourlyOvertimeCost=value;
 
       saveValidOpEntry(component);
   }
@@ -97,9 +96,9 @@ export const NormalAndOvertime=(props)=>{
       let {isValid, value} = isValidValue(timePerComponent);
 
     if( !isValid )
-        component.operation.averageTimePerComponentPerEmployee = null;
+        component.operation.team.averageTimePerComponentPerEmployee = null;
     else
-        component.operation.averageTimePerComponentPerEmployee = value;
+        component.operation.team.averageTimePerComponentPerEmployee = value;
   
     saveValidOpEntry(component);
   }
@@ -111,9 +110,9 @@ export const NormalAndOvertime=(props)=>{
     let {isValid, value} = isValidValue(count);
 
     if( !isValid )
-      component.operation.minAllowedEmployeePerShift = null;
+      component.operation.team.allowedEmployeeCnt.min = null;
     else
-      component.operation.minAllowedEmployeePerShift = value;
+      component.operation.team.allowedEmployeeCnt.min = value;
 
     saveValidOpEntry(component);
   }
@@ -125,9 +124,9 @@ export const NormalAndOvertime=(props)=>{
     let {isValid, value} = isValidValue(count);
 
     if( !isValid )
-      component.operation.maxAllowedEmployeePerShift = null;
+      component.operation.team.allowedEmployeeCnt.max = null;
     else
-      component.operation.maxAllowedEmployeePerShift = value;
+      component.operation.team.allowedEmployeeCnt.max = value;
 
     saveValidOpEntry(component);
   }
@@ -144,7 +143,7 @@ export const NormalAndOvertime=(props)=>{
               cellCnt={2}
               toolTipPosition='bottom center'
               mrpInputType='operations'
-              value={props.component.operation.employeeCount}
+              value={props.component.operation.team.employeeCount}
               component={props.component}
               handler={setEmployeeCount}/>
             <hr className={dividerCCS.hDividerClassName }  style={dividerCCS.vDividerStyle}/>    
@@ -154,7 +153,7 @@ export const NormalAndOvertime=(props)=>{
               cellCnt={2}
               toolTipPosition='bottom center'
               mrpInputType='operations'
-              value={props.component.operation.averageTimePerComponentPerEmployee}
+              value={props.component.operation.team.averageTimePerComponentPerEmployee}
               component={props.component}
               handler={setTimePerComponentPerEmployee} /> 
             <hr className={dividerCCS.hDividerClassName }  style={dividerCCS.vDividerStyle}/>
@@ -168,7 +167,7 @@ export const NormalAndOvertime=(props)=>{
                   id={-1}
                   cellCnt={2}
                   mrpInputType='operations'
-                  value={props.component.operation.dailyTimeCapacityPerEmployee}
+                  value={props.component.operation.team.timeCost.hoursPerEmployee}
                   component={props.component}
                   handler={setDailyTimeCapacity}/>
               <hr className={dividerCCS.hDividerClassName }  style={dividerCCS.vDividerStyle}/>    
@@ -177,7 +176,7 @@ export const NormalAndOvertime=(props)=>{
                   id={-1}
                   cellCnt={2}
                   mrpInputType='operations'
-                  value={props.component.operation.averageHourlyCost}
+                  value={props.component.operation.team.timeCost.averageHourlyCost}
                   component={props.component}
                   handler={setHourlyCost}/>
               <hr className={dividerCCS.hDividerClassName }  style={dividerCCS.vDividerStyle}/>
@@ -191,7 +190,7 @@ export const NormalAndOvertime=(props)=>{
                     cellCnt={2}
                     id={-1}
                     mrpInputType='operations'
-                    value={props.component.operation.dailyOvertimeCapacityPerEmployee}
+                    value={props.component.operation.team.overtimeCost.overtimeHoursPerEmployee}
                     component={props.component}
                     handler={setDailyOvertimeCapacity}/>
                 <hr className={dividerCCS.hDividerClassName }  style={dividerCCS.vDividerStyle}/>    
@@ -200,7 +199,7 @@ export const NormalAndOvertime=(props)=>{
                     id={-1}
                     cellCnt={2}
                     mrpInputType='operations'
-                    value={props.component.operation.averageHourlyOvertimeCost}
+                    value={props.component.operation.team.overtimeCost.averageHourlyOvertimeCost}
                     component={props.component}
                     handler={setHourlyOvertimeCost}/>
                 <hr className={dividerCCS.hDividerClassName }  style={dividerCCS.vDividerStyle}/> 
@@ -214,7 +213,7 @@ export const NormalAndOvertime=(props)=>{
                   id={-1}
                   cellCnt={2}
                   mrpInputType='operations'
-                  value={props.component.operation.minAllowedEmployeePerShift}
+                  value={props.component.operation.team.allowedEmployeeCnt.min}
                   component={props.component}
                   handler={setMinAllowedEmployee}/>
 
@@ -225,13 +224,13 @@ export const NormalAndOvertime=(props)=>{
                   id={-1}
                   cellCnt={2}
                   mrpInputType='operations'
-                  value={props.component.operation.minAllowedEmployeePerShift}
+                  value={props.component.operation.team.allowedEmployeeCnt.max}
                   component={props.component}
                   handler={setMaxAllowedEmployee}/>
               <hr className={dividerCCS.hDividerClassName }  style={dividerCCS.vDividerStyle}/>
           </div>
 
-          <hr className={dividerCCS.hDividerClassName }  style={dividerCCS.hDividerStyle}/>    
+          {/* <hr className={dividerCCS.hDividerClassName }  style={dividerCCS.hDividerStyle}/>     */}
         </div>
       </div>
   )

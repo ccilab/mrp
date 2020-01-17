@@ -43,9 +43,9 @@ export const SetupOP=(props)=>{
   const [event, setEvent] = useState('hover'); // '' is the initial state value
 
   if( props.component.operation === null || typeof props.component.operation === 'undefined' )
-      {
+  {
     props.component.operation = new initializeOp(props.component);
-      }
+  }
 
   const [shiftInfoArray, setShiftInfoArray] = useState(props.component.operation.shiftInfoArray);
 
@@ -57,118 +57,6 @@ export const SetupOP=(props)=>{
           }
  */
 
-  const setEmployeeCount=(index, count, component)=>{
-    if( typeof component.operation === 'undefined' )
-      component.operation = new initializeOp( component );
-
-    let {isValid, value} = isValidValue(count);
-
-     if( !isValid )
-      component.operation.employeeCount=null;
-    else
-      component.operation.employeeCount=value;
-
-    saveValidOpEntry(component);
-  };
-
-  const setDailyTimeCapacity=(index, capacity, component)=>{
-    if( typeof component.operation === 'undefined' )
-      component.operation = new initializeOp( component );
-
-      let {isValid, value} = isValidValue(capacity);
-
-      if( !isValid )
-       component.operation.dailyTimeCapacityPerEmployee=null;
-     else
-       component.operation.dailyTimeCapacityPerEmployee=value;
-
-    saveValidOpEntry(component);
-  };
-
-  const setHourlyCost=(index, hourlyCost, component)=>{
-    if( typeof component.operation === 'undefined' )
-      component.operation = new initializeOp( component );
-
-    let {isValid, value} = isValidValue(hourlyCost);
-
-    if( !isValid )
-      component.operation.averageHourlyCost=null;
-    else
-      component.operation.averageHourlyCost=value;
-
-    saveValidOpEntry(component);
-    }
-
-  const setDailyOvertimeCapacity=(index, overtimeCapacity, component)=>{
-    if( typeof component.operation === 'undefined' )
-      component.operation = new initializeOp( component );
-
-    let {isValid, value} = isValidValue(overtimeCapacity);
-
-    if( !isValid )
-      component.operation.dailyOvertimeCapacityPerEmployee=null;
-    else
-      component.operation.dailyOvertimeCapacityPerEmployee=value;
-
-    saveValidOpEntry(component);
-  }
-
-  const setHourlyOvertimeCost=(index, overtimeCost, component)=>{
-    if( typeof component.operation === 'undefined' )
-      component.operation = new initializeOp( component );
-
-      let {isValid, value} = isValidValue(overtimeCost);
-
-      if( !isValid )
-        component.operation.dailyOvertimeCapacityPerEmployee=null;
-    else
-        component.operation.dailyOvertimeCapacityPerEmployee=value;
-
-      saveValidOpEntry(component);
-  }
-
-
-  const setTimePerComponentPerEmployee=(index, timePerComponent, component)=>{
-    if( typeof component.operation === 'undefined' )
-      component.operation = new initializeOp( component );
-
-      let {isValid, value} = isValidValue(timePerComponent);
-
-    if( !isValid )
-        component.operation.averageTimePerComponentPerEmployee = null;
-    else
-        component.operation.averageTimePerComponentPerEmployee = value;
-  
-    saveValidOpEntry(component);
-  }
-
-  const setMinAllowedEmployee=(index, count, component)=>{
-    if( typeof component.operation === 'undefined' )
-      component.operation = new initializeOp( component );
-
-    let {isValid, value} = isValidValue(count);
-
-    if( !isValid )
-      component.operation.minAllowedEmployeePerShift = null;
-    else
-      component.operation.minAllowedEmployeePerShift = value;
-
-    saveValidOpEntry(component);
-  }
-
-  const setMaxAllowedEmployee=(index, count, component)=>{
-    if( typeof component.operation === 'undefined' )
-      component.operation = new initializeOp( component );
-
-    let {isValid, value} = isValidValue(count);
-
-    if( !isValid )
-      component.operation.maxAllowedEmployeePerShift = null;
-    else
-      component.operation.maxAllowedEmployeePerShift = value;
-
-    saveValidOpEntry(component);
-  }
 
   const setAverageHiringCost=(index, cost, component)=>{
     if( typeof component.operation === 'undefined' )
@@ -488,7 +376,7 @@ export const SetupOP=(props)=>{
             <div className='d-flex'>
               <div className={'d-flex flex-column'} style={{backgroundColor:`${styles.cciBgColor}`}} >
 
-               <NormalAndOvertime/>
+               <NormalAndOvertime component={props.component} />
 
                 <hr className={dividerCCS.hDividerClassName} style={dividerCCS.hDividerStyle}/>
 

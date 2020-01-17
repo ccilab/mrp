@@ -5,10 +5,8 @@ import { useTranslation } from 'react-i18next';
 import styles from "./../../dist/css/ccilab-component-list.css"
 
 import { dividerCCS, isValidString, isValidValue, getRandomInt } from "./CCiLabUtility";
-import {DateInput} from "./CCiLabDateInput"
 import {NumberInput} from "./CCiLabNumberInput"
 import {TextInput} from "./CCiLabTextInput"
-import {PercentageInput} from "./CCiLabPercentageInput"
 
 
 
