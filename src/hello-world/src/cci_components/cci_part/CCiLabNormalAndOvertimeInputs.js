@@ -8,22 +8,9 @@ import { dividerCCS, isValidString, isValidValue, getRandomInt } from "./CCiLabU
 import {DateInput} from "./CCiLabDateInput"
 import {NumberInput} from "./CCiLabNumberInput"
 import {TextInput} from "./CCiLabTextInput"
-import {PercentageInput} from "./CCiLabPercentageInput"
+import {initializeOp, saveValidOpEntry} from './CCiLabOperationsUtility'
 
 
-
-// requiredQtyPerShift calculates based on its parent component's unitQty
-// #todo - need to re-design how to handle it
-const initializeTeam=()=>{
-   let team={};
-   team.name={DayShift:'', teamName: ''};
-   team.employeeCount=null;  //number of employees to produce the demand of a component
-   team.averageTimePerComponentPerEmployee=null; //in hour, time needed to produce one component per employee
-   team.timeCost={hoursPerEmployee: null, averageHourlyCost: null } ;  //in hour, for normal or shift
-   team.overtimeCost = {overtimeHoursPerEmployee: null, averageHourlyOvertimeCost: null };  //in hour, if not in shift
-   team.allowedEmployeeCnt={min: null, max: null };
-   return team;
-}
 
 //Operation
 export const NormalAndOvertime=(props)=>{
@@ -31,13 +18,7 @@ export const NormalAndOvertime=(props)=>{
   
   const _className = 'cursor-pointer text-primary border-0 p-1 fa fw fa-edit' + (props.component.displayLogic.selected ? ' bg-info' : ' ');
 
-  const [event, setEvent] = useState('hover'); // '' is the initial state value
-
-  if( props.component.operation.team === null || typeof props.component.operation.team === 'undefined' )
-  {
-    props.component.operation.team = new initializeTeam();
-  }
-
+ 
   const setEmployeeCount=(index, count, component)=>{
     if( typeof component.operation === 'undefined' )
       component.operation = new initializeOp( component );

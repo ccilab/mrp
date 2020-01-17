@@ -10,8 +10,10 @@ import {NumberInput} from "./CCiLabNumberInput"
 import {TextInput} from "./CCiLabTextInput"
 import {PercentageInput} from "./CCiLabPercentageInput"
 import { NormalAndOvertime } from './CCiLabNormalAndOvertimeInputs';
+import {initializeOp, saveValidOpEntry} from './CCiLabOperationsUtility'
 
-export const initializeOp=( component )=>{
+
+/* export const initializeOp=( component )=>{
   let operation= JSON.parse(sessionStorage.getItem(`${component.displayLogic.key}_${component.businessLogic.name}_op`)) || _initializeOp();
   return operation;
 }
@@ -30,7 +32,7 @@ const _initializeOp=()=>{
    operation.workshop='';           //
    operation.shiftInfoArray=[[null,null]];         // how many different shifts are needed
    return operation;
-}
+} */
 
 //Operation
 export const SetupOP=(props)=>{
@@ -48,12 +50,12 @@ export const SetupOP=(props)=>{
   const [shiftInfoArray, setShiftInfoArray] = useState(props.component.operation.shiftInfoArray);
 
 
-   // 
+/*    // 
    const saveValidOpEntry=( component )=>{
     component.operation.shiftInfoArray = shiftInfoArray;
     sessionStorage.setItem( `${component.displayLogic.key}_${component.businessLogic.name}_op`, JSON.stringify( component.operation ));
           }
-
+ */
 
   const setEmployeeCount=(index, count, component)=>{
     if( typeof component.operation === 'undefined' )

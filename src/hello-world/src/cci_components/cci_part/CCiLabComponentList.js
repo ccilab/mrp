@@ -27,7 +27,7 @@ import {TextResizeDetector } from "./TextResizeDetector"
 //json-loader load the *.json file
 import components from './../../data/components.json';
 import { initializeIRF } from "./CCiLabSetupIR";
-import {initializeOp} from "./CCiLabSetupOperation";
+import {initializeOp} from "./CCiLabOperationsUtility";
 
 //table includes assembly and paint process
 // simulate after loaded very top component and its direct  components
