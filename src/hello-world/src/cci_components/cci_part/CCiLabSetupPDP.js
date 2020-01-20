@@ -19,7 +19,7 @@ export const initializePDP=( component )=>{
 // demandAndEndDateArray =[[id-1, end-date-1, demand-quantity],[id-2, end-date-2, demand-quantity]]
 const _initializeMPS=()=>{
    let pdp={};
-   pdp.demandAndEndDateArray= [[null,null]]; //array - required quantity of product/component and completed date as key-value 
+   pdp.demandAndEndDateArray= [{completeDate: null, requiredQuantity: null}]; //array - required quantity of product/component and completed date as key-value 
    pdp.customer=null;
    pdp.orderNumber=null;
    return pdp;
@@ -85,7 +85,7 @@ export const SetupPDP=(props)=>{
           const id = demandDateArray.indexOf( item );
           if( id === index )
           {
-            item[1] = value;
+            item.requiredQuantity = value;
             break;
           }
         }
@@ -106,7 +106,7 @@ export const SetupPDP=(props)=>{
         const id = demandDateArray.indexOf( item );
         if( id === index )
         {
-          item[0] = completeDate;
+          item.completeDate = completeDate;
           break;
         }
       }
@@ -134,7 +134,7 @@ export const SetupPDP=(props)=>{
   }
 
   const AddNextDemandEntry=(index)=>(e)=>{
-    demandDateArray.push([null,null]);
+    demandDateArray.push({completeDate:null,requiredQuantity:null});
     saveValidPDPEntry(props.component);
     setDemandDateArray( demandDateArray );
     window.dispatchEvent(new Event('resize'));  //resize popup menu
@@ -207,7 +207,7 @@ export const SetupPDP=(props)=>{
     return (
       demandDateArray.map( ( item )=>{
         let id = demandDateArray.indexOf(item);
-        return renderDemandDateInput( getRandomInt(100), id, item[0], item[1], id ===  demandDateArray.length - 1 ? true : false )
+        return renderDemandDateInput( getRandomInt(100), id, item.completeDate, item.requiredQuantity, id ===  demandDateArray.length - 1 ? true : false )
       } )
     )
   }

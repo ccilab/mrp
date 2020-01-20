@@ -4,7 +4,7 @@ import { useTranslation } from 'react-i18next';
 
 import styles from "./../../dist/css/ccilab-component-list.css"
 
-import { dividerCCS, isValidString, isValidValue, getRandomInt } from "./CCiLabUtility";
+import { dividerCCS, isValidString, isValidValue } from "./CCiLabUtility";
 import {NumberInput} from "./CCiLabNumberInput"
 import {TextInput} from "./CCiLabTextInput"
 import {initializeOp, saveValidOpEntry} from './CCiLabOperationsUtility'
@@ -15,9 +15,39 @@ import {initializeOp, saveValidOpEntry} from './CCiLabOperationsUtility'
 export const NormalAndOvertime=(props)=>{
   const { t } = useTranslation('commands', {useSuspense: false});
   
-  const _className = 'cursor-pointer text-primary border-0 p-1 fa fw fa-edit' + (props.component.displayLogic.selected ? ' bg-info' : ' ');
-
  
+  const setShiftType=(index, shiftType, component)=>{
+    if( typeof component.operation === 'undefined' )
+    {
+       component.operation = new initializeOp( component ) ;
+    }
+
+    if( isValidString( shiftType ))
+    {
+      component.operation.DayShift.name.shiftType = shiftType;
+    }
+    else{
+      component.operation.DayShift.name.shiftType = null;
+    }
+    saveValidOpEntry(component);
+  }
+
+  const setShiftName=(index, teamName, component)=>{
+    if( typeof component.operation === 'undefined' )
+    {
+       component.operation = new initializeOp( component ) ;
+    }
+
+    if( isValidString( teamName ))
+    {
+      component.operation.DayShift.name.teamName = teamName;
+    }
+    else{
+      component.operation.DayShift.name.teamName = null;
+    }
+    saveValidOpEntry(component);
+  }
+
   const setEmployeeCount=(index, count, component)=>{
     if( typeof component.operation === 'undefined' )
       component.operation = new initializeOp( component );
@@ -25,10 +55,14 @@ export const NormalAndOvertime=(props)=>{
     let {isValid, value} = isValidValue(count);
 
      if( !isValid )
-      component.operation.team.employeeCount=null;
+     {
+       component.operation.DayShift.employeeCount=null;
+     }
     else
-      component.operation.team.employeeCount=value;
-
+    {
+      component.operation.DayShift.employeeCount=value;
+    }
+      
     saveValidOpEntry(component);
   };
 
@@ -39,9 +73,9 @@ export const NormalAndOvertime=(props)=>{
       let {isValid, value} = isValidValue(capacity);
 
       if( !isValid )
-       component.operation.team.timeCost.hoursPerEmployee=null;
+       component.operation.DayShift.timeCost.hoursPerEmployee=null;
      else
-       component.operation.team.timeCost.hoursPerEmployee=value;
+       component.operation.DayShift.timeCost.hoursPerEmployee=value;
 
     saveValidOpEntry(component);
   };
@@ -53,9 +87,9 @@ export const NormalAndOvertime=(props)=>{
     let {isValid, value} = isValidValue(hourlyCost);
 
     if( !isValid )
-      component.operation.team.timeCost.averageHourlyCost=null;
+      component.operation.DayShift.timeCost.averageHourlyCost=null;
     else
-      component.operation.team.timeCost.averageHourlyCost=value;
+      component.operation.DayShift.timeCost.averageHourlyCost=value;
 
     saveValidOpEntry(component);
     }
@@ -67,9 +101,9 @@ export const NormalAndOvertime=(props)=>{
     let {isValid, value} = isValidValue(overtimeCapacity);
 
     if( !isValid )
-      component.operation.team.overtimeCost.overtimeHoursPerEmployee=null;
+      component.operation.DayShift.overtimeCost.overtimeHoursPerEmployee=null;
     else
-      component.operation.team.overtimeCost.overtimeHoursPerEmployee=value;
+      component.operation.DayShift.overtimeCost.overtimeHoursPerEmployee=value;
 
     saveValidOpEntry(component);
   }
@@ -81,9 +115,9 @@ export const NormalAndOvertime=(props)=>{
       let {isValid, value} = isValidValue(overtimeCost);
 
       if( !isValid )
-        component.operation.team.overtimeCost.averageHourlyOvertimeCost=null;
+        component.operation.DayShift.overtimeCost.averageHourlyOvertimeCost=null;
     else
-        component.operation.team.overtimeCost.averageHourlyOvertimeCost=value;
+        component.operation.DayShift.overtimeCost.averageHourlyOvertimeCost=value;
 
       saveValidOpEntry(component);
   }
@@ -96,9 +130,9 @@ export const NormalAndOvertime=(props)=>{
       let {isValid, value} = isValidValue(timePerComponent);
 
     if( !isValid )
-        component.operation.team.averageTimePerComponentPerEmployee = null;
+        component.operation.DayShift.averageTimePerComponentPerEmployee = null;
     else
-        component.operation.team.averageTimePerComponentPerEmployee = value;
+        component.operation.DayShift.averageTimePerComponentPerEmployee = value;
   
     saveValidOpEntry(component);
   }
@@ -110,9 +144,9 @@ export const NormalAndOvertime=(props)=>{
     let {isValid, value} = isValidValue(count);
 
     if( !isValid )
-      component.operation.team.allowedEmployeeCnt.min = null;
+      component.operation.DayShift.allowedEmployeeCnt.min = null;
     else
-      component.operation.team.allowedEmployeeCnt.min = value;
+      component.operation.DayShift.allowedEmployeeCnt.min = value;
 
     saveValidOpEntry(component);
   }
@@ -124,9 +158,9 @@ export const NormalAndOvertime=(props)=>{
     let {isValid, value} = isValidValue(count);
 
     if( !isValid )
-      component.operation.team.allowedEmployeeCnt.max = null;
+      component.operation.DayShift.allowedEmployeeCnt.max = null;
     else
-      component.operation.team.allowedEmployeeCnt.max = value;
+      component.operation.DayShift.allowedEmployeeCnt.max = value;
 
     saveValidOpEntry(component);
   }
@@ -137,13 +171,37 @@ export const NormalAndOvertime=(props)=>{
       <div className='d-flex'>
         <div className={'d-flex flex-column'} style={{backgroundColor:`${styles.cciBgColor}`}} >
           <div className={'d-flex justify-content-between'}>
-            <NumberInput
-              title='employee-count-quantity'
+            <TextInput
+              title='shift-type'
               id={-1}
               cellCnt={2}
               toolTipPosition='bottom center'
               mrpInputType='operations'
-              value={props.component.operation.team.employeeCount}
+              value={props.component.operation.DayShift.name.shiftType} //array of demands for each period 
+              component={props.component}
+              handler={setShiftType}/>
+            <hr className={dividerCCS.hDividerClassName }  style={dividerCCS.vDividerStyle}/> 
+            <TextInput
+              title='team-name'
+              id={-1}
+              cellCnt={2}
+              toolTipPosition='bottom center'
+              mrpInputType='operations'
+              value={props.component.operation.DayShift.name.teamName} //array of demands for each period 
+              component={props.component}
+              handler={setShiftName}/>
+              <hr className={dividerCCS.hDividerClassName }  style={dividerCCS.vDividerStyle}/>
+          </div>
+
+          <hr className={dividerCCS.hDividerClassName} style={dividerCCS.hDividerStyle}/>
+
+          <div className={'d-flex justify-content-between'}>
+            <NumberInput
+              title='employee-count-quantity'
+              id={-1}
+              cellCnt={2}
+              mrpInputType='operations'
+              value={props.component.operation.DayShift.employeeCount}
               component={props.component}
               handler={setEmployeeCount}/>
             <hr className={dividerCCS.hDividerClassName }  style={dividerCCS.vDividerStyle}/>    
@@ -151,9 +209,8 @@ export const NormalAndOvertime=(props)=>{
               title='time-pre-component-per-employee-quantity'
               id={-1}
               cellCnt={2}
-              toolTipPosition='bottom center'
               mrpInputType='operations'
-              value={props.component.operation.team.averageTimePerComponentPerEmployee}
+              value={props.component.operation.DayShift.averageTimePerComponentPerEmployee}
               component={props.component}
               handler={setTimePerComponentPerEmployee} /> 
             <hr className={dividerCCS.hDividerClassName }  style={dividerCCS.vDividerStyle}/>
@@ -167,7 +224,7 @@ export const NormalAndOvertime=(props)=>{
                   id={-1}
                   cellCnt={2}
                   mrpInputType='operations'
-                  value={props.component.operation.team.timeCost.hoursPerEmployee}
+                  value={props.component.operation.DayShift.timeCost.hoursPerEmployee}
                   component={props.component}
                   handler={setDailyTimeCapacity}/>
               <hr className={dividerCCS.hDividerClassName }  style={dividerCCS.vDividerStyle}/>    
@@ -176,7 +233,7 @@ export const NormalAndOvertime=(props)=>{
                   id={-1}
                   cellCnt={2}
                   mrpInputType='operations'
-                  value={props.component.operation.team.timeCost.averageHourlyCost}
+                  value={props.component.operation.DayShift.timeCost.averageHourlyCost}
                   component={props.component}
                   handler={setHourlyCost}/>
               <hr className={dividerCCS.hDividerClassName }  style={dividerCCS.vDividerStyle}/>
@@ -190,7 +247,7 @@ export const NormalAndOvertime=(props)=>{
                     cellCnt={2}
                     id={-1}
                     mrpInputType='operations'
-                    value={props.component.operation.team.overtimeCost.overtimeHoursPerEmployee}
+                    value={props.component.operation.DayShift.overtimeCost.overtimeHoursPerEmployee}
                     component={props.component}
                     handler={setDailyOvertimeCapacity}/>
                 <hr className={dividerCCS.hDividerClassName }  style={dividerCCS.vDividerStyle}/>    
@@ -199,7 +256,7 @@ export const NormalAndOvertime=(props)=>{
                     id={-1}
                     cellCnt={2}
                     mrpInputType='operations'
-                    value={props.component.operation.team.overtimeCost.averageHourlyOvertimeCost}
+                    value={props.component.operation.DayShift.overtimeCost.averageHourlyOvertimeCost}
                     component={props.component}
                     handler={setHourlyOvertimeCost}/>
                 <hr className={dividerCCS.hDividerClassName }  style={dividerCCS.vDividerStyle}/> 
@@ -213,7 +270,7 @@ export const NormalAndOvertime=(props)=>{
                   id={-1}
                   cellCnt={2}
                   mrpInputType='operations'
-                  value={props.component.operation.team.allowedEmployeeCnt.min}
+                  value={props.component.operation.DayShift.allowedEmployeeCnt.min}
                   component={props.component}
                   handler={setMinAllowedEmployee}/>
 
@@ -224,7 +281,7 @@ export const NormalAndOvertime=(props)=>{
                   id={-1}
                   cellCnt={2}
                   mrpInputType='operations'
-                  value={props.component.operation.team.allowedEmployeeCnt.max}
+                  value={props.component.operation.DayShift.allowedEmployeeCnt.max}
                   component={props.component}
                   handler={setMaxAllowedEmployee}/>
               <hr className={dividerCCS.hDividerClassName }  style={dividerCCS.vDividerStyle}/>

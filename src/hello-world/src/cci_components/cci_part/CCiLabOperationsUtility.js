@@ -22,18 +22,18 @@ const _initializeOp=()=>{
     operation.inputWarehouse='';    // where is prerequisite component/raw material stored
     operation.outputWarehouse='';    // where is component stored
     operation.workshop='';           //
-    operation.team = _initializeTeam();
+    operation.DayShift = _initializeDayShift();
     operation.shiftInfoArray=[[null,null]];         // how many different shifts are needed
     return operation;
  }
  
- const _initializeTeam=()=>{
-    let team={};
-    team.name={DayShift:'', teamName: ''};
-    team.employeeCount=null;  //number of employees to produce the demand of a component
-    team.averageTimePerComponentPerEmployee=null; //in hour, time needed to produce one component per employee
-    team.timeCost={hoursPerEmployee: null, averageHourlyCost: null } ;  //in hour, for normal or shift
-    team.overtimeCost = {overtimeHoursPerEmployee: null, averageHourlyOvertimeCost: null };  //in hour, if not in shift
-    team.allowedEmployeeCnt={min: null, max: null };
-    return team;
+ const _initializeDayShift=()=>{
+    let DayShift={};
+    DayShift.name={shiftType:null, teamName: null};
+    DayShift.employeeCount=null;  //number of employees to produce the demand of a component
+    DayShift.averageTimePerComponentPerEmployee=null; //in hour, time needed to produce one component per employee
+    DayShift.timeCost={hoursPerEmployee: null, averageHourlyCost: null } ;  //in hour, for normal or shift
+    DayShift.overtimeCost = {overtimeHoursPerEmployee: null, averageHourlyOvertimeCost: null };  //in hour, if not in shift
+    DayShift.allowedEmployeeCnt={min: null, max: null };
+    return DayShift;
  }
