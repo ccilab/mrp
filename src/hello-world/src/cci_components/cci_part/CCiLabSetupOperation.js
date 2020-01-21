@@ -11,28 +11,9 @@ import {TextInput} from "./CCiLabTextInput"
 import {PercentageInput} from "./CCiLabPercentageInput"
 import { NormalAndOvertime } from './CCiLabNormalAndOvertimeInputs';
 import {initializeOp, saveValidOpEntry} from './CCiLabOperationsUtility'
+import { RadioInput } from './CCiLabRadioInput';
 
 
-/* export const initializeOp=( component )=>{
-  let operation= JSON.parse(sessionStorage.getItem(`${component.displayLogic.key}_${component.businessLogic.name}_op`)) || _initializeOp();
-  return operation;
-}
-
-// requiredQtyPerShift calculates based on its parent component's unitQty
-// #todo - need to re-design how to handle it
-const _initializeOp=()=>{
-   let operation={};
-   operation.averageHiringCostPerEmployee = null;
-   operation.averageDismissalCostPerEmployee = null; //local currency
-   operation.startDate=null;
-   operation.scrapRate=null;    // in %, need /100 when uses it 
-   operation.setupCost=null;    // initial cost to produce the component
-   operation.inputWarehouse='';    // where is prerequisite component/raw material stored
-   operation.outputWarehouse='';    // where is component stored
-   operation.workshop='';           //
-   operation.shiftInfoArray=[[null,null]];         // how many different shifts are needed
-   return operation;
-} */
 
 //Operation
 export const SetupOP=(props)=>{
@@ -49,13 +30,7 @@ export const SetupOP=(props)=>{
 
   const [shiftInfoArray, setShiftInfoArray] = useState(props.component.operation.shiftInfoArray);
 
-
-/*    // 
-   const saveValidOpEntry=( component )=>{
-    component.operation.shiftInfoArray = shiftInfoArray;
-    sessionStorage.setItem( `${component.displayLogic.key}_${component.businessLogic.name}_op`, JSON.stringify( component.operation ));
-          }
- */
+  const [shiftType, setShift] = useState(props.component.operation.shiftType);
 
 
   const setAverageHiringCost=(index, cost, component)=>{
@@ -163,6 +138,22 @@ export const SetupOP=(props)=>{
     saveValidOpEntry(component);
   }
 
+  const setShiftType=(index, shiftType, component)=>{
+    if( typeof component.operation === 'undefined' )
+    {
+      component.operation = new initializeOp( component );
+    }
+
+    if( isValidString(shiftType) )
+      component.operation.shiftType = shiftType;
+    else
+      component.operation.shiftType = null;
+
+    setShift(component.operation.shiftType);
+    
+    saveValidOpEntry(component);
+  }
+
   const setShiftName=(index, name, component)=>{
     if( typeof component.operation === 'undefined' )
       component.operation = new initializeOp( component );
@@ -210,25 +201,6 @@ export const SetupOP=(props)=>{
     saveValidOpEntry(component);
   }
 
-  // const setShiftTeamName=(index, name, component)=>{
-  //   if( typeof component.operation === 'undefined' )
-  //     component.operation = new initializeOp( component );
-
-  //   if( isValidString( name ))
-  //   {
-  //     for( let item of shiftInfoArray )
-  //     {
-  //       const id = shiftInfoArray.indexOf( item );
-  //       if( id === index )
-  //       {
-  //         item[1] = name;
-  //         break;
-  //       }
-  //     }
-  //   }
-
-  //   saveValidOpEntry(component);
-  // }
 
 
   //hover to popup tooltip, click/focus to popup setup BOM inputs
@@ -376,7 +348,20 @@ export const SetupOP=(props)=>{
             <div className='d-flex'>
               <div className={'d-flex flex-column'} style={{backgroundColor:`${styles.cciBgColor}`}} >
 
-               <NormalAndOvertime component={props.component} />
+               <RadioInput 
+                  title='shift-type'
+                  id={-1}
+                  cellCnt={2}
+                  mrpInputType='inventoryRecords'
+                  radio1='NoShift'
+                  radio2='Shift'
+                  value={props.component.operation.shiftType }
+                  component={props.component}
+                  handler={setShiftType}/>
+                   
+              <hr className={dividerCCS.hDividerClassName }  style={dividerCCS.hDividerStyle}/>   
+              
+              <NormalAndOvertime component={props.component} />
 
                 <hr className={dividerCCS.hDividerClassName} style={dividerCCS.hDividerStyle}/>
 
