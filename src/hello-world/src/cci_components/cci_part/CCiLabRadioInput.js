@@ -4,6 +4,8 @@ import { useTranslation } from 'react-i18next';
 
 import styles from "./../../dist/css/ccilab-component-list.css"
 
+import { dividerCCS } from "./CCiLabUtility";
+
 export const RadioInput=(props)=>{
     const { t } = useTranslation([`${props.mrpInputType}`,'commands'], {useSuspense: false});
   
@@ -46,24 +48,22 @@ export const RadioInput=(props)=>{
               trigger={
                 // <div className='d-flex  justify-content-between'>
                 <div className='d-flex' >
-                  <span className='d-flex align-items-center m-0 y-0 border-0' >
-                    <input className={`${inputClassName}`}
-                          id={`${inputName}-1`}
-                          type={inputType}
-                          name={inputName}
-                          style={inputStyle}
-                          value={`${props.radio1}`}
-                          defaultChecked ={ inputValue.includes(`${props.radio1}`) ? true : false}
-                          onChange={updateValue(props)}
-                          onClose={updateValue(props)}/>
-                    <label className={'m-0 px-1 border-0 cursor-pointer'}
-                      htmlFor={`${inputName}-1`}
-                      style={{'backgroundColor': `${styles.cciBgColor}`, 'color': inputValue.includes(`${props.radio1}`) ? `${styles.cciInfoBlue}` : `${styles.cciHintRed}`}}>
-                       {t(`${props.mrpInputType}:${props.radio1}`)}
-                      </label>
-                  </span>
+                        <input className={`${inputClassName}`}
+                            id={`${inputName}-1`}
+                            type={inputType}
+                            name={inputName}
+                            style={inputStyle}
+                            value={`${props.radio1}`}
+                            defaultChecked ={ inputValue.includes(`${props.radio1}`) ? true : false}
+                            onChange={updateValue(props)}
+                            onClose={updateValue(props)}/>
+                        <label className={'m-0 px-1 py-0 border-0 cursor-pointer'}
+                            htmlFor={`${inputName}-1`}
+                            style={{'backgroundColor': `${styles.cciBgColor}`, 'color': inputValue.includes(`${props.radio1}`) ? `${styles.cciInfoBlue}` : `${styles.cciHintRed}`}}>
+                            {t(`${props.mrpInputType}:${props.radio1}`)}
+                        </label>
                   {/* <hr className={dividerCCS.hDividerClassName }  style={dividerCCS.vDividerStyle}/> */}
-                  <span className='d-flex align-items-center m-0 y-0 border-0'>
+
                     <input  className={`${inputClassName}`}
                             id={`${inputName}-2`}
                             type={inputType}
@@ -74,11 +74,12 @@ export const RadioInput=(props)=>{
                             onChange={updateValue(props)}
                             onClose={updateValue(props)}/>
                      <label className={'m-0 px-1 border-0 cursor-pointer'}
-                      htmlFor={`${inputName}-2`}
-                      style={{'backgroundColor': `${styles.cciBgColor}`, 'color': inputValue.includes(`${props.radio2}`) ? `${styles.cciInfoBlue}` : `${styles.cciHintRed}`}}>
-                       {t(`${props.mrpInputType}:${props.radio2}`) }
+                        htmlFor={`${inputName}-2`}
+                        style={{'backgroundColor': `${styles.cciBgColor}`, 'color': inputValue.includes(`${props.radio2}`) ? `${styles.cciInfoBlue}` : `${styles.cciHintRed}`}}>
+                        {t(`${props.mrpInputType}:${props.radio2}`) }
                       </label>
-                  </span>
+                  {/* <hr className={dividerCCS.hDividerClassName }  style={dividerCCS.vDividerStyle}/> */}
+
                 </div>
               }
               id={`${props.component.displayLogic.key}-tooltip`}
@@ -91,7 +92,7 @@ export const RadioInput=(props)=>{
               mouseEnterDelay={0}
               contentStyle={{  padding: '0px' }}>
               <div className='text-nowrap m-0 p-1'>
-                {t(`inventoryRecords:${props.title}`)}
+                {t(`${props.mrpInputType}:${props.title}`)}
               </div>
           </Popup>
   

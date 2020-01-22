@@ -13,7 +13,7 @@ import {initializeOp, saveValidOpEntry} from './CCiLabOperationsUtility'
 
 //Operation
 export const NormalAndOvertime=(props)=>{
-  const { t } = useTranslation('commands', {useSuspense: false});
+  const { t } = useTranslation(['operations','commands'], {useSuspense: false});
   
  
   const setShiftType=(index, shiftType, component)=>{
@@ -166,7 +166,6 @@ export const NormalAndOvertime=(props)=>{
   }
 
 
-
   return (
       <div className='d-flex'>
         <div className={'d-flex flex-column'} style={{backgroundColor:`${styles.cciBgColor}`}} >
@@ -175,17 +174,16 @@ export const NormalAndOvertime=(props)=>{
               title='shift-type'
               id={-1}
               cellCnt={2}
-              toolTipPosition='bottom center'
+              readOnly={false}
               mrpInputType='operations'
-              value={props.component.operation.DayShift.name.shiftType} //array of demands for each period 
+              value={props.component.operation.DayShift.name.shiftType === null ? props.component.operation.DayShift.name.shiftType : t(`operations:${props.component.operation.DayShift.name.shiftType }`)} //array of demands for each period 
               component={props.component}
-              handler={setShiftType}/>
+              />
             <hr className={dividerCCS.hDividerClassName }  style={dividerCCS.vDividerStyle}/> 
             <TextInput
               title='team-name'
               id={-1}
               cellCnt={2}
-              toolTipPosition='bottom center'
               mrpInputType='operations'
               value={props.component.operation.DayShift.name.teamName} //array of demands for each period 
               component={props.component}

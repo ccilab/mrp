@@ -30,7 +30,7 @@ const _initializeOp=()=>{
  
  const _initializeDayShift=()=>{
     let DayShift={};
-    DayShift.name={shiftType:null, teamName: null};
+    DayShift.name={shiftType:'daily-shift', teamName: null};
     DayShift.employeeCount=null;  //number of employees to produce the demand of a component
     DayShift.averageTimePerComponentPerEmployee=null; //in hour, time needed to produce one component per employee
     DayShift.timeCost={hoursPerEmployee: null, averageHourlyCost: null } ;  //in hour, for normal or shift

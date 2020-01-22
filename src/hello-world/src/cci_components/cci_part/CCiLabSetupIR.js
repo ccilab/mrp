@@ -439,13 +439,10 @@ export const SetupIRF=(props)=>{
                     value={props.component.irf.procurementType }
                     component={props.component}
                     handler={setProcurementType}/>
-                 <hr className={dividerCCS.hDividerClassName }  style={dividerCCS.vDividerStyle}/>
 
-                {/* <i id={`${props.component.displayLogic.key}-SetupIRF`}
-                className='text-danger m-0 py-1 px-1 fas fw fa-times-circle cursor-pointer'
-                style={{backgroundColor: `${styles.cciBgColor}`}}
-                      onClick={ close }/>  */}
+                <hr className={dividerCCS.hDividerClassName }  style={dividerCCS.vDividerStyle}/>
               </div>
+
               <hr className={dividerCCS.hDividerClassName } style={dividerCCS.hDividerStyle}/>
 
               { ( procurementType === 'purchase' ? 
@@ -473,16 +470,16 @@ export const SetupIRF=(props)=>{
                     <hr className={dividerCCS.hDividerClassName }  style={dividerCCS.vDividerStyle}/>
                   </div>
                 
-              :
+                  :
                   null
+                )
+              }
+              { ( procurementType === 'purchase' ? 
+                    <hr className={dividerCCS.hDividerClassName } style={dividerCCS.hDividerStyle}/>
+                    :
+                    null
                   )
-                }
-                { ( procurementType === 'purchase' ? 
-                <hr className={dividerCCS.hDividerClassName } style={dividerCCS.hDividerStyle}/>
-                      :
-                      null
-                  )
-                }
+              }
 
                 <div className={'d-flex  justify-content-between'}> 
                   <NumberInput

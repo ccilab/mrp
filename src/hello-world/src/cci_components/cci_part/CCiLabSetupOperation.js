@@ -347,29 +347,12 @@ export const SetupOP=(props)=>{
           {close => (
             <div className='d-flex'>
               <div className={'d-flex flex-column'} style={{backgroundColor:`${styles.cciBgColor}`}} >
-
-               <RadioInput 
-                  title='shift-type'
-                  id={-1}
-                  cellCnt={2}
-                  mrpInputType='inventoryRecords'
-                  radio1='NoShift'
-                  radio2='Shift'
-                  value={props.component.operation.shiftType }
-                  component={props.component}
-                  handler={setShiftType}/>
-                   
-              <hr className={dividerCCS.hDividerClassName }  style={dividerCCS.hDividerStyle}/>   
-              
-              <NormalAndOvertime component={props.component} />
-
-                <hr className={dividerCCS.hDividerClassName} style={dividerCCS.hDividerStyle}/>
-
                 <div className={'d-flex  justify-content-between'}>
                     <NumberInput
                         title='hiring-cost-quantity'
                         id={-1}
                         cellCnt={2}
+                        toolTipPosition='bottom center'
                         mrpInputType='operations'
                         value={props.component.operation.averageHiringCostPerEmployee}
                         component={props.component}
@@ -381,6 +364,7 @@ export const SetupOP=(props)=>{
                         title='dismissal-cost-quantity'
                         id={-1}
                         cellCnt={2}
+                        toolTipPosition='bottom center'
                         mrpInputType='operations'
                         value={props.component.operation.averageDismissalCostPerEmployee}
                         component={props.component}
@@ -466,7 +450,40 @@ export const SetupOP=(props)=>{
 
               <hr className={dividerCCS.hDividerClassName} style={dividerCCS.hDividerStyle}/>
 
-              {renderShiftInfoInputs()}
+              <div className={'d-flex  justify-content-between'}>
+                <RadioInput 
+                    title='shift-type'
+                    id={-1}
+                    cellCnt={2}
+                    mrpInputType='operations'
+                    radio1='normal-hours'
+                    radio2='shift'
+                    value={shiftType }
+                    component={props.component}
+                    handler={setShiftType}/>
+
+                <hr className={dividerCCS.hDividerClassName }  style={dividerCCS.vDividerStyle}/>    
+                    
+              </div>
+              <hr className={dividerCCS.hDividerClassName }  style={dividerCCS.hDividerStyle}/>   
+              
+              { shiftType === 'normal-hours' ?
+                  <div>
+                      <NormalAndOvertime component={props.component} />
+                      <hr className={dividerCCS.hDividerClassName} style={dividerCCS.hDividerStyle}/>
+                  </div>
+                  :
+                  null
+              }
+
+              { shiftType === 'shift' ?
+                  <div>
+                    {renderShiftInfoInputs()}
+                  </div>
+                  :
+                  null
+              }
+
               <hr className={dividerCCS.hDividerClassName} style={dividerCCS.hDividerStyle}/>
               </div>
                 <div>
