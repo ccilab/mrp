@@ -1,5 +1,4 @@
-import React, { useState } from 'react';
-import Popup from '../popup_menu/Popup'
+import React from 'react';
 import { useTranslation } from 'react-i18next';
 
 import styles from "./../../dist/css/ccilab-component-list.css"
@@ -178,7 +177,7 @@ export const NormalAndOvertime=(props)=>{
               mrpInputType='operations'
               value={props.component.operation.DayShift.name.shiftType === null ? props.component.operation.DayShift.name.shiftType : t(`operations:${props.component.operation.DayShift.name.shiftType }`)} //array of demands for each period 
               component={props.component}
-              />
+              handler={setShiftType}/>
             <hr className={dividerCCS.hDividerClassName }  style={dividerCCS.vDividerStyle}/> 
             <TextInput
               title='team-name'
