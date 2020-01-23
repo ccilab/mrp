@@ -15,18 +15,18 @@ export const NormalAndOvertime=(props)=>{
   const { t } = useTranslation(['operations','commands'], {useSuspense: false});
   
  
-  const setShiftType=(index, shiftType, component)=>{
+  const setShiftTerm=(index, shiftTerm, component)=>{
     if( typeof component.operation === 'undefined' )
     {
        component.operation = new initializeOp( component ) ;
     }
 
-    if( isValidString( shiftType ))
+    if( isValidString( shiftTerm ))
     {
-      component.operation.DayShift.name.shiftType = shiftType;
+      component.operation.DayShift.name.shiftTerm = shiftTerm;
     }
     else{
-      component.operation.DayShift.name.shiftType = null;
+      component.operation.DayShift.name.shiftTerm = null;
     }
     saveValidOpEntry(component);
   }
@@ -175,9 +175,9 @@ export const NormalAndOvertime=(props)=>{
               cellCnt={2}
               readOnly={false}
               mrpInputType='operations'
-              value={props.component.operation.DayShift.name.shiftType === null ? props.component.operation.DayShift.name.shiftType : t(`operations:${props.component.operation.DayShift.name.shiftType }`)} //array of demands for each period 
+              value={props.component.operation.DayShift.name.shiftTerm === null ? props.component.operation.DayShift.name.shiftTerm : t(`operations:${props.component.operation.DayShift.name.shiftTerm }`)} //array of demands for each period 
               component={props.component}
-              handler={setShiftType}/>
+              handler={setShiftTerm}/>
             <hr className={dividerCCS.hDividerClassName }  style={dividerCCS.vDividerStyle}/> 
             <TextInput
               title='team-name'

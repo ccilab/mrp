@@ -3,7 +3,7 @@ import { useTranslation } from 'react-i18next';
 
 import styles from "./../../dist/css/ccilab-component-list.css"
 
-import { dividerCCS, isValidString, isValidValue } from "./CCiLabUtility";
+import { dividerCCS, isValidString, isValidValue, getRandomInt } from "./CCiLabUtility";
 import {NumberInput} from "./CCiLabNumberInput"
 import {TextInput} from "./CCiLabTextInput"
 import {initializeOp, saveValidOpEntry} from './CCiLabOperationsUtility'
@@ -16,15 +16,17 @@ export const Shift=(props)=>{
   
   const [shiftArray, setShiftArray] = useState(props.component.operation.shiftArray);
  
-  const setShiftType=(index, value, component)=>{
+  const setShiftTerm=(index, value, component)=>{
     if( typeof component.operation === 'undefined' )
     {
        component.operation = new initializeOp( component ) ;
     }
 
-    if( isValidString( value ) === false)
+    let shiftTerm = value;
+
+    if( isValidString( shiftTerm ) === false)
     {
-      value = null;
+      shiftTerm = null;
     }
     
     for( let item of shiftArray )
@@ -32,7 +34,7 @@ export const Shift=(props)=>{
         const id = shiftArray.indexOf( item );
         if( id === index )
         {
-          item.name.shiftType = value;
+          item.name.shiftTerm = shiftTerm;
           break;
         }
     }
@@ -40,64 +42,100 @@ export const Shift=(props)=>{
     saveValidOpEntry(component, shiftArray);
   }
 
-  const setShiftName=(index, teamName, component)=>{
+  const setShiftName=(index, value, component)=>{
     if( typeof component.operation === 'undefined' )
     {
        component.operation = new initializeOp( component ) ;
     }
 
-    if( isValidString( teamName ))
+    let teamName = value;
+
+    if( isValidString( teamName ) === false )
     {
-      component.operation.DayShift.name.teamName = teamName;
+      teamName = null ;
     }
-    else{
-      component.operation.DayShift.name.teamName = null;
+    
+    for( let item of shiftArray )
+    {
+        const id = shiftArray.indexOf( item );
+        if( id === index )
+        {
+          item.name.teamName = teamName;
+          break;
+        }
     }
     saveValidOpEntry(component, shiftArray);
   }
 
   const setEmployeeCount=(index, count, component)=>{
-    if( typeof component.operation === 'undefined' )
-      component.operation = new initializeOp( component );
+     if( typeof component.operation === 'undefined' )
+        component.operation = new initializeOp( component );
 
-    let {isValid, value} = isValidValue(count);
+     let {isValid, value} = isValidValue(count);
 
      if( !isValid )
      {
-       component.operation.DayShift.employeeCount=null;
+        value=null;
      }
-    else
-    {
-      component.operation.DayShift.employeeCount=value;
-    }
+   
+     for( let item of shiftArray )
+     {
+         const id = shiftArray.indexOf( item );
+         if( id === index )
+         {
+           item.employeeCount = value;
+           break;
+         }
+     }
+
       
     saveValidOpEntry(component, shiftArray);
   };
 
-  const setDailyTimeCapacity=(index, capacity, component)=>{
+  const setShiftTimeCapacity=(index, capacity, component)=>{
     if( typeof component.operation === 'undefined' )
+    {
       component.operation = new initializeOp( component );
+    }
+      
 
-      let {isValid, value} = isValidValue(capacity);
+    let {isValid, value} = isValidValue(capacity);
 
-      if( !isValid )
-       component.operation.DayShift.timeCost.hoursPerEmployee=null;
-     else
-       component.operation.DayShift.timeCost.hoursPerEmployee=value;
+    if( !isValid )
+        value=null;
+     
+    for( let item of shiftArray )
+    {
+        const id = shiftArray.indexOf( item );
+        if( id === index )
+        {
+          item.timeCost.hoursPerEmployee = value;
+          break;
+        }
+    }  
 
     saveValidOpEntry(component, shiftArray);
   };
 
-  const setHourlyCost=(index, hourlyCost, component)=>{
+  const setShiftHourlyCost=(index, hourlyCost, component)=>{
     if( typeof component.operation === 'undefined' )
       component.operation = new initializeOp( component );
 
     let {isValid, value} = isValidValue(hourlyCost);
 
     if( !isValid )
-      component.operation.DayShift.timeCost.averageHourlyCost=null;
-    else
-      component.operation.DayShift.timeCost.averageHourlyCost=value;
+      value=null;
+    
+
+    for( let item of shiftArray )
+    {
+        const id = shiftArray.indexOf( item );
+        if( id === index )
+        {
+          item.timeCost.averageHourlyCost = value;
+          break;
+        }
+    }  
 
     saveValidOpEntry(component, shiftArray);
     }
@@ -106,14 +144,25 @@ export const Shift=(props)=>{
 
   const setTimePerComponentPerEmployee=(index, timePerComponent, component)=>{
     if( typeof component.operation === 'undefined' )
+    {
       component.operation = new initializeOp( component );
+    }
 
-      let {isValid, value} = isValidValue(timePerComponent);
+    let {isValid, value} = isValidValue(timePerComponent);
 
     if( !isValid )
-        component.operation.DayShift.averageTimePerComponentPerEmployee = null;
-    else
-        component.operation.DayShift.averageTimePerComponentPerEmployee = value;
+      value = null;
+   
+
+    for( let item of shiftArray )
+    {
+        const id = shiftArray.indexOf( item );
+        if( id === index )
+        {
+          item.averageTimePerComponentPerEmployee = value;
+          break;
+        }
+    }  
   
     saveValidOpEntry(component, shiftArray);
   }
@@ -125,9 +174,17 @@ export const Shift=(props)=>{
     let {isValid, value} = isValidValue(count);
 
     if( !isValid )
-      component.operation.DayShift.allowedEmployeeCnt.min = null;
-    else
-      component.operation.DayShift.allowedEmployeeCnt.min = value;
+      value = null;
+
+    for( let item of shiftArray )
+    {
+        const id = shiftArray.indexOf( item );
+        if( id === index )
+        {
+          item.allowedEmployeeCnt.min = value;
+          break;
+        }
+    }  
 
     saveValidOpEntry(component, shiftArray);
   }
@@ -139,16 +196,24 @@ export const Shift=(props)=>{
     let {isValid, value} = isValidValue(count);
 
     if( !isValid )
-      component.operation.DayShift.allowedEmployeeCnt.max = null;
-    else
-      component.operation.DayShift.allowedEmployeeCnt.max = value;
+      value = null;
+    
+    for( let item of shiftArray )
+    {
+        const id = shiftArray.indexOf( item );
+        if( id === index )
+        {
+          item.allowedEmployeeCnt.max = value;
+          break;
+        }
+    }  
 
     saveValidOpEntry(component, shiftArray);
   }
 
 
   return (
-      <div className='d-flex'>
+      <div key={getRandomInt(100)} className='d-flex'>
         <div className={'d-flex flex-column'} style={{backgroundColor:`${styles.cciBgColor}`}} >
           <div className={'d-flex justify-content-between'}>
             <TextInput
@@ -157,16 +222,16 @@ export const Shift=(props)=>{
               cellCnt={2}
               readOnly={false}
               mrpInputType='operations'
-              value={props.component.operation.DayShift.name.shiftType === null ? props.component.operation.DayShift.name.shiftType : t(`operations:${props.component.operation.DayShift.name.shiftType }`)} //array of demands for each period 
+              value={props.component.operation.shiftInfoArray[props.index].name.shiftTerm === null ? props.component.operation.shiftInfoArray[props.index].name.shiftTerm : t(`operations:${props.component.operation.shiftInfoArray[props.index].name.shiftTerm }`)} //array of demands for each period 
               component={props.component}
-              handler={setShiftType}/>
+              handler={setShiftTerm}/>
             <hr className={dividerCCS.hDividerClassName }  style={dividerCCS.vDividerStyle}/> 
             <TextInput
               title='team-name'
               id={-1}
               cellCnt={2}
               mrpInputType='operations'
-              value={props.component.operation.DayShift.name.teamName} //array of demands for each period 
+              value={props.component.operation.shiftInfoArray[props.index].name.teamName} //array of demands for each period 
               component={props.component}
               handler={setShiftName}/>
               <hr className={dividerCCS.hDividerClassName }  style={dividerCCS.vDividerStyle}/>
@@ -180,7 +245,7 @@ export const Shift=(props)=>{
               id={-1}
               cellCnt={2}
               mrpInputType='operations'
-              value={props.component.operation.DayShift.employeeCount}
+              value={props.component.operation.shiftInfoArray[props.index].employeeCount}
               component={props.component}
               handler={setEmployeeCount}/>
             <hr className={dividerCCS.hDividerClassName }  style={dividerCCS.vDividerStyle}/>    
@@ -189,7 +254,7 @@ export const Shift=(props)=>{
               id={-1}
               cellCnt={2}
               mrpInputType='operations'
-              value={props.component.operation.DayShift.averageTimePerComponentPerEmployee}
+              value={props.component.operation.shiftInfoArray[props.index].averageTimePerComponentPerEmployee}
               component={props.component}
               handler={setTimePerComponentPerEmployee} /> 
             <hr className={dividerCCS.hDividerClassName }  style={dividerCCS.vDividerStyle}/>
@@ -203,42 +268,19 @@ export const Shift=(props)=>{
                   id={-1}
                   cellCnt={2}
                   mrpInputType='operations'
-                  value={props.component.operation.DayShift.timeCost.hoursPerEmployee}
+                  value={props.component.operation.shiftInfoArray[props.index].timeCost.hoursPerEmployee}
                   component={props.component}
-                  handler={setDailyTimeCapacity}/>
+                  handler={setShiftTimeCapacity}/>
               <hr className={dividerCCS.hDividerClassName }  style={dividerCCS.vDividerStyle}/>    
               <NumberInput
                   title='average-hourly-cost-quantity'
                   id={-1}
                   cellCnt={2}
                   mrpInputType='operations'
-                  value={props.component.operation.DayShift.timeCost.averageHourlyCost}
+                  value={props.component.operation.shiftInfoArray[props.index].timeCost.averageHourlyCost}
                   component={props.component}
-                  handler={setHourlyCost}/>
+                  handler={setShiftHourlyCost}/>
               <hr className={dividerCCS.hDividerClassName }  style={dividerCCS.vDividerStyle}/>
-          </div>
-
-          <hr className={dividerCCS.hDividerClassName} style={dividerCCS.hDividerStyle}/>
-
-          <div className={'d-flex  justify-content-between'}>
-                <NumberInput
-                    title='daily-overtime-capacity-quantity'
-                    cellCnt={2}
-                    id={-1}
-                    mrpInputType='operations'
-                    value={props.component.operation.DayShift.overtimeCost.overtimeHoursPerEmployee}
-                    component={props.component}
-                    handler={setDailyOvertimeCapacity}/>
-                <hr className={dividerCCS.hDividerClassName }  style={dividerCCS.vDividerStyle}/>    
-                <NumberInput
-                    title='average-overtime-hourly-cost-quantity'
-                    id={-1}
-                    cellCnt={2}
-                    mrpInputType='operations'
-                    value={props.component.operation.DayShift.overtimeCost.averageHourlyOvertimeCost}
-                    component={props.component}
-                    handler={setHourlyOvertimeCost}/>
-                <hr className={dividerCCS.hDividerClassName }  style={dividerCCS.vDividerStyle}/> 
           </div>
 
           <hr className={dividerCCS.hDividerClassName} style={dividerCCS.hDividerStyle}/>
@@ -249,7 +291,7 @@ export const Shift=(props)=>{
                   id={-1}
                   cellCnt={2}
                   mrpInputType='operations'
-                  value={props.component.operation.DayShift.allowedEmployeeCnt.min}
+                  value={props.component.operation.shiftInfoArray[props.index].allowedEmployeeCnt.min}
                   component={props.component}
                   handler={setMinAllowedEmployee}/>
 
@@ -260,7 +302,7 @@ export const Shift=(props)=>{
                   id={-1}
                   cellCnt={2}
                   mrpInputType='operations'
-                  value={props.component.operation.DayShift.allowedEmployeeCnt.max}
+                  value={props.component.operation.shiftInfoArray[props.index].allowedEmployeeCnt.max}
                   component={props.component}
                   handler={setMaxAllowedEmployee}/>
               <hr className={dividerCCS.hDividerClassName }  style={dividerCCS.vDividerStyle}/>

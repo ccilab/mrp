@@ -10,7 +10,8 @@ import {NumberInput} from "./CCiLabNumberInput"
 import {TextInput} from "./CCiLabTextInput"
 import {PercentageInput} from "./CCiLabPercentageInput"
 import { NormalAndOvertime } from './CCiLabNormalAndOvertimeInputs';
-import {initializeOp, saveValidOpEntry} from './CCiLabOperationsUtility'
+import { Shift } from './CCiLabShiftInputs';
+import {initializeOp, saveValidOpEntry, initializeShift} from './CCiLabOperationsUtility'
 import { RadioInput } from './CCiLabRadioInput';
 
 
@@ -222,8 +223,8 @@ export const SetupOP=(props)=>{
   }
 
   const AddNextShiftEntry=(index)=>(e)=>{
-    shiftInfoArray.push([null,null]);
-    saveValidOpEntry(props.component);
+    shiftInfoArray.push( initializeShift() );
+    saveValidOpEntry(props.component, shiftInfoArray);
     setShiftInfoArray( shiftInfoArray );
     window.dispatchEvent(new Event('resize'));  //resize popup menu
   }
@@ -238,37 +239,18 @@ export const SetupOP=(props)=>{
       }
     }
     
-    saveValidOpEntry(props.component);
+    saveValidOpEntry(props.component, shiftInfoArray);
     setShiftInfoArray( shiftInfoArray );
     window.dispatchEvent(new Event('resize'));   //resize popup menu
   }
 
   
 
- const renderShiftInfoInput=(uniqueKey, index, shiftName, teamName, isLastElement )=>{
+ const renderShiftInfoInput=( index, shift, isLastElement )=>{
   return(
-    <div key={uniqueKey+1}>
-    <div key={uniqueKey} className={'d-flex justify-content-between'} >  
-      <TextInput
-         title='shift'   //array of completed date for each required quantity
-         id={index}
-         cellCnt={2}
-         mrpInputType='operations'
-         value={ shiftName }
-         component={props.component}
-         handler={setShiftName}/>
-
-     <hr className={dividerCCS.hDividerClassName }  style={dividerCCS.vDividerStyle}/>    
-     
-     <NumberInput
-         title='shift-cost'
-         id={index}
-         cellCnt={3}
-         mrpInputType='operations'
-         value={( teamName !== null ) ? teamName : ''} //array of demands for each period 
-         component={props.component}
-         handler={setShiftHourlyCost}/>
-         
+    <div key={getRandomInt(100)+1}>
+    <div key={getRandomInt(100)} className={'d-flex justify-content-between'} >  
+      <Shift component={props.component} />
      { isLastElement === true ?
        <i id={`${index}`}
          className='text-info m-0 py-1 px-1 fas fw fa-plus-circle cursor-pointer'
@@ -295,7 +277,7 @@ export const SetupOP=(props)=>{
     return (
       shiftInfoArray.map( ( item )=>{
         let id = shiftInfoArray.indexOf(item);
-        return renderShiftInfoInput( getRandomInt(100), id, item[0], item[1], id ===  shiftInfoArray.length - 1 ? true : false )
+        return renderShiftInfoInput( id, item, id ===  shiftInfoArray.length - 1 ? true : false )
       } )
     )
   }

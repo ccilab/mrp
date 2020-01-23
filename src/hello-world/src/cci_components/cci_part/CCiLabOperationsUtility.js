@@ -28,21 +28,21 @@ const _initializeOp=()=>{
     operation.workshop='';           //
     operation.shiftType=null;
     operation.DayShift = _initializeDayShift();
-    operation.shiftInfoArray=[{shift:null}];         // how many different shifts are needed
+    operation.shiftInfoArray=[initializeShift()];         // how many different shifts are needed
     return operation;
  }
  
  const _initializeDayShift=()=>{
-    let shift=_initializeShift();
-    let DayShift = shift;
-    DayShift.name.shiftType='daily-shift';  
+    let shift=initializeShift();
+    let DayShift = {...shift};  //deep copy object
+    DayShift.name.shiftTerm='daily-shift';  
     DayShift.overtimeCost = {overtimeHoursPerEmployee: null, averageHourlyOvertimeCost: null };  //in hour, if not in shift
     return DayShift;
  }
 
- const _initializeShift=()=>{
+ export const initializeShift=()=>{
      let shift={};
-     shift.name={shiftType:null, teamName: null}
+     shift.name={shiftTerm:null, teamName: null}
      shift.employeeCount=null;  //number of employees to produce the demand of a component
      shift.averageTimePerComponentPerEmployee=null; //in hour, time needed to produce one component per employee
      shift.timeCost={hoursPerEmployee: null, averageHourlyCost: null } ;  //in hour, for normal or shift
