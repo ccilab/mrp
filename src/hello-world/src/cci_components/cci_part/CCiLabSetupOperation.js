@@ -226,7 +226,7 @@ export const SetupOP=(props)=>{
     shiftInfoArray.push( initializeShift() );
     saveValidOpEntry(props.component, shiftInfoArray);
     setShiftInfoArray( shiftInfoArray );
-    window.dispatchEvent(new Event('resize'));  //resize popup menu
+    window.dispatchEvent(new Event('resizeFromShiftListChange'));  //resize popup menu
   }
 
   const removeShiftEntry=(index)=>(e)=>{
@@ -241,7 +241,7 @@ export const SetupOP=(props)=>{
     
     saveValidOpEntry(props.component, shiftInfoArray);
     setShiftInfoArray( shiftInfoArray );
-    window.dispatchEvent(new Event('resize'));   //resize popup menu
+    window.dispatchEvent(new Event('resizeFromShiftListChange'));   //resize popup menu
   }
 
   
@@ -250,7 +250,7 @@ export const SetupOP=(props)=>{
   return(
     <div key={getRandomInt(100)+1}>
     <div key={getRandomInt(100)} className={'d-flex justify-content-between'} >  
-      <Shift component={props.component} />
+      <Shift shiftIndex = {index} component={props.component} />
      { isLastElement === true ?
        <i id={`${index}`}
          className='text-info m-0 py-1 px-1 fas fw fa-plus-circle cursor-pointer'

@@ -14,7 +14,7 @@ import {initializeOp, saveValidOpEntry} from './CCiLabOperationsUtility'
 export const Shift=(props)=>{
   const { t } = useTranslation(['operations','commands'], {useSuspense: false});
   
-  const [shiftArray, setShiftArray] = useState(props.component.operation.shiftArray);
+  const shiftArray = props.component.operation.shiftInfoArray;
  
   const setShiftTerm=(index, value, component)=>{
     if( typeof component.operation === 'undefined' )
@@ -218,20 +218,20 @@ export const Shift=(props)=>{
           <div className={'d-flex justify-content-between'}>
             <TextInput
               title='shift-type'
-              id={-1}
+              id={props.shiftIndex}
               cellCnt={2}
               readOnly={false}
               mrpInputType='operations'
-              value={props.component.operation.shiftInfoArray[props.index].name.shiftTerm === null ? props.component.operation.shiftInfoArray[props.index].name.shiftTerm : t(`operations:${props.component.operation.shiftInfoArray[props.index].name.shiftTerm }`)} //array of demands for each period 
+              value={props.component.operation.shiftInfoArray[props.shiftIndex].name.shiftTerm === null ? props.component.operation.shiftInfoArray[props.shiftIndex].name.shiftTerm : t(`operations:${props.component.operation.shiftInfoArray[props.shiftIndex].name.shiftTerm }`)} //array of demands for each period 
               component={props.component}
               handler={setShiftTerm}/>
             <hr className={dividerCCS.hDividerClassName }  style={dividerCCS.vDividerStyle}/> 
             <TextInput
               title='team-name'
-              id={-1}
+              id={props.shiftIndex}
               cellCnt={2}
               mrpInputType='operations'
-              value={props.component.operation.shiftInfoArray[props.index].name.teamName} //array of demands for each period 
+              value={props.component.operation.shiftInfoArray[props.shiftIndex].name.teamName} //array of demands for each period 
               component={props.component}
               handler={setShiftName}/>
               <hr className={dividerCCS.hDividerClassName }  style={dividerCCS.vDividerStyle}/>
@@ -242,19 +242,19 @@ export const Shift=(props)=>{
           <div className={'d-flex justify-content-between'}>
             <NumberInput
               title='employee-count-quantity'
-              id={-1}
+              id={props.shiftIndex}
               cellCnt={2}
               mrpInputType='operations'
-              value={props.component.operation.shiftInfoArray[props.index].employeeCount}
+              value={props.component.operation.shiftInfoArray[props.shiftIndex].employeeCount}
               component={props.component}
               handler={setEmployeeCount}/>
             <hr className={dividerCCS.hDividerClassName }  style={dividerCCS.vDividerStyle}/>    
             <NumberInput
               title='time-pre-component-per-employee-quantity'
-              id={-1}
+              id={props.shiftIndex}
               cellCnt={2}
               mrpInputType='operations'
-              value={props.component.operation.shiftInfoArray[props.index].averageTimePerComponentPerEmployee}
+              value={props.component.operation.shiftInfoArray[props.shiftIndex].averageTimePerComponentPerEmployee}
               component={props.component}
               handler={setTimePerComponentPerEmployee} /> 
             <hr className={dividerCCS.hDividerClassName }  style={dividerCCS.vDividerStyle}/>
@@ -265,19 +265,19 @@ export const Shift=(props)=>{
           <div className={'d-flex  justify-content-between'}>
               <NumberInput
                   title='daily-time-capacity-per-person-quantity'
-                  id={-1}
+                  id={props.shiftIndex}
                   cellCnt={2}
                   mrpInputType='operations'
-                  value={props.component.operation.shiftInfoArray[props.index].timeCost.hoursPerEmployee}
+                  value={props.component.operation.shiftInfoArray[props.shiftIndex].timeCost.hoursPerEmployee}
                   component={props.component}
                   handler={setShiftTimeCapacity}/>
               <hr className={dividerCCS.hDividerClassName }  style={dividerCCS.vDividerStyle}/>    
               <NumberInput
                   title='average-hourly-cost-quantity'
-                  id={-1}
+                  id={props.shiftIndex}
                   cellCnt={2}
                   mrpInputType='operations'
-                  value={props.component.operation.shiftInfoArray[props.index].timeCost.averageHourlyCost}
+                  value={props.component.operation.shiftInfoArray[props.shiftIndex].timeCost.averageHourlyCost}
                   component={props.component}
                   handler={setShiftHourlyCost}/>
               <hr className={dividerCCS.hDividerClassName }  style={dividerCCS.vDividerStyle}/>
@@ -288,10 +288,10 @@ export const Shift=(props)=>{
           <div className={'d-flex  justify-content-between'}>
               <NumberInput
                   title='min-allowed-employee-per-shift-quantity'
-                  id={-1}
+                  id={props.shiftIndex}
                   cellCnt={2}
                   mrpInputType='operations'
-                  value={props.component.operation.shiftInfoArray[props.index].allowedEmployeeCnt.min}
+                  value={props.component.operation.shiftInfoArray[props.shiftIndex].allowedEmployeeCnt.min}
                   component={props.component}
                   handler={setMinAllowedEmployee}/>
 
@@ -299,10 +299,10 @@ export const Shift=(props)=>{
 
               <NumberInput
                   title='max-allowed-employee-per-shift-quantity'
-                  id={-1}
+                  id={props.shiftIndex}
                   cellCnt={2}
                   mrpInputType='operations'
-                  value={props.component.operation.shiftInfoArray[props.index].allowedEmployeeCnt.max}
+                  value={props.component.operation.shiftInfoArray[props.shiftIndex].allowedEmployeeCnt.max}
                   component={props.component}
                   handler={setMaxAllowedEmployee}/>
               <hr className={dividerCCS.hDividerClassName }  style={dividerCCS.vDividerStyle}/>
