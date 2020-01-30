@@ -424,8 +424,9 @@ class CCiLabComponent extends Component {
         if ( this.parents.length === 0 || this.children.length !== 0 || this.props.isSetupBOM === false)
         {
           draggableSetting= false;
-          // Component = ( this.currentComponent.displayLogic.selected !== 0 ) ? 'bg-info component_opacity ccilab-component-sticky-top' :' ';
-          Component = ( this.currentComponent.displayLogic.selected !== 0 ) ? 'bg-info component_opacity ccilab-component-sticky-top' :' ';
+          //Component = ( this.currentComponent.displayLogic.selected !== 0 ) ? 'bg-info component_opacity ccilab-component-sticky-top' :' ';
+          // don't stick at top or bottom which prevents configure MRP items
+          Component = ( this.currentComponent.displayLogic.selected !== 0 ) ? 'bg-info component_opacity ' :' ';
 
           if( this.currentComponent.displayLogic.selected )
           {
@@ -438,8 +439,10 @@ class CCiLabComponent extends Component {
         else
         {
             // draggable for elements bellow the very top one, if use has the permission (#todo need to implement the check)inline-menu_sticky_horizontal inline-menu_sticky_horizontal inline-menu_sticky_horizontal
-            Component =  this.currentComponent.displayLogic.selected > 0 ? 'bg-info component_opacity ccilab-component-sticky-top ' + (this.permissionEnabled? ' move':' ' ):
-                       this.currentComponent.displayLogic.selected < 0 ? 'bg-info component_opacity ccilab-component-sticky-bottom ' + (this.permissionEnabled? ' move':' ' ):' ';
+            // Component =  this.currentComponent.displayLogic.selected > 0 ? 'bg-info component_opacity ccilab-component-sticky-top ' + (this.permissionEnabled? ' move':' ' ):
+            //            this.currentComponent.displayLogic.selected < 0 ? 'bg-info component_opacity ccilab-component-sticky-bottom ' + (this.permissionEnabled? ' move':' ' ):' ';
+            Component =  this.currentComponent.displayLogic.selected > 0 ? 'bg-info component_opacity ' + (this.permissionEnabled? ' move':' ' ):
+                       this.currentComponent.displayLogic.selected < 0 ? 'bg-info component_opacity ' + (this.permissionEnabled? ' move':' ' ):' ';
 
             draggableSetting = ( this.permissionEnabled && this.currentComponent.displayLogic.selected !== 0 &&  this.parents.length !== 0 )? 'true':'false';
 
