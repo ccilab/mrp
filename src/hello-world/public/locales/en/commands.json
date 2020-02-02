@@ -7,7 +7,7 @@
     "upload-image" : "upload image",
     "add-part" : "new part",
     "show-setup-BOM" : "Setup BOM",
-    "bom-setup-uncompleted" : "Warning: BOM setup is not completed!",
+    "bom-setup-uncompleted" : "Setup BOM before adding a new component",
     "show-setup-PDP" : "Setup Product Demand",
     "show-setup-IRF" : "Setup Inventory Records",
     "show-setup-OP" : "Setup Operation",

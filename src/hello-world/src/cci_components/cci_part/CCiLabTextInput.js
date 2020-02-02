@@ -57,7 +57,7 @@ export const TextInput=(props)=>{
               trigger={
                 <input key={props.id}
                       className={`${inputClassName}`}
-                      id={inputName}
+                      id={inputName+props.id}
                       type={`${inputType}`}
                       style={inputStyle}
                       placeholder={t(`${props.mrpInputType}:${props.title}`)}

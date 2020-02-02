@@ -1307,6 +1307,7 @@ export class CCiLabComponentList extends Component {
 
 
     // handles vertical scroll bar event
+    // 3rd-Feb-2020, don't use sticky the component method, it stops scroll setup Operation  
     setSelectedComponentStickDirection = (e) =>{
       let scrollY = e.target.scrollTop;
 
@@ -1325,6 +1326,7 @@ export class CCiLabComponentList extends Component {
           if ( scrollY < this.lastScrollYPosition )
           {
               //scroll up - component move downward - set selected to -1 - sticky-bottom
+              
               selectedComponent.displayLogic.selected = -1;
               console.log('scroll up - component move down: ', -1 );
           }
@@ -1340,8 +1342,9 @@ export class CCiLabComponentList extends Component {
 
           this.lastScrollYPosition = scrollY;
 
-          console.log("CCiLabComponentList - setSelectedComponentStickDirection");
-          this.setState({selected: selectedComponent.displayLogic.selected});
+        // console.log("CCiLabComponentList - setSelectedComponentStickDirection");
+        // don't set state of selected component to stop repeated render shift or IR required-received pair
+        //  this.setState({selected: selectedComponent.displayLogic.selected});
       }
     }
 

@@ -226,7 +226,7 @@ export const SetupOP=(props)=>{
     shiftInfoArray.push( initializeShift() );
     saveValidOpEntry(props.component, shiftInfoArray);
     setShiftInfoArray( shiftInfoArray );
-    window.dispatchEvent(new Event('resizeFromShiftListChange'));  //resize popup menu
+    window.dispatchEvent(new Event('resize'));  //resize popup menu
   }
 
   const removeShiftEntry=(index)=>(e)=>{
@@ -241,7 +241,7 @@ export const SetupOP=(props)=>{
     
     saveValidOpEntry(props.component, shiftInfoArray);
     setShiftInfoArray( shiftInfoArray );
-    window.dispatchEvent(new Event('resizeFromShiftListChange'));   //resize popup menu
+    window.dispatchEvent(new Event('resize'));   //resize popup menu
   }
 
   

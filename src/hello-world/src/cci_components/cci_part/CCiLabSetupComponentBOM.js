@@ -158,7 +158,7 @@ export const SetupBOM=(props)=>{
     console.log("SetupBOM - setPartNumber: " + component.bom.core.partNumber);
   };
 
-  const setUnitQty=(unitQty, component)=>{
+  const setUnitQty=(index, unitQty, component)=>{
     if( typeof component.bom === 'undefined' )
       component.bom = new initializeBOM( component );
 
