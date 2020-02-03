@@ -13,5 +13,6 @@
     "show-setup-OP" : "Setup Operation",
     "day" : "day(s)",
     "week" : "week(s)",
-    "month" : "month(s)"
+    "month" : "month(s)",
+    "part-name" : "New name"
 }

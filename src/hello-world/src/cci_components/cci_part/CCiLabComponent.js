@@ -170,7 +170,7 @@ const ComponentName=(props)=>{
   const { t } = useTranslation('commands', {useSuspense: false});
   let componentName = props.componentName;
 
-  if( props.componentName === 'part-name')
+  if( props.componentName === 'part-name' || props.componentName === '')
     componentName = t('part-name');
 
 
@@ -564,13 +564,24 @@ class CCiLabComponent extends Component {
                       <SetupOP component={this.currentComponent} updateSubTitle={this.props.changeMRPTitle}  updateTable={this.props.updateTableHandler}/>
                       
                       { this.props.isSetupBOM ?
-                          <MenuAddComponent
-                            component={this.currentComponent}
-                            // style={ {'visibility': `${inlineMenuIconVisibility}`}}
-                            isDraggable={draggableSetting}
-                            addComponentHandler={this.addComponent}
-                            selectedComponentHandler={this.componentSelected}
-                          />
+                      <span>
+                        { this.props.component.displayLogic.selected === 0 ?
+                           // <span class="fa-stack fa-2x">
+                             // <i type='icon' className={'text-primary cursor-pointer p-1 fw fa-square fa-stack-2x'}/>
+                              <i type='icon' className={ 'text-primary cursor-pointer px-0 pt-3 pb-1 fa fa-ellipsis-h'}  onClick={this.componentSelected}/>
+                            // </span>
+                            :
+                            <MenuAddComponent
+                              component={this.currentComponent}
+                              // style={ {'visibility': `${inlineMenuIconVisibility}`}}
+                              isDraggable={draggableSetting}
+                              addComponentHandler={this.addComponent}
+                              selectedComponentHandler={this.componentSelected}
+                            />
+                           
+                          }
+                      </span>
+                          
                           :
                           null
                       }
