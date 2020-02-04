@@ -426,7 +426,8 @@ class CCiLabComponent extends Component {
           draggableSetting= false;
           //Component = ( this.currentComponent.displayLogic.selected !== 0 ) ? 'bg-info component_opacity ccilab-component-sticky-top' :' ';
           // don't stick at top or bottom which prevents configure MRP items
-          Component = ( this.currentComponent.displayLogic.selected !== 0 ) ? 'bg-info component_opacity ' :' ';
+          //component_opacity affect z-index which blocks editing setup MRP dialog items
+          Component = ( this.currentComponent.displayLogic.selected !== 0 ) ? 'bg-info  ' :' ';
 
           if( this.currentComponent.displayLogic.selected )
           {
@@ -441,17 +442,18 @@ class CCiLabComponent extends Component {
             // draggable for elements bellow the very top one, if use has the permission (#todo need to implement the check)inline-menu_sticky_horizontal inline-menu_sticky_horizontal inline-menu_sticky_horizontal
             // Component =  this.currentComponent.displayLogic.selected > 0 ? 'bg-info component_opacity ccilab-component-sticky-top ' + (this.permissionEnabled? ' move':' ' ):
             //            this.currentComponent.displayLogic.selected < 0 ? 'bg-info component_opacity ccilab-component-sticky-bottom ' + (this.permissionEnabled? ' move':' ' ):' ';
-            Component =  this.currentComponent.displayLogic.selected > 0 ? 'bg-info component_opacity ' + (this.permissionEnabled? ' move':' ' ):
-                       this.currentComponent.displayLogic.selected < 0 ? 'bg-info component_opacity ' + (this.permissionEnabled? ' move':' ' ):' ';
+            //component_opacity affect z-index which blocks editing setup MRP dialog items
+            Component =  this.currentComponent.displayLogic.selected > 0 ? 'bg-info  ' + ( this.permissionEnabled.includes('setup-bom')? ' move ':' ' ):
+                       this.currentComponent.displayLogic.selected < 0 ? 'bg-info  ' + (this.permissionEnabled.includes('setup-bom')? ' move ':' ' ):' ';
 
             draggableSetting = ( this.permissionEnabled && this.currentComponent.displayLogic.selected !== 0 &&  this.parents.length !== 0 )? 'true':'false';
 
             if( this.currentComponent.displayLogic.selected !== 0 )
             {
-              componentBase +=  (this.permissionEnabled && this.currentComponent.displayLogic.selected !== 0 && this.props.isSetupBOM )? ' move':' cursor-default';
-              imageClassName += (this.permissionEnabled && this.currentComponent.displayLogic.selected !== 0 )? ' move':' cursor-pointer';
-              componentNameClassName += (this.permissionEnabled && this.currentComponent.displayLogic.selected !== 0 )? ' move':' cursor-default';
-              statusBadgeIconClassName += (this.permissionEnabled && this.currentComponent.displayLogic.selected !== 0 )? ' move':' cursor-default';
+              componentBase +=  (this.permissionEnabled.includes('setup-bom') && this.currentComponent.displayLogic.selected !== 0 && this.props.isSetupBOM )? ' move':' cursor-default';
+              imageClassName += (this.permissionEnabled.includes('setup-bom') && this.currentComponent.displayLogic.selected !== 0 )? ' move':' cursor-pointer';
+              componentNameClassName += (this.permissionEnabled.includes('setup-bom') && this.currentComponent.displayLogic.selected !== 0 )? ' move':' cursor-default';
+              statusBadgeIconClassName += (this.permissionEnabled.includes('setup-bom') && this.currentComponent.displayLogic.selected !== 0 )? ' move':' cursor-default';
             }
         }
 

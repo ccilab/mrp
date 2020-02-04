@@ -696,7 +696,7 @@ export class CCiLabComponentList extends Component {
               visible: true,
               selected: 0,
               setupBOM: false,
-              permissionEnabled: 'setup-bom', // based logged in user to set permission: 'read-only', 'update-progress', 'setup-bom'
+              permissionEnabled: 'setup-bom',  // based logged in user to set permission: 'read-only', 'update-progress', 'setup-bom'
               fontSize: 23, //default browser medium font size in px
               isDropToSameParentWarning: false,
               isDropToItselfWarning: false,
@@ -763,9 +763,6 @@ export class CCiLabComponentList extends Component {
         let shownComponents = componentLists.filter(component=>component.displayLogic.showMyself === true);
 
         let listCalculatedHight = shownComponents.length * (45+16); //in px
-
-        if( listCalculatedHight > (updatedRect.bottom-updatedRect.top) )
-          document.getElementById( 'cciLabComponentListID' ).style.overflow = 'auto';
 
         updatedRect.bottom = listCalculatedHight;
         return updatedRect;
