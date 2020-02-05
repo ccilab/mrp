@@ -530,10 +530,6 @@ const ComponentListTitle =(props)=>{
   }
   // console.log("CCiLabComponentList - ComponentListTitle: i18n.language = " + i18n.language );
 
-  // set setupBOM or progress icon at right side of the title bar
-  let cursorStyle = { 'position':'absolute',
-                      'right':'1.5rem' };
-
   return (
     <div className='d-flex align-items-center bg-info fa'
          style={{ height: `${props.titleHeight}rem`, 
@@ -541,99 +537,70 @@ const ComponentListTitle =(props)=>{
                   fontFamily: `${fontFamily}`, 
                   fontWeight: 'normal'}}>
 
-    <span  id='title-name-progress' className={props.titleClassName} style={{fontSize: '1rem'}}>{t(`componentList:${props.titleProgress}`)}</span>
+        <div  id='title-name-progress' 
+              className={`${props.titleClassName} cursor-pointer`} 
+              style={{fontSize: '1rem', position: 'absolute', right :'50.0rem'}}
+              onClick={showProgress}>
+                {t(`componentList:${props.titleProgress}`)}
+        </div>
 
-    <span  id='title-name-mrp' className={props.titleClassName} style={{'fontSize: '1rem'}}> {t(`componentList:${props.titleMRP}`)}</span>
-
-
-     <i key='submit-bom' className='text-primary cursor-pointer p-1 fa fa-cloud-upload-alt'/>
-   
-   <Popup 
-      trigger = {
-         <i key='show-tables' 
-          className='text-primary p-1 fa fa-bars cursor-pointer' 
-          style={{position: 'absolute', right :'3.0rem'}}/>
-      }
-      closeOnDocumentClick
-      on={'hover'} //['click', 'focus','hover']
-      position={ 'bottom right' }
-      mouseLeaveDelay={200}
-      mouseEnterDelay={0}
-      contentStyle={{padding: '0', zIndex : `${styles.bootstrapPopover}`,  border: 'none', backgroundColor: `${styles.cciBgColor}`}}
-      arrow={true}
-      arrowStyle={{backgroundColor: `${styles.cciBgColor}`}}>
-      <div >
-        <table className='table-sm table-hover m-0'>
-          <tbody>
-            <tr>
-              <td>
-                <span key='sysInfo-table'  className={'cursor-pointer  p-1 m-0 text-info'} style={{fontSize: '0.7rem'}} onClick={tableChangeHandler(tables.sysInfo)}>{t('componentList:sys-table')}</span>
-              </td>
-            </tr>
-            <tr>
-              <td>
-                <span key='bom-table'  className={'cursor-pointer p-1 m-0 text-info'} style={{fontSize: '0.7rem'}} onClick={tableChangeHandler(tables.bom)}>{t('componentList:bom-table')} </span>
-              </td>
-            </tr>
-            <tr>
-              <td>
-              <span key='mps-table'  className={'cursor-pointer p-1 m-0 text-info'} style={{fontSize: '0.7rem'}} onClick={tableChangeHandler(tables.mps)}>{t('componentList:mps-table')}</span>
-              </td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
-
-   </Popup>
-
-
-    {/* https://www.robinwieruch.de/conditional-rendering-react/ */}
-    {{
-       'setup-bom':
-         ( !props.setupBOM ?
-          <Popup
-            trigger={
-              <i  key='show-bom'
-                className={'cursor-pointer text-primary p-1 fa fa-cog'}
-                style={cursorStyle}
-                onClick={setupBOM}/>
-              }
-              closeOnDocumentClick
-              on={'hover'} //['click', 'focus','hover']
-              position={ 'bottom right' }
-              mouseLeaveDelay={0}
-              mouseEnterDelay={0}
-              contentStyle={{ zIndex : `${styles.bootstrapPopover}`,  border: 'none', backgroundColor: `${styles.cciBgColor}`, fontSize: '0.8rem'}}
-              arrow={true}
-              arrowStyle={{backgroundColor: `${styles.cciBgColor}`}}>
-              <span className={'text-info text-nowrap p-1'}>
-                {t('componentList:show-setup-MRP')}
-              </span>
-          </Popup>
-          :
-          <Popup
-              trigger={
-              <i key='show-progress'
+        <i key='show-progress'
                 className={'cursor-pointer text-primary p-1 fa fa-chart-line'}
-                style={cursorStyle}
+                style={{fontSize: '1rem', position: 'absolute', right :'48.0rem'}}
                 onClick={showProgress}/>
-            }
-            closeOnDocumentClick
-            on={'hover'} //['click', 'focus','hover']
-            position={ 'bottom right' }
-            mouseLeaveDelay={0}
-            mouseEnterDelay={0}
-            contentStyle={{zIndex : `${styles.bootstrapPopover}`, border: 'none', backgroundColor: `${styles.cciBgColor}`, fontSize: '0.8rem'}}
-            arrow={true}
-            arrowStyle={{backgroundColor: `${styles.cciBgColor}`}}>
-            <span className={'text-info text-nowrap p-1'}>
-              {t('componentList:show-progress')}
-            </span>
-        </Popup>
-         ),
-        'update-progress': null,
-        'read-only':null
-        }[props.permissionStatus]}
+
+        <div  id='title-name-mrp' 
+              className={`${props.titleClassName} cursor-pointer`} 
+              style={{fontSize: '1rem', position: 'absolute', right :'38.0rem'}}
+              onClick={setupBOM}> 
+              {t(`componentList:${props.titleMRP}`)}
+        </div>
+
+        <i  key='show-bom'
+                className={'cursor-pointer text-primary p-1 fa fa-cog'}
+                style={{fontSize: '1rem', position: 'absolute', right :'35.0rem'}}
+                onClick={setupBOM}/>
+
+        <i key='submit-bom' className='text-primary cursor-pointer p-1 fa fa-cloud-upload-alt' style={{fontSize: '1rem', position: 'absolute', right :'25.0rem'}}/>
+
+      <Popup 
+        trigger = {
+          <i key='show-tables' 
+            className='text-primary p-1 fa fa-bars cursor-pointer' 
+            style={{position: 'absolute', right :'3.0rem'}}/>
+        }
+        closeOnDocumentClick
+        on={'hover'} //['click', 'focus','hover']
+        position={ 'bottom right' }
+        mouseLeaveDelay={200}
+        mouseEnterDelay={0}
+        contentStyle={{padding: '0', zIndex : `${styles.bootstrapPopover}`,  border: 'none', backgroundColor: `${styles.cciBgColor}`}}
+        arrow={true}
+        arrowStyle={{backgroundColor: `${styles.cciBgColor}`}}>
+        <div >
+          <table className='table-sm table-hover m-0'>
+            <tbody>
+              <tr>
+                <td>
+                  <span key='sysInfo-table'  className={'cursor-pointer  p-1 m-0 text-info'} style={{fontSize: '0.7rem'}} onClick={tableChangeHandler(tables.sysInfo)}>{t('componentList:sys-table')}</span>
+                </td>
+              </tr>
+              <tr>
+                <td>
+                  <span key='bom-table'  className={'cursor-pointer p-1 m-0 text-info'} style={{fontSize: '0.7rem'}} onClick={tableChangeHandler(tables.bom)}>{t('componentList:bom-table')} </span>
+                </td>
+              </tr>
+              <tr>
+                <td>
+                <span key='mps-table'  className={'cursor-pointer p-1 m-0 text-info'} style={{fontSize: '0.7rem'}} onClick={tableChangeHandler(tables.mps)}>{t('componentList:mps-table')}</span>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+      </Popup>
+
 
      {/* popup menu to change language */}
      <Popup
@@ -642,7 +609,7 @@ const ComponentListTitle =(props)=>{
           key='selection-language'
           id='#selection-language'
           //type="button"
-          className={'bg-info text-primary border-0 py-0 px-1 fa fa-language'}
+          className={'bg-info cursor-pointer text-primary border-0 py-0 px-1 fa fa-language'}
           style={{'cursor': 'pointer','position':'absolute', 'right':'0'}}/>
       }
       closeOnDocumentClick
@@ -1659,35 +1626,23 @@ export class CCiLabComponentList extends Component {
                   style={{'transform': `${this.componentListTranslateStyle}`,
                           'WebkitTransform':`${this.componentListTranslateStyle}`,
                           'height':`${this.componentListHeight}`,
-                          'width':`${this.componentListWidth}`}}
-                  >
+                          'width':`${this.componentListWidth}`}} >
 
-                  { this.state.setupBOM ?
-                                <ComponentListTitle 
-                                      titleMRP='title-MRP'
-                                      titleProgress='title-Progress'
-                                      titleHeight={this.componentTitleHeight}
-                                      titleWidth={this.componentListWidth}
-                                      titlePositionLeft= {this.componentTitleLeft}
-                                      titleClassName = {listTitleClassName}
-                                      setupBOM = {this.state.setupBOM}
-                                      getAllComponents={getChildren}
-                                      setComponents={this.props.setComponents}
-                                      updateTableHandler={this.props.updateTableHandler}
-                                      permissionStatus = {this.state.permissionEnabled}
-                                      changeBOMHandler = {this.showSetupBOM}/> :
-                                // <ComponentListTitle title='title-Progress'
-                                //       titleHeight={this.componentTitleHeight}
-                                //       titleWidth={this.componentListWidth}
-                                //       titlePositionLeft= {this.componentTitleLeft}
-                                //       titleClassName = {listTitleClassName}
-                                //       setupBOM = {this.state.setupBOM}
-                                //       getAllComponents={getChildren}
-                                //       setComponents={this.props.setComponents}
-                                //       updateTableHandler={this.props.updateTableHandler}
-                                //       permissionStatus = {this.state.permissionEnabled}
-                                //       changeBOMHandler = {this.showSetupBOM}/>
-                  }
+              
+                  <ComponentListTitle 
+                        titleMRP='title-MRP'
+                        titleProgress='title-Progress'
+                        titleHeight={this.componentTitleHeight}
+                        titleWidth={this.componentListWidth}
+                        titlePositionLeft= {this.componentTitleLeft}
+                        titleClassName = {listTitleClassName}
+                        setupBOM = {this.state.setupBOM}
+                        getAllComponents={getChildren}
+                        setComponents={this.props.setComponents}
+                        updateTableHandler={this.props.updateTableHandler}
+                        permissionStatus = {this.state.permissionEnabled}
+                        changeBOMHandler = {this.showSetupBOM}/> 
+                              
                   <hr className='my-0 bg-info' style={{borderStyle:'groove', borderWidth: '0.08em', borderColor:`${styles.cciInfoBlue}`}}/>
 
                   {/*  sticky to top and left, https://gedd.ski/post/position-sticky/*/}
