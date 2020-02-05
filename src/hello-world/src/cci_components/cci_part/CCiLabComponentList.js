@@ -541,14 +541,12 @@ const ComponentListTitle =(props)=>{
                   fontFamily: `${fontFamily}`, 
                   fontWeight: 'normal'}}>
 
-    <span  id='title-name' className={props.titleClassName} style={{'position':'relative', 'left':`${props.titlePositionLeft}rem`, fontSize: '1rem'}}>{t(`componentList:${props.title}`)}
+    <span  id='title-name-progress' className={props.titleClassName} style={{fontSize: '1rem'}}>{t(`componentList:${props.titleProgress}`)}</span>
 
-    { props.setupBOM ?
-       <i key='submit-bom' className='text-primary cursor-pointer p-1 fa fa-cloud-upload-alt'/>
-      :
-      null
-     }
-    </span>
+    <span  id='title-name-mrp' className={props.titleClassName} style={{'fontSize: '1rem'}}> {t(`componentList:${props.titleMRP}`)}</span>
+
+
+     <i key='submit-bom' className='text-primary cursor-pointer p-1 fa fa-cloud-upload-alt'/>
    
    <Popup 
       trigger = {
@@ -1665,7 +1663,9 @@ export class CCiLabComponentList extends Component {
                   >
 
                   { this.state.setupBOM ?
-                                <ComponentListTitle title='title-MRP'
+                                <ComponentListTitle 
+                                      titleMRP='title-MRP'
+                                      titleProgress='title-Progress'
                                       titleHeight={this.componentTitleHeight}
                                       titleWidth={this.componentListWidth}
                                       titlePositionLeft= {this.componentTitleLeft}
@@ -1676,17 +1676,17 @@ export class CCiLabComponentList extends Component {
                                       updateTableHandler={this.props.updateTableHandler}
                                       permissionStatus = {this.state.permissionEnabled}
                                       changeBOMHandler = {this.showSetupBOM}/> :
-                                <ComponentListTitle title='title-Progress'
-                                      titleHeight={this.componentTitleHeight}
-                                      titleWidth={this.componentListWidth}
-                                      titlePositionLeft= {this.componentTitleLeft}
-                                      titleClassName = {listTitleClassName}
-                                      setupBOM = {this.state.setupBOM}
-                                      getAllComponents={getChildren}
-                                      setComponents={this.props.setComponents}
-                                      updateTableHandler={this.props.updateTableHandler}
-                                      permissionStatus = {this.state.permissionEnabled}
-                                      changeBOMHandler = {this.showSetupBOM}/>
+                                // <ComponentListTitle title='title-Progress'
+                                //       titleHeight={this.componentTitleHeight}
+                                //       titleWidth={this.componentListWidth}
+                                //       titlePositionLeft= {this.componentTitleLeft}
+                                //       titleClassName = {listTitleClassName}
+                                //       setupBOM = {this.state.setupBOM}
+                                //       getAllComponents={getChildren}
+                                //       setComponents={this.props.setComponents}
+                                //       updateTableHandler={this.props.updateTableHandler}
+                                //       permissionStatus = {this.state.permissionEnabled}
+                                //       changeBOMHandler = {this.showSetupBOM}/>
                   }
                   <hr className='my-0 bg-info' style={{borderStyle:'groove', borderWidth: '0.08em', borderColor:`${styles.cciInfoBlue}`}}/>
 
