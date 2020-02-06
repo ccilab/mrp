@@ -536,45 +536,45 @@ const ComponentListTitle =(props)=>{
     props.updateTableHandler(tableType);
   }
   // console.log("CCiLabComponentList - ComponentListTitle: i18n.language = " + i18n.language );
-
+//  
   return (
-    <div className='d-flex align-items-center bg-info fa'
-         style={{ height: `${props.titleHeight}rem`, 
+    <div className='d-flex align-items-center bg-info '
+         style={{ height: `${props.titleHeight}rem`,
                   width: `${props.titleWidth}`, 
                   fontFamily: `${fontFamily}`, 
                   fontWeight: 'normal'}}>
 
           <div  id='title-name-progress' 
-                      className={`${props.titleClassName} cursor-pointer`} 
-                      style={{fontSize: '1rem', fontWeight: `${fontWeightProgress}`, position: 'absolute', right :'53.0rem'}}
-                      onClick={showProgress}>
-                        {t(`componentList:${props.titleProgress}`)}
-                </div>
+                className={`${props.titleClassName} pl-3 cursor-pointer`} 
+                style={{fontSize: '1.2rem', fontWeight: `${fontWeightProgress}`}}
+                onClick={showProgress}>
+                  {t(`componentList:${props.titleProgress}`)}
+                  <i key='show-progress'
+                  className={'cursor-pointer text-primary p-1 fa fa-chart-line'}
+                  style={{fontSize: '1.2rem'}}
+                  onClick={showProgress}/>
+          </div>
 
-                <i key='show-progress'
-                        className={'cursor-pointer text-primary p-1 fa fa-chart-line'}
-                        style={{fontSize: '1rem', position: 'absolute', right :'50.5rem'}}
-                        onClick={showProgress}/>
+          <div  id='title-name-mrp' 
+                className={`${props.titleClassName} pl-4 cursor-pointer`} 
+                style={{fontSize: '1.2rem', fontWeight: `${fontWeightSetupMRP}`}}
+                onClick={setupBOM}> 
+                {t(`componentList:${props.titleMRP}`)}
+                <i  key='show-bom'
+                  className={'cursor-pointer text-primary p-1 fa fa-cog'}
+                  style={{fontSize: '1.2rem'}}
+                  onClick={setupBOM}/>
 
-              <div  id='title-name-mrp' 
-                    className={`${props.titleClassName} cursor-pointer`} 
-                    style={{fontSize: '1rem', fontWeight: `${fontWeightSetupMRP}`, position: 'absolute', right :'39.0rem'}}
-                    onClick={setupBOM}> 
-                    {t(`componentList:${props.titleMRP}`)}
-              </div>
+                <i key='submit-bom' className='text-primary cursor-pointer p-1 fa fa-cloud-upload-alt' style={{fontSize: '1.2rem'}}/>
+          </div>
 
-              <i  key='show-bom'
-                      className={'cursor-pointer text-primary p-1 fa fa-cog'}
-                      style={{fontSize: '1rem', position: 'absolute', right :'37.0rem'}}
-                      onClick={setupBOM}/>
-
-              <i key='submit-bom' className='text-primary cursor-pointer p-1 fa fa-cloud-upload-alt' style={{fontSize: '1rem', position: 'absolute', right :'35.0rem'}}/>
+         
     
       <Popup 
         trigger = {
           <i key='show-tables' 
-            className='text-primary p-1 fa fa-bars cursor-pointer' 
-            style={{position: 'absolute', right :'3.0rem'}}/>
+            className='text-primary fa fa-bars cursor-pointer' 
+            style={{fontSize: '1.2rem', position: 'absolute', right :'3.0rem'}}/>
         }
         closeOnDocumentClick
         on={'hover'} //['click', 'focus','hover']
@@ -616,8 +616,8 @@ const ComponentListTitle =(props)=>{
           key='selection-language'
           id='#selection-language'
           //type="button"
-          className={'bg-info cursor-pointer text-primary border-0 py-0 px-1 fa fa-language'}
-          style={{'cursor': 'pointer','position':'absolute', 'right':'0'}}/>
+          className={'bg-info cursor-pointer text-primary border-0 ml-auto px-2 fa fa-language'}
+          style={{cursor: 'pointer',fontSize: '1.2rem'}}/>
       }
       closeOnDocumentClick
       on={'hover'} //['click', 'focus','hover']
@@ -627,7 +627,7 @@ const ComponentListTitle =(props)=>{
       contentStyle={{ padding: '0', zIndex : `${styles.bootstrapPopover}`, border: 'none', backgroundColor: `${styles.cciBgColor}`}}
       arrow={true}
       arrowStyle={{backgroundColor: `${styles.cciBgColor}`}}>
-      {/* <div > */}
+  
       <table className='table-sm table-hover m-0'>
         <tbody >
           <tr >
@@ -642,7 +642,6 @@ const ComponentListTitle =(props)=>{
           </tr>
         </tbody>
       </table>
-      {/* </div> */}
      </Popup>
   </div>
   );
@@ -772,7 +771,7 @@ export class CCiLabComponentList extends Component {
 
       this.componentLeftOffset = this.componentTitleLeft;
 
-      this.componentTitleHeight = (titleRect.height/this.state.fontSize)*1.4; //140% of title height, in rem
+      this.componentTitleHeight = (titleRect.height/this.state.fontSize)*4; //title height, in rem
       this.componentTitleTop = (this.componentTitleHeight - titleRect.height/this.state.fontSize)/2; //in rem
 
       this.rootComponentNameWidth = typeof rootComponentName !== "undefined" ?  getTextRect(rootComponentName).width/this.state.fontSize : componentTitleWidth;  //in rem
@@ -1657,7 +1656,7 @@ export class CCiLabComponentList extends Component {
                       https://codepen.io/stevemckinney/pen/WvWrRX */}
                   {/* https://sevenspark.com/diagnosis/z-index-submenu-hidden-behind-content popup menu chip behind d-flex row*/}
 
-                  { this.state.setupBOM ?
+                  {/* don't show sub title { this.state.setupBOM ?
                       <ComponentListSubTitle
                         name='subTitle-BOM-create-component'
                         rateType={this.state.subTitle}
@@ -1674,7 +1673,7 @@ export class CCiLabComponentList extends Component {
                         className={listTitleClassName}
                         positionLeft={this.componentTitleLeft}
                         ratePositionLeft={this.statusTitleLeft}/>
-                   }
+                   } */}
                   {/* https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_Flexible_Box_Layout/Controlling_Ratios_of_Flex_Items_Along_the_Main_Ax */}
                   <div className={'d-flex flex-column cci-flyout-component-list'}
                        style={{ 'height':`${this.componentListHeight}`,

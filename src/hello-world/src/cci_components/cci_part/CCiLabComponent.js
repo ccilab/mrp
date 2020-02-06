@@ -424,10 +424,10 @@ class CCiLabComponent extends Component {
         if ( this.parents.length === 0 || this.children.length !== 0 || this.props.isSetupBOM === false)
         {
           draggableSetting= false;
-          //Component = ( this.currentComponent.displayLogic.selected !== 0 ) ? 'bg-info component_opacity ccilab-component-sticky-top' :' ';
+          //Component = ( this.currentComponent.displayLogic.selected !== 0 ) ? 'bg-info component_selected ccilab-component-sticky-top' :' ';
           // don't stick at top or bottom which prevents configure MRP items
-          //component_opacity affect z-index which blocks editing setup MRP dialog items
-          Component = ( this.currentComponent.displayLogic.selected !== 0 ) ? 'bg-info  ' :' ';
+          //component_selected affect z-index which blocks editing setup MRP dialog items
+          Component = ( this.currentComponent.displayLogic.selected !== 0 ) ? ' component_selected' :' ';
 
           if( this.currentComponent.displayLogic.selected )
           {
@@ -440,11 +440,11 @@ class CCiLabComponent extends Component {
         else
         {
             // draggable for elements bellow the very top one, if use has the permission (#todo need to implement the check)inline-menu_sticky_horizontal inline-menu_sticky_horizontal inline-menu_sticky_horizontal
-            // Component =  this.currentComponent.displayLogic.selected > 0 ? 'bg-info component_opacity ccilab-component-sticky-top ' + (this.permissionEnabled? ' move':' ' ):
-            //            this.currentComponent.displayLogic.selected < 0 ? 'bg-info component_opacity ccilab-component-sticky-bottom ' + (this.permissionEnabled? ' move':' ' ):' ';
-            //component_opacity affect z-index which blocks editing setup MRP dialog items
-            Component =  this.currentComponent.displayLogic.selected > 0 ? 'bg-info  ' + ( this.permissionEnabled.includes('setup-bom')? ' move ':' ' ):
-                       this.currentComponent.displayLogic.selected < 0 ? 'bg-info  ' + (this.permissionEnabled.includes('setup-bom')? ' move ':' ' ):' ';
+            // Component =  this.currentComponent.displayLogic.selected > 0 ? 'bg-info component_selected ccilab-component-sticky-top ' + (this.permissionEnabled? ' move':' ' ):
+            //            this.currentComponent.displayLogic.selected < 0 ? 'bg-info component_selected ccilab-component-sticky-bottom ' + (this.permissionEnabled? ' move':' ' ):' ';
+            //component_selected affect z-index which blocks editing setup MRP dialog items
+            Component =  this.currentComponent.displayLogic.selected > 0 ? 'component_selected  ' + ( this.permissionEnabled.includes('setup-bom')? ' move ':' ' ):
+                       this.currentComponent.displayLogic.selected < 0 ? 'component_selected  ' + (this.permissionEnabled.includes('setup-bom')? ' move ':' ' ):' ';
 
             draggableSetting = ( this.permissionEnabled && this.currentComponent.displayLogic.selected !== 0 &&  this.parents.length !== 0 )? 'true':'false';
 
@@ -480,7 +480,7 @@ class CCiLabComponent extends Component {
             // {/* shift the child components to the right */}
             // {/* tag's id is used to handle drop event*/}
             <div id={`${this.currentComponent.displayLogic.key}`}
-                // 'bg-info component_opacity ccilab-component-sticky-top '
+                // 'bg-info component_selected ccilab-component-sticky-top '
                 className={`${Component}`}
                 style={componentStyle}
                 draggable={`${draggableSetting}`}

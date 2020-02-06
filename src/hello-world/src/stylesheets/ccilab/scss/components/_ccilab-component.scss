@@ -65,9 +65,8 @@
   -ms-filter: opacity(80%);
 }
 
-.component_opacity{
-  filter:opacity(70%);
-  -ms-filter: opacity(70%);
+.component_selected{
+  background-color:$cci-selected-blue;
 } 
 
 
