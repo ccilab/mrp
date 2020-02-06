@@ -1,5 +1,5 @@
 
-import React, { Component } from "react";
+import React, { Component, useState } from "react";
 
 // Import a pre-configured instance of i18next
 // https://github.com/ccilab/react-i18next/tree/master/example/react
@@ -505,12 +505,19 @@ const ComponentListTitle =(props)=>{
   // https://stackoverflow.com/questions/17737182/how-can-i-overlay-a-number-on-top-of-a-fontawesome-glyph
   const { t, i18n } = useTranslation(['componentList','commands'], {useSuspense: false});
 
+  const [fontWeightProgress, setFontWeightProgress] = useState('bold');
+  const [fontWeightSetupMRP, setFontWeightSetupMRP] = useState('normal');
+
   const setupBOM=(e)=>{
+    setFontWeightProgress('normal');
+    setFontWeightSetupMRP('bold');
     props.changeBOMHandler(true, 'subTitle-BOM-data')
   }
 
   const showProgress=(e)=>{
-    props.changeBOMHandler(false, 'subTitle-Progress-status')
+    setFontWeightProgress('bold');
+    setFontWeightSetupMRP('normal');
+    props.changeBOMHandler(false, 'subTitle-Progress-status');
   }
 
   const languageChangeHandler=(language)=>(e)=>{
@@ -537,32 +544,32 @@ const ComponentListTitle =(props)=>{
                   fontFamily: `${fontFamily}`, 
                   fontWeight: 'normal'}}>
 
-        <div  id='title-name-progress' 
-              className={`${props.titleClassName} cursor-pointer`} 
-              style={{fontSize: '1rem', position: 'absolute', right :'50.0rem'}}
-              onClick={showProgress}>
-                {t(`componentList:${props.titleProgress}`)}
-        </div>
+          <div  id='title-name-progress' 
+                      className={`${props.titleClassName} cursor-pointer`} 
+                      style={{fontSize: '1rem', fontWeight: `${fontWeightProgress}`, position: 'absolute', right :'53.0rem'}}
+                      onClick={showProgress}>
+                        {t(`componentList:${props.titleProgress}`)}
+                </div>
 
-        <i key='show-progress'
-                className={'cursor-pointer text-primary p-1 fa fa-chart-line'}
-                style={{fontSize: '1rem', position: 'absolute', right :'48.0rem'}}
-                onClick={showProgress}/>
+                <i key='show-progress'
+                        className={'cursor-pointer text-primary p-1 fa fa-chart-line'}
+                        style={{fontSize: '1rem', position: 'absolute', right :'50.5rem'}}
+                        onClick={showProgress}/>
 
-        <div  id='title-name-mrp' 
-              className={`${props.titleClassName} cursor-pointer`} 
-              style={{fontSize: '1rem', position: 'absolute', right :'38.0rem'}}
-              onClick={setupBOM}> 
-              {t(`componentList:${props.titleMRP}`)}
-        </div>
+              <div  id='title-name-mrp' 
+                    className={`${props.titleClassName} cursor-pointer`} 
+                    style={{fontSize: '1rem', fontWeight: `${fontWeightSetupMRP}`, position: 'absolute', right :'39.0rem'}}
+                    onClick={setupBOM}> 
+                    {t(`componentList:${props.titleMRP}`)}
+              </div>
 
-        <i  key='show-bom'
-                className={'cursor-pointer text-primary p-1 fa fa-cog'}
-                style={{fontSize: '1rem', position: 'absolute', right :'35.0rem'}}
-                onClick={setupBOM}/>
+              <i  key='show-bom'
+                      className={'cursor-pointer text-primary p-1 fa fa-cog'}
+                      style={{fontSize: '1rem', position: 'absolute', right :'37.0rem'}}
+                      onClick={setupBOM}/>
 
-        <i key='submit-bom' className='text-primary cursor-pointer p-1 fa fa-cloud-upload-alt' style={{fontSize: '1rem', position: 'absolute', right :'25.0rem'}}/>
-
+              <i key='submit-bom' className='text-primary cursor-pointer p-1 fa fa-cloud-upload-alt' style={{fontSize: '1rem', position: 'absolute', right :'35.0rem'}}/>
+    
       <Popup 
         trigger = {
           <i key='show-tables' 
