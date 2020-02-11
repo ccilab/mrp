@@ -555,12 +555,7 @@ class CCiLabComponent extends Component {
                     />
                   :
                   <span>
-                    <SetupBOM
-                      component={this.currentComponent}
-                      updateSubTitle={this.props.changeMRPTitle}
-                      updateTable={this.props.updateTableHandler}
-                      updateComponent={this.props.updateComponentHandler}/>
-                    
+                      <SetupBOM component={this.currentComponent}  updateSubTitle={this.props.changeMRPTitle}  updateTable={this.props.updateTableHandler}  updateComponent={this.props.updateComponentHandler}/>
                       <SetupPDP component={this.currentComponent} updateSubTitle={this.props.changeMRPTitle}  updateTable={this.props.updateTableHandler}/>
                       <SetupIRF component={this.currentComponent} updateSubTitle={this.props.changeMRPTitle}  updateTable={this.props.updateTableHandler}/>
                       <SetupOP component={this.currentComponent} updateSubTitle={this.props.changeMRPTitle}  updateTable={this.props.updateTableHandler}/>

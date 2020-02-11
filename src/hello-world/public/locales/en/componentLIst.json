@@ -10,6 +10,6 @@
     "show-progress" : "Show production progress",
     "bom-table" : "BOM Report",
     "mps-table" : "MPS Report",
+    "cost-table" : "Cost Report",
     "sys-table" : "System Info"
-
 }

@@ -589,17 +589,22 @@ const ComponentListTitle =(props)=>{
             <tbody>
               <tr>
                 <td>
-                  <span key='sysInfo-table'  className={'cursor-pointer  p-1 m-0 text-info'} style={{fontSize: '0.7rem'}} onClick={tableChangeHandler(tables.sysInfo)}>{t('componentList:sys-table')}</span>
+                  <span key='sysInfo-table'  className={'cursor-pointer  p-1 m-0 text-info'} style={{fontSize: '0.8em'}} onClick={tableChangeHandler(tables.sysInfo)}>{t('componentList:sys-table')}</span>
                 </td>
               </tr>
               <tr>
                 <td>
-                  <span key='bom-table'  className={'cursor-pointer p-1 m-0 text-info'} style={{fontSize: '0.7rem'}} onClick={tableChangeHandler(tables.bom)}>{t('componentList:bom-table')} </span>
+                  <span key='bom-table'  className={'cursor-pointer p-1 m-0 text-info'} style={{fontSize: '0.8em'}} onClick={tableChangeHandler(tables.bom)}>{t('componentList:bom-table')} </span>
                 </td>
               </tr>
               <tr>
                 <td>
-                <span key='mps-table'  className={'cursor-pointer p-1 m-0 text-info'} style={{fontSize: '0.7rem'}} onClick={tableChangeHandler(tables.mps)}>{t('componentList:mps-table')}</span>
+                <span key='mps-table'  className={'cursor-pointer p-1 m-0 text-info'} style={{fontSize: '0.8em'}} onClick={tableChangeHandler(tables.mps)}>{t('componentList:mps-table')}</span>
+                </td>
+              </tr>
+              <tr>
+                <td>
+                <span key='mps-table'  className={'cursor-pointer p-1 m-0 text-info'} style={{fontSize: '0.8em'}} onClick={tableChangeHandler(tables.cost)}>{t('componentList:cost-table')}</span>
                 </td>
               </tr>
             </tbody>
@@ -647,19 +652,19 @@ const ComponentListTitle =(props)=>{
   );
 }
 
-const ComponentListSubTitle = (props)=>{
-  const { t } = useTranslation('componentList', {useSuspense: false});
-  return (
-    <div className='d-flex align-items-center fa'
-        style={{ 'height': `${props.height}rem`, 'width': `${props.width}`, backgroundColor: `${styles.cciBgColor}`, fontFamily: `${fontFamily}`, fontWeight: 'normal' }}>
-        <span id='subTitle-name' className={props.className} style={{'position':'relative',  'left':`${props.positionLeft}rem`, fontSize: '0.95rem'}}>{t(`componentList:${props.name}`)}</span>
-        <span id='subTitle-type' className={props.className} style={{'position':'relative', 'left':`${props.ratePositionLeft}rem`, fontSize: '0.95rem'}}>{t([`componentList:${props.rateType}`, `commands:${props.rateType}`])}
-        </span>
-        {/* #todo - make title editable by user */}
-        {/* <a id='subTitle-edit' href='#edit-title' className='border-0 text-primary text-nowrap p-0 nav-link fa fa-edit' style={{'position':'absolute', 'right':'0'}}></a> */}
-    </div>
-  );
-}
+// const ComponentListSubTitle = (props)=>{
+//   const { t } = useTranslation('componentList', {useSuspense: false});
+//   return (
+//     <div className='d-flex align-items-center fa'
+//         style={{ 'height': `${props.height}rem`, 'width': `${props.width}`, backgroundColor: `${styles.cciBgColor}`, fontFamily: `${fontFamily}`, fontWeight: 'normal' }}>
+//         <span id='subTitle-name' className={props.className} style={{'position':'relative',  'left':`${props.positionLeft}rem`, fontSize: '0.95rem'}}>{t(`componentList:${props.name}`)}</span>
+//         <span id='subTitle-type' className={props.className} style={{'position':'relative', 'left':`${props.ratePositionLeft}rem`, fontSize: '0.95rem'}}>{t([`componentList:${props.rateType}`, `commands:${props.rateType}`])}
+//         </span>
+//         {/* #todo - make title editable by user */}
+//         {/* <a id='subTitle-edit' href='#edit-title' className='border-0 text-primary text-nowrap p-0 nav-link fa fa-edit' style={{'position':'absolute', 'right':'0'}}></a> */}
+//     </div>
+//   );
+// }
 
 
 export class CCiLabComponentList extends Component {

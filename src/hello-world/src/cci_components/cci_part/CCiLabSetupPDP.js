@@ -29,7 +29,7 @@ const _initializeMPS=()=>{
 export const SetupPDP=(props)=>{
   const { t } = useTranslation('commands', {useSuspense: false});
   
-  const _PDPIconClassName = 'cursor-pointer text-primary border-0 p-1 fa fw fa-edit' + (props.component.displayLogic.selected ? ' bg-info' : ' ');
+  const _PDPIconClassName = 'cursor-pointer text-primary border-0 p-1 fa fw fa-edit' + (props.component.displayLogic.selected ? ' component_selected' : ' ');
 
 
   const [event, setEvent] = useState('hover'); // 'hover' is the initial state value
@@ -223,9 +223,8 @@ export const SetupPDP=(props)=>{
             id={`#component-${props.component.displayLogic.key}`}
             type="icon"
             onClick={setEventState}
-            // 'cursor-pointer text-primary border-0 py-0 px-2 fa fw fa-edit' + (props.component.displayLogic.selected ? ' bg-info' : ' ');
-            className={`${_PDPIconClassName}`}
-            style={{backgroundColor: `${styles.cciBgColor}`}}/>
+            // 'cursor-pointer text-primary border-0 py-0 px-2 fa fw fa-edit' + (props.component.displayLogic.selected ? ' component_selected' : ' ');
+            className={`${_PDPIconClassName}`}/>
         }
           closeOnDocumentClick={false}
           on={event}
@@ -246,8 +245,7 @@ export const SetupPDP=(props)=>{
             id={`#component-${props.component.displayLogic.key}`}
             type="icon"
             // _PDPIconClassName = 'cursor-pointer text-primary border-0 py-0 px-2 fa fw fa-edit' + (props.component.displayLogic.selected ? ' bg-info' : ' ');
-            className={`${_PDPIconClassName}`}
-            style={{backgroundColor: `${styles.cciBgColor}`}}/>
+            className={`${_PDPIconClassName}`}/>
         }
           closeOnDocumentClick={false}
           on={event}

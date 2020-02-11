@@ -47,6 +47,13 @@ const MPSTableHeader=(props)=>{
         setApprovedName(extra.approvedBy);
         sessionStorage.setItem( `${component.displayLogic.key}_${component.businessLogic.name}_bom_extra`, JSON.stringify( extra ));
     }
+    return (
+        <tbody>
+            <tr>
+    <th className='align-middle'>{}:</th>
+            </tr>
+        </tbody>
+    )
 
 }
 

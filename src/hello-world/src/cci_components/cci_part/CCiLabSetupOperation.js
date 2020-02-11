@@ -20,7 +20,7 @@ import { RadioInput } from './CCiLabRadioInput';
 export const SetupOP=(props)=>{
   const { t } = useTranslation('commands', {useSuspense: false});
   
-  const _className = 'cursor-pointer text-primary border-0 p-1 fa fw fa-edit' + (props.component.displayLogic.selected ? ' bg-info' : ' ');
+  const _className = 'cursor-pointer text-primary border-0 p-1 fa fw fa-edit' + (props.component.displayLogic.selected ? ' component_selected' : ' ');
 
   const [event, setEvent] = useState('hover'); // '' is the initial state value
 
@@ -292,9 +292,8 @@ export const SetupOP=(props)=>{
             id={`#component-${props.component.displayLogic.key}`}
             type="icon"
             onClick={setEventState}
-            // 'cursor-pointer text-primary border-0 py-0 px-2 fa fw fa-edit' + (props.component.displayLogic.selected ? ' bg-info' : ' ');
-            className={`${_className}`}
-            style={{backgroundColor: `${styles.cciBgColor}`}}/>
+            // 'cursor-pointer text-primary border-0 py-0 px-2 fa fw fa-edit' + (props.component.displayLogic.selected ? ' component_selected' : ' ');
+            className={`${_className}`}/>
         }
           closeOnDocumentClick={false}
           on={event}
@@ -314,9 +313,8 @@ export const SetupOP=(props)=>{
             key={`component-${props.component.displayLogic.key}`}
             id={`#component-${props.component.displayLogic.key}`}
             type="icon"
-            // 'cursor-pointer text-primary border-0 py-0 px-2 fa fw fa-edit' + (props.component.displayLogic.selected ? ' bg-info' : ' ');
-            className={`${_className}`}
-            style={{backgroundColor: `${styles.cciBgColor}`}}/>
+            // 'cursor-pointer text-primary border-0 py-0 px-2 fa fw fa-edit' + (props.component.displayLogic.selected ? ' component_selected' : ' ');
+            className={`${_className}`}/>
         }
           closeOnDocumentClick={false}
           on={event}

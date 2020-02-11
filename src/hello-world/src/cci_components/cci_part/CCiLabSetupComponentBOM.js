@@ -43,19 +43,6 @@ const initializeBOMCore=()=>{
    core.unitOfMeasure=''; // may doesn't have unit
    core.description='';
    core.note='';
-  //  core.requiredQty= null; //required quantity of component/part
-  //  core.startDate=null;
-  //  core.completeDate=null;
-  //  core.scrapRate=null;    // in %, need /100 when uses it
-  //  core.procurementType=null;  //'InHouse'(to produce production order), 'Purchase'(to produce purchase order)
-  //  core.warehouse=null;
-  //  core.leadTime=null;
-  //  core.workshop=null;
-  //  core.supplier=null;
-  //  core.supplierPartNumber=null;
-  //  core.requiredQtyPerShift=null;  // required quantity for per shift per run
-  //  core.shiftCount=1;         // how many different shifts are needed
-  //  core.sameShiftRunCount=1;  //same shift runs how many times
    return core;
 }
 
@@ -79,7 +66,7 @@ const initializeBOMExtra=()=>{
 export const SetupBOM=(props)=>{
   const { t } = useTranslation('commands', {useSuspense: false});
   
-  const _className = 'cursor-pointer text-primary border-0 p-1 fa fw fa-edit' + (props.component.displayLogic.selected ? ' bg-info' : ' ');
+  const _className = 'cursor-pointer text-primary border-0 p-1 fa fw fa-edit' + (props.component.displayLogic.selected ? ' component_selected' : ' ');
 
   const [event, setEvent] = useState('hover'); // '' is the initial state value
 
@@ -214,8 +201,7 @@ export const SetupBOM=(props)=>{
             type="icon"
             onClick={setEventState}
             // 'cursor-pointer text-primary border-0 py-0 px-2 fa fw fa-edit' + (props.component.displayLogic.selected ? ' bg-info' : ' ');
-            className={`${_className}`}
-            style={{backgroundColor: `${styles.cciBgColor}`}}/>
+            className={`${_className}`}/>
         }
           closeOnDocumentClick={false}
           on={event}

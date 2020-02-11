@@ -5,10 +5,11 @@ export const tables = {
     sysInfo: 'sysInfoTbl',
     mps: 'mpsTable',
     bom: 'bomTable',
+    cost: 'costTable',
     productionOrder: 'productionOrderTable',
     purchaseOrder: 'purchaseOrderTable',
     materialOrder:  'materialPlanTable',
-    assetUsage:  'assetUsageTable'
+    resourceUsage:  'resourceUsageTable'
   }
 
 export const timePeriod = {
