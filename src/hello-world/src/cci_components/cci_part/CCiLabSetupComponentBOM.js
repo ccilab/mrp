@@ -103,11 +103,17 @@ export const SetupBOM=(props)=>{
 
               sessionStorage.removeItem(`${props.component.displayLogic.key}_${originComponent.businessLogic.name}_businessLogic`);
               sessionStorage.setItem( `${component.displayLogic.key}_${component.businessLogic.name}_businessLogic`, JSON.stringify( component.businessLogic ));
+
+              sessionStorage.removeItem(`${props.component.displayLogic.key}_${originComponent.businessLogic.name}_bom_extra`);
+              sessionStorage.setItem( `${component.displayLogic.key}_${component.businessLogic.name}_bom_extra`, JSON.stringify( component.bom.extra ));
+
+              sessionStorage.removeItem(`${props.component.displayLogic.key}_${originComponent.businessLogic.name}_mps`);
+              sessionStorage.setItem( `${component.displayLogic.key}_${component.businessLogic.name}_mps`, JSON.stringify( component.mps ));
+
           }
           else{
-             sessionStorage.setItem( `${component.displayLogic.key}_${component.businessLogic.name}_bom_core`, JSON.stringify( component.bom.core ))
-      }
-         ;
+             sessionStorage.setItem( `${component.displayLogic.key}_${component.businessLogic.name}_bom_core`, JSON.stringify( component.bom.core ));
+          }
       }
       props.updateTable();
   }
@@ -222,8 +228,7 @@ export const SetupBOM=(props)=>{
             id={`#component-${props.component.displayLogic.key}`}
             type="icon"
             // 'cursor-pointer text-primary border-0 py-0 px-2 fa fw fa-edit' + (props.component.displayLogic.selected ? ' bg-info' : ' ');
-            className={`${_className}`}
-            style={{backgroundColor: `${styles.cciBgColor}`}}/>
+            className={`${_className}`}/>
         }
           closeOnDocumentClick={false}
           on={event}

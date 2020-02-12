@@ -79,6 +79,8 @@ const getChildren=( parentComponent )=>{
   let availablePDPKeys=[];
   let availableIRFKeys=[];
   let availableOpKeys=[];
+  let availableBomExtraKeys=[];
+  let availableMPSkeys=[];
 
 
   let childBusinessLogicKeys=['_businessLogic'];  //parentComponent === 'undefined'
@@ -131,6 +133,21 @@ const getChildren=( parentComponent )=>{
     {
       availableOpKeys.push( anyKey );
     }
+
+    if( anyKey.includes('_bom_extra') && 
+    ( childBusinessLogicKeys[0] === '_businessLogic' || childBusinessLogicKeys.find( key=>(anyKey.includes(key) ) ) )&&
+      availableBomExtraKeys.filter(key => (key === anyKey)).length === 0 )
+    {
+      availableBomExtraKeys.push( anyKey );
+    }
+
+    
+    if( anyKey.includes('_mps') && 
+      ( childBusinessLogicKeys[0] === '_businessLogic' || childBusinessLogicKeys.find( key=>(anyKey.includes(key) ) ) )&&
+      availableMPSkeys.filter(key => (key === anyKey)).length === 0 )
+    {
+      availableMPSkeys.push( anyKey );
+    }
   }
 
   const findSmallerKey=( firstEl, secondEl )=>{
@@ -143,6 +160,8 @@ const getChildren=( parentComponent )=>{
   let availableSortedPDPKeys = availablePDPKeys.sort( findSmallerKey );
   let availableSortedIRFKeys = availableIRFKeys.sort( findSmallerKey );
   let availableSortedOpKeys = availableOpKeys.sort( findSmallerKey );
+  let availableSortedBomExtraKeys = availableBomExtraKeys.sort( findSmallerKey);
+  let availableSortedMpsKeys = availableMPSkeys.sort( findSmallerKey );
 
   const populateComponentObjects=( givenBusinessLogicKey )=>{
     let givenComponent = {};
@@ -168,6 +187,15 @@ const getChildren=( parentComponent )=>{
     let opKey = availableSortedOpKeys.find( (Key)=>{return  parseInt(Key, 10) === componentKey } )
     let op = typeof opKey !== 'undefined' ? JSON.parse(sessionStorage.getItem(opKey)) : 'undefined';
     givenComponent.op = op;
+
+    let bomExtraKey = availableSortedBomExtraKeys.find( (Key)=>{return  parseInt(Key, 10) === componentKey } )
+    let extra = typeof bomExtraKey !== 'undefined' ? JSON.parse(sessionStorage.getItem(bomExtraKey)) : 'undefined';
+    givenComponent.bom.extra = extra;
+
+    let mpsKey = availableSortedMpsKeys.find( (Key)=>{return  parseInt(Key, 10) === componentKey } )
+    let mps = typeof opKey !== 'undefined' ? JSON.parse(sessionStorage.getItem(mpsKey)) : 'undefined';
+    givenComponent.mps = mps;
+
     return givenComponent;
   }
 
@@ -1184,6 +1212,8 @@ export class CCiLabComponentList extends Component {
       sessionStorage.removeItem( `${deletedComponent.displayLogic.key}_${deletedComponent.businessLogic.name}_pdp`);
       sessionStorage.removeItem( `${deletedComponent.displayLogic.key}_${deletedComponent.businessLogic.name}_irf`);
       sessionStorage.removeItem( `${deletedComponent.displayLogic.key}_${deletedComponent.businessLogic.name}_op`);
+      sessionStorage.removeItem(`${deletedComponent.displayLogic.key}_${deletedComponent.businessLogic.name}_bom_extra`);
+      sessionStorage.removeItem(`${deletedComponent.displayLogic.key}_${deletedComponent.businessLogic.name}_mps`);
      
 
       filteredGreetings.forEach( (item)=>{ setComponentSelected(item, parentComponent.displayLogic.key) });

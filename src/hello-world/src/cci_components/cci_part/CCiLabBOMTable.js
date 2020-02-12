@@ -21,12 +21,12 @@ const BOMTableHeader=(props)=>{
 
     let customerOrderNumber='';
 
-    let bomApprovedBy={givenName:'', familyName:''}; //first name, last name
-    const [approvedName, setApprovedName] = useState( bomApprovedBy )
+    let approvedBy={givenName:'', familyName:''}; //first name, last name
+    const [approvedName, setApprovedName] = useState( approvedBy )
 
     const initializeBomExtra=()=>{
         let extra={};
-        extra.approvedBy=bomApprovedBy;  //first name, family name
+        extra.approvedBy=approvedBy;  //first name, family name
         extra.recordDateTime=null;
     
         return extra;
@@ -127,7 +127,7 @@ const BOMTableHeader=(props)=>{
         imgName = setRootImagePath(componentList);
         customerOrderName = getCustomerName(componentList);
         customerOrderNumber= getOrderNumber(componentList);
-        bomApprovedBy = getBOMApprovedAuthor(componentList);
+        approvedBy = getBOMApprovedAuthor(componentList);
     }
     else
     {
@@ -146,7 +146,7 @@ const BOMTableHeader=(props)=>{
                         <UserNameInput 
                         title='updated-by-user'
                         mrpInputType='component'
-                        value={bomApprovedBy}
+                        value={approvedBy}
                         component={rootElement}
                         handler={setUpdatedBy}
                         updateComponent={props.updateComponent}/>
@@ -243,7 +243,7 @@ const ComponentRow=(props)=>{
          } );
     }
 
-    const saveBomExtra=(component)=>{
+    const saveBomCore=(component)=>{
         sessionStorage.setItem( `${component.displayLogic.key}_${component.businessLogic.name}_bom_core`, JSON.stringify( component.bom.core ));
 
     }
@@ -271,7 +271,7 @@ const ComponentRow=(props)=>{
             }
             if( option === 'description' || option === 'note')
             {
-                saveBomExtra(component);
+                saveBomCore(component);
             }
         }
     }
@@ -299,7 +299,7 @@ const ComponentRow=(props)=>{
             }
             if( option === 'description' || option === 'note')
             {
-                saveBomExtra(component);
+                saveBomCore(component);
             }
         }
     }
