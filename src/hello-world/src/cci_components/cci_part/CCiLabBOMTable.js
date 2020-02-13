@@ -3,7 +3,7 @@ import styles from "./../../dist/css/ccilab-component-list.css"
 
 
 import { useTranslation } from 'react-i18next';
-import {getRandomInt, tables } from "./CCiLabUtility";
+import {getRandomInt, tables, isValidString } from "./CCiLabUtility";
 
 import {UserNameInput} from "./CCiLabUserNameInput"
 import {DateInput} from "./CCiLabDateInput"
@@ -22,12 +22,15 @@ const BOMTableHeader=(props)=>{
     let customerOrderNumber='';
 
     let approvedBy={givenName:'', familyName:''}; //first name, last name
+
+    let approvedDate= new Date();
+
     const [approvedName, setApprovedName] = useState( approvedBy )
 
     const initializeBomExtra=()=>{
         let extra={};
         extra.approvedBy=approvedBy;  //first name, family name
-        extra.recordDateTime=null;
+        extra.approvedDate=null;
     
         return extra;
     }
@@ -47,6 +50,17 @@ const BOMTableHeader=(props)=>{
 
         setApprovedName(extra.approvedBy);
         sessionStorage.setItem( `${component.displayLogic.key}_${component.businessLogic.name}_bom_extra`, JSON.stringify( extra ));
+    }
+
+    const setModifyDate=(id, modifiedDate, component )=>{
+        let extra = JSON.parse(sessionStorage.getItem(`${component.displayLogic.key}_${component.businessLogic.name}_bom_extra`)) || initializeBomExtra();
+       
+        if( isValidString( modifiedDate ))
+        {
+            extra.approvedDate=modifiedDate;
+            sessionStorage.setItem( `${component.displayLogic.key}_${component.businessLogic.name}_bom_extra`, JSON.stringify( extra ));
+     
+        }
     }
 
     const setRootImagePath=( components )=>{
@@ -121,6 +135,26 @@ const BOMTableHeader=(props)=>{
         return lName;
     }
 
+    const getApprovedDate=(components)=>{
+        let date = new Date() ;
+        if( typeof components !== 'undefined' && components !== null)
+        {
+            rootElement = components.find( (element)=> { return element.businessLogic.parentIds.length === 0 ; } )
+        
+            if( typeof rootElement !== 'undefined')
+            {
+                let extra = JSON.parse(sessionStorage.getItem(`${rootElement.displayLogic.key}_${rootElement.businessLogic.name}_bom_extra`)) || initializeBomExtra();
+                if( typeof extra !== 'undefined')
+                {
+                    date = (typeof extra.approvedDate !== 'undefined' && extra.approvedDate !==null ) ? extra.approvedDate : date ;
+                }
+            }
+        }
+      
+        return date;
+
+    }
+
     if( typeof rootElement === 'undefined'  )
     {
         componentList = props.components;
@@ -128,6 +162,7 @@ const BOMTableHeader=(props)=>{
         customerOrderName = getCustomerName(componentList);
         customerOrderNumber= getOrderNumber(componentList);
         approvedBy = getBOMApprovedAuthor(componentList);
+        approvedDate = getApprovedDate(componentList);
     }
     else
     {
@@ -164,9 +199,9 @@ const BOMTableHeader=(props)=>{
                         id={0}
                         cellCnt={1}
                         mrpInputType='component'
-                        value={ new Date() }  //need get a default date
+                        value={ approvedDate }  //need get a default date
                         component={rootElement}
-                        handler={props.updateComponent}/>
+                        handler={setModifyDate}/>
                         
                     </td>
                     {/* http://www.htmlhelp.com/feature/art3.htm */}
