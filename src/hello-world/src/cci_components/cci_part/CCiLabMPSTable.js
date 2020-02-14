@@ -3,7 +3,7 @@ import styles from "./../../dist/css/ccilab-component-list.css"
 
 
 import { useTranslation } from 'react-i18next';
-import {getRandomInt, tables } from "./CCiLabUtility";
+import {getRandomInt, tables, isValidString  } from "./CCiLabUtility";
 
 import {UserNameInput} from "./CCiLabUserNameInput"
 import {DateInput} from "./CCiLabDateInput"
@@ -69,21 +69,56 @@ const MPSTableHeader=(props)=>{
 
 }
 
+
+
+//may don't need bom level, consider to show image
+const MPSHeaderRow=()=>{
+    const { t } = useTranslation(['component','mps'], {useSuspense: false});
+    return (
+        <tbody>
+        <tr style={{backgroundColor: `${styles.cciBgColor}`}}>
+            <th colSpan='2' className={`d-flex flex-row text-center`}>
+                {t('component:th-part-name')}
+            </th>
+            <th className='text-center'>{t('component:th-bom-level')}</th>
+            <th className='text-center'>{t('component:th-component-count')}</th>
+            <th className='text-center'>{t('component:part-number')}</th>
+            <th className='text-center'>{t('component:unit-quantity')}</th>
+            <th className='text-center'>{t('component:unit-of-measure')}</th> 
+            <th className='text-center'>{t('component:description')}</th>
+            <th className='text-center'>{t('component:note')}</th>
+        </tr>
+        </tbody>
+    )
+}
+
+const ComponentMPSRow=()=>{
+    return null;
+}
+
 // key={props.tableKey}
 const MPSTable=(props)=>{
     const { t } = useTranslation('component', {useSuspense: false});
     return (
-        <div  className='table-responsive-sm'>
-            <table className='table table-bordered'>
-                <tbody>
-                    <tr>
-                        <th>Master Production Schedule Table</th>
-                    </tr>
-                </tbody>
-                
-            </table>
+        <div  id={tables.bom} className='d-flex flex-row table-responsive-sm' style={{visibility: `${props.showHideTableFlag}`}}>
+        <table className='table table-bordered table-striped table-hover text-nowrap'>
+            <tbody>
+            <tr style={{backgroundColor: `${styles.cciBgColor}`}}>
+                <th className='text-center' colSpan='8' >{t('component:th-table-title')}</th>
+            </tr>
+            </tbody>
+
+            { <MPSTableHeader components = {props.components} />}
+            
+            {<MPSHeaderRow/>}
+
+            <tbody>
+                {<ComponentMPSRow components = {props.components} setComponent={props.setComponent}/>}
+            </tbody>
+                            
            
-        </div>
+        </table>
+   </div>
     )
 }
 

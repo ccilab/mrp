@@ -440,8 +440,6 @@ const BOMTable=(props)=>{
                
             </table>
        </div>
-      
-
     )
 }
 export default BOMTable;

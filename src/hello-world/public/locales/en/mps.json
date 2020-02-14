@@ -1,0 +1,10 @@
+{
+    "th-table-title" : "Master Production Schedule Table",
+    "th-part-name":"Part Name",
+    "th-part-number": "Part Number",
+    "th-designed-by": "Approved By",
+    "th-designed-date": "Approved Date",    
+    "th-product-image": "Product Image",
+    "th-no-image-name": " ... [ Image is not available ]",
+    "th-shift-mode": "Shift mode"
+}
