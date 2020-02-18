@@ -22,6 +22,6 @@
     "assembly-line": "Assembly Line",
     "workshop": "Workshop name",
     "rejection-rate": "Rejection Rate (%)",
-    "scrap-rate": "* Scrap Rate (%)",
+    "scrap-rate": "Scrap Rate (%)",
     "daily-shift": "Normal Shift"
 }

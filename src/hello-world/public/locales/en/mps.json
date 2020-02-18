@@ -6,5 +6,20 @@
     "th-designed-date": "Approved Date",    
     "th-product-image": "Product Image",
     "th-no-image-name": " ... [ Image is not available ]",
-    "th-shift-mode": "Shift mode"
+    "th-shift-mode": "Shift mode",
+    "th-lead-time":"Lead Time",
+    "th-lot-method" : "Lot Method",
+    "th-log-size" : "Lot Size",
+    "th-production-start-date": "Production Starts Date",
+    "th-production-due-date" : "Production Due Date",
+    "th-part-image": "Part Image",
+    "th-planning-horizon" : "Planning Horizon",
+    "th-time-buckets": "Time Buckets",
+    "th-opening-inventory": "Opening Inventory",
+    "th-demand-quantity":"Demand Quantity",
+    "th-scheduled-receipts": "Scheduled Receipts",
+    "th-required-quantity":"Required Quantity",
+    "th-new-inventory-before-production":"Net Inventory",
+    "th-planed-product-quantity":"Planned Product Quantity",
+    "th-planned-order-release":"Planned Order Release"
 }
