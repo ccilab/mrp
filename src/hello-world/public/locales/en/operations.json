@@ -9,7 +9,7 @@
     "max-allowed-employee-per-shift-quantity" : "Maximum allowed employees per shift", 
     "hiring-cost-quantity":"Average hiring cost per employee",
     "dismissal-cost-quantity":"Average dismissal cost per employee",
-    "setup-cost-quantity" : "Production setup cost",
+    "setup-cost-quantity" : "Setup cost",
     "input-warehouse-name" : "source warehouse name",
     "output-warehouse-name" : "component warehouse name",
     "start-product-date": "Production starts date",

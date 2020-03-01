@@ -21,6 +21,9 @@ const BOMTableHeader=(props)=>{
 
     let customerOrderNumber='';
 
+    const headerClass = 'headerClass text-capitalize';
+
+
     let approvedBy={givenName:'', familyName:''}; //first name, last name
 
     let approvedDate= new Date();
@@ -174,10 +177,10 @@ const BOMTableHeader=(props)=>{
         
             <tbody >
                 <tr >
-                    <th className='align-middle' >{t('component:th-product-name')}: </th>
-                    <td className='align-middle' colSpan='2'> {(typeof rootElement !== 'undefined' && rootElement.businessLogic.name !== 'part-name') ? rootElement.businessLogic.name : `${t('component:part-name')}`}</td>
-                    <th className='align-middle'>{t('component:th-designed-by')}:</th>
-                    <td className='align-middle' colSpan='2'>
+                    <th className={`${headerClass}`} >{t('component:th-product-name')}: </th>
+                    <td className={`${headerClass}`} colSpan='2'> {(typeof rootElement !== 'undefined' && rootElement.businessLogic.name !== 'part-name') ? rootElement.businessLogic.name : `${t('component:part-name')}`}</td>
+                    <th className={`${headerClass}`}>{t('component:th-designed-by')}:</th>
+                    <td className={`${headerClass}`} colSpan='2'>
                         <UserNameInput 
                         title='updated-by-user'
                         mrpInputType='component'
@@ -190,10 +193,10 @@ const BOMTableHeader=(props)=>{
                 </tr>
            
                 <tr>
-                    <th className='align-middle'>{t('component:customer-name')}: </th>
-                    <td className='align-middle' colSpan='2'>{customerOrderName}</td>
-                    <th className='align-middle'>{t('component:th-designed-date')}:</th>
-                    <td className='align-middle' colSpan='2'> 
+                    <th className={`${headerClass}`}>{t('component:customer-name')}: </th>
+                    <td className={`${headerClass}`} colSpan='2'>{customerOrderName}</td>
+                    <th className={`${headerClass}`}>{t('component:th-designed-date')}:</th>
+                    <td className={`${headerClass}`} colSpan='2'> 
                         <DateInput
                          title='bom-approved-date'
                         id={0}
@@ -205,17 +208,17 @@ const BOMTableHeader=(props)=>{
                         
                     </td>
                     {/* http://www.htmlhelp.com/feature/art3.htm */}
-                    <td className='align-middle' rowSpan='2' colSpan='2'> <img className='cci-component__img align-self-center'
+                    <td className={`${headerClass}`} rowSpan='2' colSpan='2'> <img className='cci-component__img align-self-center'
                             style={{'height': '10rem', 'width': '10rem'}}
                             src={imgName}
                             alt={ typeof rootElement !== 'undefined' ? rootElement.businessLogic.name : `${t('component:th-no-image-name')}`}/>
                     </td>
                 </tr>
                 <tr>
-                    <th className='align-middle'>{t('component:customer-order-number')}: </th>
-                    <td className='align-middle' colSpan='2'> {customerOrderNumber}</td>
-                    <th className='align-middle'>{t('component:th-component-count')}:</th>
-                    <td className='align-middle' colSpan='2'> {(typeof componentList !== 'undefined' && componentList !== null) ? componentList.length : 0 }</td>
+                    <th className={`${headerClass}`}>{t('component:customer-order-number')}: </th>
+                    <td className={`${headerClass}`} colSpan='2'> {customerOrderNumber}</td>
+                    <th className={`${headerClass}`}>{t('component:th-component-count')}:</th>
+                    <td className={`${headerClass}`} colSpan='2'> {(typeof componentList !== 'undefined' && componentList !== null) ? componentList.length : 0 }</td>
                 </tr>
             </tbody>
     )
@@ -425,7 +428,7 @@ const BOMTable=(props)=>{
             <table className='table table-bordered table-striped table-hover text-nowrap'>
                 <tbody>
                 <tr style={{backgroundColor: `${styles.cciBgColor}`}}>
-                    <th className='text-center' colSpan='8' >{t('component:th-table-title')}</th>
+                    <th className='text-center h2' colSpan='8' >{t('component:th-table-title')}</th>
                 </tr>
                 </tbody>
 

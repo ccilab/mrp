@@ -63,6 +63,9 @@ MRP the process - is stockout driven, not cost driven
   Material Requirements Planning -J-Beasley.pdf
   Ch14-MRP.ppt
   MRP的组成.pdf
+
+// important ref
+https://www.ifm.eng.cam.ac.uk/research/dstools/mrp/
   
 
 The information input into MRP systems comes from three main sources: 

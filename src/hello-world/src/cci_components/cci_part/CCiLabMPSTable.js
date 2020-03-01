@@ -10,60 +10,107 @@ import {DateInput} from "./CCiLabDateInput"
 
 
 const MPSTableHeader=(props)=>{
-    const { t } = useTranslation('component', {useSuspense: false});
+    const { t } = useTranslation(['component','mps', 'operations'], {useSuspense: false});
   
     let componentList;
 
     let imgName='';
-    let rootElement ;
-    let customerOrderName='';
+    let rootElement = props.components.find( (element)=> { return element.businessLogic.parentIds.length === 0 ; } );
+    let partNumber='';
+    let leadTime='';
+    let setupCost='';
+    let shiftMode='';
+    let productStartDate='';
+    let productDueDate='';
+    let lotMethod='';
+    let lotSize='';
 
-    let customerOrderNumber='';
+    const headerClass = 'headerClass text-capitalize';
 
     let approvedBy={givenName:'', familyName:''}; //first name, last name
     const [approvedName, setApprovedName] = useState( approvedBy );
 
     const initializeMPSExtra=()=>{
-        let extra={};
-        extra.approvedBy=approvedBy;  //first name, family name
-        extra.recordDateTime=null;
+        let mps = {};
+        
+        mps.header.approvedBy=approvedBy;  //first name, family name
+        mps.header.recordDateTime=null;
     
-        return extra;
+        return mps;
     }
 
     const setUpdatedBy=(value, component, item)=>{
-        let extra = JSON.parse(sessionStorage.getItem(`${component.displayLogic.key}_${component.businessLogic.name}_mps_extra`)) || initializeMPSExtra();
+        let mps = JSON.parse(sessionStorage.getItem(`${component.displayLogic.key}_${component.businessLogic.name}_mps`)) || initializeMPSExtra();
         switch( item )
         { case 'given-user-name':
-           extra.approvedBy.givenName=value;
+            mps.header.approvedBy.givenName=value;
             break;
         case 'family-user-name':
-            extra.approvedBy.familyName=value;
+            mps.header.approvedBy.familyName=value;
             break;
         default:
             return;
         }
 
-        setApprovedName(extra.approvedBy);
-        sessionStorage.setItem( `${component.displayLogic.key}_${component.businessLogic.name}_mps_extra`, JSON.stringify( extra ));
+        setApprovedName(mps.header.approvedBy);
+        sessionStorage.setItem( `${component.displayLogic.key}_${component.businessLogic.name}_mps`, JSON.stringify( mps ));
     }
     return (
         <tbody>
             <tr>
-                <th className='align-middle'>{t('component:th-part-name')}:</th>
-                <td className='align-middle' colSpan='2'> {(typeof rootElement !== 'undefined' && rootElement.businessLogic.name !== 'part-name') ? rootElement.businessLogic.name : `${t('component:part-name')}`}</td>
-                    <th className='align-middle'>{t('component:th-designed-by')}:</th>
-                    <td className='align-middle' colSpan='2'>
-                        <UserNameInput 
-                        title='updated-by-user'
-                        mrpInputType='component'
-                        value={approvedBy}
-                        component={rootElement}
-                        handler={setUpdatedBy}
-                        updateComponent={props.updateComponent}/>
+                <th className={`${headerClass}`}>{t('component:th-part-name')}:</th>
+                <td className={`${headerClass}`} colSpan='2'> {(typeof rootElement !== 'undefined' && rootElement.businessLogic.name !== 'part-name') ? rootElement.businessLogic.name : `${t('component:part-name')}`}</td>
+                <th className={`${headerClass}`}>{t('component:th-designed-by')}:</th>
+                <td className={`${headerClass}`} colSpan='2'>
+                   
+                </td>
+                <th className='headerClass text-center' colSpan='2'>{t('component:th-product-image')}</th>
+            </tr>
+            
+            <tr>
+                <th className={`${headerClass}`}>{t('component:part-number')}: </th>
+                <td className={`${headerClass}`} colSpan='2'> {partNumber}</td>
+                <th className={`${headerClass}`}>{t('component:th-designed-date')}:</th>
+                <td className={`${headerClass}`} colSpan='2'> 
+                       
+                        
                     </td>
-                    <th className='align-middle text-center' colSpan='2'>{t('component:th-product-image')}</th>
-                </tr>
+                    {/* http://www.htmlhelp.com/feature/art3.htm */}
+                    <td className={`${headerClass}`} rowSpan='5' colSpan='2'> <img className='cci-component__img align-self-center'
+                            style={{'height': '10rem', 'width': '10rem'}}
+                            src={imgName}
+                            alt={ typeof rootElement !== 'undefined' ? rootElement.businessLogic.name : `${t('component:th-no-image-name')}`}/>
+                    </td> 
+            </tr>
+
+            <tr>
+            <th className={`${headerClass}`}>{t('mps:th-lead-time')}: </th>
+                <td className={`${headerClass}`} colSpan='2'> {leadTime}</td>
+                <th className={`${headerClass}`}>{t('operations:setup-cost-quantity')}:</th>
+                <td className={`${headerClass}`} colSpan='2'> {setupCost} </td>
+            </tr>
+
+            <tr>
+                <th className={`${headerClass}`}>{t('mps:th-shift-mode')}: </th>
+                <td className={`${headerClass}`} colSpan='2'> {shiftMode}</td>
+                <th className={`${headerClass}`}>{t('mps:th-planning-horizon')}:</th>
+                <td className={`${headerClass}`} colSpan='2'/> 
+            </tr>
+
+            <tr>
+                <th className={`${headerClass}`}>{t('mps:th-production-start-date')}: </th>
+                <td className={`${headerClass}`} colSpan='2'> {productStartDate}</td>
+                <th className={`${headerClass}`}>{t('mps:th-production-due-date')}:</th>
+                <td className={`${headerClass}`} colSpan='2'> {productDueDate} </td>
+            </tr>
+
+            <tr>
+                <th className={`${headerClass}`}>{t('mps:th-lot-method')}: </th>
+                <td className={`${headerClass}`} colSpan='2'> {lotMethod}</td>
+                <th className={`${headerClass}`}>{t('mps:th-lot-size')}:</th>
+                <td className={`${headerClass}`} colSpan='2'> {lotSize} </td>
+            </tr>
+
         </tbody>
     )
 
@@ -98,13 +145,13 @@ const ComponentMPSRow=()=>{
 
 // key={props.tableKey}
 const MPSTable=(props)=>{
-    const { t } = useTranslation('component', {useSuspense: false});
+    const { t } = useTranslation(['component','mps'], {useSuspense: false});
     return (
         <div  id={tables.bom} className='d-flex flex-row table-responsive-sm' style={{visibility: `${props.showHideTableFlag}`}}>
         <table className='table table-bordered table-striped table-hover text-nowrap'>
             <tbody>
             <tr style={{backgroundColor: `${styles.cciBgColor}`}}>
-                <th className='text-center' colSpan='8' >{t('component:th-table-title')}</th>
+                <th className='text-center h2' colSpan='8' >{t('mps:th-table-title')}</th>
             </tr>
             </tbody>
 
