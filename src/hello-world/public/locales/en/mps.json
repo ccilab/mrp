@@ -14,5 +14,6 @@
     "th-required-quantity":"Required Quantity",
     "th-new-inventory-before-production":"Net Inventory",
     "th-planed-product-quantity":"Planned Product Quantity",
-    "th-planned-order-release":"Planned Order Release"
+    "th-planned-order-release":"Planned Order Release",
+    "th-working-days-in-time-bucket" :"Working Days in Time Bucket"
 }

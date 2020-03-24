@@ -111,6 +111,12 @@ const MPSTableHeader=(props)=>{
                 <td className={`${headerClass}`} colSpan='2'> {lotSize} </td>
             </tr>
 
+            <tr>
+                <th className={`${headerClass}`}>{t('mps:th-time-buckets')}: </th>
+                <td className={`${headerClass}`} colSpan='2'> {lotMethod}</td>
+                <th className={`${headerClass}`}>{t('mps:th-working-days-in-time-bucket')}:</th>
+                <td className={`${headerClass}`} colSpan='2'> {lotSize} </td>
+            </tr>
         </tbody>
     )
 
