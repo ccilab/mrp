@@ -10,7 +10,7 @@ import {DateInput} from "./CCiLabDateInput"
 
 
 const MPSTableHeader=(props)=>{
-    const { t } = useTranslation(['component','mps', 'operations'], {useSuspense: false});
+    const { t } = useTranslation(['component','mps', 'operations','inventoryRecords'], {useSuspense: false});
   
     let componentList;
 
@@ -24,6 +24,10 @@ const MPSTableHeader=(props)=>{
     let productDueDate='';
     let lotMethod='';
     let lotSize='';
+    let inventoryOnHand='';
+    let scrapRate='';
+    let grossRequirements='';
+    let netRequirements='';
 
     const headerClass = 'headerClass text-capitalize';
 
@@ -82,9 +86,15 @@ const MPSTableHeader=(props)=>{
                             alt={ typeof rootElement !== 'undefined' ? rootElement.businessLogic.name : `${t('component:th-no-image-name')}`}/>
                     </td> 
             </tr>
+            <tr>
+                <th className={`${headerClass}`}>{t('mps:th-production-start-date')}: </th>
+                <td className={`${headerClass}`} colSpan='2'> {productStartDate}</td>
+                <th className={`${headerClass}`}>{t('mps:th-production-due-date')}:</th>
+                <td className={`${headerClass}`} colSpan='2'> {productDueDate} </td>
+            </tr>
 
             <tr>
-            <th className={`${headerClass}`}>{t('mps:th-lead-time')}: </th>
+                <th className={`${headerClass}`}>{t('mps:th-lead-time')}: </th>
                 <td className={`${headerClass}`} colSpan='2'> {leadTime}</td>
                 <th className={`${headerClass}`}>{t('operations:setup-cost-quantity')}:</th>
                 <td className={`${headerClass}`} colSpan='2'> {setupCost} </td>
@@ -97,11 +107,19 @@ const MPSTableHeader=(props)=>{
                 <td className={`${headerClass}`} colSpan='2'/> 
             </tr>
 
+
             <tr>
-                <th className={`${headerClass}`}>{t('mps:th-production-start-date')}: </th>
-                <td className={`${headerClass}`} colSpan='2'> {productStartDate}</td>
-                <th className={`${headerClass}`}>{t('mps:th-production-due-date')}:</th>
-                <td className={`${headerClass}`} colSpan='2'> {productDueDate} </td>
+                <th className={`${headerClass}`}>{t('inventoryRecords:inventory-on-hand-quantity')}</th>
+                <td className={`${headerClass}`} colSpan='2'> {inventoryOnHand}</td>
+                <th className={`${headerClass}`}>{t('operations:scrap-rate')}</th>
+                <td className={`${headerClass}`} colSpan='2'> {scrapRate} </td>
+            </tr>
+
+            <tr>
+                <th className={`${headerClass}`}>{t('component:required-quantity')}</th>
+                <td className={`${headerClass}`} colSpan='2'> {grossRequirements}</td>
+                <th className={`${headerClass}`}>{t('component:net-required-quantity')}</th>
+                <td className={`${headerClass}`} colSpan='2'> {netRequirements}</td>
             </tr>
 
             <tr>
@@ -125,20 +143,20 @@ const MPSTableHeader=(props)=>{
 
 
 //may don't need bom level, consider to show image
+// replace _Weekly with time bucket
 const MPSHeaderRow=()=>{
-    const { t } = useTranslation(['component','mps'], {useSuspense: false});
+    const { t } = useTranslation(['component','mps','inventoryRecords'], {useSuspense: false});
     return (
         <tbody>
         <tr style={{backgroundColor: `${styles.cciBgColor}`}}>
-            <th colSpan='2' className={`d-flex flex-row text-center`}>
-                {t('component:th-part-name')}
-            </th>
-            <th className='text-center'>{t('component:th-bom-level')}</th>
-            <th className='text-center'>{t('component:th-component-count')}</th>
-            <th className='text-center'>{t('component:part-number')}</th>
-            <th className='text-center'>{t('component:unit-quantity')}</th>
-            <th className='text-center'>{t('component:unit-of-measure')}</th> 
-            <th className='text-center'>{t('component:description')}</th>
+            <th className='text-center'>{t('mps:th-production-start-date')} </th>
+            <th className='text-center'>{t('mps:th-time-bucket-requirements', JSON.parse('{"TimeBucket":"_Weekly"}'))}</th> 
+            <th className='text-center'>{t('inventoryRecords:scheduled-receipts-date')}</th>
+            <th className='text-center'>{t('inventoryRecords:scheduled-receipts-quantity')}</th>
+            <th className='text-center'>{t('mps:th-time-bucket-requirements', JSON.parse('{"TimeBucket":"_Weekly"}'))}</th> 
+            <th className='text-center'>{t('inventoryRecords:scheduled-receipts-date')}</th>
+            <th className='text-center'>{t('inventoryRecords:scheduled-receipts-quantity')}</th>
+            <th className='text-center'>{t('mps:th-production-due-date')} </th>
             <th className='text-center'>{t('component:note')}</th>
         </tr>
         </tbody>
