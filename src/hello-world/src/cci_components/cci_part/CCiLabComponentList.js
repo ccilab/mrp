@@ -578,110 +578,116 @@ const ComponentListTitle =(props)=>{
                   fontFamily: `${fontFamily}`, 
                   fontWeight: 'normal'}}>
 
-          <div  id='title-name-progress' 
-                className={`${props.titleClassName} pl-3 cursor-pointer`} 
-                style={{fontSize: '1.2rem', fontWeight: `${fontWeightProgress}`, backgroundColor: `${progressHighLight}`}}
-                onClick={showProgress}>
-                  {t(`componentList:${props.titleProgress}`)}
-                  <i key='show-progress'
-                  className={'cursor-pointer text-primary p-1 fa fa-chart-line'}
-                  style={{fontSize: '1.2rem'}}
-                  onClick={showProgress}/>
-          </div>
+        <div  id='title-name-progress' 
+              className={`${props.titleClassName} pl-3 pt-3 cursor-pointer`} 
+              style={{fontSize: '1.2rem', 
+                      fontWeight: `${fontWeightProgress}`, 
+                      backgroundColor: `${progressHighLight}`, 
+                      height: `${props.titleHeight}rem`,
+                      width: `${props.titleWidth}/2`}}
+              onClick={showProgress}>
+                {t(`componentList:${props.titleProgress}`)}
+                <i key='show-progress'
+                className={'cursor-pointer text-primary p-1 fa fa-chart-line'}
+                style={{fontSize: '1.2rem'}}
+                onClick={showProgress}/>
+        </div>
 
-          <div  id='title-name-mrp' 
-                className={`${props.titleClassName} pl-4 cursor-pointer`} 
-                style={{fontSize: '1.2rem', fontWeight: `${fontWeightSetupMRP}`, backgroundColor: `${setupMRPHighLight}`}}
-                onClick={setupBOM}> 
-                {t(`componentList:${props.titleMRP}`)}
-                <i  key='show-bom'
-                  className={'cursor-pointer text-primary p-1 fa fa-cog'}
-                  style={{fontSize: '1.2rem'}}
-                  onClick={setupBOM}/>
-
-                <i key='submit-bom' className='text-primary cursor-pointer p-1 fa fa-cloud-upload-alt' style={{fontSize: '1.2rem'}}/>
-          </div>
-
-         
+        <div  id='title-name-mrp' 
+              className={`${props.titleClassName} pl-4 pt-3 cursor-pointer`} 
+              style={{fontSize: '1.2rem', 
+                      fontWeight: `${fontWeightSetupMRP}`, 
+                      backgroundColor: `${setupMRPHighLight}`, 
+                      height: `${props.titleHeight}rem`,
+                      width: `${props.titleWidth}/2`}}
+              onClick={setupBOM}> 
+              {t(`componentList:${props.titleMRP}`)}
+              <i  key='show-bom'
+                className={'cursor-pointer text-primary p-1 fa fa-cog'}
+                style={{fontSize: '1.2rem'}}
+                onClick={setupBOM}/>
+        </div>
+                
+        <i key='submit-bom' className='text-primary cursor-pointer pl-3 fa fa-cloud-upload-alt' style={{fontSize: '1.2rem'}}/>
     
-      <Popup 
-        trigger = {
-          <i key='show-tables' 
-            className='text-primary fa fa-bars cursor-pointer' 
-            style={{fontSize: '1.2rem', position: 'absolute', right :'3.0rem'}}/>
-        }
-        closeOnDocumentClick
-        on={'hover'} //['click', 'focus','hover']
-        position={ 'bottom right' }
-        mouseLeaveDelay={200}
-        mouseEnterDelay={0}
-        contentStyle={{padding: '0', zIndex : `${styles.bootstrapPopover}`,  border: 'none', backgroundColor: `${styles.cciBgColor}`}}
-        arrow={true}
-        arrowStyle={{backgroundColor: `${styles.cciBgColor}`}}>
-        <div >
+        <Popup 
+          trigger = {
+            <i key='show-tables' 
+              className='text-primary fa fa-bars cursor-pointer' 
+              style={{fontSize: '1.2rem', position: 'absolute', right :'3.0rem'}}/>
+          }
+          closeOnDocumentClick
+          on={'hover'} //['click', 'focus','hover']
+          position={ 'bottom right' }
+          mouseLeaveDelay={200}
+          mouseEnterDelay={0}
+          contentStyle={{padding: '0', zIndex : `${styles.bootstrapPopover}`,  border: 'none', backgroundColor: `${styles.cciBgColor}`}}
+          arrow={true}
+          arrowStyle={{backgroundColor: `${styles.cciBgColor}`}}>
+          <div >
+            <table className='table-sm table-hover m-0'>
+              <tbody>
+                <tr>
+                  <td>
+                    <span key='sysInfo-table'  className={'cursor-pointer  p-1 m-0 text-info'} style={{fontSize: '0.8em'}} onClick={tableChangeHandler(tables.sysInfo)}>{t('componentList:sys-table')}</span>
+                  </td>
+                </tr>
+                <tr>
+                  <td>
+                    <span key='bom-table'  className={'cursor-pointer p-1 m-0 text-info'} style={{fontSize: '0.8em'}} onClick={tableChangeHandler(tables.bom)}>{t('componentList:bom-table')} </span>
+                  </td>
+                </tr>
+                <tr>
+                  <td>
+                  <span key='mps-table'  className={'cursor-pointer p-1 m-0 text-info'} style={{fontSize: '0.8em'}} onClick={tableChangeHandler(tables.mps)}>{t('componentList:mps-table')}</span>
+                  </td>
+                </tr>
+                <tr>
+                  <td>
+                  <span key='mps-table'  className={'cursor-pointer p-1 m-0 text-info'} style={{fontSize: '0.8em'}} onClick={tableChangeHandler(tables.cost)}>{t('componentList:cost-table')}</span>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+        </Popup>
+
+
+        {/* popup menu to change language */}
+        <Popup
+          trigger={
+            <i
+              key='selection-language'
+              id='#selection-language'
+              //type="button"
+              className={'bg-info cursor-pointer text-primary border-0 ml-auto px-2 fa fa-language'}
+              style={{cursor: 'pointer',fontSize: '1.2rem'}}/>
+          }
+          closeOnDocumentClick
+          on={'hover'} //['click', 'focus','hover']
+          position={ 'bottom left' }
+          mouseLeaveDelay={200}
+          mouseEnterDelay={0}
+          contentStyle={{ padding: '0', zIndex : `${styles.bootstrapPopover}`, border: 'none', backgroundColor: `${styles.cciBgColor}`}}
+          arrow={true}
+          arrowStyle={{backgroundColor: `${styles.cciBgColor}`}}>
+      
           <table className='table-sm table-hover m-0'>
-            <tbody>
-              <tr>
+            <tbody >
+              <tr >
                 <td>
-                  <span key='sysInfo-table'  className={'cursor-pointer  p-1 m-0 text-info'} style={{fontSize: '0.8em'}} onClick={tableChangeHandler(tables.sysInfo)}>{t('componentList:sys-table')}</span>
+                  <span key='en'  className={'cursor-pointer p-0 m-0 text-info'} style={{fontSize: '0.7rem'}} onClick={languageChangeHandler('en')}>English</span>
                 </td>
               </tr>
               <tr>
                 <td>
-                  <span key='bom-table'  className={'cursor-pointer p-1 m-0 text-info'} style={{fontSize: '0.8em'}} onClick={tableChangeHandler(tables.bom)}>{t('componentList:bom-table')} </span>
-                </td>
-              </tr>
-              <tr>
-                <td>
-                <span key='mps-table'  className={'cursor-pointer p-1 m-0 text-info'} style={{fontSize: '0.8em'}} onClick={tableChangeHandler(tables.mps)}>{t('componentList:mps-table')}</span>
-                </td>
-              </tr>
-              <tr>
-                <td>
-                <span key='mps-table'  className={'cursor-pointer p-1 m-0 text-info'} style={{fontSize: '0.8em'}} onClick={tableChangeHandler(tables.cost)}>{t('componentList:cost-table')}</span>
+                  <span key='zh-CN' className={'cursor-pointer p-1 m-0 text-info'} style={{fontSize: '0.7rem'}} onClick={languageChangeHandler('zh-CN')}>中文</span>
                 </td>
               </tr>
             </tbody>
           </table>
-        </div>
-
-      </Popup>
-
-
-     {/* popup menu to change language */}
-     <Popup
-      trigger={
-        <i
-          key='selection-language'
-          id='#selection-language'
-          //type="button"
-          className={'bg-info cursor-pointer text-primary border-0 ml-auto px-2 fa fa-language'}
-          style={{cursor: 'pointer',fontSize: '1.2rem'}}/>
-      }
-      closeOnDocumentClick
-      on={'hover'} //['click', 'focus','hover']
-      position={ 'bottom left' }
-      mouseLeaveDelay={200}
-      mouseEnterDelay={0}
-      contentStyle={{ padding: '0', zIndex : `${styles.bootstrapPopover}`, border: 'none', backgroundColor: `${styles.cciBgColor}`}}
-      arrow={true}
-      arrowStyle={{backgroundColor: `${styles.cciBgColor}`}}>
-  
-      <table className='table-sm table-hover m-0'>
-        <tbody >
-          <tr >
-            <td>
-              <span key='en'  className={'cursor-pointer p-0 m-0 text-info'} style={{fontSize: '0.7rem'}} onClick={languageChangeHandler('en')}>English</span>
-            </td>
-          </tr>
-          <tr>
-            <td>
-              <span key='zh-CN' className={'cursor-pointer p-1 m-0 text-info'} style={{fontSize: '0.7rem'}} onClick={languageChangeHandler('zh-CN')}>中文</span>
-            </td>
-          </tr>
-        </tbody>
-      </table>
-     </Popup>
+        </Popup>
   </div>
   );
 }
