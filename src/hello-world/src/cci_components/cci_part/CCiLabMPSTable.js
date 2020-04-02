@@ -80,7 +80,7 @@ const MPSTableHeader=(props)=>{
                         
                     </td>
                     {/* http://www.htmlhelp.com/feature/art3.htm */}
-                    <td className={`${headerClass}`} rowSpan='5' colSpan='2'> <img className='cci-component__img align-self-center'
+                    <td className={`${headerClass}`} rowSpan='8' colSpan='2'> <img className='cci-component__img align-self-center'
                             style={{'height': '10rem', 'width': '10rem'}}
                             src={imgName}
                             alt={ typeof rootElement !== 'undefined' ? rootElement.businessLogic.name : `${t('component:th-no-image-name')}`}/>

@@ -535,16 +535,22 @@ const ComponentListTitle =(props)=>{
 
   const [fontWeightProgress, setFontWeightProgress] = useState('bold');
   const [fontWeightSetupMRP, setFontWeightSetupMRP] = useState('normal');
+  const [progressHighLight, setProgressHighLight] = useState(`${styles.cciBgColor}`); 
+  const [setupMRPHighLight, setSetupMRPHighLight] = useState(''); 
 
   const setupBOM=(e)=>{
     setFontWeightProgress('normal');
+    setProgressHighLight('');
     setFontWeightSetupMRP('bold');
+    setSetupMRPHighLight(`${styles.cciBgColor}`);
     props.changeBOMHandler(true, 'subTitle-BOM-data')
   }
 
   const showProgress=(e)=>{
     setFontWeightProgress('bold');
+    setProgressHighLight(`${styles.cciBgColor}`);
     setFontWeightSetupMRP('normal');
+    setSetupMRPHighLight('');
     props.changeBOMHandler(false, 'subTitle-Progress-status');
   }
 
@@ -574,7 +580,7 @@ const ComponentListTitle =(props)=>{
 
           <div  id='title-name-progress' 
                 className={`${props.titleClassName} pl-3 cursor-pointer`} 
-                style={{fontSize: '1.2rem', fontWeight: `${fontWeightProgress}`}}
+                style={{fontSize: '1.2rem', fontWeight: `${fontWeightProgress}`, backgroundColor: `${progressHighLight}`}}
                 onClick={showProgress}>
                   {t(`componentList:${props.titleProgress}`)}
                   <i key='show-progress'
@@ -585,7 +591,7 @@ const ComponentListTitle =(props)=>{
 
           <div  id='title-name-mrp' 
                 className={`${props.titleClassName} pl-4 cursor-pointer`} 
-                style={{fontSize: '1.2rem', fontWeight: `${fontWeightSetupMRP}`}}
+                style={{fontSize: '1.2rem', fontWeight: `${fontWeightSetupMRP}`, backgroundColor: `${setupMRPHighLight}`}}
                 onClick={setupBOM}> 
                 {t(`componentList:${props.titleMRP}`)}
                 <i  key='show-bom'
