@@ -533,23 +533,23 @@ const ComponentListTitle =(props)=>{
   // https://stackoverflow.com/questions/17737182/how-can-i-overlay-a-number-on-top-of-a-fontawesome-glyph
   const { t, i18n } = useTranslation(['componentList','commands'], {useSuspense: false});
 
-  const [fontWeightProgress, setFontWeightProgress] = useState('bold');
-  const [fontWeightSetupMRP, setFontWeightSetupMRP] = useState('normal');
+  // const [fontWeightProgress, setFontWeightProgress] = useState('bold');
+  // const [fontWeightSetupMRP, setFontWeightSetupMRP] = useState('normal');
   const [progressHighLight, setProgressHighLight] = useState(`${styles.cciBgColor}`); 
   const [setupMRPHighLight, setSetupMRPHighLight] = useState(''); 
 
   const setupBOM=(e)=>{
-    setFontWeightProgress('normal');
+    // setFontWeightProgress('normal');
     setProgressHighLight('');
-    setFontWeightSetupMRP('bold');
+    // setFontWeightSetupMRP('bold');
     setSetupMRPHighLight(`${styles.cciBgColor}`);
     props.changeBOMHandler(true, 'subTitle-BOM-data')
   }
 
   const showProgress=(e)=>{
-    setFontWeightProgress('bold');
+    // setFontWeightProgress('bold');
     setProgressHighLight(`${styles.cciBgColor}`);
-    setFontWeightSetupMRP('normal');
+    // setFontWeightSetupMRP('normal');
     setSetupMRPHighLight('');
     props.changeBOMHandler(false, 'subTitle-Progress-status');
   }
@@ -579,12 +579,11 @@ const ComponentListTitle =(props)=>{
                   fontWeight: 'normal'}}>
 
         <div  id='title-name-progress' 
-              className={`${props.titleClassName} pl-3 pt-3 cursor-pointer`} 
+              className={`${props.titleClassName} px-3 pt-3 cursor-pointer`} 
               style={{fontSize: '1.2rem', 
-                      fontWeight: `${fontWeightProgress}`, 
+                      // fontWeight: `${fontWeightProgress}`, 
                       backgroundColor: `${progressHighLight}`, 
-                      height: `${props.titleHeight}rem`,
-                      width: `${props.titleWidth}/2`}}
+                      height: `${props.titleHeight}rem`}}
               onClick={showProgress}>
                 {t(`componentList:${props.titleProgress}`)}
                 <i key='show-progress'
@@ -594,12 +593,11 @@ const ComponentListTitle =(props)=>{
         </div>
 
         <div  id='title-name-mrp' 
-              className={`${props.titleClassName} pl-4 pt-3 cursor-pointer`} 
+              className={`${props.titleClassName} px-3 pt-3 cursor-pointer`} 
               style={{fontSize: '1.2rem', 
-                      fontWeight: `${fontWeightSetupMRP}`, 
+                      // fontWeight: `${fontWeightSetupMRP}`, 
                       backgroundColor: `${setupMRPHighLight}`, 
-                      height: `${props.titleHeight}rem`,
-                      width: `${props.titleWidth}/2`}}
+                      height: `${props.titleHeight}rem`}}
               onClick={setupBOM}> 
               {t(`componentList:${props.titleMRP}`)}
               <i  key='show-bom'
