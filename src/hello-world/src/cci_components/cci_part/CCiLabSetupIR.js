@@ -47,7 +47,7 @@ export const SetupIRF=(props)=>{
 
   const [event, setEvent] = useState('hover'); // '' is the initial state value
 
-  if( props.component.irf === null || typeof props.component.irf === 'undefined' )
+  if( props.component.irf === null || props.component.irf === 'undefined' )
       {
     props.component.irf = new initializeIRF(props.component);
       }
@@ -63,7 +63,7 @@ export const SetupIRF=(props)=>{
   }
 
   const setIOH=(index, ioh, component)=>{
-    if( typeof component.irf === 'undefined' )
+    if( component.irf === 'undefined' )
       component.irf = new initializeIRF( component );
 
     let {isValid, value} = isValidValue(ioh);
@@ -78,7 +78,7 @@ export const SetupIRF=(props)=>{
   };
 
   const setSRQty=(index, qty, component)=>{
-    if( typeof component.irf === 'undefined' )
+    if( component.irf === 'undefined' )
       component.irf = new initializeIRF( component );
 
       let {isValid, value} = isValidValue(qty);
@@ -101,7 +101,7 @@ export const SetupIRF=(props)=>{
 
     //have to be in-sync with SR Qty
     const setSRDate=(index, completeDate, component)=>{
-      if( typeof component.irf === 'undefined' )
+      if( component.irf === 'undefined' )
         component.irf = new initializeIRF( component );
 
       if( isValidString( completeDate ))
@@ -121,7 +121,7 @@ export const SetupIRF=(props)=>{
     }
 
   const setMaxStock=(index, qty, component)=>{
-    if( typeof component.irf === 'undefined' )
+    if( component.irf === 'undefined' )
     {
       component.irf = new initializeIRF( component );
     }
@@ -139,7 +139,7 @@ export const SetupIRF=(props)=>{
   }
 
   const setSS=(index, qty, component)=>{
-    if( typeof component.irf === 'undefined' )
+    if( component.irf === 'undefined' )
       component.irf = new initializeIRF( component );
 
     let {isValid, value} = isValidValue(qty);
@@ -162,7 +162,7 @@ export const SetupIRF=(props)=>{
   }
 
   const setProcurementType=(index, procurementType, component)=>{
-    if( typeof component.irf === 'undefined' )
+    if( component.irf === 'undefined' )
       component.irf = new initializeIRF( component );
 
     if( isValidString(procurementType) )
@@ -177,7 +177,7 @@ export const SetupIRF=(props)=>{
 
   // followed with unit (days, weeks, months)
   const setLeadTime=(index, qty, timePeriodUnit, component)=>{
-    if( typeof component.irf === 'undefined' )
+    if( component.irf === 'undefined' )
       component.irf = new initializeIRF( component );
 
     let {isValid, value} = isValidValue(qty);
@@ -196,7 +196,7 @@ export const SetupIRF=(props)=>{
 
   //unit in local currency
   const setOtherCostPerUnit=(index, cost, component)=>{
-    if( typeof component.irf === 'undefined' )
+    if( component.irf === 'undefined' )
       component.irf = new initializeIRF( component );
 
     let {isValid, value} = isValidValue(cost);
@@ -211,7 +211,7 @@ export const SetupIRF=(props)=>{
 
 
   const setHoldingCostPerUnit=(index, cost, component)=>{
-    if( typeof component.irf === 'undefined' )
+    if( component.irf === 'undefined' )
       component.irf = new initializeIRF( component );
 
     let {isValid, value} = isValidValue(cost);
@@ -225,7 +225,7 @@ export const SetupIRF=(props)=>{
   }
 
   const setInterest=(index, interest, component)=>{
-    if( typeof component.irf === 'undefined' )
+    if( component.irf === 'undefined' )
       component.irf = new initializeIRF( component );
 
     let {isValid, value} = isValidValue(interest);

@@ -5,8 +5,9 @@ import styles from "./../../dist/css/ccilab-component-list.css"
 import { useTranslation } from 'react-i18next';
 import {getRandomInt, tables, isValidString  } from "./CCiLabUtility";
 
-import {UserNameInput} from "./CCiLabUserNameInput"
-import {DateInput} from "./CCiLabDateInput"
+import {UserNameInput} from './CCiLabUserNameInput'
+import {DateInput} from './CCiLabDateInput'
+import {initializeMPSExtra} from './CCiLabSetupMPS'
 
 
 const MPSTableHeader=(props)=>{
@@ -32,32 +33,25 @@ const MPSTableHeader=(props)=>{
     const headerClass = 'headerClass text-capitalize';
 
     let approvedBy={givenName:'', familyName:''}; //first name, last name
+
     const [approvedName, setApprovedName] = useState( approvedBy );
 
-    const initializeMPSExtra=()=>{
-        let mps = {};
-        
-        mps.header.approvedBy=approvedBy;  //first name, family name
-        mps.header.recordDateTime=null;
-    
-        return mps;
-    }
 
     const setUpdatedBy=(value, component, item)=>{
-        let mps = JSON.parse(sessionStorage.getItem(`${component.displayLogic.key}_${component.businessLogic.name}_mps`)) || initializeMPSExtra();
+        let extra = JSON.parse(sessionStorage.getItem(`${component.displayLogic.key}_${component.businessLogic.name}_mps_extra`)) || initializeMPSExtra();
         switch( item )
         { case 'given-user-name':
-            mps.header.approvedBy.givenName=value;
+            extra.header.approvedBy.givenName=value;
             break;
         case 'family-user-name':
-            mps.header.approvedBy.familyName=value;
+            extra.header.approvedBy.familyName=value;
             break;
         default:
             return;
         }
 
-        setApprovedName(mps.header.approvedBy);
-        sessionStorage.setItem( `${component.displayLogic.key}_${component.businessLogic.name}_mps`, JSON.stringify( mps ));
+        setApprovedName(extra.header.approvedBy);
+        sessionStorage.setItem( `${component.displayLogic.key}_${component.businessLogic.name}_mps_extra`, JSON.stringify( extra ));
     }
     return (
         <tbody>

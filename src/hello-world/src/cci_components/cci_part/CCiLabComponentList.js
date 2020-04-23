@@ -12,8 +12,9 @@ import styles from "./../../dist/css/ccilab-component-list.css"
 import CCiLabComponent from "./CCiLabComponent";
 import DropComponentWarningModal from "./CCiLabDropComponentCheckFailedModal";
 import { setListHeight, setListWidth, getTextRect, tables} from "./CCiLabUtility";
-import {CanEnableInlineMenu, initializeBOM } from './CCiLabSetupComponentBOM';
+import {CanEnableInlineMenu, initializeBOM } from './CCiLabSetupBOM';
 import { initializePDP } from './CCiLabSetupPDP';
+import {initializeMPS} from './CCiLabSetupMPS'
 
 
 // // based on https://github.com/ccilab/react-i18next/blob/master/example/react/src/index.js
@@ -80,7 +81,7 @@ const getChildren=( parentComponent )=>{
   let availableIRFKeys=[];
   let availableOpKeys=[];
   let availableBomExtraKeys=[];
-  let availableMPSkeys=[];
+  let availableMPSExtraKeys=[];
 
 
   let childBusinessLogicKeys=['_businessLogic'];  //parentComponent === 'undefined'
@@ -142,11 +143,11 @@ const getChildren=( parentComponent )=>{
     }
 
     
-    if( anyKey.includes('_mps') && 
+    if( anyKey.includes('_mps_extra') && 
       ( childBusinessLogicKeys[0] === '_businessLogic' || childBusinessLogicKeys.find( key=>(anyKey.includes(key) ) ) )&&
-      availableMPSkeys.filter(key => (key === anyKey)).length === 0 )
+      availableMPSExtraKeys.filter(key => (key === anyKey)).length === 0 )
     {
-      availableMPSkeys.push( anyKey );
+      availableMPSExtraKeys.push( anyKey );
     }
   }
 
@@ -161,7 +162,7 @@ const getChildren=( parentComponent )=>{
   let availableSortedIRFKeys = availableIRFKeys.sort( findSmallerKey );
   let availableSortedOpKeys = availableOpKeys.sort( findSmallerKey );
   let availableSortedBomExtraKeys = availableBomExtraKeys.sort( findSmallerKey);
-  let availableSortedMpsKeys = availableMPSkeys.sort( findSmallerKey );
+  let availableSortedMPSExtraKeys = availableMPSExtraKeys.sort( findSmallerKey );
 
   const populateComponentObjects=( givenBusinessLogicKey )=>{
     let givenComponent = {};
@@ -186,15 +187,17 @@ const getChildren=( parentComponent )=>{
 
     let opKey = availableSortedOpKeys.find( (Key)=>{return  parseInt(Key, 10) === componentKey } )
     let op = typeof opKey !== 'undefined' ? JSON.parse(sessionStorage.getItem(opKey)) : 'undefined';
-    givenComponent.op = op;
+    givenComponent.operation = op;
 
     let bomExtraKey = availableSortedBomExtraKeys.find( (Key)=>{return  parseInt(Key, 10) === componentKey } )
     let extra = typeof bomExtraKey !== 'undefined' ? JSON.parse(sessionStorage.getItem(bomExtraKey)) : 'undefined';
     givenComponent.bom.extra = extra;
 
-    let mpsKey = availableSortedMpsKeys.find( (Key)=>{return  parseInt(Key, 10) === componentKey } )
-    let mps = typeof opKey !== 'undefined' ? JSON.parse(sessionStorage.getItem(mpsKey)) : 'undefined';
-    givenComponent.mps = mps;
+    //derive mps from other properties of given component
+    givenComponent.mps= initializeMPS(givenComponent);
+    let mpsExtraKey = availableSortedMPSExtraKeys.find( (Key)=>{return  parseInt(Key, 10) === componentKey } )
+    let mpsExtra = typeof mpsExtraKey !== 'undefined' ? JSON.parse(sessionStorage.getItem(mpsExtraKey)) : 'undefined';
+    givenComponent.mps.extra = mpsExtra;
 
     return givenComponent;
   }
@@ -1154,6 +1157,7 @@ export class CCiLabComponentList extends Component {
       newComponent.pdp = new initializePDP( newComponent );
       newComponent.irf = new initializeIRF( newComponent );
       newComponent.operation = new initializeOp( newComponent );
+      newComponent.mps = new initializeMPS( newComponent );
       sessionStorage.setItem( `${newComponent.displayLogic.key}_${newComponent.businessLogic.name}_bom_core`, JSON.stringify( newComponent.bom.core ));
       sessionStorage.setItem( `${newComponent.displayLogic.key}_${newComponent.businessLogic.name}_pdp`, JSON.stringify( newComponent.pdp ));
       sessionStorage.setItem( `${newComponent.displayLogic.key}_${newComponent.businessLogic.name}_irf`, JSON.stringify( newComponent.irf ));
@@ -1223,7 +1227,7 @@ export class CCiLabComponentList extends Component {
       sessionStorage.removeItem( `${deletedComponent.displayLogic.key}_${deletedComponent.businessLogic.name}_irf`);
       sessionStorage.removeItem( `${deletedComponent.displayLogic.key}_${deletedComponent.businessLogic.name}_op`);
       sessionStorage.removeItem(`${deletedComponent.displayLogic.key}_${deletedComponent.businessLogic.name}_bom_extra`);
-      sessionStorage.removeItem(`${deletedComponent.displayLogic.key}_${deletedComponent.businessLogic.name}_mps`);
+      sessionStorage.removeItem(`${deletedComponent.displayLogic.key}_${deletedComponent.businessLogic.name}_mps_extra`);
      
 
       filteredGreetings.forEach( (item)=>{ setComponentSelected(item, parentComponent.displayLogic.key) });

@@ -30,7 +30,7 @@ export const CanEnableInlineMenu = ( component )=>{
 export const initializeBOM=( component )=>{
   let bom={};
   bom.core= JSON.parse(sessionStorage.getItem(`${component.displayLogic.key}_${component.businessLogic.name}_bom_core`)) || initializeBOMCore();
-  bom.extra=JSON.parse(sessionStorage.getItem(`${component.displayLogic.key}_${component.businessLogic.name}_bom_extra`)) ||initializeBOMExtra();
+  bom.extra=JSON.parse(sessionStorage.getItem(`${component.displayLogic.key}_${component.businessLogic.name}_bom_extra`)) ||initializeBomExtra();
   return bom;
 }
 
@@ -46,7 +46,7 @@ const initializeBOMCore=()=>{
    return core;
 }
 
-const initializeBOMExtra=()=>{
+export const initializeBomExtra=()=>{
   let extra={};
   extra.SKU='';
   extra.barCode='';
@@ -60,6 +60,8 @@ const initializeBOMExtra=()=>{
   extra.assemblyLine='';
   extra.description='';
   extra.note='';
+  extra.approvedBy= {givenName:'', familyName:''}; //first name, last name;  //first name, family name
+  extra.approvedDate=null;
   return extra;
 };
 
@@ -107,8 +109,8 @@ export const SetupBOM=(props)=>{
               sessionStorage.removeItem(`${props.component.displayLogic.key}_${originComponent.businessLogic.name}_bom_extra`);
               sessionStorage.setItem( `${component.displayLogic.key}_${component.businessLogic.name}_bom_extra`, JSON.stringify( component.bom.extra ));
 
-              sessionStorage.removeItem(`${props.component.displayLogic.key}_${originComponent.businessLogic.name}_mps`);
-              sessionStorage.setItem( `${component.displayLogic.key}_${component.businessLogic.name}_mps`, JSON.stringify( component.mps ));
+              sessionStorage.removeItem(`${props.component.displayLogic.key}_${originComponent.businessLogic.name}_mps_extra`);
+              sessionStorage.setItem( `${component.displayLogic.key}_${component.businessLogic.name}_mps_extra`, JSON.stringify( component.mps.extra ));
 
           }
           else{
@@ -120,7 +122,10 @@ export const SetupBOM=(props)=>{
 
 
 
-  if( props.component.bom === null || typeof props.component.bom === 'undefined' )
+  if( props.component.bom === null || 
+      typeof props.component.bom === 'undefined' ||   
+      props.component.bom.core === 'undefined' || 
+      props.component.bom.extra === 'undefined' ) 
   {
     props.component.bom = new initializeBOM(props.component);
   }
@@ -138,8 +143,11 @@ export const SetupBOM=(props)=>{
   };
 
   const setPartNumber=(index, partNumber, component)=>{
-    if( typeof component.bom === 'undefined' )
+    if( component.bom.core === 'undefined' || component.bom.extra === 'undefined' )
+    {
       component.bom = new initializeBOM( component );
+    }
+   
 
     if( isValidString( partNumber ))
       component.bom.core.partNumber=partNumber;
@@ -152,8 +160,11 @@ export const SetupBOM=(props)=>{
   };
 
   const setUnitQty=(index, unitQty, component)=>{
-    if( typeof component.bom === 'undefined' )
+    if( component.bom.core === 'undefined' || component.bom.extra === 'undefined' )
+    {
       component.bom = new initializeBOM( component );
+    }
+      
 
     let {isValid, value} = isValidValue(unitQty);
 
@@ -167,7 +178,7 @@ export const SetupBOM=(props)=>{
   }
 
   const setUnitOfMeasure=(index, unitOfMeasure, component)=>{
-    if( typeof component.bom === 'undefined' )
+    if( component.bom.core === 'undefined' || component.bom.extra === 'undefined' )
       component.bom = new initializeBOM( component );
 
     component.bom.core.unitOfMeasure=unitOfMeasure;

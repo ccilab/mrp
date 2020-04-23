@@ -8,6 +8,8 @@ import {getRandomInt, tables, isValidString } from "./CCiLabUtility";
 import {UserNameInput} from "./CCiLabUserNameInput"
 import {DateInput} from "./CCiLabDateInput"
 
+import {initializeBomExtra} from "./CCiLabSetupBOM"
+
 
 
 const BOMTableHeader=(props)=>{
@@ -30,16 +32,10 @@ const BOMTableHeader=(props)=>{
 
     const [approvedName, setApprovedName] = useState( approvedBy )
 
-    const initializeBomExtra=()=>{
-        let extra={};
-        extra.approvedBy=approvedBy;  //first name, family name
-        extra.approvedDate=null;
-    
-        return extra;
-    }
+
 
     const setUpdatedBy=(value, component, item)=>{
-        let extra = JSON.parse(sessionStorage.getItem(`${component.displayLogic.key}_${component.businessLogic.name}_bom_extra`)) || initializeBomExtra();
+        let extra = JSON.parse(sessionStorage.getItem(`${component.displayLogic.key}_${component.businessLogic.name}_bom_extra`)) ;
         switch( item )
         { case 'given-user-name':
            extra.approvedBy.givenName=value;

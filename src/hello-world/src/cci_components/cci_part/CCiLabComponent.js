@@ -9,7 +9,7 @@ import {creatHiddenImgInputTag} from "../file_save/CCiLabLocalFileAccess";
 
 import styles from './../../dist/css/ccilab-component.css';
 // import './../../dist/css/popup-menu.css';
-import {SetupBOM} from './CCiLabSetupComponentBOM';
+import {SetupBOM} from './CCiLabSetupBOM';
 import {SetupPDP } from './CCiLabSetupPDP';
 import {SetupIRF} from './CCiLabSetupIR';
 import {SetupOP} from './CCiLabSetupOperation';

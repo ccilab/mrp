@@ -21,6 +21,7 @@ component button:
     component-name_display_display_key: json;
     component-name_bom_core_display_key: json; ( done )
     component-name_bom_extra_display_key: json ( done )
+    component-name_mps_extra_display_key: json ( done); mps values are derived from operation, irf etc
 16) move/delete component needs to move/delete the sessionStorage( itme ) too ( done )
 17) store sessionStorge to localStorge only when user ends the session
 

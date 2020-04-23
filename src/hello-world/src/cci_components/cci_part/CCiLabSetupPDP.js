@@ -36,7 +36,7 @@ export const SetupPDP=(props)=>{
 
 
     
-  if( props.component.pdp === null || typeof props.component.pdp === 'undefined' )
+  if( props.component.pdp === null || props.component.pdp === 'undefined' )
   {
     props.component.pdp = new initializePDP(props.component);
   }
@@ -73,7 +73,7 @@ export const SetupPDP=(props)=>{
 
   const setTotalRequiredQty=(index, qty, component)=>
   {
-    if( typeof component.pdp === 'undefined' )
+    if( component.pdp === 'undefined' )
       component.pdp = new initializePDP( component );
 
     let {isValid, value} = isValidValue(qty);
@@ -96,7 +96,7 @@ export const SetupPDP=(props)=>{
 
   //have to be in-sync with forecast demand
   const setCompleteDate=(index, completeDate, component)=>{
-    if( typeof component.pdp === 'undefined' )
+    if( component.pdp === 'undefined' )
       component.pdp = new initializePDP( component );
 
     if( isValidString( completeDate ))
