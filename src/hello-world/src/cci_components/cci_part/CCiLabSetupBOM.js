@@ -252,6 +252,11 @@ export const SetupBOM=(props)=>{
           {close => (
             <div className='d-flex'>
               <div className={'d-flex flex-column'} style={{backgroundColor:`${styles.cciBgColor}`}}>
+                <div className={'d-flex text-primary justify-content-between pl-8'}>
+                  <span style={{fontWeight: 'bold'}}> {t('commands:show-setup-BOM')}</span> 
+                  <hr className={dividerCCS.hDividerClassName }  style={dividerCCS.vDividerStyle}/>
+                </div>
+                <hr className={dividerCCS.hDividerClassName }  style={dividerCCS.hDividerStyle}/>
                 <div className={'d-flex  justify-content-between'}>
                   <TextInput
                     title='part-name'
