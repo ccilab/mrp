@@ -16,5 +16,7 @@
     "th-planed-product-quantity":"Planned Product Quantity",
     "th-planned-order-release":"Planned Order Release",
     "th-working-days-in-time-bucket" :"Working Days in Time Bucket",
-    "th-time-bucket-requirements": "{{TimeBucket}} Requirements"
+    "th-time-bucket-requirements": "{{TimeBucket}} Requirements",
+    "th-production-period": "Production Period",
+    "th-on-hand-at-end-of-time-bucket": "On hand at each {{TimeBucket}}"
 }

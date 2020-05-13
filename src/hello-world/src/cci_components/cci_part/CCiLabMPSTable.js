@@ -17,6 +17,11 @@ const MPSTableHeader=(props)=>{
 
     let imgName='';
     let rootElement = props.components.find( (element)=> { return element.businessLogic.parentIds.length === 0 ; } );
+
+    let selectedElement = props.components.find( (element)=> { return element.displayLogic.selected !== 0 ; } );
+
+    selectedElement = typeof selectedElement === 'undefined' ? rootElement : selectedElement;
+
     let partNumber='';
     let leadTime='';
     let setupCost='';
@@ -57,7 +62,7 @@ const MPSTableHeader=(props)=>{
         <tbody>
             <tr>
                 <th className={`${headerClass}`}>{t('component:th-part-name')}:</th>
-                <td className={`${headerClass}`} colSpan='2'> {(typeof rootElement !== 'undefined' && rootElement.businessLogic.name !== 'part-name') ? rootElement.businessLogic.name : `${t('component:part-name')}`}</td>
+                <td className={`${headerClass}`} colSpan='2'> {( selectedElement.businessLogic.name !== 'part-name') ? selectedElement.businessLogic.name : `${t('component:part-name')}`}</td>
                 <th className={`${headerClass}`}>{t('component:th-designed-by')}:</th>
                 <td className={`${headerClass}`} colSpan='2'>
                    
@@ -77,7 +82,7 @@ const MPSTableHeader=(props)=>{
                     <td className={`${headerClass}`} rowSpan='8' colSpan='2'> <img className='cci-component__img align-self-center'
                             style={{'height': '10rem', 'width': '10rem'}}
                             src={imgName}
-                            alt={ typeof rootElement !== 'undefined' ? rootElement.businessLogic.name : `${t('component:th-no-image-name')}`}/>
+                            alt={ typeof selectedElement !== 'undefined' ? selectedElement.businessLogic.name : `${t('component:th-no-image-name')}`}/>
                     </td> 
             </tr>
             <tr>
@@ -138,19 +143,22 @@ const MPSTableHeader=(props)=>{
 
 //may don't need bom level, consider to show image
 // replace _Weekly with time bucket
-const MPSHeaderRow=()=>{
+const MPSHeaderRow=(components)=>{
     const { t } = useTranslation(['component','mps','inventoryRecords'], {useSuspense: false});
     return (
         <tbody>
         <tr style={{backgroundColor: `${styles.cciBgColor}`}}>
-            <th className='text-center'>{t('mps:th-production-start-date')} </th>
-            <th className='text-center'>{t('mps:th-time-bucket-requirements', JSON.parse('{"TimeBucket":"_Weekly"}'))}</th> 
-            <th className='text-center'>{t('inventoryRecords:scheduled-receipts-date')}</th>
+            <th className='text-center'>{t('mps:th-production-period')} </th>
+            {/* <th className='text-center'>{t('mps:th-time-bucket-requirements', JSON.parse('{"TimeBucket":"_Weekly"}'))}</th>  */}
+            <th className='text-center'>{t('component:required-quantity')}</th>
+            <th className='text-center'>{t('mps:th-on-hand-at-end-of-time-bucket', JSON.parse('{"TimeBucket":"_Week"}'))}</th>
+           
             <th className='text-center'>{t('inventoryRecords:scheduled-receipts-quantity')}</th>
-            <th className='text-center'>{t('mps:th-time-bucket-requirements', JSON.parse('{"TimeBucket":"_Weekly"}'))}</th> 
-            <th className='text-center'>{t('inventoryRecords:scheduled-receipts-date')}</th>
+               
+            {/* <th className='text-center'>{t('mps:th-time-bucket-requirements', JSON.parse('{"TimeBucket":"_Weekly"}'))}</th>  */}
+            {/* <th className='text-center'>{t('inventoryRecords:scheduled-receipts-date')}</th>
             <th className='text-center'>{t('inventoryRecords:scheduled-receipts-quantity')}</th>
-            <th className='text-center'>{t('mps:th-production-due-date')} </th>
+            <th className='text-center'>{t('mps:th-production-due-date')} </th> */}
             <th className='text-center'>{t('component:note')}</th>
         </tr>
         </tbody>
@@ -173,9 +181,9 @@ const MPSTable=(props)=>{
             </tr>
             </tbody>
 
-            { <MPSTableHeader components = {props.components} />}
+            { <MPSTableHeader components = {props.components} setComponent={props.setComponent}/>}
             
-            {<MPSHeaderRow/>}
+            {<MPSHeaderRow components = {props.components} />}
 
             <tbody>
                 {<ComponentMPSRow components = {props.components} setComponent={props.setComponent}/>}

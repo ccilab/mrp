@@ -69,7 +69,7 @@ class ComponentContainer extends Component {
       {
         {
         'sysInfoTbl' : <SysInfo/>,
-        'mpsTable' :  <MPSTable  key = {this.state.tableKey} components={this.componentList} />,
+        'mpsTable' :  <MPSTable  key = {this.state.tableKey} components={this.componentList} setComponent={this.component} />,
         'bomTable' :  <BOMTable  key = {this.state.tableKey} components={this.componentList} setComponent={this.component} />,  //updateKey={this.tableKey}
         'productionOrderTable' : null,
         'purchaseOrderTable' : null,

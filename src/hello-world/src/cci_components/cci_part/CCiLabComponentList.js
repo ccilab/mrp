@@ -520,10 +520,16 @@ const setVisibility = (aComponent, aComponents, aShow)=>{
 // setSelectedComponentStickDirection(e), changes the direction of sticky element
 const setComponentSelected = ( component, selectedComponentKey ) =>{
   if( component.displayLogic.key === selectedComponentKey )
+  {
     component.displayLogic.selected = 1; //can be +1 or -1
+    console.log("CCiLabComponentList - key  = " +  component.displayLogic.key + " setComponentSelected: " + component.displayLogic.selected );
+  }
   else
+  {
     component.displayLogic.selected = 0;
+  }
 
+  
   // sessionStorage.setItem( `${component.displayLogic.key}_${component.businessLogic.name}_displayLogic`, JSON.stringify( component.displayLogic ));
 }
 
@@ -645,7 +651,7 @@ const ComponentListTitle =(props)=>{
                 </tr>
                 <tr>
                   <td>
-                  <span key='mps-table'  className={'cursor-pointer p-1 m-0 text-info'} style={{fontSize: '0.8em'}} onClick={tableChangeHandler(tables.cost)}>{t('componentList:cost-table')}</span>
+                  <span key='cost-table'  className={'cursor-pointer p-1 m-0 text-info'} style={{fontSize: '0.8em'}} onClick={tableChangeHandler(tables.cost)}>{t('componentList:cost-table')}</span>
                   </td>
                 </tr>
               </tbody>
