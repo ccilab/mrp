@@ -35,8 +35,8 @@ class ComponentContainer extends Component {
   }
 
   //set selected component from bom table then update list
-  getComponent=(selectedFromTable)=>{
-    this.component = selectedFromTable;
+  getComponent=(selectedComponent)=>{
+    this.component = selectedComponent;
     // this.setState({listKey: getRandomInt(10)});
   }
 
