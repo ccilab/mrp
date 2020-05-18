@@ -37,7 +37,27 @@ class ComponentContainer extends Component {
   //set selected component from bom table then update list
   getComponent=(selectedComponent)=>{
     this.component = selectedComponent;
-    // this.setState({listKey: getRandomInt(10)});
+    
+    // needs to update this.componentList here
+    let updateComponentList = this.componentList.map( (component)=>{ 
+      component.displayLogic.selected = 0;
+      if( component.displayLogic.key === this.component.displayLogic.key )
+        component.displayLogic.selected =  this.component.displayLogic.selected;
+    
+      return component;
+      } 
+    )
+
+    this.componentList = [...updateComponentList];
+
+    switch ( this.state.show )
+    {
+      case 'mpsTable' : 
+        this.setState({tableKey: getRandomInt(10)});
+        break;
+      default:
+        break;
+    }
   }
 
   updateTableType=(tableType)=>{
