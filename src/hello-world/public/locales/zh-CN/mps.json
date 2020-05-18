@@ -1,0 +1,22 @@
+{
+    "th-table-title" : "Master Production Schedule Table",
+    "th-shift-mode": "Shift mode",
+    "th-lead-time":"Lead time",
+    "th-lot-method" : "Lot Method",
+    "th-lot-size" : "Lot Size",
+    "th-production-start-date": "Production Starts Date",
+    "th-production-due-date" : "Production Due Date",
+    "th-planning-horizon" : "Planning Horizon Count",
+    "th-time-buckets": "Time Buckets",
+    "th-opening-inventory": "Opening Inventory",
+    "th-demand-quantity":"Demand Quantity",
+    "th-scheduled-receipts": "Scheduled Receipts",
+    "th-required-quantity":"Required Quantity",
+    "th-new-inventory-before-production":"Net Inventory",
+    "th-planed-product-quantity":"Planned Product Quantity",
+    "th-planned-order-release":"Planned Order Release",
+    "th-working-days-in-time-bucket" :"Working Days in Time Bucket",
+    "th-time-bucket-requirements": "{{TimeBucket}} Requirements",
+    "th-production-period": "Production Period",
+    "th-on-hand-at-end-of-time-bucket": "On hand at each {{TimeBucket}}"
+}
