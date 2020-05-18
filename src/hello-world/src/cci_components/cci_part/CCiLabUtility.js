@@ -399,3 +399,11 @@ export const getTextRect=(text)=> {
     rootNode.removeChild(newDiv);
     return textRect;
 }
+
+export const GenericError=(message)=>{
+
+    let error={};
+    error.message = message;
+    error.name = 'Generic Error';
+    return error;
+}

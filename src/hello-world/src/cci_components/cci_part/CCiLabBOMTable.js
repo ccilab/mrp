@@ -3,22 +3,28 @@ import styles from "./../../dist/css/ccilab-component-list.css"
 
 
 import { useTranslation } from 'react-i18next';
-import {getRandomInt, tables, isValidString } from "./CCiLabUtility";
+import {getRandomInt, tables, isValidString, GenericError } from "./CCiLabUtility";
 
 import {UserNameInput} from "./CCiLabUserNameInput"
 import {DateInput} from "./CCiLabDateInput"
 
 import {initializeBomExtra} from "./CCiLabSetupBOM"
+import {setSelectedImagePath} from './CCiLabTableUtility'
 
 
 
 const BOMTableHeader=(props)=>{
     const { t } = useTranslation('component', {useSuspense: false});
-  
-    let componentList;
 
+    if( typeof props.components !== 'undefined' && props.components !== null )
+    {
+          throw new GenericError('BOMTableHeader: invalid argument'); //using string table here
+    }
+      
+    
+    let componentList;
     let imgName='';
-    let rootElement ;
+    let rootElement  = props.components.find( (element)=> { return element.businessLogic.parentIds.length === 0 ; } );
     let customerOrderName='';
 
     let customerOrderNumber='';
@@ -77,30 +83,23 @@ const BOMTableHeader=(props)=>{
         return lImgName;
     }
 
-    const getCustomerName=( components )=>{
+    const getCustomerName=( component )=>{
         let lName='';
-        if( typeof components !== 'undefined' && components !== null )
+        if( typeof component !== 'undefined')
         {
-            rootElement = components.find( (element)=> { return element.businessLogic.parentIds.length === 0 ; } )
-        
-            if( typeof rootElement !== 'undefined')
+            if( typeof component.pdp !== 'undefined')
             {
-                if( typeof rootElement.pdp !== 'undefined')
-                {
-                    lName = (rootElement.pdp.customer !==null ) ? rootElement.pdp.customer : '';
-                    console.log("BOMTable - getCustomerName - customer name: " + lName);
-                }
+                lName = (component.pdp.customer !==null ) ? component.pdp.customer : '';
+                console.log("BOMTable - getCustomerName - customer name: " + lName);
             }
         }
    
         return lName;
     }
 
-    const getOrderNumber=( components )=>{
+
+    const getOrderNumber=( component )=>{
         let lOrderNumber='';
-        if( typeof components !== 'undefined' && components !== null)
-        {
-            rootElement = components.find( (element)=> { return element.businessLogic.parentIds.length === 0 ; } )
         
             if( typeof rootElement !== 'undefined')
             {
@@ -109,7 +108,7 @@ const BOMTableHeader=(props)=>{
                     lOrderNumber = (rootElement.pdp.orderNumber !==null ) ? rootElement.pdp.orderNumber : '';
                 }
             }
-        }
+    
       
         return lOrderNumber;
 
@@ -157,11 +156,11 @@ const BOMTableHeader=(props)=>{
     if( typeof rootElement === 'undefined'  )
     {
         componentList = props.components;
-        imgName = setRootImagePath(componentList);
-        customerOrderName = getCustomerName(componentList);
-        customerOrderNumber= getOrderNumber(componentList);
-        approvedBy = getBOMApprovedAuthor(componentList);
-        approvedDate = getApprovedDate(componentList);
+        imgName = setSelectedImagePath(rootElement);
+        customerOrderName = getCustomerName(rootElement);
+        customerOrderNumber= getOrderNumber(rootElement);
+        approvedBy = getBOMApprovedAuthor(rootElement);
+        approvedDate = getApprovedDate(rootElement);
     }
     else
     {

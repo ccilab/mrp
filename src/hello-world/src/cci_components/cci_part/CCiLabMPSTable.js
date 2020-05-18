@@ -3,25 +3,33 @@ import styles from "./../../dist/css/ccilab-component-list.css"
 
 
 import { useTranslation } from 'react-i18next';
-import {getRandomInt, tables, isValidString  } from "./CCiLabUtility";
+import {getRandomInt, tables, isValidString, GenericError  } from "./CCiLabUtility";
 
 import {UserNameInput} from './CCiLabUserNameInput'
 import {DateInput} from './CCiLabDateInput'
 import {initializeMPSExtra} from './CCiLabSetupMPS'
+import {setSelectedImagePath} from './CCiLabTableUtility'
 
 
 const MPSTableHeader=(props)=>{
     const { t } = useTranslation(['component','mps', 'operations','inventoryRecords'], {useSuspense: false});
-  
-    let componentList;
 
-    let imgName='';
+    if( typeof props.components !== 'undefined' && props.components !== null )
+    {
+        throw new GenericError('MPSTableHeader: invalid argument'); //using string table here
+    }
+        
+
+   
+
     let rootElement = props.components.find( (element)=> { return element.businessLogic.parentIds.length === 0 ; } );
 
     let selectedElement = props.components.find( (element)=> { return element.displayLogic.selected !== 0 ; } );
 
     selectedElement = typeof selectedElement === 'undefined' ? rootElement : selectedElement;
 
+    let componentList;
+    let imgName='';
     let partNumber='';
     let leadTime='';
     let setupCost='';
@@ -58,6 +66,22 @@ const MPSTableHeader=(props)=>{
         setApprovedName(extra.header.approvedBy);
         sessionStorage.setItem( `${component.displayLogic.key}_${component.businessLogic.name}_mps_extra`, JSON.stringify( extra ));
     }
+
+
+    if( typeof selectedElement === 'undefined'  )
+    {
+        componentList = props.components;
+        imgName = setSelectedImagePath(componentList);
+        // customerOrderName = getCustomerName(componentList);
+        // customerOrderNumber= getOrderNumber(componentList);
+        // approvedBy = getBOMApprovedAuthor(componentList);
+        // approvedDate = getApprovedDate(componentList);
+    }
+    else
+    {
+        console.log("MPSTable - MPSTableHeader - part name: " + selectedElement.businessLogic.name);
+    }
+
     return (
         <tbody>
             <tr>
