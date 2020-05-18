@@ -48,16 +48,9 @@ class ComponentContainer extends Component {
       } 
     )
 
+    //update component list
     this.componentList = [...updateComponentList];
 
-    switch ( this.state.show )
-    {
-      case 'mpsTable' : 
-        this.setState({tableKey: getRandomInt(10)});
-        break;
-      default:
-        break;
-    }
   }
 
   updateTableType=(tableType)=>{

@@ -16,9 +16,9 @@ import {setSelectedImagePath} from './CCiLabTableUtility'
 const BOMTableHeader=(props)=>{
     const { t } = useTranslation('component', {useSuspense: false});
 
-    if( typeof props.components !== 'undefined' && props.components !== null )
+    if( typeof props.components === 'undefined' || props.components === null )
     {
-          throw new GenericError('BOMTableHeader: invalid argument'); //using string table here
+        return null;
     }
       
     
@@ -68,20 +68,6 @@ const BOMTableHeader=(props)=>{
         }
     }
 
-    const setRootImagePath=( components )=>{
-        let lImgName='';
-        if( typeof components !== 'undefined' && components !== null )
-        {
-            let rootElement = components.find( (element)=> { return element.businessLogic.parentIds.length === 0 ; } )
-        
-            if( typeof rootElement !== 'undefined')
-            {
-                lImgName = (rootElement.businessLogic.imgFile.length !==0 ) ? '/images/'+ rootElement.businessLogic.imgFile : '';
-            }
-        }
-      
-        return lImgName;
-    }
 
     const getCustomerName=( component )=>{
         let lName='';
@@ -101,11 +87,11 @@ const BOMTableHeader=(props)=>{
     const getOrderNumber=( component )=>{
         let lOrderNumber='';
         
-            if( typeof rootElement !== 'undefined')
+            if( typeof component !== 'undefined')
             {
-                if( typeof rootElement.pdp !== 'undefined')
+                if( typeof component.pdp !== 'undefined')
                 {
-                    lOrderNumber = (rootElement.pdp.orderNumber !==null ) ? rootElement.pdp.orderNumber : '';
+                    lOrderNumber = (component.pdp.orderNumber !==null ) ? component.pdp.orderNumber : '';
                 }
             }
     
@@ -114,38 +100,29 @@ const BOMTableHeader=(props)=>{
 
     }
 
-    const getBOMApprovedAuthor=( components )=>{
+    const getBOMApprovedAuthor=( component )=>{
         let lName={};
-        if( typeof components !== 'undefined' && components !== null)
-        {
-            rootElement = components.find( (element)=> { return element.businessLogic.parentIds.length === 0 ; } )
         
-            if( typeof rootElement !== 'undefined')
+        if( typeof component !== 'undefined')
+        {
+            let extra = JSON.parse(sessionStorage.getItem(`${component.displayLogic.key}_${component.businessLogic.name}_bom_extra`)) || initializeBomExtra();
+            if( typeof extra !== 'undefined')
             {
-                let extra = JSON.parse(sessionStorage.getItem(`${rootElement.displayLogic.key}_${rootElement.businessLogic.name}_bom_extra`)) || initializeBomExtra();
-                if( typeof extra !== 'undefined')
-                {
-                    lName = (typeof extra.approvedBy !== 'undefined' && extra.approvedBy !==null ) ? extra.approvedBy : approvedName;
-                }
+                lName = (typeof extra.approvedBy !== 'undefined' && extra.approvedBy !==null ) ? extra.approvedBy : approvedName;
             }
         }
       
         return lName;
     }
 
-    const getApprovedDate=(components)=>{
+    const getApprovedDate=(component)=>{
         let date = new Date() ;
-        if( typeof components !== 'undefined' && components !== null)
+        if( typeof component !== 'undefined')
         {
-            rootElement = components.find( (element)=> { return element.businessLogic.parentIds.length === 0 ; } )
-        
-            if( typeof rootElement !== 'undefined')
+            let extra = JSON.parse(sessionStorage.getItem(`${component.displayLogic.key}_${component.businessLogic.name}_bom_extra`)) || initializeBomExtra();
+            if( typeof extra !== 'undefined')
             {
-                let extra = JSON.parse(sessionStorage.getItem(`${rootElement.displayLogic.key}_${rootElement.businessLogic.name}_bom_extra`)) || initializeBomExtra();
-                if( typeof extra !== 'undefined')
-                {
-                    date = (typeof extra.approvedDate !== 'undefined' && extra.approvedDate !==null ) ? extra.approvedDate : date ;
-                }
+                date = (typeof extra.approvedDate !== 'undefined' && extra.approvedDate !==null ) ? extra.approvedDate : date ;
             }
         }
       
@@ -153,7 +130,7 @@ const BOMTableHeader=(props)=>{
 
     }
 
-    if( typeof rootElement === 'undefined'  )
+    if( typeof rootElement !== 'undefined'  )
     {
         componentList = props.components;
         imgName = setSelectedImagePath(rootElement);
@@ -203,7 +180,8 @@ const BOMTableHeader=(props)=>{
                         
                     </td>
                     {/* http://www.htmlhelp.com/feature/art3.htm */}
-                    <td className={`${headerClass}`} rowSpan='2' colSpan='2'> <img className='cci-component__img align-self-center'
+                    <td className={`${headerClass}`} rowSpan='2' colSpan='2'> 
+                            <img className='cci-component__img align-self-center'
                             style={{'height': '10rem', 'width': '10rem'}}
                             src={imgName}
                             alt={ typeof rootElement !== 'undefined' ? rootElement.businessLogic.name : `${t('component:th-no-image-name')}`}/>
@@ -350,7 +328,7 @@ const ComponentRow=(props)=>{
         //based on component_design_guide.txt, any component only has a single parent, 
         // root component doesn't have a parent
         // const bomLevel = parentIds.length === 0 ? 1 : parentIds[0]+1; 
-        const lImgName = (component.businessLogic.imgFile.length !==0 ) ? '/images/'+ component.businessLogic.imgFile : '';
+        const lImgName = setSelectedImagePath(component);
         const unitQtyTd = parentIds.length === 0 ? '1' : unitQty === null ? '0' : unitQty;
         if( parentIds.length > 0 )
         {

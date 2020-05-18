@@ -14,9 +14,9 @@ import {setSelectedImagePath} from './CCiLabTableUtility'
 const MPSTableHeader=(props)=>{
     const { t } = useTranslation(['component','mps', 'operations','inventoryRecords'], {useSuspense: false});
 
-    if( typeof props.components !== 'undefined' && props.components !== null )
+    if( typeof props.components === 'undefined' || props.components === null )
     {
-        throw new GenericError('MPSTableHeader: invalid argument'); //using string table here
+        return null;
     }
         
 
@@ -49,7 +49,8 @@ const MPSTableHeader=(props)=>{
 
     const [approvedName, setApprovedName] = useState( approvedBy );
 
-
+    let approvedDate= new Date();
+    
     const setUpdatedBy=(value, component, item)=>{
         let extra = JSON.parse(sessionStorage.getItem(`${component.displayLogic.key}_${component.businessLogic.name}_mps_extra`)) || initializeMPSExtra();
         switch( item )
@@ -67,15 +68,44 @@ const MPSTableHeader=(props)=>{
         sessionStorage.setItem( `${component.displayLogic.key}_${component.businessLogic.name}_mps_extra`, JSON.stringify( extra ));
     }
 
+    const getMPSApprovedAuthor=( component )=>{
+        let lName={};
+        
+        if( typeof component !== 'undefined')
+        {
+            let extra = JSON.parse(sessionStorage.getItem(`${component.displayLogic.key}_${component.businessLogic.name}_mps_extra`)) || initializeMPSExtra();
+            if( typeof extra !== 'undefined')
+            {
+                lName = (typeof extra.approvedBy !== 'undefined' && extra.approvedBy !==null ) ? extra.approvedBy : approvedName;
+            }
+        }
+      
+        return lName;
+    }
 
-    if( typeof selectedElement === 'undefined'  )
+    const getMPSApprovedDate=(component)=>{
+        let date = new Date() ;
+        if( typeof component !== 'undefined')
+        {
+            let extra = JSON.parse(sessionStorage.getItem(`${component.displayLogic.key}_${component.businessLogic.name}_mps_extra`)) || initializeMPSExtra();
+            if( typeof extra !== 'undefined')
+            {
+                date = (typeof extra.approvedDate !== 'undefined' && extra.approvedDate !==null ) ? extra.approvedDate : date ;
+            }
+        }
+      
+        return date;
+
+    }
+
+    if( typeof selectedElement !== 'undefined'  )
     {
         componentList = props.components;
-        imgName = setSelectedImagePath(componentList);
+        imgName = setSelectedImagePath(selectedElement);
         // customerOrderName = getCustomerName(componentList);
         // customerOrderNumber= getOrderNumber(componentList);
-        // approvedBy = getBOMApprovedAuthor(componentList);
-        // approvedDate = getApprovedDate(componentList);
+        approvedBy = getMPSApprovedAuthor(selectedElement);
+        approvedDate = getMPSApprovedDate(selectedElement);
     }
     else
     {
