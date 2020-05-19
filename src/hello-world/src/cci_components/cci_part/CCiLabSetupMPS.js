@@ -7,13 +7,13 @@ export const initializeMPS=( component )=>{
 
 
 export const initializeMPSExtra=()=>{
+ 
     let extra = {};
-    let header = {};
     
-    header.approvedBy= {givenName:'', familyName:''};  //first name, family name
-    header.recordDateTime=null;
+    extra.approvedBy= {givenName:'', familyName:''};  //first name, family name
+    extra.recordDateTime=null;
 
-    return extra.header = header;
+    return extra ;
 }
 
 const _initialMPSExtra=( component )=>{

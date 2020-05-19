@@ -55,16 +55,16 @@ const MPSTableHeader=(props)=>{
         let extra = JSON.parse(sessionStorage.getItem(`${component.displayLogic.key}_${component.businessLogic.name}_mps_extra`)) || initializeMPSExtra();
         switch( item )
         { case 'given-user-name':
-            extra.header.approvedBy.givenName=value;
+            extra.approvedBy.givenName=value;
             break;
         case 'family-user-name':
-            extra.header.approvedBy.familyName=value;
+            extra.approvedBy.familyName=value;
             break;
         default:
             return;
         }
 
-        setApprovedName(extra.header.approvedBy);
+        setApprovedName(extra.approvedBy);
         sessionStorage.setItem( `${component.displayLogic.key}_${component.businessLogic.name}_mps_extra`, JSON.stringify( extra ));
     }
 
@@ -118,8 +118,14 @@ const MPSTableHeader=(props)=>{
                 <th className={`${headerClass}`}>{t('component:th-part-name')}:</th>
                 <td className={`${headerClass}`} colSpan='2'> {( selectedElement.businessLogic.name !== 'part-name') ? selectedElement.businessLogic.name : `${t('component:part-name')}`}</td>
                 <th className={`${headerClass}`}>{t('component:th-designed-by')}:</th>
-                <td className={`${headerClass}`} colSpan='2'>
-                   
+                <td className={`${headerClass}`} colSpan='1'>
+                <UserNameInput 
+                        title='updated-by-user'
+                        mrpInputType='component'
+                        value={approvedBy}
+                        component={selectedElement}
+                        handler={setUpdatedBy}
+                        updateComponent={props.updateComponent}/>
                 </td>
                 <th className='headerClass text-center' colSpan='2'>{t('component:th-product-image')}</th>
             </tr>
