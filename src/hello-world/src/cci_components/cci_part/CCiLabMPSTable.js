@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, Component } from 'react';
 import styles from "./../../dist/css/ccilab-component-list.css"
 
 
@@ -98,6 +98,35 @@ const MPSTableHeader=(props)=>{
 
     }
 
+    const getPartNumber=(component)=>{
+        let partNumber='';
+        if( typeof component !== 'undefined')
+        {
+            partNumber = component.mps.partNumber;
+        }
+        return partNumber;
+    }
+
+
+    const getProductStartDate=(component)=>{
+        let startDate = '';
+        if( typeof component !== 'undefined')
+        {
+            startDate = component.mps.startDate;
+        }
+        return startDate;
+    }
+
+    const getProductDueDate=(Component)=>{
+        let dueDate = '';
+        if( typeof Component !== 'undefined')
+        {
+            dueDate = Component.mps.productDueDate;
+        }
+        return dueDate;
+    }
+
+
     if( typeof selectedElement !== 'undefined'  )
     {
         componentList = props.components;
@@ -106,6 +135,9 @@ const MPSTableHeader=(props)=>{
         // customerOrderNumber= getOrderNumber(componentList);
         approvedBy = getMPSApprovedAuthor(selectedElement);
         approvedDate = getMPSApprovedDate(selectedElement);
+        partNumber = getPartNumber(selectedElement);
+        productStartDate = getProductStartDate(selectedElement);
+        productDueDate = getProductDueDate(selectedElement);
     }
     else
     {
@@ -116,7 +148,7 @@ const MPSTableHeader=(props)=>{
         <tbody>
             <tr>
                 <th className={`${headerClass}`}>{t('component:th-part-name')}:</th>
-                <td className={`${headerClass}`} colSpan='2'> {( selectedElement.businessLogic.name !== 'part-name') ? selectedElement.businessLogic.name : `${t('component:part-name')}`}</td>
+                <td className={`${headerClass}`} colSpan='1'> {( selectedElement.businessLogic.name !== 'part-name') ? selectedElement.businessLogic.name : `${t('component:part-name')}`}</td>
                 <th className={`${headerClass}`}>{t('component:th-designed-by')}:</th>
                 <td className={`${headerClass}`} colSpan='1'>
                 <UserNameInput 
@@ -127,19 +159,19 @@ const MPSTableHeader=(props)=>{
                         handler={setUpdatedBy}
                         updateComponent={props.updateComponent}/>
                 </td>
-                <th className='headerClass text-center' colSpan='2'>{t('component:th-product-image')}</th>
+                <th className='headerClass text-center' colSpan='1'>{t('component:th-product-image')}</th>
             </tr>
             
             <tr>
                 <th className={`${headerClass}`}>{t('component:part-number')}: </th>
-                <td className={`${headerClass}`} colSpan='2'> {partNumber}</td>
+                <td className={`${headerClass}`} colSpan='1'> {partNumber}</td>
                 <th className={`${headerClass}`}>{t('component:th-designed-date')}:</th>
-                <td className={`${headerClass}`} colSpan='2'> 
+                <td className={`${headerClass}`} colSpan='1'> 
                        
                         
                     </td>
                     {/* http://www.htmlhelp.com/feature/art3.htm */}
-                    <td className={`${headerClass}`} rowSpan='8' colSpan='2'> <img className='cci-component__img align-self-center'
+                    <td className={`${headerClass}`} rowSpan='8' colSpan='1'> <img className='cci-component__img align-self-center'
                             style={{'height': '10rem', 'width': '10rem'}}
                             src={imgName}
                             alt={ typeof selectedElement !== 'undefined' ? selectedElement.businessLogic.name : `${t('component:th-no-image-name')}`}/>
@@ -147,52 +179,52 @@ const MPSTableHeader=(props)=>{
             </tr>
             <tr>
                 <th className={`${headerClass}`}>{t('mps:th-production-start-date')}: </th>
-                <td className={`${headerClass}`} colSpan='2'> {productStartDate}</td>
+                <td className={`${headerClass}`} colSpan='1'> {productStartDate}</td>
                 <th className={`${headerClass}`}>{t('mps:th-production-due-date')}:</th>
-                <td className={`${headerClass}`} colSpan='2'> {productDueDate} </td>
+                <td className={`${headerClass}`} colSpan='1'> {productDueDate} </td>
             </tr>
 
             <tr>
                 <th className={`${headerClass}`}>{t('mps:th-lead-time')}: </th>
-                <td className={`${headerClass}`} colSpan='2'> {leadTime}</td>
+                <td className={`${headerClass}`} colSpan='1'> {leadTime}</td>
                 <th className={`${headerClass}`}>{t('operations:setup-cost-quantity')}:</th>
-                <td className={`${headerClass}`} colSpan='2'> {setupCost} </td>
+                <td className={`${headerClass}`} colSpan='1'> {setupCost} </td>
             </tr>
 
             <tr>
                 <th className={`${headerClass}`}>{t('mps:th-shift-mode')}: </th>
-                <td className={`${headerClass}`} colSpan='2'> {shiftMode}</td>
+                <td className={`${headerClass}`} colSpan='1'> {shiftMode}</td>
                 <th className={`${headerClass}`}>{t('mps:th-planning-horizon')}:</th>
-                <td className={`${headerClass}`} colSpan='2'/> 
+                <td className={`${headerClass}`} colSpan='1'/> 
             </tr>
 
 
             <tr>
                 <th className={`${headerClass}`}>{t('inventoryRecords:inventory-on-hand-quantity')}</th>
-                <td className={`${headerClass}`} colSpan='2'> {inventoryOnHand}</td>
+                <td className={`${headerClass}`} colSpan='1'> {inventoryOnHand}</td>
                 <th className={`${headerClass}`}>{t('operations:scrap-rate')}</th>
-                <td className={`${headerClass}`} colSpan='2'> {scrapRate} </td>
+                <td className={`${headerClass}`} colSpan='1'> {scrapRate} </td>
             </tr>
 
             <tr>
                 <th className={`${headerClass}`}>{t('component:required-quantity')}</th>
-                <td className={`${headerClass}`} colSpan='2'> {grossRequirements}</td>
+                <td className={`${headerClass}`} colSpan='1'> {grossRequirements}</td>
                 <th className={`${headerClass}`}>{t('component:net-required-quantity')}</th>
-                <td className={`${headerClass}`} colSpan='2'> {netRequirements}</td>
+                <td className={`${headerClass}`} colSpan='1'> {netRequirements}</td>
             </tr>
 
             <tr>
                 <th className={`${headerClass}`}>{t('mps:th-lot-method')}: </th>
-                <td className={`${headerClass}`} colSpan='2'> {lotMethod}</td>
+                <td className={`${headerClass}`} colSpan='1'> {lotMethod}</td>
                 <th className={`${headerClass}`}>{t('mps:th-lot-size')}:</th>
-                <td className={`${headerClass}`} colSpan='2'> {lotSize} </td>
+                <td className={`${headerClass}`} colSpan='1'> {lotSize} </td>
             </tr>
 
             <tr>
                 <th className={`${headerClass}`}>{t('mps:th-time-buckets')}: </th>
-                <td className={`${headerClass}`} colSpan='2'> {lotMethod}</td>
+                <td className={`${headerClass}`} colSpan='1'> {lotMethod}</td>
                 <th className={`${headerClass}`}>{t('mps:th-working-days-in-time-bucket')}:</th>
-                <td className={`${headerClass}`} colSpan='2'> {lotSize} </td>
+                <td className={`${headerClass}`} colSpan='1'> {lotSize} </td>
             </tr>
         </tbody>
     )
