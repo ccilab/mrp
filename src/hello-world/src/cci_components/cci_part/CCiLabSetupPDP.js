@@ -10,20 +10,38 @@ import {NumberInput} from "./CCiLabNumberInput"
 import {TextInput} from "./CCiLabTextInput"
 
 
-
-export const initializePDP=( component )=>{
-  let pdp= JSON.parse(sessionStorage.getItem(`${component.displayLogic.key}_${component.businessLogic.name}_pdp`)) || _initializeMPS();
+//re-initialize child component's PDP all the time before showing it in MPS table
+//if components isn't defined then it initializes the root component
+export const initializePDP=( component, components )=>{
+  let pdp = {};
+  if( typeof components !== 'undefined' )
+  {
+    pdp = calculatePDP( component, components);
+  }
+  else{
+    pdp= JSON.parse(sessionStorage.getItem(`${component.displayLogic.key}_${component.businessLogic.name}_pdp`)) || _initializePDP();
+  }
+ 
+ 
   return pdp;
 }
 
 // demandAndEndDateArray =[[id-1, end-date-1, demand-quantity],[id-2, end-date-2, demand-quantity]]
-const _initializeMPS=()=>{
-   let pdp={};
-   pdp.demandAndEndDateArray= [{completeDate: null, requiredQuantity: null}]; //array - required quantity of product/component and completed date as key-value 
-   pdp.customer=null;
-   pdp.orderNumber=null;
-   return pdp;
+// based on parent component to derive pdp of current component
+const _initializePDP=()=>{
+  let pdp={};
+  pdp.demandAndEndDateArray= [{completeDate: null, requiredQuantity: null}]; //array - required quantity of product/component and completed date as key-value 
+  pdp.customer=null;
+  pdp.orderNumber=null;
+  return pdp;
 }
+
+const calculatePDP=( component, components)=>{
+  let pdp = {};
+
+  return pdp;
+}
+
 
 //Production Demand Plan
 export const SetupPDP=(props)=>{
@@ -36,7 +54,7 @@ export const SetupPDP=(props)=>{
 
 
     
-  if( props.component.pdp === null || props.component.pdp === 'undefined' )
+  if( props.component.pdp === null || typeof props.component.pdp === 'undefined' )
   {
     props.component.pdp = new initializePDP(props.component);
   }

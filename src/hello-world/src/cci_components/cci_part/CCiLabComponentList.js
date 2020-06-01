@@ -172,32 +172,15 @@ const getChildren=( parentComponent )=>{
 
     givenComponent.displayLogic = new initializeDisplayLogic( componentKey, givenComponent.businessLogic.childIds.length !== 0 ? true : false );
     
-    givenComponent.bom={};   
-    let coreBomKey = availableSortedSetupBomCoreKeys.find( (key)=>{return  parseInt(key, 10) === componentKey } )
-    let core = typeof coreBomKey !== 'undefined' ? JSON.parse(sessionStorage.getItem(coreBomKey)) : 'undefined';
-    givenComponent.bom.core = core;
+    givenComponent.bom= initializeBOM( givenComponent );   
+   
+    givenComponent.pdp = initializePDP(givenComponent);
 
-    let pdpKey = availableSortedPDPKeys.find( (Key)=>{return  parseInt(Key, 10) === componentKey } )
-    let pdp = typeof pdpKey !== 'undefined' ? JSON.parse(sessionStorage.getItem(pdpKey)): 'undefined';
-    givenComponent.pdp = pdp;
+    givenComponent.irf = initializeIRF(givenComponent);
 
-    let irfKey = availableSortedIRFKeys.find( (Key)=>{return  parseInt(Key, 10) === componentKey } )
-    let irf = typeof irfKey !== 'undefined' ? JSON.parse(sessionStorage.getItem(irfKey)): 'undefined';
-    givenComponent.irf = irf;
+    givenComponent.operation = initializeOp(givenComponent);
 
-    let opKey = availableSortedOpKeys.find( (Key)=>{return  parseInt(Key, 10) === componentKey } )
-    let op = typeof opKey !== 'undefined' ? JSON.parse(sessionStorage.getItem(opKey)) : 'undefined';
-    givenComponent.operation = op;
-
-    let bomExtraKey = availableSortedBomExtraKeys.find( (Key)=>{return  parseInt(Key, 10) === componentKey } )
-    let extra = typeof bomExtraKey !== 'undefined' ? JSON.parse(sessionStorage.getItem(bomExtraKey)) : 'undefined';
-    givenComponent.bom.extra = extra;
-
-    //derive mps from other properties of given component
-    givenComponent.mps= initializeMPS(givenComponent);
-    let mpsExtraKey = availableSortedMPSExtraKeys.find( (Key)=>{return  parseInt(Key, 10) === componentKey } )
-    let mpsExtra = typeof mpsExtraKey !== 'undefined' ? JSON.parse(sessionStorage.getItem(mpsExtraKey)) : 'undefined';
-    givenComponent.mps.extra = mpsExtra;
+    givenComponent.mps = initializeMPS(givenComponent);
 
     return givenComponent;
   }
@@ -1160,12 +1143,10 @@ export class CCiLabComponentList extends Component {
 
       // sessionStorage.setItem( `${newComponent.displayLogic.key}_${newComponent.businessLogic.name}_displayLogic`, JSON.stringify( newComponent.displayLogic ));
       newComponent.bom = new initializeBOM( newComponent );
-      newComponent.pdp = new initializePDP( newComponent );
       newComponent.irf = new initializeIRF( newComponent );
       newComponent.operation = new initializeOp( newComponent );
       newComponent.mps = new initializeMPS( newComponent );
       sessionStorage.setItem( `${newComponent.displayLogic.key}_${newComponent.businessLogic.name}_bom_core`, JSON.stringify( newComponent.bom.core ));
-      sessionStorage.setItem( `${newComponent.displayLogic.key}_${newComponent.businessLogic.name}_pdp`, JSON.stringify( newComponent.pdp ));
       sessionStorage.setItem( `${newComponent.displayLogic.key}_${newComponent.businessLogic.name}_irf`, JSON.stringify( newComponent.irf ));
       sessionStorage.setItem( `${newComponent.displayLogic.key}_${newComponent.businessLogic.name}_op`, JSON.stringify( newComponent.operation ));
       // need to check vertical scroll bar doesn't show
@@ -1176,6 +1157,15 @@ export class CCiLabComponentList extends Component {
        // update component list in container class
       let allComponents = getChildren(); // getAllComponentsFromSessionStorage();
       this.props.setComponents( allComponents );  
+  
+      //child's pdp is derived from parent's pdp
+      //only root element ( the product ) needs have pdp stored in storage 
+      if( newComponent.businessLogic.parentIds.length === 0 )
+      {
+        newComponent.pdp = new initializePDP( newComponent );
+        sessionStorage.setItem( `${newComponent.displayLogic.key}_${newComponent.businessLogic.name}_pdp`, JSON.stringify( newComponent.pdp ));  
+      }
+
 
       this.props.showSelectedComponent( newComponent );
 

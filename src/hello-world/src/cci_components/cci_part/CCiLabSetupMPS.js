@@ -1,3 +1,5 @@
+import { initializePDP } from './CCiLabSetupPDP';
+
 export const initializeMPS=( component )=>{
     let mps= _initialMPS( component );
     mps.extra = _initialMPSExtra( component );
@@ -28,13 +30,28 @@ const _initialMPS=(component)=>{
   mps.partNumber = component.bom.core.partNumber;
   mps.startDate = component.operation.startDate;
 
+  let productionDemandAndDueDate;
+  component.pdp = initializePDP( component );
+  
+  sessionStorage.setItem( `${component.displayLogic.key}_${component.businessLogic.name}_pdp`, JSON.stringify( component.pdp )); 
+
+
   //https://www.danvega.dev/blog/2019/03/14/find-max-array-objects-javascript/
-  mps.productionDueDate = component.pdp.demandAndEndDateArray.reduce( ( lastDate, item )=> ( 
-                                                                component.pdp.demandAndEndDateArray[0].completeDate !== null && 
-                                                                item.completeDate !== null && 
-                                                                item.completeDate > lastDate ? item.completeDate : lastDate ),  
-                                                                component.pdp.demandAndEndDateArray[0].completeDate );
-     
+  productionDemandAndDueDate = component.pdp.demandAndEndDateArray.reduce( ( lastDate, item )=> {
+                                                                if ( component.pdp.demandAndEndDateArray[0].completeDate !== null && 
+                                                                    item.completeDate !== null )
+                                                                    {
+                                                                      return item.completeDate > lastDate  ? item.completeDate : lastDate ;
+                                                                    }
+                                                                else
+                                                                {
+                                                                  return component.pdp.demandAndEndDateArray[0].completeDate;
+                                                                }
+                                                              } )
+  
+
+  mps.productionDueDate = productionDemandAndDueDate.completeDate;
+  mps.grossDemand = productionDemandAndDueDate.requiredQuantity;     
 
   mps.leadTime = component.irf.leadTime.value + component.irf.leadTime.timeUnit;
   mps.setupCost = component.operation.setupCost;
@@ -42,11 +59,10 @@ const _initialMPS=(component)=>{
   mps.planningHorizonCount = component.pdp.demandAndEndDateArray.length;
   mps.inventoryOnHand = component.irf.inventoryOnHand;
   mps.scrapRate = component.operation.scrapRate;
-  mps.grossDemand = component.pdp.demandAndEndDateArray.reduce( ( grossDemand, item )   => ( 
-                                                                  component.pdp.demandAndEndDateArray[0].requiredQuantity !== null &&
-                                                                  item.requiredQuantity !== null ? grossDemand +=item.requiredQuantity : grossDemand ), 
-                                                                  component.pdp.demandAndEndDateArray[0].requiredQuantity );;
-  mps.netDemand = mps.grossDemand !== null ? mps.grossDemand - mps.inventoryOnHand : null;
+  
+  
+
+  mps.netDemand = mps.grossDemand !== null ? productionDemandAndDueDate.requiredQuantity - mps.inventoryOnHand : null;
   mps.lotMethod = null;
   mps.lotSize = 0;
   mps.timeBucket = 0;

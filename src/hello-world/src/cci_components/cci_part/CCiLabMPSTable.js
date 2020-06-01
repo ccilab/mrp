@@ -7,7 +7,7 @@ import {getRandomInt, tables, isValidString, GenericError  } from "./CCiLabUtili
 
 import {UserNameInput} from './CCiLabUserNameInput'
 import {DateInput} from './CCiLabDateInput'
-import {initializeMPSExtra} from './CCiLabSetupMPS'
+import {initializeMPS} from './CCiLabSetupMPS'
 import {setSelectedImagePath} from './CCiLabTableUtility'
 
 
@@ -27,6 +27,9 @@ const MPSTableHeader=(props)=>{
     let selectedElement = props.components.find( (element)=> { return element.displayLogic.selected !== 0 ; } );
 
     selectedElement = typeof selectedElement === 'undefined' ? rootElement : selectedElement;
+
+    //derive mps from other properties of given component
+    selectedElement.mps = initializeMPS( selectedElement);
 
     let componentList;
     let imgName='';
@@ -52,7 +55,7 @@ const MPSTableHeader=(props)=>{
     let approvedDate= new Date();
     
     const setUpdatedBy=(value, component, item)=>{
-        let extra = JSON.parse(sessionStorage.getItem(`${component.displayLogic.key}_${component.businessLogic.name}_mps_extra`)) || initializeMPSExtra();
+        let extra = component.mps.extra;
         switch( item )
         { case 'given-user-name':
             extra.approvedBy.givenName=value;
@@ -73,7 +76,7 @@ const MPSTableHeader=(props)=>{
         
         if( typeof component !== 'undefined')
         {
-            let extra = JSON.parse(sessionStorage.getItem(`${component.displayLogic.key}_${component.businessLogic.name}_mps_extra`)) || initializeMPSExtra();
+            let extra = component.mps.extra;
             if( typeof extra !== 'undefined')
             {
                 lName = (typeof extra.approvedBy !== 'undefined' && extra.approvedBy !==null ) ? extra.approvedBy : approvedName;
@@ -87,7 +90,7 @@ const MPSTableHeader=(props)=>{
         let date = new Date() ;
         if( typeof component !== 'undefined')
         {
-            let extra = JSON.parse(sessionStorage.getItem(`${component.displayLogic.key}_${component.businessLogic.name}_mps_extra`)) || initializeMPSExtra();
+            let extra = component.mps.extra;
             if( typeof extra !== 'undefined')
             {
                 date = (typeof extra.approvedDate !== 'undefined' && extra.approvedDate !==null ) ? extra.approvedDate : date ;
@@ -121,7 +124,7 @@ const MPSTableHeader=(props)=>{
         let dueDate = '';
         if( typeof Component !== 'undefined')
         {
-            dueDate = Component.mps.productDueDate;
+            dueDate = Component.mps.productionDueDate;
         }
         return dueDate;
     }
