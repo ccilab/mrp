@@ -174,14 +174,19 @@ const getChildren=( parentComponent )=>{
     
     givenComponent.bom= initializeBOM( givenComponent );   
    
-    givenComponent.pdp = initializePDP(givenComponent);
-
+   
     givenComponent.irf = initializeIRF(givenComponent);
 
     givenComponent.operation = initializeOp(givenComponent);
 
+    // pdp is also initialized by initializeMPS
     givenComponent.mps = initializeMPS(givenComponent);
 
+    if( typeof givenComponent.pdp === 'undefined' || givenComponent.pdp === null )
+    {
+      givenComponent.pdp = initializePDP(givenComponent);
+    }
+     
     return givenComponent;
   }
 

@@ -29,7 +29,7 @@ const MPSTableHeader=(props)=>{
     selectedElement = typeof selectedElement === 'undefined' ? rootElement : selectedElement;
 
     //derive mps from other properties of given component
-    selectedElement.mps = initializeMPS( selectedElement);
+    selectedElement.mps = initializeMPS( selectedElement, props.components);
 
     let componentList;
     let imgName='';

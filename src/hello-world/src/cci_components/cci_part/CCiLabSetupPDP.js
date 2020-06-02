@@ -14,7 +14,7 @@ import {TextInput} from "./CCiLabTextInput"
 //if components isn't defined then it initializes the root component
 export const initializePDP=( component, components )=>{
   let pdp = {};
-  if( typeof components !== 'undefined' )
+  if( typeof components !== 'undefined' && component.businessLogic.parentIds.length )
   {
     pdp = calculatePDP( component, components);
   }
@@ -36,8 +36,14 @@ const _initializePDP=()=>{
   return pdp;
 }
 
+// from top components find:
+// pdp.customer = parent component name in MPS table
+// pdp.orderNumber =  order number in MPS table
+// pdp.demandAndEndDateArray.completeDate = 
+// pdp.demandAndEndDateArray.demand = 
 const calculatePDP=( component, components)=>{
   let pdp = {};
+
 
   return pdp;
 }
