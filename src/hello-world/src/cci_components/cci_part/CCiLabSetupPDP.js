@@ -19,9 +19,15 @@ export const initializePDP=( component, components )=>{
     pdp = calculatePDP( component, components);
   }
   else{
-    pdp= JSON.parse(sessionStorage.getItem(`${component.displayLogic.key}_${component.businessLogic.name}_pdp`)) || _initializePDP();
+    if( component.businessLogic.parentIds.length === 0 )
+    {
+       pdp= JSON.parse(sessionStorage.getItem(`${component.displayLogic.key}_${component.businessLogic.name}_pdp`)) || _initializePDP();
+    }
+    else
+    {
+      pdp = 'undefined';
+    }
   }
- 
  
   return pdp;
 }

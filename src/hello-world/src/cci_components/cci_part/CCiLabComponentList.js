@@ -179,10 +179,7 @@ const getChildren=( parentComponent )=>{
 
     givenComponent.operation = initializeOp(givenComponent);
 
-    // pdp is also initialized by initializeMPS
-    givenComponent.mps = initializeMPS(givenComponent);
-
-    if( typeof givenComponent.pdp === 'undefined' || givenComponent.pdp === null )
+    if( givenComponent.businessLogic.parentIds.length === 0 )
     {
       givenComponent.pdp = initializePDP(givenComponent);
     }
@@ -1150,10 +1147,19 @@ export class CCiLabComponentList extends Component {
       newComponent.bom = new initializeBOM( newComponent );
       newComponent.irf = new initializeIRF( newComponent );
       newComponent.operation = new initializeOp( newComponent );
-      newComponent.mps = new initializeMPS( newComponent );
+
       sessionStorage.setItem( `${newComponent.displayLogic.key}_${newComponent.businessLogic.name}_bom_core`, JSON.stringify( newComponent.bom.core ));
       sessionStorage.setItem( `${newComponent.displayLogic.key}_${newComponent.businessLogic.name}_irf`, JSON.stringify( newComponent.irf ));
       sessionStorage.setItem( `${newComponent.displayLogic.key}_${newComponent.businessLogic.name}_op`, JSON.stringify( newComponent.operation ));
+      
+          //child's pdp is derived from parent's pdp
+      //only root element ( the product ) needs have pdp stored in storage 
+      if( newComponent.businessLogic.parentIds.length === 0 )
+      {
+        newComponent.pdp = new initializePDP( newComponent );
+        sessionStorage.setItem( `${newComponent.displayLogic.key}_${newComponent.businessLogic.name}_pdp`, JSON.stringify( newComponent.pdp ));  
+      }
+
       // need to check vertical scroll bar doesn't show
       // create vertical scroll bar based on the height of component list dynamically
       //update state.greetings inside this function
@@ -1163,14 +1169,7 @@ export class CCiLabComponentList extends Component {
       let allComponents = getChildren(); // getAllComponentsFromSessionStorage();
       this.props.setComponents( allComponents );  
   
-      //child's pdp is derived from parent's pdp
-      //only root element ( the product ) needs have pdp stored in storage 
-      if( newComponent.businessLogic.parentIds.length === 0 )
-      {
-        newComponent.pdp = new initializePDP( newComponent );
-        sessionStorage.setItem( `${newComponent.displayLogic.key}_${newComponent.businessLogic.name}_pdp`, JSON.stringify( newComponent.pdp ));  
-      }
-
+  
 
       this.props.showSelectedComponent( newComponent );
 
