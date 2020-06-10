@@ -1,14 +1,14 @@
 import { initializePDP } from './CCiLabSetupPDP';
 
-export const initializeMPS=( component )=>{
+export const initializeMPS=( component, components )=>{
     let mps= _initialMPS( component );
-    mps.extra = _initialMPSExtra( component );
+    mps.extra = initialMPSExtra( component );
     return mps;
   }
 
 
 
-export const initializeMPSExtra=()=>{
+const _initializeMPSExtra=()=>{
  
     let extra = {};
     
@@ -18,12 +18,12 @@ export const initializeMPSExtra=()=>{
     return extra ;
 }
 
-const _initialMPSExtra=( component )=>{
-  let extra = JSON.parse(sessionStorage.getItem(`${component.displayLogic.key}_${component.businessLogic.name}_mps_extra`)) || initializeMPSExtra();
+const initialMPSExtra=( component )=>{
+  let extra = JSON.parse(sessionStorage.getItem(`${component.displayLogic.key}_${component.businessLogic.name}_mps_extra`)) || _initializeMPSExtra();
   return extra;
 }
 
-const _initialMPS=(component)=>{
+const _initialMPS=(component, components)=>{
   let mps={};
 
   mps.partName = component.businessLogic.name;
@@ -31,7 +31,7 @@ const _initialMPS=(component)=>{
   mps.startDate = component.operation.startDate;
 
   let productionDemandAndDueDate;
-  component.pdp = initializePDP( component );
+  component.pdp = initializePDP( component, components );
   
   sessionStorage.setItem( `${component.displayLogic.key}_${component.businessLogic.name}_pdp`, JSON.stringify( component.pdp )); 
 
