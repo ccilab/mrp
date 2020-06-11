@@ -109,8 +109,11 @@ export const SetupBOM=(props)=>{
               sessionStorage.removeItem(`${props.component.displayLogic.key}_${originComponent.businessLogic.name}_bom_extra`);
               sessionStorage.setItem( `${component.displayLogic.key}_${component.businessLogic.name}_bom_extra`, JSON.stringify( component.bom.extra ));
 
-              sessionStorage.removeItem(`${props.component.displayLogic.key}_${originComponent.businessLogic.name}_mps_extra`);
-              sessionStorage.setItem( `${component.displayLogic.key}_${component.businessLogic.name}_mps_extra`, JSON.stringify( component.mps.extra ));
+              if( typeof component.mps !== 'undefined' && typeof component.mps.extra !== 'undefined')
+              {
+                sessionStorage.removeItem(`${props.component.displayLogic.key}_${originComponent.businessLogic.name}_mps_extra`);
+                sessionStorage.setItem( `${component.displayLogic.key}_${component.businessLogic.name}_mps_extra`, JSON.stringify( component.mps.extra ));
+              }
 
           }
           else{
@@ -130,6 +133,11 @@ export const SetupBOM=(props)=>{
     props.component.bom = new initializeBOM(props.component);
   }
 
+  if( props.component.businessLogic.parentIds.length === 0)
+  {
+      props.component.bom.core.unitQty=1;
+  }
+    
 
 
   const setPartName=(index, partName, component)=>{
@@ -169,10 +177,14 @@ export const SetupBOM=(props)=>{
     let {isValid, value} = isValidValue(unitQty);
 
     if( !isValid )
-      component.bom.core.unitQty=null;
+    {
+       component.bom.core.unitQty=null;
+    }
     else
+    {
       component.bom.core.unitQty=value;
-
+    }
+      
     // required quantity for per shift per run
     saveValidBOMEntry(component);
   }

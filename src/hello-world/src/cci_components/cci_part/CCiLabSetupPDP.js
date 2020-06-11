@@ -32,8 +32,7 @@ export const initializePDP=( component, components )=>{
   return pdp;
 }
 
-// demandAndEndDateArray =[[id-1, end-date-1, demand-quantity],[id-2, end-date-2, demand-quantity]]
-// based on parent component to derive pdp of current component
+
 const _initializePDP=()=>{
   let pdp={};
   pdp.demandAndEndDateArray= [{completeDate: null, requiredQuantity: null}]; //array - required quantity of product/component and completed date as key-value 
@@ -42,13 +41,36 @@ const _initializePDP=()=>{
   return pdp;
 }
 
+// demandAndEndDateArray =[{ completeDate: end-date-1, requiredQuantity: demand-quantity},{ completeDate: end-date-2, requiredQuantity: demand-quantity}]
+// based on parent component to derive pdp of current component
+// pdp.demandAndEndDateArray.completeDate = parent's pap complete time + parent's op lead time
+// pdp.demandAndEndDateArray.demand = parent's demand * component bom_core.unitQty 
+const getChildCompleteDemandAndDateArray=( component, components)=>{
+
+
+}
+
+
 // from top components find:
 // pdp.customer = parent component name in MPS table
 // pdp.orderNumber =  order number in MPS table
-// pdp.demandAndEndDateArray.completeDate = 
-// pdp.demandAndEndDateArray.demand = 
 const calculatePDP=( component, components)=>{
-  let pdp = components.reduce( ()=>{});
+  let pdp = {};
+  for (let index = 0; index < components.length; index++) {
+    const element = components[index];
+
+    const parentId = element.businessLogic.parentIds[0];
+    //find the right component
+    if( element.businessLogic.id === component.businessLogic.id && 
+      parentId === component.businessLogic.parentIds[0])
+    { 
+      const parent = components.find( _element=> _element.businessLogic.id === parentId );
+      pdp.customer = parent.businessLogic.name;
+      pdp.orderNumber = null;
+      pdp.demandAndEndDateArray = getChildCompleteDemandAndDateArray( component, components);
+    }
+    
+  };
 
   return pdp;
 }
