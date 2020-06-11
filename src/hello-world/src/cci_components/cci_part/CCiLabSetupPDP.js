@@ -48,8 +48,7 @@ const _initializePDP=()=>{
 // pdp.demandAndEndDateArray.completeDate = 
 // pdp.demandAndEndDateArray.demand = 
 const calculatePDP=( component, components)=>{
-  let pdp = {};
-
+  let pdp = components.reduce( ()=>{});
 
   return pdp;
 }
