@@ -1,4 +1,4 @@
-Input:
+﻿Input:
 1) BOM summary table - the output of setup BOM tree ( generated from top menu )
    - the structure of each item/raw material and quantity requirements to produce a single product  
    - template base - "A Bill of Materials Template for Manufacturers.pdf"
@@ -42,6 +42,11 @@ Input:
 	- The Only Master Production Schedule Guide You Will Ever Need.pdf - agile productions not cost driven
 
         - need to be configured and show MPS table  for both setup and monitoring	
+
+	- ATO, MTO, lead time may be uncertain; order release (start) time and order due time is nutual exclusive - should only have one as known parameter. 
+	  it is function of inventory cost and backlog cost. Top level should use order due time which compares with derived due time from lowest level should use start time, 
+
+	- top level start date - find earlest start date from lowest level + longest SUM(lead time) from lowest level to second highest level - start time + lead time is complete time of PDP, 
 	
 
 3) Inventory Control - a process to find EOC (Qd) for each item/raw material (Inventory Records File IRF) 

@@ -37,6 +37,8 @@ const _initialMPS=(component, components)=>{
 
 
   //https://www.danvega.dev/blog/2019/03/14/find-max-array-objects-javascript/
+  if( typeof component.pdp.demandAndEndDateArray !== 'undefined')
+  {
   productionDemandAndDueDate = component.pdp.demandAndEndDateArray.reduce( ( lastDate, item )=> {
                                         if ( component.pdp.demandAndEndDateArray[0].completeDate !== null && 
                                             item.completeDate !== null )
@@ -50,8 +52,9 @@ const _initialMPS=(component, components)=>{
                                       } )
   
 
-  mps.productionDueDate = productionDemandAndDueDate.completeDate;
-  mps.grossDemand = productionDemandAndDueDate.requiredQuantity;     
+    mps.productionDueDate = productionDemandAndDueDate.completeDate;
+    mps.grossDemand = productionDemandAndDueDate.requiredQuantity;     
+  }
 
   mps.leadTime = component.irf.leadTime.value + component.irf.leadTime.timeUnit;
   mps.setupCost = component.operation.setupCost;
