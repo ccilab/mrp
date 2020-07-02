@@ -47,6 +47,12 @@
 	  it is function of inventory cost and backlog cost. Top level should use order due time which compares with derived due time from lowest level should use start time, 
 
 	- top level start date - find earlest start date from lowest level + longest SUM(lead time) from lowest level to second highest level - start time + lead time is complete time of PDP, 
+
+	- production complete date - production start date >= production lead time; productGrossDemand / product_rate(unit/per-day or per-week or per-month) <= leadTime; 
+	
+	- total backlog cost = SUM ( production start date - child component's product complete date ) * child component count * child component holding cost ( backlog cost per chile component )
+	
+	- total inventry cost = (production start date - scheduledReceiptDate ) * scheduledReceiptsQuanity * holding cost
 	
 
 3) Inventory Control - a process to find EOC (Qd) for each item/raw material (Inventory Records File IRF) 
