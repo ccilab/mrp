@@ -328,7 +328,7 @@ export const SetupBOM=(props)=>{
                    <hr className={dividerCCS.hDividerClassName }  style={dividerCCS.vDividerStyle}/>
                 </div>
                
-                <hr  className={dividerCCS.hDividerClassName} style={dividerCCS.hDividerStyle}/>
+                {/* <hr  className={dividerCCS.hDividerClassName} style={dividerCCS.hDividerStyle}/> */}
               </div> 
             <div className='align-self-start'>
                 <i id={`${props.component.displayLogic.key}-setupBOM`}

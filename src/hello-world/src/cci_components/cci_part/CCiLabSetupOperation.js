@@ -13,6 +13,7 @@ import { NormalAndOvertime } from './CCiLabNormalAndOvertimeInputs';
 import { Shift } from './CCiLabShiftInputs';
 import {initializeOp, saveValidOpEntry, initializeShift} from './CCiLabOperationsUtility'
 import { RadioInput } from './CCiLabRadioInput';
+import {TimePeriod} from "./CCiLabTimePeriod"
 
 
 
@@ -87,6 +88,25 @@ export const SetupOP=(props)=>{
       component.operation.startDate = null;
 
     saveValidOpEntry(component);
+  }
+
+    // followed with unit (days, weeks, months)
+  const setLeadTime=(index, qty, timePeriodUnit, component)=>{
+    if( component.operation === 'undefined' )
+      component.operation = new initializeOp( component );
+
+    let {isValid, value} = isValidValue(qty);
+
+    if( !isValid )
+    {
+      component.operation.leadTime={value: null, timeUnit: t('commands:day')};
+    }
+    else
+    {
+        component.operation.leadTime={value: qty, timeUnit: timePeriodUnit };;
+    }
+  
+    saveValidOpEntry(component); 
   }
 
   const setSetupCost=(index, cost, component)=>{
@@ -412,7 +432,7 @@ export const SetupOP=(props)=>{
 
                 <div className={'d-flex  justify-content-between'}>
                   <DateInput
-                    title='start-product-date'
+                    title='op-start-date'
                       id={-1}
                       cellCnt={2}
                       mrpInputType='operations'
@@ -421,6 +441,36 @@ export const SetupOP=(props)=>{
                       handler={setStartDate}/>
 
                   <hr className={dividerCCS.hDividerClassName }  style={dividerCCS.vDividerStyle}/>    
+                  <DateInput
+                    title='op-complete-date'
+                      id={-1}
+                      cellCnt={2}
+                      mrpInputType='operations'
+                      value={props.component.operation.startDate }
+                      component={props.component}
+                      handler={setStartDate}/>
+
+                  <hr className={dividerCCS.hDividerClassName }  style={dividerCCS.vDividerStyle}/>
+                </div>
+                
+                <hr className={dividerCCS.hDividerClassName} style={dividerCCS.hDividerStyle}/>
+                
+                <div className={'d-flex  justify-content-between'}>
+                  <TimePeriod
+                        title='lead-time-quantity'
+                        id={-1}
+                        cellCnt={'toolTipPosition'}
+                        toolTipPosition='bottom center'
+                        mrpInputType='inventoryRecords'
+                        leadTime={  props.component.irf.leadTime }
+                        component={props.component}
+                        handler={setLeadTime}/>
+                      {/* <i id={`${props.component.displayLogic.key}-SetupIRF`}
+                        className='text-danger m-0 py-1 px-1 fas fw fa-times-circle cursor-pointer'
+                        style={{backgroundColor: `${styles.cciBgColor}`}}
+                        onClick={ close }/>  */}
+             
+                  <hr className={dividerCCS.hDividerClassName }  style={dividerCCS.vDividerStyle}/>
 
                   <TextInput
                       title='workshop'
@@ -456,7 +506,7 @@ export const SetupOP=(props)=>{
               { shiftType === 'normal-hours' ?
                   <div>
                       <NormalAndOvertime component={props.component} />
-                      <hr className={dividerCCS.hDividerClassName} style={dividerCCS.hDividerStyle}/>
+                      {/* <hr className={dividerCCS.hDividerClassName} style={dividerCCS.hDividerStyle}/> */}
                   </div>
                   :
                   null
@@ -470,7 +520,7 @@ export const SetupOP=(props)=>{
                   null
               }
 
-              <hr className={dividerCCS.hDividerClassName} style={dividerCCS.hDividerStyle}/>
+              {/* <hr className={dividerCCS.hDividerClassName} style={dividerCCS.hDividerStyle}/> */}
               </div>
                 <div>
                 <i id={`${props.component.displayLogic.key}-SetupOP`}

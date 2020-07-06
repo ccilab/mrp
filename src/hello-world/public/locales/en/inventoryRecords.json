@@ -4,7 +4,6 @@
     "scheduled-receipts-quantity": "scheduled Receipts Quantity",
     "max-allowed-ending-inventory-quantity": "Maximum Stock",
     "mim-allowed-ending-inventory-quantity": "Minimum Stock",
-    "lead-time-quantity": "* Total Product Lead Time",
     "per-demand-lead-time":"Time bucket Demand Lead Time",
     "procurement-type": "* Procurement Type",
     "in-house": "In house production",

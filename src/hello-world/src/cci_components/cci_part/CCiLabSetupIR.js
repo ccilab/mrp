@@ -9,7 +9,6 @@ import {DateInput} from "./CCiLabDateInput"
 import {NumberInput} from "./CCiLabNumberInput"
 import {TextInput} from "./CCiLabTextInput"
 import {PercentageInput} from "./CCiLabPercentageInput"
-import {TimePeriod} from "./CCiLabTimePeriod"
 import {RadioInput} from "./CCiLabRadioInput"
 
 
@@ -175,24 +174,6 @@ export const SetupIRF=(props)=>{
     saveValidIRFEntry(component); 
   }
 
-  // followed with unit (days, weeks, months)
-  const setLeadTime=(index, qty, timePeriodUnit, component)=>{
-    if( component.irf === 'undefined' )
-      component.irf = new initializeIRF( component );
-
-    let {isValid, value} = isValidValue(qty);
-
-    if( !isValid )
-    {
-      component.irf.leadTime={value: null, timeUnit: t('commands:day')};
-    }
-    else
-    {
-       component.irf.leadTime={value: qty, timeUnit: timePeriodUnit };;
-    }
-  
-    saveValidIRFEntry(component); 
-  }
 
   //unit in local currency
   const setOtherCostPerUnit=(index, cost, component)=>{
@@ -300,8 +281,8 @@ export const SetupIRF=(props)=>{
 
  const renderSRInput=(uniqueKey, index, srDate, demand, isLastElement )=>{
   return(
-    <div key={uniqueKey+1}>
-      <div key={uniqueKey} className={'d-flex'}>  
+    <div key={uniqueKey+1} >
+      <div key={uniqueKey} className={'d-flex justify-content-between'}>  
         <DateInput
          title='scheduled-receipts-date'   //array of completed date for each required quantity
          id={index}
@@ -394,44 +375,17 @@ export const SetupIRF=(props)=>{
           {close => (
             <div className='d-flex'>
             <div className={'d-flex flex-column'} style={{backgroundColor:`${styles.cciBgColor}`}}>
-                  <div className={'d-flex text-primary justify-content-between pl-6'}>
+              <div className={'d-flex text-primary justify-content-between pl-6'}>
                     <span style={{fontWeight: 'bold'}}> {t('commands:show-setup-IRF')}</span> 
                     <hr className={dividerCCS.hDividerClassName }  style={dividerCCS.vDividerStyle}/>
-                  </div>
-                  <hr className={dividerCCS.hDividerClassName }  style={dividerCCS.hDividerStyle}/>
-
-                  <div className={'d-flex '}>
-                      <NumberInput
-                        title='inventory-on-hand-quantity'
-                        id={-1}
-                        cellCnt={2}
-                        toolTipPosition='bottom center'
-                        mrpInputType='inventoryRecords'
-                        value={props.component.irf.inventoryOnHand}
-                        component={props.component}
-                        handler={setIOH}/>
-
-                    <hr className={dividerCCS.hDividerClassName }  style={dividerCCS.vDividerStyle}/>
-
-                      <TimePeriod
-                        title='lead-time-quantity'
-                        id={-1}
-                        cellCnt={'toolTipPosition'}
-                        toolTipPosition='bottom center'
-                        mrpInputType='inventoryRecords'
-                        leadTime={  props.component.irf.leadTime }
-                        component={props.component}
-                        handler={setLeadTime}/>
-                      {/* <i id={`${props.component.displayLogic.key}-SetupIRF`}
-                        className='text-danger m-0 py-1 px-1 fas fw fa-times-circle cursor-pointer'
-                        style={{backgroundColor: `${styles.cciBgColor}`}}
-                        onClick={ close }/>  */}
-                     <hr className={dividerCCS.hDividerClassName }  style={dividerCCS.vDividerStyle}/>
-                  </div>                
-              <hr className={dividerCCS.hDividerClassName } style={dividerCCS.hDividerStyle}/>
+              </div>
+              
+              <hr className={dividerCCS.hDividerClassName }  style={dividerCCS.hDividerStyle}/>
 
               {renderSRInputs()}
-              
+
+
+
               <div className={'d-flex  justify-content-between'}>
                 <RadioInput
                     title='procurement-type'
@@ -485,6 +439,33 @@ export const SetupIRF=(props)=>{
                   )
               }
 
+            <div className={'d-flex justify-content-between'}>
+                  <NumberInput
+                        title='inventory-on-hand-quantity'
+                        id={-1}
+                        cellCnt={2}
+                        toolTipPosition='bottom center'
+                        mrpInputType='inventoryRecords'
+                        value={props.component.irf.inventoryOnHand}
+                        component={props.component}
+                        handler={setIOH}/>
+
+                  <hr className={dividerCCS.hDividerClassName }  style={dividerCCS.vDividerStyle}/>
+                  
+                  <PercentageInput
+                      title='interest-rate'
+                      id={-1}
+                      cellCnt={2}
+                      mrpInputType='inventoryRecords'
+                      value={props.component.irf.interest }
+                      component={props.component}
+                      handler={setInterest}/>
+                  
+                  <hr className={dividerCCS.hDividerClassName }  style={dividerCCS.vDividerStyle}/>
+              </div>                
+
+              <hr className={dividerCCS.hDividerClassName } style={dividerCCS.hDividerStyle}/>
+
                 <div className={'d-flex  justify-content-between'}> 
                   <NumberInput
                       title={ procurementType === null || procurementType === 'in-house' ? 'other-production-cost-per-unit-quantity' : 'other-purchase-cost-per-unit-quantity'}
@@ -532,21 +513,7 @@ export const SetupIRF=(props)=>{
                    <hr className={dividerCCS.hDividerClassName }  style={dividerCCS.vDividerStyle}/>
                 </div>
 
-                <hr className={dividerCCS.hDividerClassName } style={dividerCCS.hDividerStyle}/>
-
-                <div className={'d-flex  justify-content-between'}>
-                  <PercentageInput
-                      title='interest-rate'
-                      id={-1}
-                      cellCnt={1}
-                      mrpInputType='inventoryRecords'
-                      value={props.component.irf.interest }
-                      component={props.component}
-                      handler={setInterest}/>
-                  <hr className={dividerCCS.hDividerClassName }  style={dividerCCS.vDividerStyle}/>
-                </div>
-
-                <hr className={dividerCCS.hDividerClassName} style={dividerCCS.hDividerStyle}/>
+                {/* <hr className={dividerCCS.hDividerClassName} style={dividerCCS.hDividerStyle}/> */}
             </div>
             <div className='align-self-start'>
               <i id={`${props.component.displayLogic.key}-SetupIRF`}

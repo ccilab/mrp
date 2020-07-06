@@ -21,6 +21,8 @@ const _initializeOp=()=>{
     operation.averageHiringCostPerEmployee = null;
     operation.averageDismissalCostPerEmployee = null; //local currency
     operation.startDate=null;
+    operation.completeDate=null;
+    operation.leadTime={value: null, timeUnit: ''};
     operation.scrapRate=null;    // in %, need /100 when uses it 
     operation.setupCost=null;    // initial cost to produce the component
     operation.inputWarehouse='';    // where is prerequisite component/raw material stored
