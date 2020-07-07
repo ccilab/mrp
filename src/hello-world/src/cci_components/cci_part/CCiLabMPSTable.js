@@ -14,13 +14,16 @@ import {setSelectedImagePath} from './CCiLabTableUtility'
 const MPSTableHeader=(props)=>{
     const { t } = useTranslation(['component','mps', 'operations','inventoryRecords'], {useSuspense: false});
 
+    
+    let approvedBy={givenName:'', familyName:''}; //first name, last name
+
+    const [approvedName, setApprovedName] = useState( approvedBy );
+    
     if( typeof props.components === 'undefined' || props.components === null )
     {
         return null;
     }
         
-
-   
 
     let rootElement = props.components.find( (element)=> { return element.businessLogic.parentIds.length === 0 ; } );
 
@@ -47,10 +50,6 @@ const MPSTableHeader=(props)=>{
     let netRequirements='';
 
     const headerClass = 'headerClass text-capitalize';
-
-    let approvedBy={givenName:'', familyName:''}; //first name, last name
-
-    const [approvedName, setApprovedName] = useState( approvedBy );
 
     let approvedDate= new Date();
     

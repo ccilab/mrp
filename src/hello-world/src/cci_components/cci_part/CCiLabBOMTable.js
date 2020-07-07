@@ -16,6 +16,13 @@ import {setSelectedImagePath} from './CCiLabTableUtility'
 const BOMTableHeader=(props)=>{
     const { t } = useTranslation('component', {useSuspense: false});
 
+
+    let approvedBy={givenName:'', familyName:''}; //first name, last name
+
+    let approvedDate= new Date();
+
+    const [approvedName, setApprovedName] = useState( approvedBy );
+
     if( typeof props.components === 'undefined' || props.components === null )
     {
         return null;
@@ -30,15 +37,6 @@ const BOMTableHeader=(props)=>{
     let customerOrderNumber='';
 
     const headerClass = 'headerClass text-capitalize';
-
-
-    let approvedBy={givenName:'', familyName:''}; //first name, last name
-
-    let approvedDate= new Date();
-
-    const [approvedName, setApprovedName] = useState( approvedBy )
-
-
 
     const setUpdatedBy=(value, component, item)=>{
         let extra = JSON.parse(sessionStorage.getItem(`${component.displayLogic.key}_${component.businessLogic.name}_bom_extra`)) ;

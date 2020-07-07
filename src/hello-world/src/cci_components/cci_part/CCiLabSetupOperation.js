@@ -103,7 +103,7 @@ export const SetupOP=(props)=>{
     }
     else
     {
-        component.operation.leadTime={value: qty, timeUnit: timePeriodUnit };;
+        component.operation.leadTime={value: value, timeUnit: timePeriodUnit };;
     }
   
     saveValidOpEntry(component); 

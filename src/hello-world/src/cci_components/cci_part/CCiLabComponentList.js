@@ -14,8 +14,6 @@ import DropComponentWarningModal from "./CCiLabDropComponentCheckFailedModal";
 import { setListHeight, setListWidth, getTextRect, tables} from "./CCiLabUtility";
 import {CanEnableInlineMenu, initializeBOM } from './CCiLabSetupBOM';
 import { initializePDP } from './CCiLabSetupPDP';
-import {initializeMPS} from './CCiLabSetupMPS'
-
 
 // // based on https://github.com/ccilab/react-i18next/blob/master/example/react/src/index.js
 // // import i18n (needs to be bundled ;))
@@ -157,12 +155,12 @@ const getChildren=( parentComponent )=>{
 
 
   let availableSortedBusinessLogicKeys = availableBusinessLogicKeys.sort( findSmallerKey );
-  let availableSortedSetupBomCoreKeys = availableSetupBomCoreKeys.sort( findSmallerKey );
-  let availableSortedPDPKeys = availablePDPKeys.sort( findSmallerKey );
-  let availableSortedIRFKeys = availableIRFKeys.sort( findSmallerKey );
-  let availableSortedOpKeys = availableOpKeys.sort( findSmallerKey );
-  let availableSortedBomExtraKeys = availableBomExtraKeys.sort( findSmallerKey);
-  let availableSortedMPSExtraKeys = availableMPSExtraKeys.sort( findSmallerKey );
+  // let availableSortedSetupBomCoreKeys = availableSetupBomCoreKeys.sort( findSmallerKey );
+  // let availableSortedPDPKeys = availablePDPKeys.sort( findSmallerKey );
+  // let availableSortedIRFKeys = availableIRFKeys.sort( findSmallerKey );
+  // let availableSortedOpKeys = availableOpKeys.sort( findSmallerKey );
+  // let availableSortedBomExtraKeys = availableBomExtraKeys.sort( findSmallerKey);
+  // let availableSortedMPSExtraKeys = availableMPSExtraKeys.sort( findSmallerKey );
 
   const populateComponentObjects=( givenBusinessLogicKey )=>{
     let givenComponent = {};
