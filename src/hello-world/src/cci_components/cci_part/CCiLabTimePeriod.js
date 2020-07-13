@@ -19,7 +19,7 @@ export const TimePeriod=(props)=>{
   let tooltipOnMode=['click','hover'];
   let tooltipPosition= ( typeof props.toolTipPosition === 'undefined' ) ? 'top center': props.toolTipPosition;
   let inputName=props.title;
-  let timePeriodUnit = ( typeof props.leadTime === 'undefined' ) ? t('commands:day') : props.leadTime.timeUnit;
+  let timePeriodUnit = ( props.leadTime.timeUnit === "" ) ? t('commands:day') : props.leadTime.timeUnit;
   let timePeriodEnu = timePeriod.day; 
 
 
@@ -125,8 +125,9 @@ export const TimePeriod=(props)=>{
         </Popup>
         <Popup 
             trigger = {
-                <span className='text-primary p-1 cursor-pointer' style={{width: '4.5rem'}}>
+                <span className='text-primary text-nowrap pl-1 cursor-pointer' style={{width: '4.5rem'}}>
                      {`${timeUnit}`}
+                     <span className='pl-1 fa fa-caret-down'/>
                 </span>
             }
             closeOnDocumentClick

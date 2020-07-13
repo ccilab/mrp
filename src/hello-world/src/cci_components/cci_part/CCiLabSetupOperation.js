@@ -414,8 +414,8 @@ export const SetupOP=(props)=>{
                         id={-1}
                         cellCnt={'toolTipPosition'}
                         toolTipPosition='bottom center'
-                        mrpInputType='inventoryRecords'
-                        leadTime={  props.component.irf.leadTime }
+                        mrpInputType='operations'
+                        leadTime={  props.component.operation.leadTime }
                         component={props.component}
                         handler={setLeadTime}/>
                       {/* <i id={`${props.component.displayLogic.key}-SetupIRF`}

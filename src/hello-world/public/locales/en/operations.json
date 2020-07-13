@@ -14,7 +14,7 @@
     "output-warehouse-name" : "component warehouse name",
     "op-start-date": "operation starts date",
     "op-complete-date": "operation completes date",
-    "lead-time-quantity": "* Total Product Lead Time",
+    "lead-time-quantity": "Total Production Lead Time",
     "team-name": "Add team name",
     "shift-type":"shift type",
     "shift-cost": "Average shift hourly cost",
