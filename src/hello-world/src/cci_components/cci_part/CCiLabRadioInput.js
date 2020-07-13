@@ -1,10 +1,8 @@
-import React, { useState } from 'react';
+import React from 'react';
 import Popup from '../popup_menu/Popup'
 import { useTranslation } from 'react-i18next';
 
 import styles from "./../../dist/css/ccilab-component-list.css"
-
-import { dividerCCS } from "./CCiLabUtility";
 
 export const RadioInput=(props)=>{
     const { t } = useTranslation([`${props.mrpInputType}`,'commands'], {useSuspense: false});

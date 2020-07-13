@@ -3,7 +3,7 @@ import styles from "./../../dist/css/ccilab-component-list.css"
 
 
 import { useTranslation } from 'react-i18next';
-import {getRandomInt, tables, isValidString, GenericError } from "./CCiLabUtility";
+import {getRandomInt, tables, isValidString } from "./CCiLabUtility";
 
 import {UserNameInput} from "./CCiLabUserNameInput"
 import {DateInput} from "./CCiLabDateInput"

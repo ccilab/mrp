@@ -175,53 +175,6 @@ export const SetupOP=(props)=>{
     saveValidOpEntry(component);
   }
 
-  const setShiftName=(index, name, component)=>{
-    if( typeof component.operation === 'undefined' )
-      component.operation = new initializeOp( component );
-
-    if( isValidString( name ))
-    {
-      for( let item of shiftInfoArray )
-      {
-        const id = shiftInfoArray.indexOf( item );
-        if( id === index )
-        {
-          item[0] = name;
-          break;
-        }
-      }
-    }
-
-    saveValidOpEntry(component);
-  }
-
-  const setShiftHourlyCost = ( index, cost, component)=>{
-    if( typeof component.operation === 'undefined' )
-      component.operation = new initializeOp( component );
-
-    let {isValid, value} = isValidValue(cost);
-
-    for( let item of shiftInfoArray )
-    {
-      const id = shiftInfoArray.indexOf( item );
-      if( id === index )
-      {
-        if( isValid )
-        {
-          item[1] = value;
-        }
-        else
-        {
-          item[1] = null;
-        }
-        
-        break;
-      }
-    }
-
-    saveValidOpEntry(component);
-  }
-
 
 
   //hover to popup tooltip, click/focus to popup setup BOM inputs
