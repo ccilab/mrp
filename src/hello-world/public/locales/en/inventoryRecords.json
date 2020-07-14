@@ -1,7 +1,7 @@
 {
     "inventory-on-hand-quantity": "Inventory on-hand",
-    "scheduled-receipts-date": "Scheduled Receipts Date",
-    "scheduled-receipts-quantity": "scheduled Receipts Quantity",
+    "scheduled-receipts-date": "Scheduled Receipts Date (optional)",
+    "scheduled-receipts-quantity": "scheduled Receipts Quantity (optional)",
     "max-allowed-ending-inventory-quantity": "Maximum Stock",
     "mim-allowed-ending-inventory-quantity": "Minimum Stock",
     "procurement-type": "* Procurement Type",

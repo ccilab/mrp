@@ -20,6 +20,8 @@ const _initializeOp=()=>{
     let operation={};
     operation.averageHiringCostPerEmployee = null;
     operation.averageDismissalCostPerEmployee = null; //local currency
+    operation.newHires = null;
+    operation.newDismissals = null;
     operation.startDate=null;
     operation.completeDate=null;
     operation.leadTime={value: null, timeUnit: ''};

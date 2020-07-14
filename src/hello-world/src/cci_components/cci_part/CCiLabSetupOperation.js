@@ -63,6 +63,34 @@ export const SetupOP=(props)=>{
     saveValidOpEntry(component);
   }
 
+  const setNewHires=(index, count, component)=>{
+    if( typeof component.operation === 'undefined' )
+      component.operation = new initializeOp( component );
+
+    let {isValid, value} = isValidValue(count);
+
+    if( !isValid )
+      component.operation.newHires = null;
+    else
+      component.operation.newHires = value;
+
+    saveValidOpEntry(component);
+  }
+
+  const setNewDismissals=(index, count, component)=>{
+    if( typeof component.operation === 'undefined' )
+      component.operation = new initializeOp( component );
+
+    let {isValid, value} = isValidValue(count);
+
+    if( !isValid )
+      component.operation.newDismissals = null;
+    else
+      component.operation.newDismissals = value;
+
+    saveValidOpEntry(component);
+  }
+
   const setScrapRate=(index, scrapRate, component)=>{
     if( typeof component.operation === 'undefined' )
       component.operation = new initializeOp( component );
@@ -331,6 +359,35 @@ export const SetupOP=(props)=>{
 
                     <hr className={dividerCCS.hDividerClassName }  style={dividerCCS.vDividerStyle}/> 
                 </div>
+
+                <hr className={dividerCCS.hDividerClassName }  style={dividerCCS.hDividerStyle}/> 
+
+                <div className={'d-flex  justify-content-between'}>
+                    <NumberInput
+                        title='new-hire'
+                        id={-1}
+                        cellCnt={2}
+                        toolTipPosition='bottom center'
+                        mrpInputType='operations'
+                        value={props.component.operation.newHires}
+                        component={props.component}
+                        handler={setNewHires}/>
+
+                    <hr className={dividerCCS.hDividerClassName }  style={dividerCCS.vDividerStyle}/>    
+
+                    <NumberInput
+                        title='new-dismissal'
+                        id={-1}
+                        cellCnt={2}
+                        toolTipPosition='bottom center'
+                        mrpInputType='operations'
+                        value={props.component.operation.newDismissals}
+                        component={props.component}
+                        handler={setNewDismissals}/>
+
+                    <hr className={dividerCCS.hDividerClassName }  style={dividerCCS.vDividerStyle}/> 
+                </div>
+
 
                 <hr className={dividerCCS.hDividerClassName }  style={dividerCCS.hDividerStyle}/>    
 
