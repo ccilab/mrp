@@ -256,6 +256,7 @@ export const SetupPDP=(props)=>{
 
   const renderDemandDateInputs=()=>{
     return (
+      typeof demandDateArray === 'undefined' ?  null :
       demandDateArray.map( ( item )=>{
         let id = demandDateArray.indexOf(item);
         return renderDemandDateInput( getRandomInt(100), id, item.date, item.requiredQuantity, id ===  demandDateArray.length - 1 ? true : false )
