@@ -40,6 +40,8 @@ const MPSTableHeader=(props)=>{
     let leadTime='';
     let setupCost='';
     let shiftMode='';
+    let partStartDate='';
+    let partDueDate='';
     let productStartDate='';
     let productDueDate='';
     let lotMethod='';
@@ -114,7 +116,7 @@ const MPSTableHeader=(props)=>{
         let startDate = '';
         if( typeof component !== 'undefined')
         {
-            startDate = component.mps.startDate;
+            startDate = component.mps.productionStartDate ;
         }
         return startDate;
     }
@@ -123,7 +125,7 @@ const MPSTableHeader=(props)=>{
         let dueDate = '';
         if( typeof Component !== 'undefined')
         {
-            dueDate = Component.mps.productionDueDate;
+            dueDate = null;
         }
         return dueDate;
     }
@@ -185,7 +187,12 @@ const MPSTableHeader=(props)=>{
                 <th className={`${headerClass}`}>{t('mps:th-production-due-date')}:</th>
                 <td className={`${headerClass}`} colSpan='1'> {productDueDate} </td>
             </tr>
-
+            <tr>
+                <th className={`${headerClass}`}>{t('mps:th-part-start-date')}: </th>
+                <td className={`${headerClass}`} colSpan='1'> {partStartDate}</td>
+                <th className={`${headerClass}`}>{t('mps:th-part-due-date')}:</th>
+                <td className={`${headerClass}`} colSpan='1'> {partDueDate} </td>
+            </tr>
             <tr>
                 <th className={`${headerClass}`}>{t('mps:th-lead-time')}: </th>
                 <td className={`${headerClass}`} colSpan='1'> {leadTime}</td>

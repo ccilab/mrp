@@ -35,16 +35,16 @@ export const initializePDP=( component, components )=>{
 
 const _initializePDP=()=>{
   let pdp={};
-  pdp.demandAndEndDateArray= [{completeDate: null, requiredQuantity: null}]; //array - required quantity of product/component and completed date as key-value 
+  pdp.demandAndDateArray= [{date: null, requiredQuantity: null}]; //array - required quantity of product/component and completed date as key-value 
   pdp.customer=null;
   pdp.orderNumber=null;
   return pdp;
 }
 
-// demandAndEndDateArray =[{ completeDate: end-date-1, requiredQuantity: demand-quantity},{ completeDate: end-date-2, requiredQuantity: demand-quantity}]
+// demandAndDateArray =[{ date: end-date-1, requiredQuantity: demand-quantity},{ date: end-date-2, requiredQuantity: demand-quantity}]
 // based on parent component to derive pdp of current component
-// pdp.demandAndEndDateArray.completeDate = parent's pap complete time + parent's op lead time
-// pdp.demandAndEndDateArray.demand = parent's demand * component bom_core.unitQty 
+// pdp.demandAndDateArray.date = parent's pap complete time + parent's op lead time
+// pdp.demandAndDateArray.demand = parent's demand * component bom_core.unitQty 
 const getChildCompleteDemandAndDateArray=( component, components)=>{
 
 
@@ -67,7 +67,7 @@ const calculatePDP=( component, components)=>{
       const parent = components.find( _element=> _element.businessLogic.id === parentId );
       pdp.customer = parent.businessLogic.name;
       pdp.orderNumber = null;
-      pdp.demandAndEndDateArray = getChildCompleteDemandAndDateArray( component, components);
+      pdp.demandAndDateArray = getChildCompleteDemandAndDateArray( component, components);
     }
     
   };
@@ -92,12 +92,12 @@ export const SetupPDP=(props)=>{
     props.component.pdp = new initializePDP(props.component);
   }
 
-  const [demandDateArray, setDemandDateArray] = useState(props.component.pdp.demandAndEndDateArray);
+  const [demandDateArray, setDemandDateArray] = useState(props.component.pdp.demandAndDateArray);
 
   // component.displayLogic.inlineMenuEnabled needs set to true
   const saveValidPDPEntry=( component )=>{
     console.log("SetupPDP - saveValidPDPEntry:  update current table");
-    component.pdp.demandAndEndDateArray = demandDateArray;
+    component.pdp.demandAndDateArray = demandDateArray;
     sessionStorage.setItem( `${component.displayLogic.key}_${component.businessLogic.name}_pdp`, JSON.stringify( component.pdp ));
     props.updateTable();
   }
@@ -146,18 +146,18 @@ export const SetupPDP=(props)=>{
   }
 
   //have to be in-sync with forecast demand
-  const setCompleteDate=(index, completeDate, component)=>{
+  const setCompleteDate=(index, date, component)=>{
     if( component.pdp === 'undefined' )
       component.pdp = new initializePDP( component );
 
-    if( isValidString( completeDate ))
+    if( isValidString( date ))
     {
       for( let item of demandDateArray )
       {
         const id = demandDateArray.indexOf( item );
         if( id === index )
         {
-          item.completeDate = completeDate;
+          item.date = date;
           break;
         }
       }
@@ -185,7 +185,7 @@ export const SetupPDP=(props)=>{
   }
 
   const AddNextDemandEntry=(index)=>(e)=>{
-    demandDateArray.push({completeDate:null,requiredQuantity:null});
+    demandDateArray.push({date:null,requiredQuantity:null});
     saveValidPDPEntry(props.component);
     setDemandDateArray( demandDateArray );
     window.dispatchEvent(new Event('resize'));  //resize popup menu
@@ -213,7 +213,7 @@ export const SetupPDP=(props)=>{
     <div key={uniqueKey} >
     <div className={'d-flex justify-content-between'} >  
       <DateInput
-         title='product-complete-date'   //array of completed date for each required quantity
+         title='product-start-date'   //array of completed date for each required quantity
          id={index}
          cellCnt={2}
          mrpInputType='component'
@@ -258,7 +258,7 @@ export const SetupPDP=(props)=>{
     return (
       demandDateArray.map( ( item )=>{
         let id = demandDateArray.indexOf(item);
-        return renderDemandDateInput( getRandomInt(100), id, item.completeDate, item.requiredQuantity, id ===  demandDateArray.length - 1 ? true : false )
+        return renderDemandDateInput( getRandomInt(100), id, item.date, item.requiredQuantity, id ===  demandDateArray.length - 1 ? true : false )
       } )
     )
   }

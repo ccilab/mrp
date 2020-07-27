@@ -12,7 +12,7 @@
     "customer-name": "Customer order name",
     "customer-order-number": "Customer order number",
     "order-quantity": "Order Quantity",
-    "product-complete-date": "* Production complete date",
+    "product-start-date": "Production start date",
     "revision": "Revision",
     "phase": "Phase",
     "category": "Category",

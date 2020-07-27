@@ -30,42 +30,44 @@ const _initialMPS=(component, components)=>{
   mps.partNumber = component.bom.core.partNumber;
   mps.startDate = component.operation.startDate;
 
-  let productionDemandAndDueDate;
+  let productionDemandAndDate;
   component.pdp = initializePDP( component, components );
   
   sessionStorage.setItem( `${component.displayLogic.key}_${component.businessLogic.name}_pdp`, JSON.stringify( component.pdp )); 
 
 
   //https://www.danvega.dev/blog/2019/03/14/find-max-array-objects-javascript/
-  if( typeof component.pdp.demandAndEndDateArray !== 'undefined')
+  if( typeof component.pdp.demandAndDateArray !== 'undefined')
   {
-  productionDemandAndDueDate = component.pdp.demandAndEndDateArray.reduce( ( lastDate, item )=> {
-                                        if ( component.pdp.demandAndEndDateArray[0].completeDate !== null && 
-                                            item.completeDate !== null )
+    productionDemandAndDate = component.pdp.demandAndDateArray.reduce( ( lastDate, item )=> {
+                                        if ( component.pdp.demandAndDateArray[0].date !== null && 
+                                            item.date !== null )
                                             {
-                                              return item.completeDate > lastDate  ? item.completeDate : lastDate ;
+                                              return item.date > lastDate  ? item.date : lastDate ;
                                             }
                                         else
                                         {
-                                          return component.pdp.demandAndEndDateArray[0].completeDate;
+                                          return component.pdp.demandAndDateArray[0].date;
                                         }
                                       } )
   
 
-    mps.productionDueDate = productionDemandAndDueDate.completeDate;
-    mps.grossDemand = productionDemandAndDueDate.requiredQuantity;     
+    mps.productionStartDate = productionDemandAndDate.date;
+    mps.grossDemand = productionDemandAndDate.requiredQuantity;     
+    mps.planningHorizonCount = component.pdp.demandAndDateArray.length;
+    mps.netDemand = mps.grossDemand !== null ? productionDemandAndDate.requiredQuantity - mps.inventoryOnHand : null;
   }
 
   mps.leadTime = component.irf.leadTime.value + component.irf.leadTime.timeUnit;
   mps.setupCost = component.operation.setupCost;
   mps.shiftMode = component.operation.shiftType; //need to localize from 'normal-hours' or 'shift'
-  mps.planningHorizonCount = component.pdp.demandAndEndDateArray.length;
+  
   mps.inventoryOnHand = component.irf.inventoryOnHand;
   mps.scrapRate = component.operation.scrapRate;
   
   
 
-  mps.netDemand = mps.grossDemand !== null ? productionDemandAndDueDate.requiredQuantity - mps.inventoryOnHand : null;
+  
   mps.lotMethod = null;
   mps.lotSize = 0;
   mps.timeBucket = 0;
