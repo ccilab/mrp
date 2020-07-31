@@ -7,7 +7,7 @@
     "procurement-type": "* Procurement Type",
     "in-house": "In house production",
     "purchase" : "External Purchase",
-    "other-production-cost-per-unit-quantity": "Other cost per unit except labour cost",
+    "other-production-cost-per-unit-quantity": "Cost per unit other than labour",
     "other-purchase-cost-per-unit-quantity" : "Purchase cost per unit",
     "holding-cost-per-unit-quantity": "Holding cost per unit",
     "interest-rate" :"interest",
