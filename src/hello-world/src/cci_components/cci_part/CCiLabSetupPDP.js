@@ -213,10 +213,10 @@ export const SetupPDP=(props)=>{
     <div key={uniqueKey} >
     <div className={'d-flex justify-content-between'} >  
       <DateInput
-         title='product-start-date'   //array of completed date for each required quantity
+         title='th-production-start-date'   //array of completed date for each required quantity
          id={index}
          cellCnt={2}
-         mrpInputType='component'
+         mrpInputType='mps'
          value={ endDate }
          component={props.component}
          handler={setCompleteDate}/>

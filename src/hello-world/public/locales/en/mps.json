@@ -1,4 +1,10 @@
 {
+    "_comment" : ["The master production schedule is effectively the plan that the company has developed for production, staffing, inventory, etc.",
+                    "It has as input a variety of data, e.g. forecast demand, production costs, inventory costs, etc and as output a production plan", 
+                    "detailing amounts to be produced, staffing levels, etc for each of a number of time periods.", 
+                    "MPS:",
+                    "operates at an aggregate level - does not usually go into great detail about parts to be used,",
+                    "is cost driven, that is it attempts to meet the specified requirements at minimum cost."],
     "th-table-title" : "Master Production Schedule Table",
     "th-shift-mode": "Shift mode",
     "th-lead-time":"Lead time",

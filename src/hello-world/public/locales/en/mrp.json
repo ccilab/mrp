@@ -1,0 +1,9 @@
+{
+    "_comment" : ["This process of calculating the orders needed is called",
+                  "a MRP EXPLOSION and produces the materials requirements (hence the name - Materials Requirements Planning)",
+                  "An important point to note is that MRP is not cost driven i.e.",
+                  "it does not seek to minimize cost (unlike the MPS system used in the package).", 
+                  "Instead MRP is stock-out driven - that is it will always order sufficient to", 
+                  "avoid stockouts (using the lot size rule for each item) and order as late as possible."],
+    "th-table-title" : "Material Resource Planning Table"
+}

@@ -3,12 +3,12 @@ import React from 'react';
 // http://exploringjs.com/es6/ch_modules.html#sec_importing-exporting-details
 export const tables = {
     sysInfo: 'sysInfoTbl',
-    mps: 'mpsTable',
     bom: 'bomTable',
+    mps: 'mpsTable',
+    mrp:  'materialPlanTable',
     cost: 'costTable',
     productionOrder: 'productionOrderTable',
     purchaseOrder: 'purchaseOrderTable',
-    materialOrder:  'materialPlanTable',
     resourceUsage:  'resourceUsageTable'
   }
 

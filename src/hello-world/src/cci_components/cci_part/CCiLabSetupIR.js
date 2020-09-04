@@ -10,6 +10,7 @@ import {NumberInput} from "./CCiLabNumberInput"
 import {TextInput} from "./CCiLabTextInput"
 import {PercentageInput} from "./CCiLabPercentageInput"
 import {RadioInput} from "./CCiLabRadioInput"
+import {TimePeriod} from "./CCiLabTimePeriod"
 
 
 export const initializeIRF=( component )=>{
@@ -34,6 +35,7 @@ const _initializeIRF=()=>{
    irf.purchasingCostPerUnit=0;  //doesn't allowed for now
    irf.maxBackOrderAllowed=0;    //doesn't allowed for now
    irf.backOrderCostPerUnit=0;  //doesn't allowed for now
+   irf.leadTime={value: null, timeUnit: ''};
  
    return irf;
 }
@@ -237,6 +239,26 @@ export const SetupIRF=(props)=>{
       saveValidIRFEntry(component); 
   };
 
+    // followed with unit (days, weeks, months)
+    const setLeadTime=(index, qty, timePeriodUnit, component)=>{
+      if( component.irf === 'undefined' )
+        component.irf = new initializeIRF( component );
+  
+      let {isValid, value} = isValidValue(qty);
+  
+      if( !isValid )
+      {
+        component.irf.leadTime={value: null, timeUnit: t('commands:day')};
+      }
+      else
+      {
+          component.irf.leadTime={value: value, timeUnit: timePeriodUnit };;
+      }
+    
+      saveValidIRFEntry(component); 
+    }
+  
+
   //hover to popup tooltip, click/focus to popup setup BOM inputs
   // based on event from mouse or click for desktop devices, click for touch devices
   const setEventState=()=>
@@ -285,6 +307,7 @@ export const SetupIRF=(props)=>{
       <div key={uniqueKey} className={'d-flex justify-content-between'}>  
         <DateInput
          title='scheduled-receipts-date'   //array of completed date for each required quantity
+         toolTipPosition='bottom center'
          id={index}
          cellCnt={2}
          mrpInputType='inventoryRecords'
@@ -295,6 +318,7 @@ export const SetupIRF=(props)=>{
      
         <NumberInput
          title='scheduled-receipts-quantity'
+         toolTipPosition='bottom center'
          id={index}
          cellCnt={3}
          mrpInputType='inventoryRecords'
@@ -439,7 +463,25 @@ export const SetupIRF=(props)=>{
                   )
               }
 
-            <div className={'d-flex justify-content-between'}>
+              <div className={'d-flex  justify-content-between'}>
+                  <TimePeriod
+                        title='lead-time-quantity'
+                        id={-1}
+                        cellCnt={2}
+                        toolTipPosition='bottom center'
+                        mrpInputType='operations'
+                        leadTime={  props.component.irf.leadTime }
+                        component={props.component}
+                        handler={setLeadTime}/>
+             
+                    <hr className={dividerCCS.hDividerClassName }  style={dividerCCS.vDividerStyle}/>
+
+              
+                 
+                </div>
+ 
+              <hr className={dividerCCS.hDividerClassName }  style={dividerCCS.hDividerStyle}/>
+              <div className={'d-flex justify-content-between'}>
                   <NumberInput
                         title='inventory-on-hand-quantity'
                         id={-1}
@@ -507,6 +549,31 @@ export const SetupIRF=(props)=>{
                       id={-1}
                       cellCnt={2}
                       mrpInputType='inventoryRecords'
+                      value={ ( props.component.irf.maxAllowedEndingInventory !== null ) && ( props.component.irf.minAllowedEndingInventory > props.component.irf.maxAllowedEndingInventory )  ?  props.component.irf.minAllowedEndingInventory : props.component.irf.maxAllowedEndingInventory}
+                      component={props.component}
+                      handler={setMaxStock}/>
+                   <hr className={dividerCCS.hDividerClassName }  style={dividerCCS.vDividerStyle}/>
+                </div>
+
+                <hr className={dividerCCS.hDividerClassName }  style={dividerCCS.hDividerStyle}/>
+
+                <div className={'d-flex  justify-content-between'}> 
+                  <NumberInput
+                      title='th-lot-method'
+                      id={-1}
+                      cellCnt={2}
+                      mrpInputType='mps'
+                      value={props.component.irf.minAllowedEndingInventory }
+                      component={props.component}
+                      handler={setSS}/>
+
+                  <hr className={dividerCCS.hDividerClassName }  style={dividerCCS.vDividerStyle}/>
+
+                  <NumberInput
+                      title='th-lot-size'
+                      id={-1}
+                      cellCnt={2}
+                      mrpInputType='mps'
                       value={ ( props.component.irf.maxAllowedEndingInventory !== null ) && ( props.component.irf.minAllowedEndingInventory > props.component.irf.maxAllowedEndingInventory )  ?  props.component.irf.minAllowedEndingInventory : props.component.irf.maxAllowedEndingInventory}
                       component={props.component}
                       handler={setMaxStock}/>

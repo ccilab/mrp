@@ -118,25 +118,6 @@ export const SetupOP=(props)=>{
     saveValidOpEntry(component);
   }
 
-    // followed with unit (days, weeks, months)
-  const setLeadTime=(index, qty, timePeriodUnit, component)=>{
-    if( component.operation === 'undefined' )
-      component.operation = new initializeOp( component );
-
-    let {isValid, value} = isValidValue(qty);
-
-    if( !isValid )
-    {
-      component.operation.leadTime={value: null, timeUnit: t('commands:day')};
-    }
-    else
-    {
-        component.operation.leadTime={value: value, timeUnit: timePeriodUnit };;
-    }
-  
-    saveValidOpEntry(component); 
-  }
-
   const setSetupCost=(index, cost, component)=>{
     if( typeof component.operation === 'undefined' )
       component.operation = new initializeOp( component );
@@ -466,26 +447,12 @@ export const SetupOP=(props)=>{
                 <hr className={dividerCCS.hDividerClassName} style={dividerCCS.hDividerStyle}/>
                 
                 <div className={'d-flex  justify-content-between'}>
-                  <TimePeriod
-                        title='lead-time-quantity'
-                        id={-1}
-                        cellCnt={'toolTipPosition'}
-                        toolTipPosition='bottom center'
-                        mrpInputType='operations'
-                        leadTime={  props.component.operation.leadTime }
-                        component={props.component}
-                        handler={setLeadTime}/>
-                      {/* <i id={`${props.component.displayLogic.key}-SetupIRF`}
-                        className='text-danger m-0 py-1 px-1 fas fw fa-times-circle cursor-pointer'
-                        style={{backgroundColor: `${styles.cciBgColor}`}}
-                        onClick={ close }/>  */}
-             
-                  <hr className={dividerCCS.hDividerClassName }  style={dividerCCS.vDividerStyle}/>
+                
 
                   <TextInput
                       title='workshop'
                       id={-1}
-                      cellCnt={2}
+                      cellCnt={1}
                       mrpInputType='operations'
                       value={props.component.operation.workshop }
                       component={props.component}

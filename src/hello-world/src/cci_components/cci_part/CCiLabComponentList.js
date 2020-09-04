@@ -634,6 +634,11 @@ const ComponentListTitle =(props)=>{
                 </tr>
                 <tr>
                   <td>
+                  <span key='mrp-table'  className={'cursor-pointer p-1 m-0 text-info'} style={{fontSize: '0.8em'}} onClick={tableChangeHandler(tables.mrp)}>{t('componentList:mrp-table')}</span>
+                  </td>
+                </tr>
+                <tr>
+                  <td>
                   <span key='cost-table'  className={'cursor-pointer p-1 m-0 text-info'} style={{fontSize: '0.8em'}} onClick={tableChangeHandler(tables.cost)}>{t('componentList:cost-table')}</span>
                   </td>
                 </tr>

@@ -1,16 +1,16 @@
 {
-    "inventory-on-hand-quantity": "Inventory on-hand",
+    "inventory-on-hand-quantity": "Inventory on-hand (optional)",
     "scheduled-receipts-date": "Scheduled Receipts Date (optional)",
     "scheduled-receipts-quantity": "scheduled Receipts Quantity (optional)",
-    "max-allowed-ending-inventory-quantity": "Maximum Stock",
-    "mim-allowed-ending-inventory-quantity": "Minimum Stock",
+    "max-allowed-ending-inventory-quantity": "Maximum Stock (optional)",
+    "mim-allowed-ending-inventory-quantity": "Minimum Stock (optional)",
     "procurement-type": "* Procurement Type",
     "in-house": "In house production",
     "purchase" : "External Purchase",
-    "other-production-cost-per-unit-quantity": "Cost per unit other than labour",
-    "other-purchase-cost-per-unit-quantity" : "Purchase cost per unit",
-    "holding-cost-per-unit-quantity": "Holding cost per unit",
-    "interest-rate" :"interest",
-    "supplier-name" : "Supplier Name",
-    "supplied-part-number" : "Supplied Part Name"
+    "other-production-cost-per-unit-quantity": "Cost per unit other than labour (optional)",
+    "other-purchase-cost-per-unit-quantity" : "Purchase cost per unit (optional)",
+    "holding-cost-per-unit-quantity": "Holding cost per unit (optional)",
+    "interest-rate" :"interest (optional)",
+    "supplier-name" : "Supplier Name (optional)",
+    "supplied-part-number" : "Supplied Part Name (optional)"
 }
