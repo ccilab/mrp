@@ -84,6 +84,7 @@ export const NumberInput=(props)=>{
                     name={inputName}
                     value={ input }
                     min = { inputType.includes('number') ? 0: null}
+                    readOnly = {typeof props.readOnly === 'undefined' ?  false : props.readOnly }
                     onChange={ updateChange(props)}
                     onClose={updateValue(props)}
                     onInput={(e)=>{filterInputValue(e)}}

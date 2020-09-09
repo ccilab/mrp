@@ -11,6 +11,7 @@
     "show-setup-PDP" : "Setup Product Demand",
     "show-setup-IRF" : "Setup Inventory Records",
     "show-setup-OP" : "Setup Operation",
+    "show-setup-OP-cost": "Setup Operation Cost",
     "day" : "day(s)",
     "week" : "week(s)",
     "month" : "month(s)",

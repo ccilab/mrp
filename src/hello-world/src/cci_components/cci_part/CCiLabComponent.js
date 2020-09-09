@@ -13,6 +13,7 @@ import {SetupBOM} from './CCiLabSetupBOM';
 import {SetupPDP } from './CCiLabSetupPDP';
 import {SetupIRF} from './CCiLabSetupIR';
 import {SetupOP} from './CCiLabSetupOperation';
+import {SetupOPCost} from './CCiLabSetupOperationCost';
 
 
 const ShowImage=(props)=>{
@@ -557,9 +558,10 @@ class CCiLabComponent extends Component {
                   <span>
                       <SetupBOM component={this.currentComponent}  updateSubTitle={this.props.changeMRPTitle}  updateTable={this.props.updateTableHandler}  updateComponent={this.props.updateComponentHandler}/>
                       <SetupPDP component={this.currentComponent} updateSubTitle={this.props.changeMRPTitle}  updateTable={this.props.updateTableHandler}/>
-                      <SetupIRF component={this.currentComponent} updateSubTitle={this.props.changeMRPTitle}  updateTable={this.props.updateTableHandler}/>
                       <SetupOP component={this.currentComponent} updateSubTitle={this.props.changeMRPTitle}  updateTable={this.props.updateTableHandler}/>
-                      
+                      <SetupIRF component={this.currentComponent} updateSubTitle={this.props.changeMRPTitle}  updateTable={this.props.updateTableHandler}/>
+                      <SetupOPCost component={this.currentComponent} updateSubTitle={this.props.changeMRPTitle}  updateTable={this.props.updateTableHandler}/>
+                    
                       { this.props.isSetupBOM ?
                       <span>
                         { this.props.component.displayLogic.selected === 0 ?

@@ -26,6 +26,10 @@ const _initializeOp=()=>{
     operation.completeDate=null;
     operation.scrapRate=null;    // in %, need /100 when uses it 
     operation.setupCost=null;    // initial cost to produce the component
+    operation.holdingCostPerUnit=null;
+    operation.otherProductionCostPerUnit=null;
+    operation.PurchaseCostPerUnit=null;
+    operation.interest=null;
     operation.inputWarehouse='';    // where is prerequisite component/raw material stored
     operation.outputWarehouse='';    // where is component stored
     operation.workshop='';           //

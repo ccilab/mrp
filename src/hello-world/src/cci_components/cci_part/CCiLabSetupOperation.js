@@ -313,33 +313,6 @@ export const SetupOP=(props)=>{
                     <span style={{fontWeight: 'bold'}}> {t('commands:show-setup-OP')}</span> 
                     <hr className={dividerCCS.hDividerClassName }  style={dividerCCS.vDividerStyle}/>
                 </div>
-                <hr className={dividerCCS.hDividerClassName }  style={dividerCCS.hDividerStyle}/>
-
-                <div className={'d-flex  justify-content-between'}>
-                    <NumberInput
-                        title='hiring-cost-quantity'
-                        id={-1}
-                        cellCnt={2}
-                        toolTipPosition='bottom center'
-                        mrpInputType='operations'
-                        value={props.component.operation.averageHiringCostPerEmployee}
-                        component={props.component}
-                        handler={setAverageHiringCost}/>
-
-                    <hr className={dividerCCS.hDividerClassName }  style={dividerCCS.vDividerStyle}/>    
-
-                    <NumberInput
-                        title='dismissal-cost-quantity'
-                        id={-1}
-                        cellCnt={2}
-                        toolTipPosition='bottom center'
-                        mrpInputType='operations'
-                        value={props.component.operation.averageDismissalCostPerEmployee}
-                        component={props.component}
-                        handler={setDismissalCost}/>
-
-                    <hr className={dividerCCS.hDividerClassName }  style={dividerCCS.vDividerStyle}/> 
-                </div>
 
                 <hr className={dividerCCS.hDividerClassName }  style={dividerCCS.hDividerStyle}/> 
 
@@ -373,29 +346,6 @@ export const SetupOP=(props)=>{
                 <hr className={dividerCCS.hDividerClassName }  style={dividerCCS.hDividerStyle}/>    
 
                 <div className={'d-flex  justify-content-between'}>
-                    <NumberInput
-                        title='setup-cost-quantity'
-                        id={-1}
-                        cellCnt={2}
-                        mrpInputType='operations'
-                        value={props.component.operation.setupCost }
-                        component={props.component}
-                        handler={setSetupCost}/>
-                    <hr className={dividerCCS.hDividerClassName }  style={dividerCCS.vDividerStyle}/>    
-                    <PercentageInput
-                      title='scrap-rate'
-                      id={-1}
-                      cellCnt={2}
-                      mrpInputType='operations'
-                      value={props.component.operation.scrapRate }
-                      component={props.component}
-                      handler={setScrapRate}/>
-                    <hr className={dividerCCS.hDividerClassName }  style={dividerCCS.vDividerStyle}/> 
-                </div>
-
-                <hr className={dividerCCS.hDividerClassName} style={dividerCCS.hDividerStyle}/>
-
-                <div className={'d-flex  justify-content-between'}>
                     <TextInput
                         title='input-warehouse-name'
                         id={-1}
@@ -420,6 +370,32 @@ export const SetupOP=(props)=>{
                 </div>
             
                 <hr className={dividerCCS.hDividerClassName} style={dividerCCS.hDividerStyle}/>
+                
+                <div className={'d-flex  justify-content-between'}>
+                <TextInput
+                      title='workshop'
+                      id={-1}
+                      cellCnt={2}
+                      mrpInputType='operations'
+                      value={props.component.operation.workshop }
+                      component={props.component}
+                      handler={setWorkshop}/>
+
+                  <hr className={dividerCCS.hDividerClassName }  style={dividerCCS.vDividerStyle}/>   
+                    <PercentageInput
+                      title='scrap-rate'
+                      id={-1}
+                      cellCnt={2}
+                      mrpInputType='operations'
+                      value={props.component.operation.scrapRate }
+                      component={props.component}
+                      handler={setScrapRate}/>
+                    <hr className={dividerCCS.hDividerClassName }  style={dividerCCS.vDividerStyle}/> 
+                </div>
+
+                <hr className={dividerCCS.hDividerClassName} style={dividerCCS.hDividerStyle}/>
+
+                
 
                 <div className={'d-flex  justify-content-between'}>
                   <DateInput
@@ -446,22 +422,6 @@ export const SetupOP=(props)=>{
                 
                 <hr className={dividerCCS.hDividerClassName} style={dividerCCS.hDividerStyle}/>
                 
-                <div className={'d-flex  justify-content-between'}>
-                
-
-                  <TextInput
-                      title='workshop'
-                      id={-1}
-                      cellCnt={1}
-                      mrpInputType='operations'
-                      value={props.component.operation.workshop }
-                      component={props.component}
-                      handler={setWorkshop}/>
-
-                  <hr className={dividerCCS.hDividerClassName }  style={dividerCCS.vDividerStyle}/>
-                </div>
-
-              <hr className={dividerCCS.hDividerClassName} style={dividerCCS.hDividerStyle}/>
 
               <div className={'d-flex  justify-content-between'}>
                 <RadioInput 

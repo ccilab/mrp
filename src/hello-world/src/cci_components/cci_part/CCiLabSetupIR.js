@@ -27,8 +27,6 @@ const _initializeIRF=()=>{
    irf.procurementType=null;  //'InHouse'(to produce production order), 'Purchase'(to produce purchase order)
    irf.leadTime={value: null, timeUnit: ''};
    irf.otherProductionCostPerUnit=null; //other than employee costs
-   irf.holdingCostPerUnit=null;  //Inventory holding cost per unit
-   irf.interest=null;
    irf.supplier='';   //string initialized to ''
    irf.supplierPartNumber='';
    irf.maxPurchasingAllowed=0;   //doesn't allowed for now
@@ -193,33 +191,20 @@ export const SetupIRF=(props)=>{
   }
 
 
-  const setHoldingCostPerUnit=(index, cost, component)=>{
-    if( component.irf === 'undefined' )
-      component.irf = new initializeIRF( component );
 
-    let {isValid, value} = isValidValue(cost);
+  // const setInterest=(index, interest, component)=>{
+  //   if( component.irf === 'undefined' )
+  //     component.irf = new initializeIRF( component );
 
-    if( !isValid )
-      component.irf.holdingCostPerUnit=null;
-    else
-      component.irf.holdingCostPerUnit=value;
+  //   let {isValid, value} = isValidValue(interest);
 
-    saveValidIRFEntry(component); 
-  }
+  //   if( !isValid )
+  //     component.irf.interest=null;
+  //   else
+  //     component.irf.interest=value;
 
-  const setInterest=(index, interest, component)=>{
-    if( component.irf === 'undefined' )
-      component.irf = new initializeIRF( component );
-
-    let {isValid, value} = isValidValue(interest);
-
-    if( !isValid )
-      component.irf.interest=null;
-    else
-      component.irf.interest=value;
-
-    saveValidIRFEntry(component); 
-  }
+  //   saveValidIRFEntry(component); 
+  // }
 
   const setSupplier=(index, supplierName, component)=>{
     if( isValidString( supplierName ))
@@ -476,24 +461,23 @@ export const SetupIRF=(props)=>{
              
                     <hr className={dividerCCS.hDividerClassName }  style={dividerCCS.vDividerStyle}/>
 
-              
+                  <NumberInput
+                          title='inventory-on-hand-quantity'
+                          id={-1}
+                          cellCnt={2}
+                          toolTipPosition='bottom center'
+                          mrpInputType='inventoryRecords'
+                          value={props.component.irf.inventoryOnHand}
+                          component={props.component}
+                          handler={setIOH}/>
+
+                  <hr className={dividerCCS.hDividerClassName }  style={dividerCCS.vDividerStyle}/>
                  
                 </div>
  
               <hr className={dividerCCS.hDividerClassName }  style={dividerCCS.hDividerStyle}/>
-              <div className={'d-flex justify-content-between'}>
-                  <NumberInput
-                        title='inventory-on-hand-quantity'
-                        id={-1}
-                        cellCnt={2}
-                        toolTipPosition='bottom center'
-                        mrpInputType='inventoryRecords'
-                        value={props.component.irf.inventoryOnHand}
-                        component={props.component}
-                        handler={setIOH}/>
-
-                  <hr className={dividerCCS.hDividerClassName }  style={dividerCCS.vDividerStyle}/>
-                  
+              {/* <div className={'d-flex justify-content-between'}>
+                
                   <PercentageInput
                       title='interest-rate'
                       id={-1}
@@ -504,11 +488,11 @@ export const SetupIRF=(props)=>{
                       handler={setInterest}/>
                   
                   <hr className={dividerCCS.hDividerClassName }  style={dividerCCS.vDividerStyle}/>
-              </div>                
+              </div>                 */}
 
               <hr className={dividerCCS.hDividerClassName } style={dividerCCS.hDividerStyle}/>
 
-                <div className={'d-flex  justify-content-between'}> 
+                {/* <div className={'d-flex  justify-content-between'}> 
                   <NumberInput
                       title={ procurementType === null || procurementType === 'in-house' ? 'other-production-cost-per-unit-quantity' : 'other-purchase-cost-per-unit-quantity'}
                       id={-1}
@@ -519,18 +503,10 @@ export const SetupIRF=(props)=>{
                       handler={setOtherCostPerUnit}/>
 
                   <hr className='m-0 bg-info'  style={dividerCCS.vDividerStyle}/>
-                  <NumberInput
-                      title='holding-cost-per-unit-quantity'
-                      id={-1}
-                      cellCnt={2}
-                      mrpInputType='inventoryRecords'
-                      value={props.component.irf.holdingCostPerUnit }
-                      component={props.component}
-                      handler={setHoldingCostPerUnit}/>
-                     <hr className={dividerCCS.hDividerClassName }  style={dividerCCS.vDividerStyle}/>
+            
                 </div>
 
-                <hr className={dividerCCS.hDividerClassName } style={dividerCCS.hDividerStyle}/>
+                <hr className={dividerCCS.hDividerClassName } style={dividerCCS.hDividerStyle}/> */}
 
                 <div className={'d-flex  justify-content-between'}> 
                   <NumberInput

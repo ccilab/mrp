@@ -9,9 +9,12 @@ import styles from "./../../dist/css/ccilab-component-list.css"
 export const TextInput=(props)=>{
     const { t } = useTranslation([`${props.mrpInputType}`,'commands'], {useSuspense: false});
 
+    const isReadOnly = ( typeof props.readOnly === 'undefined' ) ?  false : props.readOnly;
+
     let inputValue = (props.value === null)? '': props.value;
 
-    let inputClassName = 'text-primary m-0 pl-2 pr-0 border-0 cursor-pointer';
+    let inputClassName = "text-primary m-0 pl-2 pr-0 border-0 "+ (isReadOnly ? "" : "cursor-pointer");
+    //let inputClassName = 'text-primary m-0 pl-2 pr-0 border-0 cursor-pointer';
     let cellWidth = ( (typeof props.cellCnt === 'undefined' ) || ( typeof props.cellCnt !== 'undefined' && props.cellCnt === 1) ) ?  '20rem' : '10rem';
     let inputStyle={'backgroundColor': `${styles.cciBgColor}`, width: `${cellWidth}`};
     let inputType='text';
@@ -64,7 +67,7 @@ export const TextInput=(props)=>{
                       name={inputName}
                       value={ input }
                       min = {null}
-                      readOnly = {typeof props.readOnly === 'undefined' ?  false : props.readOnly }
+                      readOnly = {isReadOnly}
                       onChange={ updateValue(props) }
                       onClose={updateValue(props)}
                       onInput={(e)=>{filterInputValue(e)}}

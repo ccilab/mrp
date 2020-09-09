@@ -7,9 +7,9 @@
     "procurement-type": "* Procurement Type",
     "in-house": "In house production",
     "purchase" : "External Purchase",
-    "other-production-cost-per-unit-quantity": "Cost per unit other than labour (optional)",
-    "other-purchase-cost-per-unit-quantity" : "Purchase cost per unit (optional)",
-    "holding-cost-per-unit-quantity": "Holding cost per unit (optional)",
+    "other-production-cost-per-unit-quantity": "TO be removed to setup cost",
+    "other-purchase-cost-per-unit-quantity" : "TO be removed to setup cost",
+    "holding-cost-per-unit-quantity": "TO be removed to setup cost",
     "interest-rate" :"interest (optional)",
     "supplier-name" : "Supplier Name (optional)",
     "supplied-part-number" : "Supplied Part Name (optional)"
