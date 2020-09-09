@@ -490,7 +490,6 @@ export const SetupIRF=(props)=>{
                   <hr className={dividerCCS.hDividerClassName }  style={dividerCCS.vDividerStyle}/>
               </div>                 */}
 
-              <hr className={dividerCCS.hDividerClassName } style={dividerCCS.hDividerStyle}/>
 
                 {/* <div className={'d-flex  justify-content-between'}> 
                   <NumberInput

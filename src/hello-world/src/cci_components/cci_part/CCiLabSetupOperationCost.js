@@ -283,6 +283,16 @@ export const SetupOPCost=(props)=>{
 
                 <hr className={dividerCCS.hDividerClassName} style={dividerCCS.hDividerStyle}/>
                 <div className={'d-flex justify-content-between'}>
+                <TextInput
+                      title={ 'interest-rate' }
+                      id={-1}
+                      cellCnt={2}
+                      mrpInputType= 'inventoryRecords'
+                      value={ t(`inventoryRecords:interest-rate`) }
+                      readOnly={ true }
+                      component={props.component}/>
+
+                  <hr className='m-0 bg-info'  style={dividerCCS.vDividerStyle}/>
                   <PercentageInput
                       title='interest-rate'
                       id={-1}

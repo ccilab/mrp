@@ -89,7 +89,7 @@ export const PercentageInput=(props)=>{
                       id={inputName}
                       type={`${inputType}`}
                       style={inputStyle}
-                      placeholder={t(`operations:${props.title}`)}
+                      placeholder={t(`${props.mrpInputType}:${props.title}`)}
                       name={inputName}
                       value={ input }
                       min = { inputType.includes('number') ? 1 : null}
@@ -110,7 +110,7 @@ export const PercentageInput=(props)=>{
               contentStyle={{ padding: '0px'}}
               >
               <div className='text-nowrap m-0 px-1'>
-                {t(`operations:${props.title}`)}
+                {t(`${props.mrpInputType}:${props.title}`)}
               </div>
           </Popup>
     </div>
