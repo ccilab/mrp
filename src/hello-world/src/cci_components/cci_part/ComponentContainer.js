@@ -7,6 +7,7 @@ import {CCiLabComponentList} from "./CCiLabComponentList";
 import {SysInfo, tables, getRandomInt} from "./CCiLabUtility";
 import BOMTable from "./CCiLabBOMTable"
 import MPSTable from "./CCiLabMPSTable"
+import MRPTable from "./CCiLabMRPTable"
 
 
 
@@ -86,7 +87,7 @@ class ComponentContainer extends Component {
         'bomTable' :  <BOMTable  key = {this.state.tableKey} components={this.componentList} setComponent={this.component} />,  //updateKey={this.tableKey}
         'productionOrderTable' : null,
         'purchaseOrderTable' : null,
-        'materialPlanTable' : null,
+        'materialPlanTable' : <MRPTable key = {this.state.tableKey} components={this.componentList} setComponent={this.component} />,
         'assetUsageTable' : null,
         default: null
         }[state.show]

@@ -31,7 +31,7 @@ export const SetupOPCost=(props)=>{
   }
 
   // `${procurementType}` === null || `${procurementType}` === 'in-house' ?
-  const procurementType = props.component.irf.procurementType;
+  const [procurementType, setProcurement] = useState(props.component.operation.procurementType);
   const inHouseProduction = ( procurementType === null || procurementType === 'in-house' ) ? true : false;
 
   const setAverageHiringCost=(index, cost, component)=>{
@@ -137,6 +137,21 @@ export const SetupOPCost=(props)=>{
     saveValidOpEntry(component); 
   }
 
+  const setProcurementType=(index, procurementType, component)=>{
+    if( component.operation === 'undefined' )
+      component.operation = new initializeOp( component );
+
+    if( isValidString(procurementType) )
+      component.operation.procurementType = procurementType;
+    else
+      component.operation.procurementType = null;
+
+    setProcurement(component.operation.procurementType);
+
+    saveValidOpEntry(component); 
+  }
+
+
   //hover to popup tooltip, click/focus to popup setup BOM inputs
   // based on event from mouse or click for desktop devices, click for touch devices
   const setEventState=()=>
@@ -154,7 +169,6 @@ export const SetupOPCost=(props)=>{
       return;
     }
   }
-
 
 
   return (
@@ -209,32 +223,44 @@ export const SetupOPCost=(props)=>{
                 <hr className={dividerCCS.hDividerClassName }  style={dividerCCS.hDividerStyle}/>
 
                 <div className={'d-flex  justify-content-between'}>
-                    <NumberInput
-                        title='hiring-cost-quantity'
-                        id={-1}
-                        cellCnt={2}
-                        toolTipPosition='bottom center'
-                        mrpInputType='operations'
-                        value={props.component.operation.averageHiringCostPerEmployee}
-                        component={props.component}
-                        handler={setAverageHiringCost}/>
+                <RadioInput
+                    title='procurement-type'
+                    id={-1}
+                    cellCnt={2}
+                    mrpInputType='inventoryRecords'
+                    radio1='in-house'
+                    radio2='purchase'
+                    value={props.component.operation.procurementType }
+                    component={props.component}
+                    handler={setProcurementType}/>
 
-                    <hr className={dividerCCS.hDividerClassName }  style={dividerCCS.vDividerStyle}/>    
+                <hr className={dividerCCS.hDividerClassName }  style={dividerCCS.vDividerStyle}/>
+              </div>
 
-                    <NumberInput
-                        title='dismissal-cost-quantity'
-                        id={-1}
-                        cellCnt={2}
-                        toolTipPosition='bottom center'
-                        mrpInputType='operations'
-                        value={props.component.operation.averageDismissalCostPerEmployee}
-                        component={props.component}
-                        handler={setDismissalCost}/>
+                <hr className={dividerCCS.hDividerClassName } style={dividerCCS.hDividerStyle}/>
 
-                    <hr className={dividerCCS.hDividerClassName }  style={dividerCCS.vDividerStyle}/> 
+                <div className={'d-flex  justify-content-between'}> 
+                  <NumberInput
+                      title={ inHouseProduction? 'other-production-cost-per-unit-quantity' : 'other-purchase-cost-per-unit-quantity'}
+                      id={-1}
+                      cellCnt={2}
+                      mrpInputType='operations'
+                      value={ inHouseProduction? props.component.operation.otherProductionCostPerUnit : props.component.operation.PurchaseCostPerUnit }
+                      component={props.component}
+                      handler={ inHouseProduction? setOtherProductCostPerUnit : setPurchaseCostPerUnit}/>
+                     <hr className={dividerCCS.hDividerClassName }  style={dividerCCS.vDividerStyle}/>
+                     <PercentageInput
+                      title='interest-rate'
+                      id={-1}
+                      cellCnt={2}
+                      mrpInputType='inventoryRecords'
+                      value={props.component.operation.interest }
+                      component={props.component}
+                      handler={setInterest}/>
+                  <hr className='m-0 bg-info'  style={dividerCCS.vDividerStyle}/>
                 </div>
-
-                <hr className={dividerCCS.hDividerClassName }  style={dividerCCS.hDividerStyle}/> 
+                
+                <hr className={dividerCCS.hDividerClassName} style={dividerCCS.hDividerStyle}/>
 
                 <div className={'d-flex  justify-content-between'}>
                     <NumberInput
@@ -257,63 +283,52 @@ export const SetupOPCost=(props)=>{
                      <hr className={dividerCCS.hDividerClassName }  style={dividerCCS.vDividerStyle}/>
                 </div>
 
-                 <hr className={dividerCCS.hDividerClassName} style={dividerCCS.hDividerStyle}/>
-
-                <div className={'d-flex  justify-content-between'}> 
-                  <TextInput
-                      title={ inHouseProduction ? 'in-house' : 'purchase' }
-                      id={-1}
-                      cellCnt={2}
-                      mrpInputType= 'inventoryRecords'
-                      value={inHouseProduction ? t(`inventoryRecords:in-house`) :   t(`inventoryRecords:purchase`)}
-                      readOnly={ true }
-                      component={props.component}/>
-
-                  <hr className='m-0 bg-info'  style={dividerCCS.vDividerStyle}/>
-                  <NumberInput
-                      title={ inHouseProduction? 'other-production-cost-per-unit-quantity' : 'other-purchase-cost-per-unit-quantity'}
-                      id={-1}
-                      cellCnt={2}
-                      mrpInputType='operations'
-                      value={ inHouseProduction? props.component.operation.otherProductionCostPerUnit : props.component.operation.PurchaseCostPerUnit }
-                      component={props.component}
-                      handler={ inHouseProduction? setOtherProductCostPerUnit : setPurchaseCostPerUnit}/>
-                     <hr className={dividerCCS.hDividerClassName }  style={dividerCCS.vDividerStyle}/>
-                </div>
-
                 <hr className={dividerCCS.hDividerClassName} style={dividerCCS.hDividerStyle}/>
-                <div className={'d-flex justify-content-between'}>
-                <TextInput
-                      title={ 'interest-rate' }
-                      id={-1}
-                      cellCnt={2}
-                      mrpInputType= 'inventoryRecords'
-                      value={ t(`inventoryRecords:interest-rate`) }
-                      readOnly={ true }
-                      component={props.component}/>
 
-                  <hr className='m-0 bg-info'  style={dividerCCS.vDividerStyle}/>
-                  <PercentageInput
-                      title='interest-rate'
-                      id={-1}
-                      cellCnt={2}
-                      mrpInputType='inventoryRecords'
-                      value={props.component.operation.interest }
-                      component={props.component}
-                      handler={setInterest}/>
-                  <hr className='m-0 bg-info'  style={dividerCCS.vDividerStyle}/>
-                </div>
+                {  props.component.operation.procurementType === 'purchase' ?
+                    null
+                    :
+                    <div className={'d-flex  justify-content-between'}>
+                      <NumberInput
+                          title='hiring-cost-quantity'
+                          id={-1}
+                          cellCnt={2}
+                          toolTipPosition='bottom center'
+                          mrpInputType='operations'
+                          value={props.component.operation.averageHiringCostPerEmployee}
+                          component={props.component}
+                          handler={setAverageHiringCost}/>
 
-              </div>                
+                      <hr className={dividerCCS.hDividerClassName }  style={dividerCCS.vDividerStyle}/>    
 
-                <div>
-                  <i id={"`${props.component.displayLogic.key}`-SetupOP-cost"}
-                      className='text-danger m-0 py-1 px-1 fas fw fa-times-circle cursor-pointer'
-                      style={{backgroundColor: `${styles.cciBgColor}`}}
-                      onClick={ close }/> 
-                </div>
+                      <NumberInput
+                          title='dismissal-cost-quantity'
+                          id={-1}
+                          cellCnt={2}
+                          toolTipPosition='bottom center'
+                          mrpInputType='operations'
+                          value={props.component.operation.averageDismissalCostPerEmployee}
+                          component={props.component}
+                          handler={setDismissalCost}/>
 
+                      <hr className={dividerCCS.hDividerClassName }  style={dividerCCS.vDividerStyle}/> 
+                    </div>
+                }
+                {  props.component.operation.procurementType === 'purchase' ?
+                    null
+                    :        
+                    <hr className={dividerCCS.hDividerClassName} style={dividerCCS.hDividerStyle}/>
+                }
+              </div>        
+             
+              <div>
+                <i id={"`${props.component.displayLogic.key}`-SetupOP-cost"}
+                    className='text-danger m-0 py-1 px-1 fas fw fa-times-circle cursor-pointer'
+                    style={{backgroundColor: `${styles.cciBgColor}`}}
+                    onClick={ close }/> 
               </div>
+
+            </div>
             )
           }
       </Popup>

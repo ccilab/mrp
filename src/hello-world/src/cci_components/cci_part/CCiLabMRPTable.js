@@ -11,8 +11,8 @@ import {initializeMPS} from './CCiLabSetupMPS'
 import {setSelectedImagePath} from './CCiLabTableUtility'
 
 
-const MPSTableHeader=(props)=>{
-    const { t } = useTranslation(['component','mps', 'operations','inventoryRecords'], {useSuspense: false});
+const MRPTableHeader=(props)=>{
+    const { t } = useTranslation(['component','mrp','mps', 'operations','inventoryRecords'], {useSuspense: false});
 
     
     let approvedBy={givenName:'', familyName:''}; //first name, last name
@@ -145,7 +145,7 @@ const MPSTableHeader=(props)=>{
     }
     else
     {
-        console.log("MPSTable - MPSTableHeader - part name: " + selectedElement.businessLogic.name);
+        console.log("MRPTable - MRPTableHeader - part name: " + selectedElement.businessLogic.name);
     }
 
     return (
@@ -196,45 +196,45 @@ const MPSTableHeader=(props)=>{
             <tr>
                 <th className={`${headerClass}`}>{t('mps:th-lead-time')}: </th>
                 <td className={`${headerClass}`} colSpan='1'> {leadTime}</td>
-                <th className={`${headerClass}`}>{t('operations:setup-cost-quantity')}:</th>
+                {/* <th className={`${headerClass}`}>{t('operations:setup-cost-quantity')}:</th>
                 <td className={`${headerClass}`} colSpan='1'> {setupCost} </td>
             </tr>
 
-            <tr>
-                <th className={`${headerClass}`}>{t('mps:th-shift-mode')}: </th>
-                <td className={`${headerClass}`} colSpan='1'> {shiftMode}</td>
+            <tr> */}
+                {/* <th className={`${headerClass}`}>{t('mps:th-shift-mode')}: </th>
+                <td className={`${headerClass}`} colSpan='1'> {shiftMode}</td> */}
                 <th className={`${headerClass}`}>{t('mps:th-planning-horizon')}:</th>
                 <td className={`${headerClass}`} colSpan='1'/> 
             </tr>
 
 
-            <tr>
-                {/* <th className={`${headerClass}`}>{t('inventoryRecords:inventory-on-hand-quantity')}</th>
-                <td className={`${headerClass}`} colSpan='1'> {inventoryOnHand}</td> */}
+            {/* <tr>
+                <th className={`${headerClass}`}>{t('inventoryRecords:inventory-on-hand-quantity')}</th>
+                <td className={`${headerClass}`} colSpan='1'> {inventoryOnHand}</td>
                 <th className={`${headerClass}`}>{t('operations:scrap-rate')}</th>
                 <td className={`${headerClass}`} colSpan='1'> {scrapRate} </td>
-            </tr>
+            </tr> */}
 
-            {/* <tr>
+            <tr>
                 <th className={`${headerClass}`}>{t('component:required-quantity')}</th>
                 <td className={`${headerClass}`} colSpan='1'> {grossRequirements}</td>
                 <th className={`${headerClass}`}>{t('component:net-required-quantity')}</th>
                 <td className={`${headerClass}`} colSpan='1'> {netRequirements}</td>
-            </tr> */}
+            </tr>
 
-            {/* <tr>
+            <tr>
                 <th className={`${headerClass}`}>{t('mps:th-lot-method')}: </th>
                 <td className={`${headerClass}`} colSpan='1'> {lotMethod}</td>
                 <th className={`${headerClass}`}>{t('mps:th-lot-size')}:</th>
                 <td className={`${headerClass}`} colSpan='1'> {lotSize} </td>
-            </tr> */}
+            </tr>
 
-            <tr>
+            {/* <tr>
                 <th className={`${headerClass}`}>{t('mps:th-time-buckets')}: </th>
                 <td className={`${headerClass}`} colSpan='1'> {lotMethod}</td>
                 <th className={`${headerClass}`}>{t('mps:th-working-days-in-time-bucket')}:</th>
                 <td className={`${headerClass}`} colSpan='1'> {lotSize} </td>
-            </tr>
+            </tr> */}
         </tbody>
     )
 
@@ -244,8 +244,8 @@ const MPSTableHeader=(props)=>{
 
 //may don't need bom level, consider to show image
 // replace _Weekly with time bucket
-const MPSHeaderRow=(components)=>{
-    const { t } = useTranslation(['component','mps','inventoryRecords'], {useSuspense: false});
+const MRPHeaderRow=(components)=>{
+    const { t } = useTranslation(['component','mrp','mps','inventoryRecords'], {useSuspense: false});
     return (
         <tbody>
         <tr style={{backgroundColor: `${styles.cciBgColor}`}}>
@@ -271,20 +271,20 @@ const ComponentMPSRow=()=>{
 }
 
 // key={props.tableKey}
-const MPSTable=(props)=>{
-    const { t } = useTranslation(['component','mps'], {useSuspense: false});
+const MRPTable=(props)=>{
+    const { t } = useTranslation(['mrp'], {useSuspense: false});
     return (
         <div  id={tables.bom} className='d-flex flex-row table-responsive-sm' style={{visibility: `${props.showHideTableFlag}`}}>
         <table className='table table-bordered table-striped table-hover text-nowrap'>
             <tbody>
             <tr style={{backgroundColor: `${styles.cciBgColor}`}}>
-                <th className='text-center h2' colSpan='8' >{t('mps:th-table-title')}</th>
+                <th className='text-center h2' colSpan='8' >{t('mrp:th-table-title')}</th>
             </tr>
             </tbody>
 
-            { <MPSTableHeader components = {props.components} setComponent={props.setComponent}/>}
+            { <MRPTableHeader components = {props.components} setComponent={props.setComponent}/>}
             
-            {<MPSHeaderRow components = {props.components} />}
+            {<MRPHeaderRow components = {props.components} />}
 
             <tbody>
                 {<ComponentMPSRow components = {props.components} setComponent={props.setComponent}/>}
@@ -296,4 +296,4 @@ const MPSTable=(props)=>{
     )
 }
 
-export default MPSTable;
+export default MRPTable;

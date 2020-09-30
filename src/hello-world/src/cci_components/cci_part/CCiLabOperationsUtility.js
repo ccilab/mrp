@@ -34,8 +34,10 @@ const _initializeOp=()=>{
     operation.outputWarehouse='';    // where is component stored
     operation.workshop='';           //
     operation.shiftType=null;
+    operation.procurementType=null; 
     operation.DayShift = _initializeDayShift();
     operation.shiftInfoArray=[initializeShift()];         // how many different shifts are needed
+  
     return operation;
  }
  

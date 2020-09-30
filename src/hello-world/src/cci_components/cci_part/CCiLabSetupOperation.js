@@ -316,6 +316,32 @@ export const SetupOP=(props)=>{
 
                 <hr className={dividerCCS.hDividerClassName }  style={dividerCCS.hDividerStyle}/> 
 
+                {/* <div className={'d-flex  justify-content-between'}>
+                  <DateInput
+                    title='op-start-date'
+                      id={-1}
+                      cellCnt={2}
+                      mrpInputType='operations'
+                      value={props.component.operation.startDate }
+                      component={props.component}
+                      handler={setStartDate}/>
+
+                  <hr className={dividerCCS.hDividerClassName }  style={dividerCCS.vDividerStyle}/>    
+                  <DateInput
+                    title='op-complete-date'
+                      id={-1}
+                      cellCnt={2}
+                      mrpInputType='operations'
+                      value={props.component.operation.startDate }
+                      component={props.component}
+                      handler={setStartDate}/>
+
+                  <hr className={dividerCCS.hDividerClassName }  style={dividerCCS.vDividerStyle}/>
+
+                </div>
+                
+                <hr className={dividerCCS.hDividerClassName} style={dividerCCS.hDividerStyle}/> */}
+                
                 <div className={'d-flex  justify-content-between'}>
                     <NumberInput
                         title='new-hire'
@@ -352,7 +378,7 @@ export const SetupOP=(props)=>{
                         cellCnt={2}
                         mrpInputType='operations'
                         value={props.component.operation.inputWarehouse }
-                    component={props.component}
+                        component={props.component}
                         handler={setInputWarehouse}/>
 
                     <hr className={dividerCCS.hDividerClassName }  style={dividerCCS.vDividerStyle}/>    
@@ -394,34 +420,6 @@ export const SetupOP=(props)=>{
                 </div>
 
                 <hr className={dividerCCS.hDividerClassName} style={dividerCCS.hDividerStyle}/>
-
-                
-
-                <div className={'d-flex  justify-content-between'}>
-                  <DateInput
-                    title='op-start-date'
-                      id={-1}
-                      cellCnt={2}
-                      mrpInputType='operations'
-                      value={props.component.operation.startDate }
-                      component={props.component}
-                      handler={setStartDate}/>
-
-                  <hr className={dividerCCS.hDividerClassName }  style={dividerCCS.vDividerStyle}/>    
-                  <DateInput
-                    title='op-complete-date'
-                      id={-1}
-                      cellCnt={2}
-                      mrpInputType='operations'
-                      value={props.component.operation.startDate }
-                      component={props.component}
-                      handler={setStartDate}/>
-
-                  <hr className={dividerCCS.hDividerClassName }  style={dividerCCS.vDividerStyle}/>
-                </div>
-                
-                <hr className={dividerCCS.hDividerClassName} style={dividerCCS.hDividerStyle}/>
-                
 
               <div className={'d-flex  justify-content-between'}>
                 <RadioInput 

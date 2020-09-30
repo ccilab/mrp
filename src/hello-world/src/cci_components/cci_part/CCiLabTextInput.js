@@ -15,7 +15,7 @@ export const TextInput=(props)=>{
 
     let inputClassName = "text-primary m-0 pl-2 pr-0 border-0 "+ (isReadOnly ? "" : "cursor-pointer");
     //let inputClassName = 'text-primary m-0 pl-2 pr-0 border-0 cursor-pointer';
-    let cellWidth = ( (typeof props.cellCnt === 'undefined' ) || ( typeof props.cellCnt !== 'undefined' && props.cellCnt === 1) ) ?  '20rem' : '10rem';
+    let cellWidth = ( (typeof props.cellCnt === 'undefined' ) || ( typeof props.cellCnt !== 'undefined' && props.cellCnt === 1) ) ?  '20rem' : 20/props.cellCnt + 'rem';
     let inputStyle={'backgroundColor': `${styles.cciBgColor}`, width: `${cellWidth}`};
     let inputType='text';
     let tooltipOnMode=['click','hover'];

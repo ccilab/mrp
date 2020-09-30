@@ -24,7 +24,7 @@ const _initializeIRF=()=>{
    irf.scheduledReceipts=[{date: null, quantity: null}];  //SR - date-quantity pair
    irf.maxAllowedEndingInventory=null; // Maximum Stock
    irf.minAllowedEndingInventory= null; //Safe Stock (SS)
-   irf.procurementType=null;  //'InHouse'(to produce production order), 'Purchase'(to produce purchase order)
+  //  irf.procurementType=null;  //'InHouse'(to produce production order), 'Purchase'(to produce purchase order)
    irf.leadTime={value: null, timeUnit: ''};
    irf.otherProductionCostPerUnit=null; //other than employee costs
    irf.supplier='';   //string initialized to ''
@@ -47,13 +47,15 @@ export const SetupIRF=(props)=>{
   const [event, setEvent] = useState('hover'); // '' is the initial state value
 
   if( props.component.irf === null || props.component.irf === 'undefined' )
-      {
+  {
     props.component.irf = new initializeIRF(props.component);
-      }
+  }
+
+  const procurementType = props.component.operation.procurementType;
 
   const [SRArray, setSRArray] = useState(props.component.irf.scheduledReceipts);
 
-  const [procurementType, setProcurement] = useState(props.component.irf.procurementType);
+  // const [procurementType, setProcurement] = useState(props.component.irf.procurementType);
 
    // 
   const saveValidIRFEntry=( component )=>{
@@ -160,19 +162,19 @@ export const SetupIRF=(props)=>{
     saveValidIRFEntry(component); 
   }
 
-  const setProcurementType=(index, procurementType, component)=>{
-    if( component.irf === 'undefined' )
-      component.irf = new initializeIRF( component );
+  // const setProcurementType=(index, procurementType, component)=>{
+  //   if( component.irf === 'undefined' )
+  //     component.irf = new initializeIRF( component );
 
-    if( isValidString(procurementType) )
-      component.irf.procurementType = procurementType;
-    else
-      component.irf.procurementType = null;
+  //   if( isValidString(procurementType) )
+  //     component.irf.procurementType = procurementType;
+  //   else
+  //     component.irf.procurementType = null;
 
-    setProcurement(component.irf.procurementType);
+  //   setProcurement(component.irf.procurementType);
 
-    saveValidIRFEntry(component); 
-  }
+  //   saveValidIRFEntry(component); 
+  // }
 
 
   //unit in local currency
@@ -395,7 +397,7 @@ export const SetupIRF=(props)=>{
 
 
 
-              <div className={'d-flex  justify-content-between'}>
+              {/* <div className={'d-flex  justify-content-between'}>
                 <RadioInput
                     title='procurement-type'
                     id={-1}
@@ -410,7 +412,7 @@ export const SetupIRF=(props)=>{
                 <hr className={dividerCCS.hDividerClassName }  style={dividerCCS.vDividerStyle}/>
               </div>
 
-              <hr className={dividerCCS.hDividerClassName } style={dividerCCS.hDividerStyle}/>
+              <hr className={dividerCCS.hDividerClassName } style={dividerCCS.hDividerStyle}/> */}
 
               { ( procurementType === 'purchase' ? 
                   <div className={'d-flex  justify-content-between'}>
