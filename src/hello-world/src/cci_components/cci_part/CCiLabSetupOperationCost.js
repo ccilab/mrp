@@ -4,16 +4,11 @@ import { useTranslation } from 'react-i18next';
 
 import styles from "./../../dist/css/ccilab-component-list.css"
 
-import { dividerCCS, isValidString, isValidValue, getRandomInt } from "./CCiLabUtility";
-import {DateInput} from "./CCiLabDateInput"
+import { dividerCCS, isValidString, isValidValue } from "./CCiLabUtility";
 import {NumberInput} from "./CCiLabNumberInput"
-import {TextInput} from "./CCiLabTextInput"
 import {PercentageInput} from "./CCiLabPercentageInput"
-import { NormalAndOvertime } from './CCiLabNormalAndOvertimeInputs';
-import { Shift } from './CCiLabShiftInputs';
-import {initializeOp, saveValidOpEntry, initializeShift} from './CCiLabOperationsUtility'
+import {initializeOp, saveValidOpEntry} from './CCiLabOperationsUtility'
 import { RadioInput } from './CCiLabRadioInput';
-import {TimePeriod} from "./CCiLabTimePeriod"
 
 
 
@@ -322,7 +317,7 @@ export const SetupOPCost=(props)=>{
               </div>        
              
               <div>
-                <i id={"`${props.component.displayLogic.key}`-SetupOP-cost"}
+                <i id={`${props.component.displayLogic.key}-SetupOP-cost`}
                     className='text-danger m-0 py-1 px-1 fas fw fa-times-circle cursor-pointer'
                     style={{backgroundColor: `${styles.cciBgColor}`}}
                     onClick={ close }/> 

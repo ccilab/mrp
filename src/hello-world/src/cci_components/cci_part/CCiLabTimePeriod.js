@@ -66,6 +66,9 @@ export const TimePeriod=(props)=>{
     timePeriodEnu = unit ;
     switch (timePeriodEnu)
     {
+      case 'hour':
+            timePeriodUnit = t('commands:hour');
+            break;
         case 'day':
         default:
             timePeriodUnit = t('commands:day');
@@ -140,6 +143,11 @@ export const TimePeriod=(props)=>{
             arrowStyle={{backgroundColor: `${styles.cciBgColor}`}}>
             <table className='table-responsive-sm table-hover m-0'>
               <tbody >
+              <tr  >
+                  <td className={'p-0 m-0'}>
+                    <span key='day'  className={'cursor-pointer  p-0 m-0 text-body'} style={{fontSize: '1rem'}} onClick={setTimePeriod(timePeriod.hour)}>{t('commands:hour')}</span>
+                  </td>
+                </tr>
                 <tr  >
                   <td className={'p-0 m-0'}>
                     <span key='day'  className={'cursor-pointer  p-0 m-0 text-body'} style={{fontSize: '1rem'}} onClick={setTimePeriod(timePeriod.day)}>{t('commands:day')}</span>

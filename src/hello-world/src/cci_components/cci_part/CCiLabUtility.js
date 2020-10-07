@@ -13,6 +13,7 @@ export const tables = {
   }
 
 export const timePeriod = {
+    hour: 'hour',
     day: 'day',
     week: 'week',
     month: 'month'

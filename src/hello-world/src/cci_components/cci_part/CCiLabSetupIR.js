@@ -8,8 +8,6 @@ import { dividerCCS, isValidString, isValidValue, getRandomInt } from "./CCiLabU
 import {DateInput} from "./CCiLabDateInput"
 import {NumberInput} from "./CCiLabNumberInput"
 import {TextInput} from "./CCiLabTextInput"
-import {PercentageInput} from "./CCiLabPercentageInput"
-import {RadioInput} from "./CCiLabRadioInput"
 import {TimePeriod} from "./CCiLabTimePeriod"
 
 
@@ -178,19 +176,19 @@ export const SetupIRF=(props)=>{
 
 
   //unit in local currency
-  const setOtherCostPerUnit=(index, cost, component)=>{
-    if( component.irf === 'undefined' )
-      component.irf = new initializeIRF( component );
+  // const setOtherCostPerUnit=(index, cost, component)=>{
+  //   if( component.irf === 'undefined' )
+  //     component.irf = new initializeIRF( component );
 
-    let {isValid, value} = isValidValue(cost);
+  //   let {isValid, value} = isValidValue(cost);
 
-    if( !isValid )
-      component.irf.otherProductionCostPerUnit=null;
-    else
-      component.irf.otherProductionCostPerUnit=value;
+  //   if( !isValid )
+  //     component.irf.otherProductionCostPerUnit=null;
+  //   else
+  //     component.irf.otherProductionCostPerUnit=value;
 
-    saveValidIRFEntry(component); 
-  }
+  //   saveValidIRFEntry(component); 
+  // }
 
 
 
@@ -478,37 +476,6 @@ export const SetupIRF=(props)=>{
                 </div>
  
               <hr className={dividerCCS.hDividerClassName }  style={dividerCCS.hDividerStyle}/>
-              {/* <div className={'d-flex justify-content-between'}>
-                
-                  <PercentageInput
-                      title='interest-rate'
-                      id={-1}
-                      cellCnt={2}
-                      mrpInputType='inventoryRecords'
-                      value={props.component.irf.interest }
-                      component={props.component}
-                      handler={setInterest}/>
-                  
-                  <hr className={dividerCCS.hDividerClassName }  style={dividerCCS.vDividerStyle}/>
-              </div>                 */}
-
-
-                {/* <div className={'d-flex  justify-content-between'}> 
-                  <NumberInput
-                      title={ procurementType === null || procurementType === 'in-house' ? 'other-production-cost-per-unit-quantity' : 'other-purchase-cost-per-unit-quantity'}
-                      id={-1}
-                      cellCnt={2}
-                      mrpInputType='inventoryRecords'
-                      value={props.component.irf.otherProductionCostPerUnit }
-                      component={props.component}
-                      handler={setOtherCostPerUnit}/>
-
-                  <hr className='m-0 bg-info'  style={dividerCCS.vDividerStyle}/>
-            
-                </div>
-
-                <hr className={dividerCCS.hDividerClassName } style={dividerCCS.hDividerStyle}/> */}
-
                 <div className={'d-flex  justify-content-between'}> 
                   <NumberInput
                       title='mim-allowed-ending-inventory-quantity'

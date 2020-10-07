@@ -213,6 +213,8 @@ const MPSTableHeader=(props)=>{
                 <td className={`${headerClass}`} colSpan='1'> {inventoryOnHand}</td> */}
                 <th className={`${headerClass}`}>{t('operations:scrap-rate')}</th>
                 <td className={`${headerClass}`} colSpan='1'> {scrapRate} </td>
+                <th className={`${headerClass}`}>{t('mps:th-working-days-in-time-bucket')}:</th>
+                <td className={`${headerClass}`} colSpan='1'> {lotSize} </td>
             </tr>
 
             {/* <tr>
@@ -229,12 +231,11 @@ const MPSTableHeader=(props)=>{
                 <td className={`${headerClass}`} colSpan='1'> {lotSize} </td>
             </tr> */}
 
-            <tr>
+            {/* <tr>
                 <th className={`${headerClass}`}>{t('mps:th-time-buckets')}: </th>
                 <td className={`${headerClass}`} colSpan='1'> {lotMethod}</td>
-                <th className={`${headerClass}`}>{t('mps:th-working-days-in-time-bucket')}:</th>
-                <td className={`${headerClass}`} colSpan='1'> {lotSize} </td>
-            </tr>
+          
+            </tr> */}
         </tbody>
     )
 

@@ -5,7 +5,6 @@ import { useTranslation } from 'react-i18next';
 import styles from "./../../dist/css/ccilab-component-list.css"
 
 import { dividerCCS, isValidString, isValidValue, getRandomInt } from "./CCiLabUtility";
-import {DateInput} from "./CCiLabDateInput"
 import {NumberInput} from "./CCiLabNumberInput"
 import {TextInput} from "./CCiLabTextInput"
 import {PercentageInput} from "./CCiLabPercentageInput"
@@ -13,7 +12,6 @@ import { NormalAndOvertime } from './CCiLabNormalAndOvertimeInputs';
 import { Shift } from './CCiLabShiftInputs';
 import {initializeOp, saveValidOpEntry, initializeShift} from './CCiLabOperationsUtility'
 import { RadioInput } from './CCiLabRadioInput';
-import {TimePeriod} from "./CCiLabTimePeriod"
 
 
 
@@ -34,34 +32,6 @@ export const SetupOP=(props)=>{
 
   const [shiftType, setShift] = useState(props.component.operation.shiftType);
 
-
-  const setAverageHiringCost=(index, cost, component)=>{
-    if( typeof component.operation === 'undefined' )
-      component.operation = new initializeOp( component );
-
-    let {isValid, value} = isValidValue(cost);
-
-    if( !isValid )
-      component.operation.averageHiringCostPerEmployee = null;
-    else
-      component.operation.averageHiringCostPerEmployee = value;
-
-    saveValidOpEntry(component);
-  }
-
-  const setDismissalCost=(index, cost, component)=>{
-    if( typeof component.operation === 'undefined' )
-      component.operation = new initializeOp( component );
-
-    let {isValid, value} = isValidValue(cost);
-
-    if( !isValid )
-      component.operation.averageDismissalCostPerEmployee = null;
-    else
-      component.operation.averageDismissalCostPerEmployee = value;
-
-    saveValidOpEntry(component);
-  }
 
   const setNewHires=(index, count, component)=>{
     if( typeof component.operation === 'undefined' )
