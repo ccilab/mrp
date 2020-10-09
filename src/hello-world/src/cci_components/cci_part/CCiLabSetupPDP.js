@@ -192,6 +192,9 @@ export const SetupPDP=(props)=>{
   }
 
   const removeDemandEntry=(index)=>(e)=>{
+    if( demandDateArray.length <= 1)
+      return;
+
     for( let item of demandDateArray )
     {
       const id = demandDateArray.indexOf( item );

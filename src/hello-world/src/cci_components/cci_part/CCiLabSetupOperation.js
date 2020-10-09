@@ -182,6 +182,9 @@ export const SetupOP=(props)=>{
   }
 
   const removeShiftEntry=(index)=>(e)=>{
+    if( shiftInfoArray.length <= 1 )
+      return;
+      
     for( let item of shiftInfoArray )
     {
       const id = shiftInfoArray.indexOf( item );

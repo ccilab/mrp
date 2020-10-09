@@ -270,6 +270,9 @@ export const SetupIRF=(props)=>{
   }
 
   const removeSREntry=(index)=>(e)=>{
+    if( SRArray.length <= 1 )
+      return;
+      
     for( let item of SRArray )
     {
       const id = SRArray.indexOf( item );
