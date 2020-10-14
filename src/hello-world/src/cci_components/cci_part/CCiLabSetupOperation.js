@@ -4,14 +4,15 @@ import { useTranslation } from 'react-i18next';
 
 import styles from "./../../dist/css/ccilab-component-list.css"
 
-import { dividerCCS, isValidString, isValidValue, getRandomInt } from "./CCiLabUtility";
+import { dividerCCS, isValidString, isValidValue, getRandomInt } from "./CCiLabUtility"
 import {NumberInput} from "./CCiLabNumberInput"
 import {TextInput} from "./CCiLabTextInput"
 import {PercentageInput} from "./CCiLabPercentageInput"
-import { NormalAndOvertime } from './CCiLabNormalAndOvertimeInputs';
-import { Shift } from './CCiLabShiftInputs';
+import { NormalAndOvertime } from './CCiLabNormalAndOvertimeInputs'
+import { Shift } from './CCiLabShiftInputs'
 import {initializeOp, saveValidOpEntry, initializeShift} from './CCiLabOperationsUtility'
-import { RadioInput } from './CCiLabRadioInput';
+import { RadioInput } from './CCiLabRadioInput'
+import {TimePeriod} from "./CCiLabTimePeriod"
 
 
 
@@ -154,6 +155,43 @@ export const SetupOP=(props)=>{
     saveValidOpEntry(component);
   }
 
+
+  const setPerComponentMakeTime=(index, qty, timePeriodUnit, component)=>{
+    if( component.operation === 'undefined' )
+      component.operation = new initializeOp( component );
+
+    let {isValid, value} = isValidValue(qty);
+
+    if( !isValid )
+    {
+      component.operation.PerComponentMakeTime={value: null, timeUnit: t('commands:day')};
+    }
+    else
+    {
+        component.operation.PerComponentMakeTime={value: value, timeUnit: timePeriodUnit };;
+    }
+  
+    saveValidOpEntry(component); 
+  }
+
+  // followed with unit (hours, days, weeks, months)
+  const setLeadTime=(index, qty, timePeriodUnit, component)=>{
+    if( component.operation === 'undefined' )
+      component.operation = new initializeOp( component );
+
+    let {isValid, value} = isValidValue(qty);
+
+    if( !isValid )
+    {
+      component.operation.leadTime={value: null, timeUnit: t('commands:day')};
+    }
+    else
+    {
+        component.operation.leadTime={value: value, timeUnit: timePeriodUnit };;
+    }
+  
+    saveValidOpEntry(component); 
+  }
 
 
   //hover to popup tooltip, click/focus to popup setup BOM inputs
@@ -390,6 +428,34 @@ export const SetupOP=(props)=>{
                       component={props.component}
                       handler={setScrapRate}/>
                     <hr className={dividerCCS.hDividerClassName }  style={dividerCCS.vDividerStyle}/> 
+                </div>
+
+                <hr className={dividerCCS.hDividerClassName} style={dividerCCS.hDividerStyle}/>
+
+                <div className={'d-flex  justify-content-between'}>
+                  <TimePeriod
+                        title='Time-needs-to-make-a-component'
+                        id={-1}
+                        cellCnt={2}
+                        toolTipPosition='bottom center'
+                        mrpInputType='operations'
+                        leadTime={  props.component.operation.PerComponentMakeTime }
+                        component={props.component}
+                        handler={setPerComponentMakeTime}/>
+             
+                    <hr className={dividerCCS.hDividerClassName }  style={dividerCCS.vDividerStyle}/>
+
+                    <TimePeriod
+                        title='lead-time-quantity'
+                        id={-1}
+                        cellCnt={2}
+                        toolTipPosition='bottom center'
+                        mrpInputType='operations'
+                        leadTime={  props.component.operation.leadTime }
+                        component={props.component}
+                        handler={setLeadTime}/>
+                    <hr className={dividerCCS.hDividerClassName }  style={dividerCCS.vDividerStyle}/>
+
                 </div>
 
                 <hr className={dividerCCS.hDividerClassName} style={dividerCCS.hDividerStyle}/>

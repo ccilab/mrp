@@ -19,7 +19,7 @@ export const TimePeriod=(props)=>{
   let tooltipOnMode=['click','hover'];
   let tooltipPosition= ( typeof props.toolTipPosition === 'undefined' ) ? 'top center': props.toolTipPosition;
   let inputName=props.title;
-  let timePeriodUnit = ( props.leadTime.timeUnit === "" ) ? t('commands:day') : props.leadTime.timeUnit;
+  let timePeriodUnit = ( typeof props.leadTime === 'undefined' || props.leadTime.timeUnit === "" ) ? t('commands:day') : props.leadTime.timeUnit;
   let timePeriodEnu = timePeriod.day; 
 
 

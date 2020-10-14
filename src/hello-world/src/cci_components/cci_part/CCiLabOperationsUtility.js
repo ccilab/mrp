@@ -35,8 +35,10 @@ const _initializeOp=()=>{
     operation.workshop='';           //
     operation.shiftType=null;
     operation.procurementType=null; 
+    operation.PerComponentMakeTime={value: null, timeUnit: ''};
     operation.DayShift = _initializeDayShift();
     operation.shiftInfoArray=[initializeShift()];         // how many different shifts are needed
+    operation.leadTime={value: null, timeUnit: ''};
   
     return operation;
  }

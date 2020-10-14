@@ -19,11 +19,12 @@ export const initializeIRF=( component )=>{
 const _initializeIRF=()=>{
    let irf={};
    irf.inventoryOnHand=null;  //Initial Inventory, Beginning Inventory  
+   irf.backOrder=null;
    irf.scheduledReceipts=[{date: null, quantity: null}];  //SR - date-quantity pair
    irf.maxAllowedEndingInventory=null; // Maximum Stock
    irf.minAllowedEndingInventory= null; //Safe Stock (SS)
   //  irf.procurementType=null;  //'InHouse'(to produce production order), 'Purchase'(to produce purchase order)
-   irf.leadTime={value: null, timeUnit: ''};
+  //  irf.leadTime={value: null, timeUnit: ''};
    irf.otherProductionCostPerUnit=null; //other than employee costs
    irf.supplier='';   //string initialized to ''
    irf.supplierPartNumber='';
@@ -31,7 +32,6 @@ const _initializeIRF=()=>{
    irf.purchasingCostPerUnit=0;  //doesn't allowed for now
    irf.maxBackOrderAllowed=0;    //doesn't allowed for now
    irf.backOrderCostPerUnit=0;  //doesn't allowed for now
-   irf.leadTime={value: null, timeUnit: ''};
  
    return irf;
 }
@@ -72,7 +72,20 @@ export const SetupIRF=(props)=>{
     else
       component.irf.inventoryOnHand=value;
 
-    // required quantity for per shift per run
+    saveValidIRFEntry(component);
+  };
+
+  const  setBackOrder=(index, ioh, component)=>{
+    if( component.irf === 'undefined' )
+      component.irf = new initializeIRF( component );
+
+    let {isValid, value} = isValidValue(ioh);
+
+     if( !isValid )
+      component.irf.backOrder=null;
+    else
+      component.irf.backOrder=value;
+
     saveValidIRFEntry(component);
   };
 
@@ -224,24 +237,24 @@ export const SetupIRF=(props)=>{
       saveValidIRFEntry(component); 
   };
 
-    // followed with unit (days, weeks, months)
-    const setLeadTime=(index, qty, timePeriodUnit, component)=>{
-      if( component.irf === 'undefined' )
-        component.irf = new initializeIRF( component );
+    // // followed with unit (hours, days, weeks, months)
+    // const setLeadTime=(index, qty, timePeriodUnit, component)=>{
+    //   if( component.irf === 'undefined' )
+    //     component.irf = new initializeIRF( component );
   
-      let {isValid, value} = isValidValue(qty);
+    //   let {isValid, value} = isValidValue(qty);
   
-      if( !isValid )
-      {
-        component.irf.leadTime={value: null, timeUnit: t('commands:day')};
-      }
-      else
-      {
-          component.irf.leadTime={value: value, timeUnit: timePeriodUnit };;
-      }
+    //   if( !isValid )
+    //   {
+    //     component.irf.leadTime={value: null, timeUnit: t('commands:day')};
+    //   }
+    //   else
+    //   {
+    //       component.irf.leadTime={value: value, timeUnit: timePeriodUnit };;
+    //   }
     
-      saveValidIRFEntry(component); 
-    }
+    //   saveValidIRFEntry(component); 
+    // }
   
 
   //hover to popup tooltip, click/focus to popup setup BOM inputs
@@ -452,7 +465,7 @@ export const SetupIRF=(props)=>{
               }
 
               <div className={'d-flex  justify-content-between'}>
-                  <TimePeriod
+                  {/* <TimePeriod
                         title='lead-time-quantity'
                         id={-1}
                         cellCnt={2}
@@ -460,11 +473,8 @@ export const SetupIRF=(props)=>{
                         mrpInputType='operations'
                         leadTime={  props.component.irf.leadTime }
                         component={props.component}
-                        handler={setLeadTime}/>
-             
-                    <hr className={dividerCCS.hDividerClassName }  style={dividerCCS.vDividerStyle}/>
-
-                  <NumberInput
+                        handler={setLeadTime}/> */}
+                        <NumberInput
                           title='inventory-on-hand-quantity'
                           id={-1}
                           cellCnt={2}
@@ -473,6 +483,18 @@ export const SetupIRF=(props)=>{
                           value={props.component.irf.inventoryOnHand}
                           component={props.component}
                           handler={setIOH}/>
+             
+                    <hr className={dividerCCS.hDividerClassName }  style={dividerCCS.vDividerStyle}/>
+
+                  <NumberInput
+                          title='back-order'
+                          id={-1}
+                          cellCnt={2}
+                          toolTipPosition='bottom center'
+                          mrpInputType='inventoryRecords'
+                          value={props.component.irf.backOrder}
+                          component={props.component}
+                          handler={setBackOrder}/>
 
                   <hr className={dividerCCS.hDividerClassName }  style={dividerCCS.vDividerStyle}/>
                  

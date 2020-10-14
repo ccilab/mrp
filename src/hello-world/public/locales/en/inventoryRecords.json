@@ -1,5 +1,6 @@
 {
     "inventory-on-hand-quantity": "Inventory on-hand (optional)",
+    "back-order": "back order (optional)",
     "scheduled-receipts-date": "Scheduled Receipts Date (optional)",
     "scheduled-receipts-quantity": "scheduled Receipts Quantity (optional)",
     "max-allowed-ending-inventory-quantity": "Maximum Stock (optional)",

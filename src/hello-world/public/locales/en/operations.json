@@ -30,5 +30,5 @@
     "other-production-cost-per-unit-quantity": "Cost per unit other than labour (optional)",
     "other-purchase-cost-per-unit-quantity" : "Purchase cost per unit (optional)",
     "holding-cost-per-unit-quantity": "Holding cost per unit (optional)",
-    "Time-needs-to-make-a-component": "Time needs to produce a component"
+    "Time-needs-to-make-a-component": "Time needs to produce one component"
 }
