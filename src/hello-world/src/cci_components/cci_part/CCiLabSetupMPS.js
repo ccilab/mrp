@@ -58,7 +58,7 @@ const _initialMPS=(component, components)=>{
     mps.netDemand = mps.grossDemand !== null ? productionDemandAndDate.requiredQuantity - mps.inventoryOnHand : null;
   }
 
-  mps.leadTime = component.irf.leadTime.value + component.irf.leadTime.timeUnit;
+  mps.leadTime = component.operation.leadTime.value + component.operation.leadTime.timeUnit;
   mps.setupCost = component.operation.setupCost;
   mps.shiftMode = component.operation.shiftType; //need to localize from 'normal-hours' or 'shift'
   
